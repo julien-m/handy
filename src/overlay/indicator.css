@@ -1,0 +1,399 @@
+/* Recording indicator additions (features 005, 006, 007): prompt pill and menu, destination
+   badge and menu, notices. Built only from the overlay tokens of RecordingOverlay.css and the
+   shared palette (no new color, no new font); geometry from penflow/style-provenance.md
+   ("Recording indicator layout", revision of 2026-10-14). */
+
+:root {
+  /* Overlay text, the live-text recipe of RecordingOverlay.css (.stext-cap). */
+  --s-text: color-mix(in srgb, var(--color-text) 90%, transparent);
+  --ov-menu-w: 280px;
+  --ov-notice-w: 440px;
+  --ov-menu-max-h: 288px; /* 8 rows of 36px; the 51 entries of a full library scroll */
+}
+
+/* ---- Stack: from the screen edge outwards, indicator, notices, prompt, menu ---- */
+.ov-stack {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ov-stage.top .ov-stack {
+  flex-direction: column-reverse;
+}
+
+/* ---- Indicator with destination: one pill holding badge | divider | Handy pill ---- */
+.sindicator.with-dest {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sindicator.with-dest.compact {
+  padding: 3px;
+  border-radius: 24px;
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+}
+/* The Handy pill keeps its content and animations; the outer pill draws the surface. */
+.sindicator.with-dest.compact .scard {
+  background: transparent;
+  border-color: transparent;
+}
+/* 42px outer pill (padding 3 + border 1): the merged control row is 34px high. */
+.sindicator.with-dest.compact .sbase {
+  height: 34px;
+}
+/* Next to a badge the Handy pill hugs its content, as in the mockup: dot, bars, timer, cancel. */
+.sindicator.with-dest.compact .scard.compact {
+  width: auto;
+}
+.sindicator.with-dest.compact .sbase {
+  display: flex;
+  gap: 8px;
+  padding: 0 4px 0 8px;
+}
+.sindicator.with-dest.compact .sbase-l {
+  padding-left: 0;
+}
+.sindicator.with-dest.compact .swave {
+  padding-right: 0;
+}
+.sindicator.with-dest .stimer {
+  opacity: 1;
+}
+/* Live panel: the badge is its own pill next to the card, on the screen-edge line. */
+.sindicator.with-dest.live {
+  align-items: flex-end;
+  gap: 8px;
+}
+.ov-stage.top .sindicator.with-dest.live {
+  align-items: flex-start;
+}
+.sindicator.with-dest.live .sdest-segment {
+  height: var(--ov-base-h);
+  padding: 0 3px;
+  display: flex;
+  align-items: center;
+  border-radius: 24px;
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+}
+.sdivider {
+  width: 1px;
+  height: 20px;
+  flex: none;
+  background: var(--s-border);
+}
+
+/* ---- Destination badge ---- */
+.sdest {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline-end: 2px;
+}
+.sdest-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  max-width: 180px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  color: var(--s-text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background-color 150ms ease;
+}
+.sdest-btn:hover:not(:disabled),
+.sdest-btn[aria-expanded="true"] {
+  background: var(--s-hair);
+}
+.sdest-btn:disabled {
+  cursor: default;
+}
+.sdest-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Pin mark of a pinned destination (009, mockup recording-indicator-pinned). */
+.sdest-pin {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--s-muted);
+}
+.sdest-window {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--s-muted);
+}
+.sapp-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 5.625px;
+  object-fit: cover;
+}
+.sapp-icon.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.25px;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--s-accent-soft);
+}
+
+/* ---- Prompt pill ---- */
+.sprompt-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ov-stage.top .sprompt-zone {
+  flex-direction: column-reverse;
+}
+.sprompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--s-border);
+  background: var(--s-surface);
+  color: var(--s-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 150ms ease;
+}
+/* Open: Handy's dropdown open style (Dropdown.tsx), border logo-primary. */
+.sprompt.open {
+  border-color: var(--color-logo-primary);
+}
+.sprompt-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sprompt-name {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sprompt-hint {
+  font-size: 11.25px;
+  color: var(--s-muted);
+  white-space: nowrap;
+}
+/* Shortcut badge: Handy's shortcut chip at overlay scale. */
+.skbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border: 1px solid var(--s-border);
+  border-radius: 5.625px;
+  font-size: 11.25px;
+  font-weight: 600;
+  color: var(--s-muted);
+  white-space: nowrap;
+}
+.smenu-item.current .skbd {
+  color: var(--s-text);
+}
+
+/* ---- Menus (prompt and destination): overlay open card ---- */
+.smenu {
+  width: var(--ov-menu-w);
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 16px;
+  border: 1px solid var(--s-border);
+  background: var(--s-surface);
+  color: var(--s-text);
+  display: flex;
+  flex-direction: column;
+}
+.smenu-scroll {
+  max-height: var(--ov-menu-max-h);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.smenu-label {
+  margin: 0;
+  padding: 8px 10px 4px;
+  font-size: 12px;
+  color: var(--s-muted);
+}
+.smenu-item {
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: start;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.smenu-item:hover:not(:disabled) {
+  background: var(--s-hair);
+}
+.smenu-item.current,
+.smenu-item.current:hover {
+  background: var(--s-accent-soft);
+}
+.smenu-item:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.smenu-slot {
+  width: 48px;
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+.smenu-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* "Not open" on a favorite that is not running (012). */
+.smenu-hint {
+  margin-inline-start: auto;
+  font-size: 12px;
+  color: var(--s-muted);
+  white-space: nowrap;
+}
+.smenu-glyph {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--s-muted);
+}
+.smenu-check {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--s-accent);
+}
+.smenu-divider {
+  margin: 4px 0;
+  border: 0;
+  border-top: 1px solid var(--s-border);
+}
+/* 012: an application row and its favorite star side by side; the favorites and the footer
+   (Frontmost app at the end, Pin, Unpin) never shrink, only the running apps scroll. The row is
+   compact (N29, 2026-10-29): small star, narrow gaps, the name takes the room left. */
+.smenu-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.smenu-row .smenu-item {
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+  padding-inline-end: 6px;
+}
+.smenu-favorites,
+.smenu-footer {
+  flex: none;
+}
+.smenu-star {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--s-muted);
+  cursor: pointer;
+}
+.smenu-star:hover {
+  background: var(--s-hair);
+  color: var(--s-text);
+}
+.smenu-star:focus-visible,
+.smenu-item:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: -2px;
+}
+.smenu-star-glyph {
+  width: 14px;
+  height: 14px;
+}
+.smenu-star.on {
+  color: var(--s-accent);
+}
+.smenu-star.on .smenu-star-glyph {
+  fill: currentColor;
+}
+.smenu-note,
+.smenu-status,
+.smenu-feedback {
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--s-muted);
+}
+.smenu-feedback {
+  color: var(--color-warning);
+}
+
+/* ---- Notices (AI failure, hand-over, input lost) ---- */
+.snotice {
+  width: var(--ov-notice-w);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--s-border);
+  background: var(--s-surface);
+  animation: scard-pop 460ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.snotice-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--color-warning);
+}
+.snotice.hand_over .snotice-icon {
+  color: var(--s-muted);
+}
+.snotice-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--s-text);
+}

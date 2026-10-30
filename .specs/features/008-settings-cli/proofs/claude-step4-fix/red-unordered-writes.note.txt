@@ -1,0 +1,9 @@
+RED for Step 4 audit B major 1 (unserialized preparation/effects), produced on the fix tree with the
+write order disabled: `WriteSequence::run` was patched for this run only to execute the body without
+taking the turn when RED_UNORDERED is set (the patch was reverted right after; the committed
+sequence.rs never reads that variable). Command:
+
+  RED_UNORDERED=1 cargo test --lib -- settings_service::sequence::tests::races
+
+Both deterministic interleavings fail without the order (native state != disk) and pass with it
+(see cargo-test-targeted.stdout).

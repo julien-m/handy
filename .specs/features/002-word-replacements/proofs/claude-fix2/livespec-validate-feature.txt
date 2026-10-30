@@ -1,0 +1,22 @@
+$ livespec validate .specs/features/002-word-replacements --format full
+Tue Oct 13 16:08:55 UTC 2026
+
+OK      .specs/features/002-word-replacements/changelog.md
+
+OK      .specs/features/002-word-replacements/implementation.md
+
+OK      .specs/features/002-word-replacements/pipeline.md
+
+OK      .specs/features/002-word-replacements/plan.md
+
+OK      .specs/features/002-word-replacements/progress.md
+
+OK      .specs/features/002-word-replacements/proofs/claude/independent-audit.md
+
+OK      
+.specs/features/002-word-replacements/proofs/claude-fix1/independent-reaudit.md
+
+OK      .specs/features/002-word-replacements/spec.md
+
+Total: 8 file(s), 0 error(s), 0 warning(s)
+EXIT=0

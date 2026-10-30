@@ -1,0 +1,15 @@
+[package]
+name = "handy-field-windows-check"
+version = "0.0.0"
+edition = "2021"
+publish = false
+[workspace]
+[dependencies]
+log = "0.4"
+windows = { version = "0.61.3", features = [
+  "Win32_System_Com",
+  "Win32_System_Ole",
+  "Win32_System_Variant",
+  "Win32_UI_Accessibility",
+  "Win32_Foundation",
+] }

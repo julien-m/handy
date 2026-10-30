@@ -1,0 +1,16 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Checking handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error: using `clone` on type `Option<u16>` which implements the `Copy` trait
+  --> src/settings_service/public.rs:75:31
+   |
+75 |             selected_channel: settings.selected_channel.clone(),
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try removing the `clone` call: `settings.selected_channel`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#clone_on_copy
+   = note: `-D clippy::clone-on-copy` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::clone_on_copy)]`
+
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (lib) due to 1 previous error

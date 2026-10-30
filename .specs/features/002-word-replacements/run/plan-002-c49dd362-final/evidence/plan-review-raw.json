@@ -1,0 +1,692 @@
+{
+  "batch_id": "batch-001",
+  "reviewed_section_ids": [
+    ".specs/constitution.md:L1-L2",
+    ".specs/constitution.md:L3-L17",
+    ".specs/constitution.md:L18-L26",
+    ".specs/constitution.md:L27-L29",
+    ".specs/features/002-word-replacements/plan.md:L1-L16",
+    ".specs/features/002-word-replacements/plan.md:L17-L18",
+    ".specs/features/002-word-replacements/plan.md:L19-L26",
+    ".specs/features/002-word-replacements/plan.md:L27-L42",
+    ".specs/features/002-word-replacements/plan.md:L43-L55",
+    ".specs/features/002-word-replacements/plan.md:L56-L66",
+    ".specs/features/002-word-replacements/plan.md:L67-L68",
+    ".specs/features/002-word-replacements/plan.md:L69-L78",
+    ".specs/features/002-word-replacements/plan.md:L79-L84",
+    ".specs/features/002-word-replacements/plan.md:L85-L92",
+    ".specs/features/002-word-replacements/plan.md:L93-L96",
+    ".specs/features/002-word-replacements/plan.md:L97-L102",
+    ".specs/features/002-word-replacements/plan.md:L103-L117",
+    ".specs/features/002-word-replacements/plan.md:L118-L123",
+    ".specs/features/002-word-replacements/plan.md:L124-L200",
+    ".specs/features/002-word-replacements/plan.md:L201-L237",
+    ".specs/features/002-word-replacements/plan.md:L238-L264",
+    ".specs/features/002-word-replacements/plan.md:L265-L270",
+    ".specs/features/002-word-replacements/plan.md:L271-L278",
+    ".specs/features/002-word-replacements/plan.md:L279-L280",
+    ".specs/features/002-word-replacements/plan.md:L281-L290",
+    ".specs/features/002-word-replacements/plan.md:L291-L300",
+    ".specs/features/002-word-replacements/plan.md:L301-L310",
+    ".specs/features/002-word-replacements/plan.md:L311-L320",
+    ".specs/features/002-word-replacements/plan.md:L321-L330",
+    ".specs/features/002-word-replacements/plan.md:L331-L340",
+    ".specs/features/002-word-replacements/plan.md:L341-L350",
+    ".specs/features/002-word-replacements/plan.md:L351-L371",
+    ".specs/features/002-word-replacements/plan.md:L372-L389",
+    ".specs/features/002-word-replacements/plan.md:L390-L405",
+    ".specs/features/002-word-replacements/plan.md:L406-L430",
+    ".specs/features/002-word-replacements/plan.md:L431-L433",
+    ".specs/features/002-word-replacements/spec.md:L1-L9",
+    ".specs/features/002-word-replacements/spec.md:L10-L11",
+    ".specs/features/002-word-replacements/spec.md:L12-L20",
+    ".specs/features/002-word-replacements/spec.md:L21-L22",
+    ".specs/features/002-word-replacements/spec.md:L23-L61",
+    ".specs/features/002-word-replacements/spec.md:L62-L103",
+    ".specs/features/002-word-replacements/spec.md:L104-L140",
+    ".specs/features/002-word-replacements/spec.md:L141-L179",
+    ".specs/features/002-word-replacements/spec.md:L180-L210",
+    ".specs/features/002-word-replacements/spec.md:L211-L212",
+    ".specs/features/002-word-replacements/spec.md:L213-L217",
+    ".specs/features/002-word-replacements/spec.md:L218-L222",
+    ".specs/features/002-word-replacements/spec.md:L223-L227",
+    ".specs/features/002-word-replacements/spec.md:L228-L232",
+    ".specs/features/002-word-replacements/spec.md:L233-L237",
+    ".specs/features/002-word-replacements/spec.md:L238-L242",
+    ".specs/features/002-word-replacements/spec.md:L243-L247",
+    ".specs/features/002-word-replacements/spec.md:L248-L252",
+    ".specs/features/002-word-replacements/spec.md:L253-L256",
+    ".specs/features/002-word-replacements/spec.md:L257-L281",
+    ".specs/features/002-word-replacements/spec.md:L282-L298",
+    ".specs/features/002-word-replacements/spec.md:L299-L319",
+    ".specs/features/002-word-replacements/spec.md:L320-L335",
+    ".specs/features/002-word-replacements/spec.md:L336-L354",
+    ".specs/features/002-word-replacements/spec.md:L355-L356",
+    ".specs/features/002-word-replacements/spec.md:L357-L361",
+    ".specs/features/002-word-replacements/spec.md:L362-L366",
+    ".specs/features/002-word-replacements/spec.md:L367-L371",
+    ".specs/features/002-word-replacements/spec.md:L372-L376",
+    ".specs/features/002-word-replacements/spec.md:L377-L381",
+    ".specs/features/002-word-replacements/spec.md:L382-L386",
+    ".specs/features/002-word-replacements/spec.md:L387-L394",
+    ".specs/features/002-word-replacements/spec.md:L395-L407",
+    ".specs/features/002-word-replacements/spec.md:L408-L417",
+    ".specs/features/002-word-replacements/spec.md:L418-L425",
+    ".specs/features/002-word-replacements/spec.md:L426-L429",
+    ".specs/features/002-word-replacements/spec.md:L430-L438",
+    ".specs/features/002-word-replacements/spec.md:L439-L440",
+    ".specs/features/002-word-replacements/spec.md:L441-L444",
+    ".specs/features/002-word-replacements/spec.md:L445-L448",
+    ".specs/features/002-word-replacements/spec.md:L449-L451",
+    ".specs/features/008-settings-cli/plan.md:L1-L9",
+    ".specs/features/008-settings-cli/plan.md:L10-L11",
+    ".specs/features/008-settings-cli/plan.md:L12-L17",
+    ".specs/features/008-settings-cli/plan.md:L18-L34",
+    ".specs/features/008-settings-cli/plan.md:L35-L46",
+    ".specs/features/008-settings-cli/plan.md:L47-L59",
+    ".specs/features/008-settings-cli/plan.md:L60-L61",
+    ".specs/features/008-settings-cli/plan.md:L62-L67",
+    ".specs/features/008-settings-cli/plan.md:L68-L75",
+    ".specs/features/008-settings-cli/plan.md:L76-L81",
+    ".specs/features/008-settings-cli/plan.md:L82-L102",
+    ".specs/features/008-settings-cli/plan.md:L103-L123",
+    ".specs/features/008-settings-cli/plan.md:L124-L211",
+    ".specs/features/008-settings-cli/plan.md:L212-L249",
+    ".specs/features/008-settings-cli/plan.md:L250-L289",
+    ".specs/features/008-settings-cli/plan.md:L290-L291",
+    ".specs/features/008-settings-cli/plan.md:L292-L301",
+    ".specs/features/008-settings-cli/plan.md:L302-L311",
+    ".specs/features/008-settings-cli/plan.md:L312-L321",
+    ".specs/features/008-settings-cli/plan.md:L322-L331",
+    ".specs/features/008-settings-cli/plan.md:L332-L341",
+    ".specs/features/008-settings-cli/plan.md:L342-L351",
+    ".specs/features/008-settings-cli/plan.md:L352-L361",
+    ".specs/features/008-settings-cli/plan.md:L362-L383",
+    ".specs/features/008-settings-cli/plan.md:L384-L400",
+    ".specs/features/008-settings-cli/plan.md:L401-L415",
+    ".specs/features/008-settings-cli/plan.md:L416-L438",
+    ".specs/features/008-settings-cli/plan.md:L439-L441",
+    ".specs/project.md:L1-L2",
+    ".specs/project.md:L3-L7",
+    ".specs/project.md:L8-L16",
+    ".specs/project.md:L17-L20",
+    ".specs/project.md:L21-L24",
+    ".specs/project.md:L25-L28",
+    ".specs/project.md:L29-L36",
+    ".specs/stacks/_default.md:L1-L4",
+    ".specs/stacks/_default.md:L5-L6",
+    ".specs/stacks/_default.md:L7-L20",
+    ".specs/stacks/_default.md:L21-L30",
+    ".specs/testing/strategy.md:L1-L2",
+    ".specs/testing/strategy.md:L3-L6",
+    ".specs/testing/strategy.md:L7-L12",
+    ".specs/testing/strategy.md:L13-L16"
+  ],
+  "conclusions": [
+    {
+      "requirement_id": "002-word-replacements:AC-001",
+      "disposition": "covered",
+      "rationale": "One pending controller implements ordered rules, stable edits and confirmed delete. Save/Apply commit complete candidates; view/navigation/import guards, retained failures and restart/native focus checks provide observable evidence.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L213-L217",
+          "excerpt": "Add, edit and delete change a draft; Save persists the complete rule set once; a restart shows the same rules in the same order."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L97-L102",
+          "excerpt": "Add/edit/confirmed delete modify this draft only."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L321-L330",
+          "excerpt": "Save/Discard/Stay, failure retention, double-dispatch prevention, external conflicts, keyboard delete focus"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L341-L350",
+          "excerpt": "Native editor restart proof"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-002",
+      "disposition": "covered",
+      "rationale": "Scalar limits, forbidden input, full-fold/whitespace duplicate keys and set bounds are centralized in Rust and reused by every surface. Exact validator boundaries and invalid candidate invariance are concrete tests.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L218-L222",
+          "excerpt": "Recognized text is unique by its normalized key (trimmed, inner whitespace collapsed to one space, Unicode case-folded)."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Count characters as Unicode scalar values before folding (1–100 / 1–500), validate 1000-rule maximum"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "the UI must call this same Rust validator, not implement a separate JS fold."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L372-L389",
+          "excerpt": "1000/1001 set, banned chars, key fold/whitespace duplicates"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-003",
+      "disposition": "covered",
+      "rationale": "All six preview statuses, candidate content/order and base revision, error gating and complete-set Apply are planned; stale previews require explicit re-preview rather than a silent merge.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L223-L227",
+          "excerpt": "Any error line disables Apply. Applying replaces the saved set with exactly the previewed set in one commit."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L79-L84",
+          "excerpt": "Any error disables Apply."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L79-L84",
+          "excerpt": "The UI keeps an exact preview payload and base revision; Apply validates and commits that candidate"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L291-L300",
+          "excerpt": "six preview statuses"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-004",
+      "disposition": "covered",
+      "rationale": "Parser follows original first-tab priority, exact semicolon-only header detection, comments/blank lines and original diagnostics. Serializer canonical header protects a genuine first header-like rule; no CSV quoting or broader header behavior is added.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L228-L232",
+          "excerpt": "A line containing a tab splits on its first tab; otherwise it splits on its first `;`."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Only the first nonblank/noncomment line can be a header"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "A tab-separated `recognized<TAB>replacement` line remains an ordinary rule"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "If a line contains a tab, split at its first tab even if a semicolon precedes it; otherwise split at the first semicolon."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-005",
+      "disposition": "covered",
+      "rationale": "Import byte limits and decoding, merge spelling/ID/positions, replace order and atomic shared transaction are explicit. Real-file round-trip and fault tests cover the required scales. Format losslessness and fixed file reader cap are distinguished for oversized exports. Step 2 now names AC-005 explicitly in its success criterion; this is stronger structural traceability with unchanged behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L233-L237",
+          "excerpt": "Merge updates the replacement of rules whose normalized key matches, keeps their position, and appends new rules in file order."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "enforce **1,000,000 bytes** inclusive before UTF-8 decoding"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Merge keeps matched existing recognized spelling, ID and position"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L291-L300",
+          "excerpt": "real temp files for UTF-8/BOM/CRLF/limits and ordered 1/100/1000 round-trips"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L79-L84",
+          "excerpt": "Persistence failure retains old rules, revision and matcher."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L291-L300",
+          "excerpt": "AC-005 merge/replace import preserves specified order and atomicity;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-006",
+      "disposition": "covered",
+      "rationale": "Pinned C+F folding and original-source endpoint mapping handle expansions without partial-scalar matches. Literal punctuation, whitespace runs and recognized-side CJK boundary exceptions are implemented with explicit non-ASCII category fixtures.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L238-L242",
+          "excerpt": "On a side where the recognized text begins or ends with a CJK ideograph, kana or hangul character, no boundary check applies, because those scripts are written without spaces."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "A match cannot begin/end halfway through a folding expansion"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "recognized-side Han ideograph, kana or hangul exempts only that side."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "Unmatched characters and punctuation retain their original bytes."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-007",
+      "disposition": "covered",
+      "rationale": "Trie chooses normalized-key length then list position and scans original input only. Protected segments bar approximate n-grams. Mandatory recording-start capture feeds both final paths, with commit-during-recording oracle; language/script and empty-set behavior are mapped. Subsequent cleanup/LLM and optional WAV history preserve existing stage semantics.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L243-L247",
+          "excerpt": "Approximate correction never alters a span produced by a replacement."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "select the valid terminal with greatest normalized-key scalar count, then lowest saved position."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "Scan only original input; never scan emitted output."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L85-L92",
+          "excerpt": "prohibit 1–3-word n-grams crossing any protected segment."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": "Modify actions.rs recording-start handling to capture and pass the committed rules snapshot"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L93-L96",
+          "excerpt": "History is saved **only when wav_saved**"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:AC-008",
+      "disposition": "covered",
+      "rationale": "The replacements domain reuses exact 008 transaction/types, flags, envelope and error rendering. Every public operation, dry-run, stdin/file output and CAS is mapped. Bounded internal staging/read paging solves live-frame size without a second transport or writer.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L248-L252",
+          "excerpt": "With JSON output, stdout contains only JSON; errors carry stable codes and non-zero exit codes; a stale expected revision returns a conflict without writing."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L103-L117",
+          "excerpt": "handy settings replacements"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L103-L117",
+          "excerpt": "All JSON stdout is exactly one 008"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L103-L117",
+          "excerpt": "valid dry-run preview/0 without persistence/live effects."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "Validate staged content/hash and expected revision only at final locked commit"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-001",
+      "disposition": "covered",
+      "rationale": "Independent ordered AppSettings field, serde legacy default, stable identities, list editing and restart evidence map to model/transaction/UI/native acceptance tasks.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L357-L361",
+          "excerpt": "Persist an ordered, uniquely keyed set of replacement rules separate from custom words/vocabulary"
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L281-L290",
+          "excerpt": "serde default word_replacements"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L301-L310",
+          "excerpt": "Ordered restart persistence"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L321-L330",
+          "excerpt": "List draft confirmation and navigation"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-002",
+      "disposition": "covered",
+      "rationale": "One shared typed Rust validator maps to model/import/transaction/CLI tasks and boundary assertions; the plan explicitly rejects duplicate JS folding logic.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L362-L366",
+          "excerpt": "one shared typed validator"
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "the UI must call this same Rust validator, not implement a separate JS fold."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L281-L290",
+          "excerpt": "Shared validator and Unicode keys"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L331-L340",
+          "excerpt": "CLI validation error parity"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-003",
+      "disposition": "covered",
+      "rationale": "Pure parse/serialize modules implement exact two-column exchange, line-numbered diagnostics and canonical bulk text. Concrete file/stdin/UI/CLI tasks reuse these functions.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L367-L371",
+          "excerpt": "with line-numbered diagnostics."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L291-L300",
+          "excerpt": "implement parse_rules, serialize_rules and preview_rules."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L331-L340",
+          "excerpt": "File stdin and export parity"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "retain original 1-based line numbers."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-004",
+      "disposition": "covered",
+      "rationale": "Content/revision-bound preview uses the single locked commit service. Pure parsing/staging/dry-run has no settings writes; durable failures and unknown outcomes have explicit truthfulness and reread gates.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L372-L376",
+          "excerpt": "commit the resulting set atomically with a settings revision."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L79-L84",
+          "excerpt": "checking expected revision under settings.lock after fresh reload"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L301-L310",
+          "excerpt": "explicit post-commit outcome/reconciliation"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "Stage/preview/dry-run do not change settings or invoke live effects."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-005",
+      "disposition": "covered",
+      "rationale": "Concrete matcher, original-offset segments, approximate barriers and both final recognition paths satisfy deterministic application. Exact >=30 fixtures, recording-start version consistency and release performance evidence gate silent corruption.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L377-L381",
+          "excerpt": "protect replaced spans from approximate correction."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": "implements compiled trie and ReplacementOutput."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": "both final paths, including Whisper-prompted and ONNX/streaming."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": ">=30 independent exact matching oracles"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:FR-006",
+      "disposition": "covered",
+      "rationale": "Production domain registration/schema/help/aliases and actual binary offline/live process tests preserve foundation error codes, exits and JSON-only stdout. Private transfer remains domain machinery.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L382-L386",
+          "excerpt": "JSON output, stable error codes and revision conflict handling."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L301-L310",
+          "excerpt": "implements the existing Domain interface"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L331-L340",
+          "excerpt": "launches actual built binary against private stores offline/live"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L103-L117",
+          "excerpt": "revision_conflict with details.current_revision 3"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:SC-001",
+      "disposition": "covered",
+      "rationale": "At least 30 independent exact cases span every specified dimension and expansions, offsets, CJK one-sided exceptions and empty-set regression. The actual matcher must run, not a mocked implementation.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L441-L444",
+          "excerpt": "including at least 30 table-driven cases covering case, Unicode, boundaries, whitespace, punctuation, overlap and no chaining."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L372-L389",
+          "excerpt": ">=30 exact cases: casefold expansions, source bounds"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L372-L389",
+          "excerpt": "never mock the matcher, parser, validator or transaction under test."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:SC-002",
+      "disposition": "covered",
+      "rationale": "Ordered content equality excludes exchange-omitted IDs. Real UI/CLI export and replace-import at 1/100/1000 require native file evidence; larger valid sets receive separate pure-format and IPC tests without claiming capped file re-import.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L445-L448",
+          "excerpt": "fixtures of 1, 100 and 1000 rules, through both UI and CLI."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Exchange equality in SC-002 means ordered recognized/replacement content"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L341-L350",
+          "excerpt": "Test real UI and CLI export→replace-import for 1/100/1000 rules and compare ordered content."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Use importable fixtures for the 1/100/1000-rule SC-002 file matrix"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "002-word-replacements:SC-003",
+      "disposition": "covered",
+      "rationale": "Actual locked service, temp stores and concurrent process tests compare durable bytes/revisions for parse, duplicates, CAS and persistence failures. Invalid transfer never writes partial state, while submitted unknown outcomes require explicit readback.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/spec.md:L449-L451",
+          "excerpt": "parse errors, duplicate keys, persistence failure, stale revision"
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L372-L389",
+          "excerpt": "atomic parse/duplicate/persist/CAS errors"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L301-L310",
+          "excerpt": "Before/after durable bytes and revisions"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "a missing, duplicated or reordered chunk never produces a partial mutation."
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [
+    {
+      "description": "Domain-private bounded memory-only staging, atomic final assembly and immutable read pagination.",
+      "justification": "Existing valid rule sets exceed unchanged 008 1-MiB frame limits. These operations preserve foundation transport, shared commit, public envelope and rule limits; they are justified technical machinery for AC-002/008 rather than a new business capability.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "Do not enlarge 008 frame limits or change its plan/renderer."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "Stage/preview/dry-run do not change settings or invoke live effects."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "dictation-snapshot-ordering",
+      "severity": "info",
+      "description": "The earlier recording-start capture ambiguity is now explicitly resolved: actions.rs must capture once and finalization must consume it, with commit-during-recording test.",
+      "suggestion": "Retain that exact start-session oracle during implementation for both batch and stream final paths.",
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": "Modify actions.rs recording-start handling to capture and pass the committed rules snapshot"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L311-L320",
+          "excerpt": "commit-after-recording-start uses old captured rules while the next recording uses new rules"
+        }
+      ]
+    },
+    {
+      "category": "exchange-file-size",
+      "severity": "warning",
+      "description": "The plan now distinguishes lossless format from the fixed file/stdin import cap. Valid maximum Unicode exports can exceed that cap; they must not be certified as file-round-trippable merely from internal IPC success. This residual spec limit tension is documented without changing business limits.",
+      "suggestion": "Retain importable SC-002 fixtures, oversized-file refusal invariance and separate >1-MiB format/read/edit tests. Any wider file import promise requires a spec decision.",
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L69-L78",
+          "excerpt": "Format-level serialization/parsing is lossless for valid rules; the independent file/stdin reader limit can still reject an export larger than 1,000,000 bytes."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "A real >1-MiB valid set read/edit round-trip through list, add/update and UI complete-set commit is a blocking integration gate"
+        }
+      ]
+    },
+    {
+      "category": "native-proof",
+      "severity": "warning",
+      "description": "Native dialog/file/focus/insertion and M1 performance checks are future evidence. Neither a proposed script nor frontend substituted ports can certify them.",
+      "suggestion": "Keep actual missing native/platform/performance proof blocking delivery and retain binary/OS hashes, stage oracles and controlled target readback.",
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L372-L389",
+          "excerpt": "Browser-native port substitution is functional UI evidence only"
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L341-L350",
+          "excerpt": "Missing native/platform/performance proof remains BLOCKED for delivery"
+        }
+      ]
+    },
+    {
+      "category": "ui-contract-timing",
+      "severity": "warning",
+      "description": "The approved UI-production deferral permits technical planning, but Penflow code IR/design approval is still absent. Semantic review does not certify UI implementation readiness.",
+      "suggestion": "Require the program-wide bound approval, preserved flow/screen/semantic IDs and design-profile C51 evidence before the UI step as specified.",
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L271-L278",
+          "excerpt": "No accepted 002 visual approval was found."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L321-L330",
+          "excerpt": "program UI contract/IDs/mockups and design certification completed before this UI step."
+        }
+      ]
+    },
+    {
+      "category": "transfer-security",
+      "severity": "warning",
+      "description": "Memory-only staging and paging is necessary for oversized valid sets, but introduces token/hash/deadline/allocation boundaries. The design covers limits and cleanup; implementation review must still verify enforcement and ownership.",
+      "suggestion": "Bind tokens to authenticated peer/store/session, apply byte limits before allocation and cryptographic whole-payload hashes; exercise disconnect/replay/expiry/concurrent snapshot/timeout cases using actual transport.",
+      "citations": [
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "every operation validates owner, store, expiry and sequence."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L118-L123",
+          "excerpt": "lazy expiration alone must not leave memory retained indefinitely."
+        },
+        {
+          "section_id": ".specs/features/002-word-replacements/plan.md:L390-L405",
+          "excerpt": "Code-level security review of new I/O boundary separate from QE; failure blocks"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "synthesized_batch_ids": [],
+  "resolutions": []
+}

@@ -1,0 +1,37 @@
+{
+  "feature": "007-clipboard-recovery-window",
+  "model": "gpt-6",
+  "review_max_chars": 180000,
+  "plan": "../plan.md",
+  "implementation_steps": 7,
+  "diagrams": {
+    "sequence": 1,
+    "state": 1,
+    "er_memory_only": 1
+  },
+  "spec_functional_modified": false,
+  "spec_lifecycle_modified": "Planned via livespec finalize --retry",
+  "application_modified": false,
+  "008_plan_modified": false,
+  "design_generation": "explicitly deferred by user to program pre-ship pass",
+  "penflow_inspection": "BLOCKED, certified false; missing expected-ui-tree.json, code-ir.json, desktop dimensions",
+  "initial_review": "complete true, ready false; cancellation_linearization",
+  "corrected_review": {
+    "complete": true,
+    "ready": true,
+    "covered": 14,
+    "total": 14,
+    "receipt": "../.reviews/plan.json"
+  },
+  "structural_reference_coverage": "14/14; semantic not certified yet",
+  "analyze": "covered,14/14,no findings,exit0",
+  "progression_implement": "READY,exit0",
+  "finalize": "PASS",
+  "next_action": "$spec-implement 007-clipboard-recovery-window --model=gpt-6 --review-max-chars=180000; program order and UI gates apply",
+  "active_cli_goal_hash": "29addfb4f23de66e234f671778ee9e13c3fc5d3db8b74b027e7b9b6b1c2f4af9",
+  "superseded_goal_hash": "730699ddab96822c09e7bd21bd2052eef3ecf57dfd4f637d0aac7b7aa09628b4",
+  "goal_status": "complete6/6",
+  "goal_archive": ".specs/.runs/spec-plan-2026-10-12T18-49-04.271256-29addfb4-policy2.json",
+  "archive_outcome": "success",
+  "ledger_status": "Mutation refused by approval policy never; final read has one unclassified human request, no items/proposals; no collection errors reported."
+}

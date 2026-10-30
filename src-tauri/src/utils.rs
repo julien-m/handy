@@ -100,6 +100,11 @@ pub fn cancel_current_operation(app: &AppHandle) {
     tm.cancel_stream();
     tm.cancel_transcription();
 
+    // A cancelled dictation never activates or inserts; late callbacks see a new generation.
+    crate::destination::delivery::abandon(app);
+    // Its prompt session ends too: a late choice on the indicator is refused (005).
+    crate::prompts::dictation::cancel_session(app);
+
     // Update tray icon and hide overlay
     set_tray_state(app, crate::tray::TrayIconState::Idle);
     hide_recording_overlay(app);

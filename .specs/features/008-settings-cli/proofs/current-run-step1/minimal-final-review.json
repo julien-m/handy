@@ -1,0 +1,1078 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "008-settings-cli approved minimal plan Step1 only; no Step2 implementation or complete FR/AC acceptance judgement",
+  "scoped_spec_compliance": "PASS for Step1 passive probes/private-resource/native-auth/server-accept and historical parser/console dispatch scope",
+  "scoped_code_quality": "PASS_WITH_NONBLOCKING_OBSERVATIONS; all hard <=300 file / <=50 function gates hold",
+  "feature_pass": false,
+  "certified_acs": [],
+  "plan_binding": {
+    "path": ".specs/features/008-settings-cli/plan.md",
+    "sha256": "dd51597b5d338b0d27778ab4d58c478727021489e6b910b3c8f3a61f89bf6e71",
+    "review_context_reported_by_parent": "f7da4e69",
+    "required_mechanism": "canonical currentUID 0700 parent + directory/socket identity checks + kernel UID before accepted stream return; client auth/reclamation remain Step5",
+    "source_review_receipt": ".specs/features/008-settings-cli/.reviews/plan.json"
+  },
+  "files": [
+    {
+      "path": "src-tauri/src/main.rs",
+      "sha256": "361b34864c240518379a2ee1c238ec06399fbd99aebfc7d2dbfc7f11240decbd",
+      "lines": 49,
+      "functions": [
+        {
+          "name": "main",
+          "start_line": 11,
+          "end_line": 49,
+          "lines": 39
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/cli.rs",
+      "sha256": "df76015f57a16c6574e4c15865e1181240e1e50683a4de97a8993c43a0406559",
+      "lines": 73,
+      "functions": [
+        {
+          "name": "should_detach_console",
+          "start_line": 70,
+          "end_line": 72,
+          "lines": 3
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/console_windows.rs",
+      "sha256": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f",
+      "lines": 27,
+      "functions": [
+        {
+          "name": "detach_console_with",
+          "start_line": 7,
+          "end_line": 13,
+          "lines": 7
+        },
+        {
+          "name": "detach_console",
+          "start_line": 17,
+          "end_line": 27,
+          "lines": 11
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "sha256": "ac7acd7161763c89d751eb8103f2f14979870529616adba954d41e5cf5d653c4",
+      "lines": 70,
+      "functions": [
+        {
+          "name": "inspect_legacy_path",
+          "start_line": 30,
+          "end_line": 42,
+          "lines": 13
+        },
+        {
+          "name": "inspect_legacy_dbus",
+          "start_line": 46,
+          "end_line": 60,
+          "lines": 15
+        },
+        {
+          "name": "classify_owner",
+          "start_line": 63,
+          "end_line": 70,
+          "lines": 8
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/resources.rs",
+      "sha256": "f4e886d52bf462691f78f200653e45b1ab78c43bfe84778a56044e98ec7252f3",
+      "lines": 132,
+      "functions": [
+        {
+          "name": "from_metadata",
+          "start_line": 19,
+          "end_line": 25,
+          "lines": 7
+        },
+        {
+          "name": "current_uid",
+          "start_line": 29,
+          "end_line": 32,
+          "lines": 4
+        },
+        {
+          "name": "unavailable",
+          "start_line": 35,
+          "end_line": 40,
+          "lines": 6
+        },
+        {
+          "name": "open",
+          "start_line": 53,
+          "end_line": 72,
+          "lines": 20
+        },
+        {
+          "name": "path",
+          "start_line": 75,
+          "end_line": 77,
+          "lines": 3
+        },
+        {
+          "name": "validate_current",
+          "start_line": 80,
+          "end_line": 87,
+          "lines": 8
+        },
+        {
+          "name": "sync",
+          "start_line": 90,
+          "end_line": 92,
+          "lines": 3
+        },
+        {
+          "name": "validate_directory",
+          "start_line": 95,
+          "end_line": 100,
+          "lines": 6
+        },
+        {
+          "name": "open_private_file",
+          "start_line": 103,
+          "end_line": 111,
+          "lines": 9
+        },
+        {
+          "name": "validate_private_file",
+          "start_line": 114,
+          "end_line": 123,
+          "lines": 10
+        },
+        {
+          "name": "lock_exclusive",
+          "start_line": 126,
+          "end_line": 132,
+          "lines": 7
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/socket.rs",
+      "sha256": "d01bb3b72e36d126c7efb336c3be25a639fcbc744e7754f570564f94fb11d876",
+      "lines": 157,
+      "functions": [
+        {
+          "name": "bind",
+          "start_line": 24,
+          "end_line": 26,
+          "lines": 3
+        },
+        {
+          "name": "bind_with_creation_hook",
+          "start_line": 29,
+          "end_line": 56,
+          "lines": 28
+        },
+        {
+          "name": "path",
+          "start_line": 59,
+          "end_line": 61,
+          "lines": 3
+        },
+        {
+          "name": "set_nonblocking",
+          "start_line": 64,
+          "end_line": 69,
+          "lines": 6
+        },
+        {
+          "name": "accept",
+          "start_line": 72,
+          "end_line": 74,
+          "lines": 3
+        },
+        {
+          "name": "accept_for_uid",
+          "start_line": 77,
+          "end_line": 86,
+          "lines": 10
+        },
+        {
+          "name": "close_owned_listener",
+          "start_line": 91,
+          "end_line": 101,
+          "lines": 11
+        },
+        {
+          "name": "validate_private_socket",
+          "start_line": 104,
+          "end_line": 110,
+          "lines": 7
+        },
+        {
+          "name": "verify_peer",
+          "start_line": 113,
+          "end_line": 115,
+          "lines": 3
+        },
+        {
+          "name": "verify_peer_uid",
+          "start_line": 118,
+          "end_line": 123,
+          "lines": 6
+        },
+        {
+          "name": "peer_uid",
+          "start_line": 126,
+          "end_line": 134,
+          "lines": 9
+        },
+        {
+          "name": "peer_uid",
+          "start_line": 137,
+          "end_line": 157,
+          "lines": 21
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/startup_fence.rs",
+      "sha256": "a330749224dc4f17d0766d9a70bff4187002d691fe91539dd1cee25003a3db53",
+      "lines": 67,
+      "functions": [
+        {
+          "name": "acquire",
+          "start_line": 23,
+          "end_line": 53,
+          "lines": 31
+        },
+        {
+          "name": "validate_current",
+          "start_line": 56,
+          "end_line": 66,
+          "lines": 11
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/tests.rs",
+      "sha256": "13b1afbc125fe1c3d6644dc38b904eea1670fb20c48fdbde3212d47e795afcd3",
+      "lines": 94,
+      "functions": [
+        {
+          "name": "fixture",
+          "start_line": 7,
+          "end_line": 12,
+          "lines": 6
+        },
+        {
+          "name": "native_peer_identity_mismatch_never_returns_stream",
+          "start_line": 15,
+          "end_line": 25,
+          "lines": 11
+        },
+        {
+          "name": "bind_rejects_regular_replacement_without_changing_permissions",
+          "start_line": 28,
+          "end_line": 40,
+          "lines": 13
+        },
+        {
+          "name": "bind_rejects_socket_replacement_with_matching_owner_and_mode",
+          "start_line": 43,
+          "end_line": 60,
+          "lines": 18
+        },
+        {
+          "name": "concurrent_socket_binds_preserve_unrelated_file_creation_permissions",
+          "start_line": 63,
+          "end_line": 94,
+          "lines": 32
+        }
+      ],
+      "assertions": [
+        {
+          "function": "native_peer_identity_mismatch_never_returns_stream",
+          "start_line": 23,
+          "end_line": 23,
+          "expression": "assert_eq!(error.kind(), io::ErrorKind::PermissionDenied)"
+        },
+        {
+          "function": "bind_rejects_regular_replacement_without_changing_permissions",
+          "start_line": 36,
+          "end_line": 36,
+          "expression": "assert!(outcome.is_err())"
+        },
+        {
+          "function": "bind_rejects_regular_replacement_without_changing_permissions",
+          "start_line": 37,
+          "end_line": 37,
+          "expression": "assert_eq!(fs::symlink_metadata(&path)?.mode() & 0o777, 0o640)"
+        },
+        {
+          "function": "bind_rejects_regular_replacement_without_changing_permissions",
+          "start_line": 38,
+          "end_line": 38,
+          "expression": "assert_eq!(fs::read(path)?, b\"retained\")"
+        },
+        {
+          "function": "bind_rejects_socket_replacement_with_matching_owner_and_mode",
+          "start_line": 53,
+          "end_line": 53,
+          "expression": "assert!(outcome.is_err())"
+        },
+        {
+          "function": "bind_rejects_socket_replacement_with_matching_owner_and_mode",
+          "start_line": 54,
+          "end_line": 57,
+          "expression": "assert_eq!(\n        fs::symlink_metadata(directory.path().join(\"settings.sock\"))?.mode() & 0o777,\n        replacement_mode.ok_or_else(|| io::Error::other(\"missing replacement mode\"))?\n    )"
+        },
+        {
+          "function": "bind_rejects_socket_replacement_with_matching_owner_and_mode",
+          "start_line": 58,
+          "end_line": 58,
+          "expression": "assert!(replacement.is_some())"
+        },
+        {
+          "function": "concurrent_socket_binds_preserve_unrelated_file_creation_permissions",
+          "start_line": 91,
+          "end_line": 91,
+          "expression": "assert!(modes.iter().all(|mode| *mode == expected_mode))"
+        },
+        {
+          "function": "concurrent_socket_binds_preserve_unrelated_file_creation_permissions",
+          "start_line": 92,
+          "end_line": 92,
+          "expression": "assert_eq!(fs::read(before)?, b\"before\")"
+        }
+      ]
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "sha256": "7abf2bc65bce82a8cd5eca68131f29494315a24c350307c6c9dbe144bc2742af",
+      "lines": 18,
+      "functions": [],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "sha256": "04c7341231084393b567c4e488302b11dd2ac39be8c7c0d46268419c6eaf5677",
+      "lines": 288,
+      "functions": [
+        {
+          "name": "pipe_name",
+          "start_line": 8,
+          "end_line": 24,
+          "lines": 17
+        },
+        {
+          "name": "wide",
+          "start_line": 62,
+          "end_line": 64,
+          "lines": 3
+        },
+        {
+          "name": "inspect_legacy_owner",
+          "start_line": 68,
+          "end_line": 93,
+          "lines": 26
+        },
+        {
+          "name": "current_logon_sid",
+          "start_line": 96,
+          "end_line": 108,
+          "lines": 13
+        },
+        {
+          "name": "token_logon_sid",
+          "start_line": 110,
+          "end_line": 142,
+          "lines": 33
+        },
+        {
+          "name": "decode_sid_text",
+          "start_line": 146,
+          "end_line": 159,
+          "lines": 14
+        },
+        {
+          "name": "unavailable",
+          "start_line": 161,
+          "end_line": 166,
+          "lines": 6
+        },
+        {
+          "name": "create",
+          "start_line": 177,
+          "end_line": 220,
+          "lines": 44
+        },
+        {
+          "name": "accept",
+          "start_line": 223,
+          "end_line": 233,
+          "lines": 11
+        },
+        {
+          "name": "file",
+          "start_line": 236,
+          "end_line": 238,
+          "lines": 3
+        },
+        {
+          "name": "verify_client",
+          "start_line": 242,
+          "end_line": 249,
+          "lines": 8
+        },
+        {
+          "name": "verify_server",
+          "start_line": 252,
+          "end_line": 259,
+          "lines": 8
+        },
+        {
+          "name": "verify_process",
+          "start_line": 261,
+          "end_line": 284,
+          "lines": 24
+        }
+      ],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/tests/settings_platform.rs",
+      "sha256": "bc9a5d76f456812e146b53683f74d018cba0b3ee42770eb12e9899b6ea006e0c",
+      "lines": 21,
+      "functions": [],
+      "assertions": []
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/cli_console.rs",
+      "sha256": "8f6f25264f5a5f19530cebcca5982de64fe6e41904e87e0c28f7eefc9992ad8b",
+      "lines": 173,
+      "functions": [
+        {
+          "name": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 8,
+          "end_line": 35,
+          "lines": 28
+        },
+        {
+          "name": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 38,
+          "end_line": 83,
+          "lines": 46
+        },
+        {
+          "name": "historical_startup_and_recording_flags_remain_combinable",
+          "start_line": 86,
+          "end_line": 103,
+          "lines": 18
+        },
+        {
+          "name": "parsed_gui_detaches_console_and_headless_keeps_it",
+          "start_line": 106,
+          "end_line": 152,
+          "lines": 47
+        },
+        {
+          "name": "detach_success_including_no_attached_console_is_accepted",
+          "start_line": 155,
+          "end_line": 163,
+          "lines": 9
+        },
+        {
+          "name": "detach_failure_retains_error_kind_and_safe_operation_context",
+          "start_line": 166,
+          "end_line": 173,
+          "lines": 8
+        }
+      ],
+      "assertions": [
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 22,
+          "end_line": 22,
+          "expression": "assert!(flags.iter().all(|(_, value)| !value(&default)))"
+        },
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 23,
+          "end_line": 23,
+          "expression": "assert!(default.transcribe_file.is_none())"
+        },
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 24,
+          "end_line": 24,
+          "expression": "assert!(default.model.is_none())"
+        },
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 25,
+          "end_line": 25,
+          "expression": "assert!(default.device_index.is_none())"
+        },
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 26,
+          "end_line": 26,
+          "expression": "assert!(default.repeat.is_none())"
+        },
+        {
+          "function": "historical_boolean_flags_keep_their_parser_values",
+          "start_line": 31,
+          "end_line": 31,
+          "expression": "assert_eq!(value(&parsed), flag == other_flag, \"{flag}: {other_flag}\")"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 41,
+          "end_line": 44,
+          "expression": "assert_eq!(\n            parsed.transcribe_file,\n            Some(PathBuf::from(\"recording sample.wav\"))\n        )"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 46,
+          "end_line": 51,
+          "expression": "assert_eq!(\n        CliArgs::try_parse_from([\"handy\", \"--model\", \"whisper-small\"])?\n            .model\n            .as_deref(),\n        Some(\"whisper-small\")\n    )"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 52,
+          "end_line": 55,
+          "expression": "assert_eq!(\n        CliArgs::try_parse_from([\"handy\", \"--device-index\", \"0\"])?.device_index,\n        Some(0)\n    )"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 56,
+          "end_line": 59,
+          "expression": "assert_eq!(\n        CliArgs::try_parse_from([\"handy\", \"--repeat\", \"3\"])?.repeat,\n        Some(3)\n    )"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 74,
+          "end_line": 77,
+          "expression": "assert_eq!(\n        parsed.transcribe_file,\n        Some(PathBuf::from(\"recording sample.wav\"))\n    )"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 78,
+          "end_line": 78,
+          "expression": "assert_eq!(parsed.model.as_deref(), Some(\"whisper-small\"))"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 79,
+          "end_line": 79,
+          "expression": "assert_eq!(parsed.device_index, Some(2))"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 80,
+          "end_line": 80,
+          "expression": "assert_eq!(parsed.repeat, Some(3))"
+        },
+        {
+          "function": "historical_value_flags_keep_values_and_transcription_combinations",
+          "start_line": 81,
+          "end_line": 81,
+          "expression": "assert!(parsed.json && parsed.debug)"
+        },
+        {
+          "function": "historical_startup_and_recording_flags_remain_combinable",
+          "start_line": 99,
+          "end_line": 99,
+          "expression": "assert!(parsed.start_hidden && parsed.no_tray)"
+        },
+        {
+          "function": "historical_startup_and_recording_flags_remain_combinable",
+          "start_line": 100,
+          "end_line": 100,
+          "expression": "assert!(parsed.toggle_transcription && parsed.toggle_post_process && parsed.cancel)"
+        },
+        {
+          "function": "historical_startup_and_recording_flags_remain_combinable",
+          "start_line": 101,
+          "end_line": 101,
+          "expression": "assert!(parsed.debug && parsed.json && parsed.list_devices && parsed.list_models)"
+        },
+        {
+          "function": "parsed_gui_detaches_console_and_headless_keeps_it",
+          "start_line": 128,
+          "end_line": 128,
+          "expression": "assert!(parsed.should_detach_console(), \"{flags:?}\")"
+        },
+        {
+          "function": "parsed_gui_detaches_console_and_headless_keeps_it",
+          "start_line": 149,
+          "end_line": 149,
+          "expression": "assert!(!parsed.should_detach_console(), \"{flags:?}\")"
+        },
+        {
+          "function": "detach_success_including_no_attached_console_is_accepted",
+          "start_line": 161,
+          "end_line": 161,
+          "expression": "assert_eq!(calls, 1)"
+        },
+        {
+          "function": "detach_failure_retains_error_kind_and_safe_operation_context",
+          "start_line": 171,
+          "end_line": 171,
+          "expression": "assert_eq!(error.kind(), std::io::ErrorKind::PermissionDenied)"
+        },
+        {
+          "function": "detach_failure_retains_error_kind_and_safe_operation_context",
+          "start_line": 172,
+          "end_line": 172,
+          "expression": "assert!(error.to_string().contains(\"detach GUI process console\"))"
+        }
+      ]
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/unix.rs",
+      "sha256": "63219928f6762f608cb354fa8386458625fe7a2866f467fbf50ab8b1bce68abf",
+      "lines": 156,
+      "functions": [
+        {
+          "name": "fixture",
+          "start_line": 10,
+          "end_line": 15,
+          "lines": 6
+        },
+        {
+          "name": "absent_probe_creates_nothing",
+          "start_line": 18,
+          "end_line": 27,
+          "lines": 10
+        },
+        {
+          "name": "occupied_probe_never_notifies_or_modifies_store",
+          "start_line": 30,
+          "end_line": 50,
+          "lines": 21
+        },
+        {
+          "name": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 53,
+          "end_line": 79,
+          "lines": 27
+        },
+        {
+          "name": "private_directory_refuses_permissions_alias_and_replacement",
+          "start_line": 82,
+          "end_line": 101,
+          "lines": 20
+        },
+        {
+          "name": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 104,
+          "end_line": 129,
+          "lines": 26
+        },
+        {
+          "name": "close_retains_socket_and_releases_lock_by_lifetime",
+          "start_line": 132,
+          "end_line": 145,
+          "lines": 14
+        },
+        {
+          "name": "lock_and_file_refuse_hostile_aliases",
+          "start_line": 148,
+          "end_line": 156,
+          "lines": 9
+        }
+      ],
+      "assertions": [
+        {
+          "function": "absent_probe_creates_nothing",
+          "start_line": 21,
+          "end_line": 24,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&path, current_uid()),\n        LegacyState::Absent\n    )"
+        },
+        {
+          "function": "absent_probe_creates_nothing",
+          "start_line": 25,
+          "end_line": 25,
+          "expression": "assert!(!path.exists())"
+        },
+        {
+          "function": "occupied_probe_never_notifies_or_modifies_store",
+          "start_line": 39,
+          "end_line": 42,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&path, current_uid()),\n        LegacyState::Occupied\n    )"
+        },
+        {
+          "function": "occupied_probe_never_notifies_or_modifies_store",
+          "start_line": 43,
+          "end_line": 46,
+          "expression": "assert_eq!(\n        listener.accept().expect_err(\"passive probe\").kind(),\n        std::io::ErrorKind::WouldBlock\n    )"
+        },
+        {
+          "function": "occupied_probe_never_notifies_or_modifies_store",
+          "start_line": 47,
+          "end_line": 47,
+          "expression": "assert_eq!(fs::symlink_metadata(&path)?.ino(), inode)"
+        },
+        {
+          "function": "occupied_probe_never_notifies_or_modifies_store",
+          "start_line": 48,
+          "end_line": 48,
+          "expression": "assert_eq!(fs::read(store)?, before)"
+        },
+        {
+          "function": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 57,
+          "end_line": 60,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&path, current_uid()),\n        LegacyState::Occupied\n    )"
+        },
+        {
+          "function": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 61,
+          "end_line": 64,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&path, current_uid().wrapping_add(1)),\n        LegacyState::Unavailable\n    )"
+        },
+        {
+          "function": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 67,
+          "end_line": 70,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&path, current_uid()),\n        LegacyState::Unavailable\n    )"
+        },
+        {
+          "function": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 73,
+          "end_line": 76,
+          "expression": "assert_eq!(\n        inspect_legacy_path(&link, current_uid()),\n        LegacyState::Unavailable\n    )"
+        },
+        {
+          "function": "ambiguous_legacy_resources_fail_closed",
+          "start_line": 77,
+          "end_line": 77,
+          "expression": "assert_eq!(fs::read(path)?, b\"retained\")"
+        },
+        {
+          "function": "private_directory_refuses_permissions_alias_and_replacement",
+          "start_line": 86,
+          "end_line": 86,
+          "expression": "assert!(PrivateDirectory::open(directory.path()).is_err())"
+        },
+        {
+          "function": "private_directory_refuses_permissions_alias_and_replacement",
+          "start_line": 90,
+          "end_line": 90,
+          "expression": "assert!(PrivateDirectory::open(&link).is_err())"
+        },
+        {
+          "function": "private_directory_refuses_permissions_alias_and_replacement",
+          "start_line": 97,
+          "end_line": 97,
+          "expression": "assert!(PrivateSocket::bind(&directory, \"settings.sock\").is_err())"
+        },
+        {
+          "function": "private_directory_refuses_permissions_alias_and_replacement",
+          "start_line": 98,
+          "end_line": 98,
+          "expression": "assert!(!endpoint.exists())"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 108,
+          "end_line": 111,
+          "expression": "assert_eq!(\n        fs::symlink_metadata(directory.path())?.mode() & 0o777,\n        0o700\n    )"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 112,
+          "end_line": 112,
+          "expression": "assert_eq!(fs::symlink_metadata(socket.path())?.uid(), current_uid())"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 113,
+          "end_line": 113,
+          "expression": "assert!(PrivateSocket::bind(&directory, \"settings.sock\").is_err())"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 115,
+          "end_line": 118,
+          "expression": "assert_eq!(\n        socket.accept().expect_err(\"no client yet\").kind(),\n        std::io::ErrorKind::WouldBlock\n    )"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 122,
+          "end_line": 122,
+          "expression": "assert!(platform_unix::verify_peer_uid(&server, current_uid().wrapping_add(1)).is_err())"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 126,
+          "end_line": 126,
+          "expression": "assert!(socket.close_owned_listener().is_err())"
+        },
+        {
+          "function": "new_socket_authenticates_peer_and_cleans_only_owned_inode",
+          "start_line": 127,
+          "end_line": 127,
+          "expression": "assert_eq!(fs::read(socket.path())?, b\"replacement\")"
+        },
+        {
+          "function": "close_retains_socket_and_releases_lock_by_lifetime",
+          "start_line": 137,
+          "end_line": 137,
+          "expression": "assert!(path.exists())"
+        },
+        {
+          "function": "close_retains_socket_and_releases_lock_by_lifetime",
+          "start_line": 138,
+          "end_line": 138,
+          "expression": "assert!(UnixStream::connect(&path).is_err())"
+        },
+        {
+          "function": "close_retains_socket_and_releases_lock_by_lifetime",
+          "start_line": 140,
+          "end_line": 140,
+          "expression": "assert!(StartupFence::acquire(&directory, \"instance.lock\").is_err())"
+        },
+        {
+          "function": "close_retains_socket_and_releases_lock_by_lifetime",
+          "start_line": 143,
+          "end_line": 143,
+          "expression": "assert!(StartupFence::acquire(&directory, \"instance.lock\").is_ok())"
+        },
+        {
+          "function": "lock_and_file_refuse_hostile_aliases",
+          "start_line": 153,
+          "end_line": 153,
+          "expression": "assert!(StartupFence::acquire(&directory, \"instance.lock\").is_err())"
+        },
+        {
+          "function": "lock_and_file_refuse_hostile_aliases",
+          "start_line": 154,
+          "end_line": 154,
+          "expression": "assert_eq!(fs::read(target)?, b\"retained\")"
+        }
+      ]
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/windows.rs",
+      "sha256": "76434a7c0dddbc650bdea7a3be5e32b84bd04e41b0389d4831c3ada82985207d",
+      "lines": 45,
+      "functions": [
+        {
+          "name": "uncertainty_does_not_authorize_offline_operation",
+          "start_line": 6,
+          "end_line": 23,
+          "lines": 18
+        },
+        {
+          "name": "session_negative_cannot_prove_other_sessions_absent",
+          "start_line": 26,
+          "end_line": 32,
+          "lines": 7
+        },
+        {
+          "name": "pipe_identity_rejects_injection_and_isolates_user_and_store",
+          "start_line": 35,
+          "end_line": 45,
+          "lines": 11
+        }
+      ],
+      "assertions": [
+        {
+          "function": "uncertainty_does_not_authorize_offline_operation",
+          "start_line": 8,
+          "end_line": 11,
+          "expression": "assert_eq!(\n        classify_owner(Ok(false), ProbeScope::SameUser),\n        LegacyState::Absent\n    )"
+        },
+        {
+          "function": "uncertainty_does_not_authorize_offline_operation",
+          "start_line": 12,
+          "end_line": 15,
+          "expression": "assert_eq!(\n        classify_owner(Ok(true), ProbeScope::CurrentSession),\n        LegacyState::Occupied\n    )"
+        },
+        {
+          "function": "uncertainty_does_not_authorize_offline_operation",
+          "start_line": 16,
+          "end_line": 22,
+          "expression": "assert_eq!(\n        classify_owner(\n            Err(std::io::Error::from(std::io::ErrorKind::PermissionDenied)),\n            ProbeScope::SameUser\n        ),\n        LegacyState::Unavailable\n    )"
+        },
+        {
+          "function": "session_negative_cannot_prove_other_sessions_absent",
+          "start_line": 28,
+          "end_line": 31,
+          "expression": "assert_eq!(\n        classify_owner(Ok(false), ProbeScope::CurrentSession),\n        LegacyState::Uncertain\n    )"
+        },
+        {
+          "function": "pipe_identity_rejects_injection_and_isolates_user_and_store",
+          "start_line": 38,
+          "end_line": 38,
+          "expression": "assert_ne!(first, pipe_name(\"S-1-5-5-1-3\", &\"a\".repeat(64))?)"
+        },
+        {
+          "function": "pipe_identity_rejects_injection_and_isolates_user_and_store",
+          "start_line": 39,
+          "end_line": 39,
+          "expression": "assert_ne!(first, pipe_name(\"S-1-5-5-1-2\", &\"b\".repeat(64))?)"
+        },
+        {
+          "function": "pipe_identity_rejects_injection_and_isolates_user_and_store",
+          "start_line": 41,
+          "end_line": 41,
+          "expression": "assert!(pipe_name(sid, &\"a\".repeat(64)).is_err())"
+        },
+        {
+          "function": "pipe_identity_rejects_injection_and_isolates_user_and_store",
+          "start_line": 43,
+          "end_line": 43,
+          "expression": "assert!(pipe_name(\"S-1-5-5-1-2\", \"../other\").is_err())"
+        }
+      ]
+    }
+  ],
+  "manifest_changes_reviewed": [
+    {
+      "path": "src-tauri/Cargo.toml",
+      "sha256": "b3cbd2ac2c353b8f95cc566a8332694e4031d0542daf2c21eef0e24bd6bc3a49"
+    },
+    {
+      "path": "src-tauri/Cargo.lock",
+      "sha256": "7f7ec886c88ac096f3f74350f4e4db81ddb624e189e9733bbefca1afd7ec058a"
+    }
+  ],
+  "source_hashes_match_worker_freeze": true,
+  "hard_size_gates": {
+    "max_file_lines": 288,
+    "max_function_lines": 47,
+    "test_exemptions": [],
+    "method": "lexical named-function body and inclusive signature/closing-brace counts"
+  },
+  "checks_observed": {
+    "minimal-final-test": {
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final-test.stdout",
+      "stderr_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final-test.stderr",
+      "stdout_sha256": "610caf36daf525c9944bc5e1b8f5c275f057e86c2f0b511727cc510582b79236",
+      "stderr_sha256": "b3895263938f021c75d5679b64e68421675f52aeaee4a4c5776fec0f5803dd8f"
+    },
+    "minimal-clippy": {
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-clippy.stdout",
+      "stderr_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-clippy.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "4dfdc783e5c9573cf756894c7e1e92fe92755ea7ef501dcb10e982eb2386d98d"
+    },
+    "minimal-typecheck": {
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-typecheck.stdout",
+      "stderr_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-typecheck.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "minimal-lint": {
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-lint.stdout",
+      "stderr_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-lint.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "dd1bf47cbb2da617b6ddb7cf1a7d8d01728f9ef51cf35d7bc2540dd5dd63bfea"
+    },
+    "minimal-format": {
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-format.stdout",
+      "stderr_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-format.stderr",
+      "stdout_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "stderr_sha256": "56b8ab91673c31d3b969d25b1e3ca20fb38a11f416855911aa2164233e77afcd"
+    }
+  },
+  "tests": {
+    "passed": 20,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0,
+    "qualified_ids": [
+      "handy/test/settings_platform::cli_console::detach_success_including_no_attached_console_is_accepted",
+      "handy/test/settings_platform::cli_console::detach_failure_retains_error_kind_and_safe_operation_context",
+      "handy/test/settings_platform::cli_console::historical_startup_and_recording_flags_remain_combinable",
+      "handy/test/settings_platform::unix::lock_and_file_refuse_hostile_aliases",
+      "handy/test/settings_platform::cli_console::historical_boolean_flags_keep_their_parser_values",
+      "handy/test/settings_platform::cli_console::historical_value_flags_keep_values_and_transcription_combinations",
+      "handy/test/settings_platform::cli_console::parsed_gui_detaches_console_and_headless_keeps_it",
+      "handy/test/settings_platform::unix::absent_probe_creates_nothing",
+      "handy/test/settings_platform::windows::pipe_identity_rejects_injection_and_isolates_user_and_store",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode",
+      "handy/test/settings_platform::windows::session_negative_cannot_prove_other_sessions_absent",
+      "handy/test/settings_platform::windows::uncertainty_does_not_authorize_offline_operation",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions",
+      "handy/test/settings_platform::unix::ambiguous_legacy_resources_fail_closed",
+      "handy/test/settings_platform::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream",
+      "handy/test/settings_platform::unix::occupied_probe_never_notifies_or_modifies_store",
+      "handy/test/settings_platform::unix::private_directory_refuses_permissions_alias_and_replacement",
+      "handy/test/settings_platform::unix::new_socket_authenticates_peer_and_cleans_only_owned_inode",
+      "handy/test/settings_platform::unix::close_retains_socket_and_releases_lock_by_lifetime",
+      "handy/test/settings_platform::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions"
+    ],
+    "swift_bridge": "real support in actual final test/clippy build transcripts, not a stub run"
+  },
+  "meaningful_assertions_reviewed": [
+    "Actual CliArgs parsing exercises every existing boolean/value flag and combinations; production main dispatch calls this same predicate, duplicate standalone predicate/test removed.",
+    "Native expected-UID mismatch uses an actual connected Darwin Unix stream and fails with PermissionDenied before accept returns a stream. RED previously returned the unauthorized stream and failed; GREEN passes. This injects policy identity, not a real foreign account.",
+    "Real private directory mode0700/owner, replacement/alias refusal, native getpeereid allow/refuse and stable startup lock lifetime are exercised; no service-under-test mocks.",
+    "Occupied legacy Unix listener sees WouldBlock (no notification connection), inode unchanged and byte-identical isolated store/revision; current-session negative remains Uncertain.",
+    "Regular and socket substitution after bind is refused while substitute content/mode is preserved. Failed/closed socket pathname retention is intentional, not successful race-free automatic cleanup.",
+    "Thirty-two actual binds concurrent with unrelated file creations preserve baseline file modes; implementation no longer invokes umask/chmod/bootstrap. The sample supports observed behavior, not exhaustive scheduler coverage."
+  ],
+  "code_review_notes": [
+    "accept_for_uid validates parent directory and kernel identity before publishing its local stream; error propagation drops the stream without application reads/writes.",
+    "Socket0600 no longer gates bind; canonical0700 parent and type/UID/device/inode/single-link checks are retained. The code does not claim mode bits exhaust macOS ACL access. Step5 must call kernel server auth before client sends/reads bytes.",
+    "No process-global permission mutation, pathname chmod or bootstrap framework remains in the reviewed channel code. No automatic unlink was introduced; lease-proven lifecycle/reclamation remains Step5.",
+    "Windows names and bounded constants validate SID/store identities; allocated descriptor/native handles have owned cleanup and SAFETY context. The new decode_sid_text rejects truncation and native synchronization constant resolves in installed windows-sys source. Native Windows branches were source-reviewed, not compiled/executed on macOS.",
+    "Target-only Cargo dependencies and lockfile additions reviewed: windows-sys0.60.2 for OS APIs and existing zbus5 blocking API for Linux daemon ownership query; no cloud/MCP/network listener added.",
+    "Crate/super-visible new helpers have purpose/failure/ownership docs; FR anchors/deep-links retained at relevant implementing blocks. Sync doc now covers creation and rename."
+  ],
+  "nonblocking_observations": [
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "function": "PrivatePipe::create",
+      "lines": 44,
+      "rule": "General conventions20\u201330 line target, skill hard max50",
+      "severity": "minor",
+      "disposition": "Explicit supervisor direction retains one FFI allocation/cleanup/ownership region rather than add abstractions solely for line count; no >50 hard violation. Native Windows build/security checks remain pending release evidence."
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "function": "token_logon_sid",
+      "lines": 33,
+      "rule": "General conventions20\u201330 line target, skill hard max50",
+      "severity": "minor",
+      "disposition": "Source keeps token query, bounded aligned buffer and handle/LocalAlloc cleanup inspectable; decoder already extracted to reject truncation. Root adjudicates proportionality; no >50 hard violation."
+    }
+  ],
+  "acceptance_limits": {
+    "AC001": "Partial: parser/console branch logic only; settings subgroup/new headless path and M1 native acceptance later",
+    "AC005": "Partial: passive ownership/native resources/server-accept only; live protocol, deadline/outcome, offline commit, client-before-bytes, UI effects and lease reclaim remain later steps",
+    "old_mapping": "Original complete/notready mapping remains historical with obsolete assertion path/hash; no new mapping prep or capture performed",
+    "old_reviews": "final-review.json and earlier code-quality-review.json precede this minimal mechanism and subsequent audit; do not treat them as current source authority"
+  },
+  "pending_release_evidence": [
+    "Windows native compile/PE3 and cmd/PowerShell/GUI output/wait/redirect/parent-console/pipe-token checks",
+    "Linux native X11/Wayland DBus/pathname routing/SO_PEERCRED and cross-session absence",
+    "Real older Handy refusal without callback/activation/store change",
+    "Real second-user/session endpoint attempt denied/unavailable without data/secrets/store changes"
+  ],
+  "mandatory_macos_remaining": "Full settings/new-app/M1 latency/no-window-tray-model/live refresh/shortcuts evidence remains Step7; primitive Darwin tests cannot pass those obligations.",
+  "audit3": "Separate official audit remains parent-owned/in progress at this review creation; this scoped independent source review does not imply final audit closure.",
+  "application_source_modified_by_reviewer": false,
+  "tests_run_by_reviewer": false,
+  "worker_summary_path": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-summary.json",
+  "worker_summary_sha256": "64b6947d0f0deb8597fb4e0b6dd75053958082976175fc757bc8d8879ece9b40",
+  "conventions_payload_path": ".specs/features/008-settings-cli/run/supervisor-resume-context.md",
+  "conventions_payload_sha256": "4db2cbf4ee32512e05dc1d6066a97d649b16bc44d1dfb45e401794c070cc4a5a"
+}

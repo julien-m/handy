@@ -4,6 +4,7 @@ import { Dropdown } from "../ui/Dropdown";
 import { SettingContainer } from "../ui/SettingContainer";
 import { useSettings } from "../../hooks/useSettings";
 import type { ShortcutActivation } from "@/bindings";
+import { useShortcutScreen } from "./shortcut-screen";
 
 interface ShortcutActivationProps {
   descriptionMode?: "inline" | "tooltip";
@@ -14,6 +15,8 @@ export const ShortcutActivationSetting: React.FC<ShortcutActivationProps> =
   React.memo(({ descriptionMode = "tooltip", grouped = false }) => {
     const { t } = useTranslation();
     const { getSetting, updateSetting, isUpdating } = useSettings();
+    // Feature 004: the row's test ids follow the shortcut screen shown.
+    const screen = useShortcutScreen();
 
     const options = [
       {
@@ -48,9 +51,12 @@ export const ShortcutActivationSetting: React.FC<ShortcutActivationProps> =
         description={t("settings.general.shortcutActivation.description")}
         descriptionMode={descriptionMode}
         grouped={grouped}
+        testId={`${screen}-activation`}
       >
         <Dropdown
           options={options}
+          testId={`${screen}-activation-select`}
+          ariaLabel={t("settings.general.shortcutActivation.title")}
           menuClassName="right-0 w-80 max-w-[calc(100vw-2rem)]"
           selectedValue={selected}
           onSelect={(value) =>

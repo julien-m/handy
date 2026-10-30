@@ -1,0 +1,17 @@
+
+running 12 tests
+test actions::tests::live_overlay_uses_streaming_states_only_for_streaming_models ... ok
+test overlay::surface::tests::a_newer_hold_supersedes_the_release_of_an_older_one ... ok
+test overlay::surface::tests::an_explicit_release_ends_any_hold ... ok
+test overlay::surface::tests::extent_is_clamped_and_non_finite_requests_are_ignored ... ok
+test overlay::surface::tests::extent_grows_the_base_and_never_shrinks_it ... ok
+test overlay::surface::tests::hold_duration_is_capped_and_keeps_the_fade_grace ... ok
+test overlay::surface::tests::session_marks_keep_the_last_form ... ok
+test overlay::tests::monitor_hit_test_uses_half_open_physical_bounds ... ok
+test settings::tests::legacy_none_overlay_position_deserializes_to_bottom ... ok
+test settings::tests::default_overlay_style_is_live_when_overlay_defaults_on ... ok
+test settings::tests::overlay_migration_keeps_disabled_overlay_off ... ok
+test settings::tests::overlay_migration_promotes_enabled_overlay_to_live ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 906 filtered out; finished in 0.04s
+

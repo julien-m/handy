@@ -1,0 +1,93 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit_code": 0,
+  "verdict": "PASS",
+  "receipt_path": ".specs/conventions/runs/20261013T050858Z/receipt.json",
+  "baseline": {
+    "baselined_count": 4182,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 0,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "violations_by_severity": {
+    "warning": 754
+  },
+  "scope_violations": [
+    {
+      "fix_hint": "",
+      "line": 18,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 22,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/legacy_invocation.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 44,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/legacy_invocation.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 27,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 42,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 49,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 124,
+      "message": "public API lacks docs",
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "rule_id": "builtin.doc_coverage",
+      "severity": "warning",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 143,
+      "message": "official_startup_and_control_flags_are_preserved_without_argv_zero has 43 lines > 30",
+      "path": "src-tauri/tests/settings_platform.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "warning",
+      "source": "builtin"
+    }
+  ],
+  "retry_hypothesis": "Result + ? removes panic-based fixture success paths flagged by both unwrap and expect rules",
+  "retry_evidence": ".specs/conventions/runs/20261013T050704Z/receipt.json",
+  "retry_result": "PASS"
+}

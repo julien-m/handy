@@ -1,0 +1,4 @@
+{
+  "command": "HANDY_FORCE_AI_STUB=1 cargo fmt --manifest-path src-tauri/Cargo.toml --check",
+  "exit_code": 0
+}

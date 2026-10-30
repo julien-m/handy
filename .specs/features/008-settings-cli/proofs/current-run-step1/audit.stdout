@@ -1,0 +1,25 @@
+1. `src-tauri/src/settings_service/platform_unix.rs:1`
+   - Rule: `spec-implement Code Quality Reviewer — No God files (max 300 lines)`
+   - Severity: major
+   - What is wrong: The 431-line module combines private directories, file locking, sockets, peer authentication, startup fencing, and unit tests.
+   - Proposed fix: Split it into focused Unix resource, socket/peer, and startup-fence modules; move the inline tests into dedicated test modules.
+
+2. `src-tauri/tests/settings_platform.rs:1`
+   - Rule: `spec-implement Code Quality Reviewer — No God files (max 300 lines)`
+   - Severity: major
+   - What is wrong: The 402-line test file mixes Unix-resource tests, legacy probes, CLI regression tests, console dispatch, and Windows pipe identity tests.
+   - Proposed fix: Split it into focused `unix`, `cli_console`, and `windows` platform test modules while retaining `settings_platform.rs` as the thin test entry point.
+
+3. `src-tauri/src/settings_service/platform_unix.rs:54`
+   - Rule: `General Rules §24 — Public API Documentation`
+   - Severity: minor
+   - What is wrong: Crate-visible helpers including `ResourceIdentity::from_metadata`, `unavailable`, and `validate_private_file` lack documentation comments.
+   - Proposed fix: Make these helpers private where they are module-internal, or add concise `///` comments documenting purpose, inputs, return value, and failure behavior.
+
+Summary: 0 blocker, 2 major, 1 minor, 0 nit.
+⚙ Audit: stack detected — TypeScript + ESLint
+⚙ Audit: no checks found (no ~/.check/ or .check/)
+⚙ Audit: 18 file(s) in scope — .specs/README.md, .specs/changelog.md, .specs/conventions-gates.yaml, .specs/features/008-settings-cli/.reviews/plan.json, .specs/features/008-settings-cli/.reviews/spec.json, .specs/features/008-settings-cli/changelog.md, .specs/features/008-settings-cli/pipeline.md, .specs/features/008-settings-cli/plan.md, .specs/features/008-settings-cli/spec.md, src-tauri/Cargo.lock, src-tauri/Cargo.toml, src-tauri/src/cli.rs, src-tauri/src/main.rs, src-tauri/src/settings_service/console_windows.rs, src-tauri/src/settings_service/instance_probe.rs, src-tauri/src/settings_service/platform_unix.rs, src-tauri/src/settings_service/platform_windows.rs, src-tauri/tests/settings_platform.rs
+⚙ Audit: conventions loaded (33712 chars)
+⚙ Audit: intent loaded (677 chars)
+✅ Audit: done (read-only — caller decides which findings to fix)

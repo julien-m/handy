@@ -1,0 +1,1043 @@
+{
+  "batch_id": "synthesis",
+  "reviewed_section_ids": [
+    ".specs/constitution.md:L1-L2",
+    ".specs/constitution.md:L3-L17",
+    ".specs/constitution.md:L18-L26",
+    ".specs/constitution.md:L27-L30",
+    ".specs/constitution.md:L31-L36",
+    ".specs/features/008-settings-cli/implementation.md:L1-L4",
+    ".specs/features/008-settings-cli/implementation.md:L5-L15",
+    ".specs/features/008-settings-cli/implementation.md:L16-L30",
+    ".specs/features/008-settings-cli/implementation.md:L31-L36",
+    ".specs/features/008-settings-cli/implementation.md:L37-L47",
+    ".specs/features/008-settings-cli/implementation.md:L48-L50",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L1-L4",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L5-L10",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L11-L21",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L22-L31",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L32-L37",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L38-L55",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L56-L69",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L70-L76",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L77-L97",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L98-L101",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L102-L119",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L120-L123",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L124-L132",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L133-L143",
+    ".specs/features/008-settings-cli/logs/2026-10-13.md:L144-L146",
+    ".specs/features/008-settings-cli/plan.md:L1-L9",
+    ".specs/features/008-settings-cli/plan.md:L10-L11",
+    ".specs/features/008-settings-cli/plan.md:L12-L17",
+    ".specs/features/008-settings-cli/plan.md:L18-L34",
+    ".specs/features/008-settings-cli/plan.md:L35-L46",
+    ".specs/features/008-settings-cli/plan.md:L47-L59",
+    ".specs/features/008-settings-cli/plan.md:L60-L61",
+    ".specs/features/008-settings-cli/plan.md:L62-L67",
+    ".specs/features/008-settings-cli/plan.md:L68-L75",
+    ".specs/features/008-settings-cli/plan.md:L76-L81",
+    ".specs/features/008-settings-cli/plan.md:L82-L97",
+    ".specs/features/008-settings-cli/plan.md:L98-L118",
+    ".specs/features/008-settings-cli/plan.md:L119-L206",
+    ".specs/features/008-settings-cli/plan.md:L207-L244",
+    ".specs/features/008-settings-cli/plan.md:L245-L284",
+    ".specs/features/008-settings-cli/plan.md:L285-L286",
+    ".specs/features/008-settings-cli/plan.md:L287-L296",
+    ".specs/features/008-settings-cli/plan.md:L297-L306",
+    ".specs/features/008-settings-cli/plan.md:L307-L316",
+    ".specs/features/008-settings-cli/plan.md:L317-L326",
+    ".specs/features/008-settings-cli/plan.md:L327-L336",
+    ".specs/features/008-settings-cli/plan.md:L337-L346",
+    ".specs/features/008-settings-cli/plan.md:L347-L356",
+    ".specs/features/008-settings-cli/plan.md:L357-L380",
+    ".specs/features/008-settings-cli/plan.md:L381-L397",
+    ".specs/features/008-settings-cli/plan.md:L398-L411",
+    ".specs/features/008-settings-cli/plan.md:L412-L426",
+    ".specs/features/008-settings-cli/plan.md:L427-L454",
+    ".specs/features/008-settings-cli/plan.md:L455-L457",
+    ".specs/features/008-settings-cli/progress.md:L1-L16",
+    ".specs/features/008-settings-cli/progress.md:L17-L25",
+    ".specs/features/008-settings-cli/progress.md:L26-L36",
+    ".specs/features/008-settings-cli/progress.md:L37-L55",
+    ".specs/features/008-settings-cli/progress.md:L56-L64",
+    ".specs/features/008-settings-cli/progress.md:L65-L68",
+    ".specs/features/008-settings-cli/progress.md:L69-L88",
+    ".specs/features/008-settings-cli/progress.md:L89-L94",
+    ".specs/features/008-settings-cli/progress.md:L95-L115",
+    ".specs/features/008-settings-cli/progress.md:L116-L132",
+    ".specs/features/008-settings-cli/progress.md:L133-L149",
+    ".specs/features/008-settings-cli/spec.md:L1-L9",
+    ".specs/features/008-settings-cli/spec.md:L10-L11",
+    ".specs/features/008-settings-cli/spec.md:L12-L20",
+    ".specs/features/008-settings-cli/spec.md:L21-L22",
+    ".specs/features/008-settings-cli/spec.md:L23-L58",
+    ".specs/features/008-settings-cli/spec.md:L59-L93",
+    ".specs/features/008-settings-cli/spec.md:L94-L129",
+    ".specs/features/008-settings-cli/spec.md:L130-L170",
+    ".specs/features/008-settings-cli/spec.md:L171-L203",
+    ".specs/features/008-settings-cli/spec.md:L204-L205",
+    ".specs/features/008-settings-cli/spec.md:L206-L210",
+    ".specs/features/008-settings-cli/spec.md:L211-L215",
+    ".specs/features/008-settings-cli/spec.md:L216-L220",
+    ".specs/features/008-settings-cli/spec.md:L221-L225",
+    ".specs/features/008-settings-cli/spec.md:L226-L230",
+    ".specs/features/008-settings-cli/spec.md:L231-L235",
+    ".specs/features/008-settings-cli/spec.md:L236-L240",
+    ".specs/features/008-settings-cli/spec.md:L241-L245",
+    ".specs/features/008-settings-cli/spec.md:L246-L247",
+    ".specs/features/008-settings-cli/spec.md:L248-L252",
+    ".specs/features/008-settings-cli/spec.md:L253-L257",
+    ".specs/features/008-settings-cli/spec.md:L258-L262",
+    ".specs/features/008-settings-cli/spec.md:L263-L267",
+    ".specs/features/008-settings-cli/spec.md:L268-L272",
+    ".specs/features/008-settings-cli/spec.md:L273-L277",
+    ".specs/features/008-settings-cli/spec.md:L278-L286",
+    ".specs/features/008-settings-cli/spec.md:L287-L297",
+    ".specs/features/008-settings-cli/spec.md:L298-L307",
+    ".specs/features/008-settings-cli/spec.md:L308-L315",
+    ".specs/features/008-settings-cli/spec.md:L316-L317",
+    ".specs/features/008-settings-cli/spec.md:L318-L321",
+    ".specs/features/008-settings-cli/spec.md:L322-L325",
+    ".specs/features/008-settings-cli/spec.md:L326-L328",
+    ".specs/project.md:L1-L2",
+    ".specs/project.md:L3-L7",
+    ".specs/project.md:L8-L16",
+    ".specs/project.md:L17-L20",
+    ".specs/project.md:L21-L24",
+    ".specs/project.md:L25-L28",
+    ".specs/project.md:L29-L36",
+    ".specs/stacks/_default.md:L1-L5",
+    ".specs/stacks/_default.md:L6-L7",
+    ".specs/stacks/_default.md:L8-L21",
+    ".specs/stacks/_default.md:L22-L31",
+    ".specs/testing/strategy.md:L1-L2",
+    ".specs/testing/strategy.md:L3-L6",
+    ".specs/testing/strategy.md:L7-L12",
+    ".specs/testing/strategy.md:L13-L16",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L1-L9",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L10-L15",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L16-L21",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L22-L26",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L27-L30",
+    ".specs/tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md:L31-L33",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L1-L9",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L10-L15",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L16-L21",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L22-L26",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L27-L30",
+    ".specs/tool-defects/2026-10-13-native-cargo-execution-capture-crosses-generated-rule-symlin.md:L31-L33"
+  ],
+  "conclusions": [
+    {
+      "requirement_id": "008-settings-cli:AC-001",
+      "disposition": "covered",
+      "rationale": "The complete plan combines the early existing-executable parser/return and preserved legacy branch in batch-001 with concrete wiring, real binary regression and release latency tests in batch-003. Windows retains inherited console output in the same console-subsystem executable. Batch-002/004 omissions are local fragments, not full-plan omissions. Each successful M1 read has a 2000 ms bound; required automated platform checks and pending foreign native observations are distinguished. This is a plan judgment, not runtime certification.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L206-L210",
+          "excerpt": "**Criterion:** `handy settings` is a subcommand group of the existing `handy` executable. Existing flags (`--toggle-transcription`, `--toggle-post-process`, `--cancel`, `--start-hidden`, `--no-tray`, `--debug`, `--transcribe-file`, `--model`, `--device-index`, `--list-devices`, `--list-models`, `--repeat`, `--json`) keep their behavior; `--json` after `settings` belongs to the subcommand. It works on macOS, Windows and Linux; on Windows, output appears in the console the command was started from. A `handy settings` invocation never shows a window, a tray icon or loads a model, never triggers the single-instance \"show window\" behavior, and completes reads within 2 seconds on an Apple M1 Mac in a release build."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L62-L67",
+          "excerpt": "Use `CliArgs::try_parse_from` before any Tauri builder, specta export, model/audio manager, portable mutating initialization or single-instance callback. `settings` runs and exits here; all old invocations retain their existing run branch. Accept both JSON placements and deduplicate them."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L62-L67",
+          "excerpt": "Windows decision: retain one `handy.exe` with the **console PE subsystem** in debug and release."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L62-L67",
+          "excerpt": "retain inherited stdout/stderr handles throughout the `settings` branch."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "30 fresh process reads offline/live; retain every sample and require every successful read ≤2000 ms"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Binary process tests for all old flags and both JSON positions;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-002",
+      "disposition": "covered",
+      "rationale": "No individual batch establishes this composite criterion alone. Together, the complete descriptor manifest and independently classified key inventory, generic operation implementation bound to the exact source contract, type/refusal/redaction tests, early parser accepting both JSON placements and non-creating repository read provide the implementation and verification path. The exact source supplies get-all/get-one/keys shapes, not_found and UI/domain guidance; these remain binding targets of the generic-operation and refusal tests, not invented alternate semantics. Batch-local missing conclusions are reconciled by these observed excerpts.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L211-L215",
+          "excerpt": "**Criterion:** `handy settings get [KEY]` returns all non-secret settings or one key; `handy settings keys` lists settable keys with type, allowed values or range and read-only flag; `handy settings set KEY VALUE` changes one scalar setting. Secret values (API keys) are never printed; reads report only their presence. Unknown keys return `not_found`. `set` parses VALUE with the key's descriptor type (boolean `true`/`false`, integer, enumeration value, string). Generic `set` on a list key returns `validation_failed` naming the domain command to use; on a secret or read-only key it returns `validation_failed` stating that the key is changed in the settings UI. A top-level `--json` before `settings` is accepted as equivalent to `--json` after it. A headless read never creates the settings store."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Implement generic operations and all parse/error JSON paths."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Build a reviewed manifest plus an independent test inventory from serialized default settings and all UI adapters; a descriptor omission fails, not silently hides a setting."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Descriptor completeness, types, ranges, null, list/read-only/secret refusals, all UI command validation reasons;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L62-L67",
+          "excerpt": "Use `CliArgs::try_parse_from` before any Tauri builder, specta export, model/audio manager, portable mutating initialization or single-instance callback. `settings` runs and exits here; all old invocations retain their existing run branch. Accept both JSON placements and deduplicate them."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L68-L75",
+          "excerpt": "Read only salvage/migrate/merge defaults in memory, never save, create settings_store.json, upgrade portable marker or increment revision."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| not_found | 4 |"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-003",
+      "disposition": "covered",
+      "rationale": "Shared validators explicitly replace invalid-to-default UI behavior; every adapter is moved to minimal mutations through the same service. Independent genuine UI/CLI parity checks include English reasons, while UI translation keeps native stable errors. Refusal preserves durable state/revision, and rejection/preparation failure precedes persistence. The batch-004 fragment omission is resolved by the implementation and state-model excerpts from earlier batches.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L216-L220",
+          "excerpt": "**Criterion:** Every write goes through the same backend validation functions as the corresponding UI command, so a value the UI rejects is rejected by the CLI with the same error code and English message, and vice versa; the UI may show that message translated. UI commands that today replace an invalid value by a default (for example an unknown paste method) reject it instead. A rejected write changes nothing."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Build shared validators for every corresponding UI setting and existing domain operation; migrate invalid-to-default behavior to errors."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Public errors use stable English text and object details, with field/issues where applicable"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Every persisted key classified; 100% settable-key UI/CLI parity including English reasons"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L317-L326",
+          "excerpt": "Replace each snapshot rewrite with a minimal mutation applied to latest state; adapt fallback repairs and secret UI writes."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L207-L244",
+          "excerpt": "Then the durable state and revision remain unchanged"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L76-L81",
+          "excerpt": "P0 tests require invalid/refused values and failed preparation leave both disk and revision unchanged, and injected effect failure never yields a success with stale shortcuts."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-004",
+      "disposition": "covered",
+      "rationale": "The full plan joins one stable cross-process lock for all writers, lock/reload/patch repository with no-op/CAS, the locked live sequence, current_revision conflict mapping, and exhaustive app-writer migration. Refusal changes neither durable state nor revision; app mutations use latest-state patches and complete writer closure is required before CLI enablement. Consequently the under-lock stale check and any-surface obligation missing from separate batches are covered together. Reads/no-ops preserve revision and changed commits advance once under the source contract; two CLI/UI writer tests and raw-generation gates verify this.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L221-L225",
+          "excerpt": "**Criterion:** Settings carry a persisted revision number returned by every read and incremented by 1 on every committed write from any surface, including writes made by Handy itself; a write that changes nothing and a read do not increment it. Writes accept `--expected-revision N`; a mismatch returns `revision_conflict` with the current revision in `error.details.current_revision` and writes nothing. All writers (UI commands, a running instance and a headless CLI process) are serialized by one cross-process settings lock, and each writer re-reads the stored settings under that lock before applying its change, so a write without expected revision applies to the latest settings and never discards fields changed by another writer."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L18-L34",
+          "excerpt": "| Lock | One persistent settings.lock inode/handle per canonical store; fs2 cross-platform file locking | Same lock for UI, app mutations, startup and CLI; proposed dependency must be reviewed/pinned |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Service->>Disk: lock and reread"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| revision_conflict (`details.current_revision`) | 3 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L207-L244",
+          "excerpt": "Then the durable state and revision remain unchanged"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L76-L81",
+          "excerpt": "Migrate every writer before CLI set becomes reachable, including get_settings migration/default stores, shortcut fallback/reset commands, UI setters, audio/model selection repairs, model switches and history retention."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L317-L326",
+          "excerpt": "Replace each snapshot rewrite with a minimal mutation applied to latest state; adapt fallback repairs and secret UI writes."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L68-L75",
+          "excerpt": "Read only salvage/migrate/merge defaults in memory, never save, create settings_store.json, upgrade portable marker or increment revision."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Two CLI writers and UI adapter writer with barriers; different/same keys, stale CAS, no-op"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-005",
+      "disposition": "covered",
+      "rationale": "Authenticated same-user/store local IPC and its total five-second deadline handle live operations with effects/UI notification before success. Offline execution rechecks ownership under the same repository lock. A live-only operation requires an owner; fixture tests explicitly exercise unavailable behavior. Older/busy/uncertain owners are refused without callback or store write, timeout outcome is unknown and there is no offline fallback or blind retry. This resolves batch-001 capability absence with later concrete dispatch/test excerpts. Cross-session legacy absence remains a warning rather than claimed proof; real old/foreign native observations retain the approved pending policy.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L226-L230",
+          "excerpt": "**Criterion:** When a Handy instance of the same user and settings store is running, the CLI sends the operation to it over a local channel accessible only to that user and waits up to 5 seconds for its answer; the instance applies it with its live state, re-registers affected shortcuts and notifies its UI. If no answer arrives in time, the CLI returns `unavailable` with `error.details.outcome` set to `unknown`, and agents must read again before retrying. If a running Handy without this channel (an older version) is detected, the CLI returns `unavailable` and never writes the store itself. When none is running, the CLI applies the operation to the settings store itself under the same lock and validation. Operations that need live state (for example the current destination) return `unavailable` without a running instance. No network listener and no MCP server are introduced."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Authenticate peers and protocol, bounded frames, 5 s total deadline, no fallback after timeout"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L18-L34",
+          "excerpt": "| Transport | Unix domain socket (macOS/Linux); Windows named pipe | Local only, explicit owner authentication; never TCP/MCP |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "And native effects finish and the UI receives settings-changed"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "CLI->>Owner: recheck new lease and passive legacy state"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "live-only requires owner; old or uncertain instance never permits fallback;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Then unavailable is returned without a callback or store write"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Then unavailable reports outcome unknown without offline fallback"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Fixture domain proves bulk merge/replace/atomic all-or-nothing and live-only unavailable behavior"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-006",
+      "disposition": "covered",
+      "rationale": "The Domain trait and output descriptor delegation define the approved shared framework and existing output fields; later implementation adds bounded file/stdin input, dry-run/atomic bulk/export tests and exact production-domain help. Valid preview has no persistence or effects. Production scope is only output; approved fixture scaffolding exercises future domain mechanics without shipping those domains. Earlier batch omissions are resolved by these concrete framework and Step 6 excerpts.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L231-L235",
+          "excerpt": "**Criterion:** This feature delivers the shared domain framework (argument parsing, file or `-` (stdin) input, `--dry-run` preview for bulk changes, atomic commit, help text per command) and the output domain for the existing output settings (paste method, clipboard handling, existing auto-submit). The domains microphones, replacements, vocabulary, shortcuts, prompts, destination and the new output settings (smart paste method, automatic Enter) are added on this framework by the features that own them (001–007, 009, 010). `handy settings --help` lists exactly the domains present in the build."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Domain trait registers command schema/help, file/`-` input, pure parsing/validation, preview, typed patch and export formatter."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Valid dry-run loads latest revision, validates fully, emits preview/revision with exit 0, and does not persist or call effects."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "`output get [KEY]` and `output set KEY VALUE` delegate to the same descriptors for existing paste_method, clipboard_handling, auto_submit, auto_submit_key, paste_delay_ms, paste_delay_after_ms, reliable_paste, typing_tool, external_script_path and append_trailing_space."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Only output production domain; no premature future settings; one shared commit path, no stdin prompt, additive domain registration."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "valid preview zero mutations/effects, atomic bulk rejection, help snapshots and raw/JSON export tests."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-007",
+      "disposition": "covered",
+      "rationale": "The plan assigns one renderer/exit boundary and explicitly requires its outputs to obey the exact source contract, including default readable human text. Generic operation and parse/error rendering, actual stdout/stderr/exit checks, stable object error details and raw/JSON export tests implement and verify that contract. Batch-002 lacks the later exact-contract renderer instruction; it is supplied by batch-003. The source remains authoritative for one success/failure envelope, stderr diagnostics and data.content export; the plan does not propose a conflicting shape. This is planned contract coverage, not a claim of executed transcript proof.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L236-L240",
+          "excerpt": "**Criterion:** With `--json`, stdout contains exactly one JSON envelope: success `{\"ok\": true, \"revision\": N, \"data\": …}`, failure `{\"ok\": false, \"error\": {\"code\": C, \"message\": M, \"details\": {…}}}` where `details` is always an object (for example `current_revision`, `outcome`, `field`, `issues` as a list of `{field, reason}`). Without `--json`, stdout shows readable text. Diagnostics, warnings and progress go to stderr in both modes. Export operations writing to `-` print only the exported content without `--json`, and put it in `data.content` of the envelope with `--json`."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "FR-006.3: Single renderer and exit boundary"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Implement generic operations and all parse/error JSON paths."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Public errors use stable English text and object details, with field/issues where applicable"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "raw/JSON export tests."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-008",
+      "disposition": "covered",
+      "rationale": "The complete code/exit table is owned by the single error enum/renderer, with source-contract success=0 and existing code meanings retained. DTO/schema and command-matrix documentation plus actual per-owned-code process exits make the mapping inspectable. Domain-owned codes are preserved in the public mapping while their execution proof stays with their owning features. Batch-001/004 omissions are resolved by batch-002 table and batch-003 tests/documentation.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L241-L245",
+          "excerpt": "**Criterion:** Error codes and exit codes are stable and documented: `usage_error` and `validation_failed`, `shortcut_conflict`, `limit_exceeded` → 2; `revision_conflict` → 3; `not_found` → 4; `unavailable` → 5; `persistence_failed` and `internal_error` → 1; success → 0. New codes may be added; existing ones never change meaning."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| persistence_failed, internal_error | 1 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| usage_error, validation_failed, shortcut_conflict, limit_exceeded | 2 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| revision_conflict (`details.current_revision`) | 3 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| not_found | 4 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| unavailable (timeout: `details.outcome=unknown`) | 5 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "The enum+single renderer owns this mapping."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Generate `contracts/settings-cli.schema.json` from DTOs during implementation, plus `contracts/settings-cli.md` command matrix"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-001",
+      "disposition": "covered",
+      "rationale": "The existing executable gets nested clap settings types and an early return before Tauri, native managers and single-instance callbacks; all historical invocations retain their branch and are tested as real processes. This reconciles fragment-local omissions with the architecture/wiring excerpts without changing the functional scope.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L248-L252",
+          "excerpt": "**Requirement:** Add a `settings` subcommand group to the existing executable that runs without GUI side effects and keeps existing flags unchanged."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L62-L67",
+          "excerpt": "Use `CliArgs::try_parse_from` before any Tauri builder, specta export, model/audio manager, portable mutating initialization or single-instance callback. `settings` runs and exits here; all old invocations retain their existing run branch. Accept both JSON placements and deduplicate them."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "modify cli.rs with nested clap types, main.rs early return and lib.rs live endpoint lifetime."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Existing single-instance recording forwarding stays separate."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-002",
+      "disposition": "covered",
+      "rationale": "Generic get/keys/set are explicitly assigned to the early CLI service and exact contract, backed by a complete descriptor inventory and independent key/type/refusal tests. Explicit projection and output/error redaction are verified across branches, while read normalization never creates or persists a store. The supplied source defines operation shapes and secret presence; broad inventory alone is not relied upon.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L253-L257",
+          "excerpt": "**Requirement:** Provide generic get, keys and set operations over non-secret settings with redaction of secrets."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Implement generic operations and all parse/error JSON paths."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Build a reviewed manifest plus an independent test inventory from serialized default settings and all UI adapters; a descriptor omission fails, not silently hides a setting."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Descriptor completeness, types, ranges, null, list/read-only/secret refusals, all UI command validation reasons;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L68-L75",
+          "excerpt": "Read only salvage/migrate/merge defaults in memory, never save, create settings_store.json, upgrade portable marker or increment revision."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-003",
+      "disposition": "covered",
+      "rationale": "One shared validator and typed mutation/repository service is the common UI/live/offline path; the stable cross-process lock, fresh reread, no-op/CAS/durable replacement and exhaustive writer migration close snapshot/cache bypasses. The state model preserves bytes/revision on refusal and integration tests include real UI and CLI writers. Separate fragment omissions are complementary scope slices, not contradictions.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L258-L262",
+          "excerpt": "**Requirement:** Expose one shared validation and commit service used by UI commands and CLI, with a persisted revision, optional expected-revision check and a single write lock."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Build shared validators for every corresponding UI setting and existing domain operation; migrate invalid-to-default behavior to errors."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L18-L34",
+          "excerpt": "| Lock | One persistent settings.lock inode/handle per canonical store; fs2 cross-platform file locking | Same lock for UI, app mutations, startup and CLI; proposed dependency must be reviewed/pinned |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Service->>Disk: lock and reread"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L76-L81",
+          "excerpt": "Migrate every writer before CLI set becomes reachable, including get_settings migration/default stores, shortcut fallback/reset commands, UI setters, audio/model selection repairs, model switches and history retention."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L317-L326",
+          "excerpt": "Replace each snapshot rewrite with a minimal mutation applied to latest state; adapt fallback repairs and secret UI writes."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L207-L244",
+          "excerpt": "Then the durable state and revision remain unchanged"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-004",
+      "disposition": "covered",
+      "rationale": "The architecture chooses authenticated local sockets/pipes without network/MCP, then concrete routing applies a monotonic total five-second deadline and no fallback after accepted/unknown requests. The offline path acquires the lock and rechecks new/legacy ownership. Old or uncertain owners refuse rather than replay. Multi-session legacy absence is not claimed solved by this review and stays a nonblocking warning under the stated policy.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L263-L267",
+          "excerpt": "**Requirement:** Route CLI operations to a running instance over a user-only local channel with a 5-second timeout, or apply them headlessly when no instance runs."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L18-L34",
+          "excerpt": "| Transport | Unix domain socket (macOS/Linux); Windows named pipe | Local only, explicit owner authentication; never TCP/MCP |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Authenticate peers and protocol, bounded frames, 5 s total deadline, no fallback after timeout"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "CLI->>Owner: recheck new lease and passive legacy state"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Then unavailable is returned without a callback or store write"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Then unavailable reports outcome unknown without offline fallback"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L82-L97",
+          "excerpt": "No offline fallback write or blind retry after submission/timeout; reread revision/value first."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-005",
+      "disposition": "covered",
+      "rationale": "The reusable Domain trait covers command schema/help, file or dash input, parsing/validation, preview, typed patches and export; the existing output domain is its only production domain. The production framework is exercised by approved test-only import/export/merge/replace/live fixtures with dry-run zero effects and atomic-rejection tests. Future domain policies remain with their owners.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L268-L272",
+          "excerpt": "**Requirement:** Provide the domain command framework (file/stdin input, dry run, atomic commit, help) used by features 001–007, 009 and 010."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Domain trait registers command schema/help, file/`-` input, pure parsing/validation, preview, typed patch and export formatter."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Valid dry-run loads latest revision, validates fully, emits preview/revision with exit 0, and does not persist or call effects."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Only output production domain; no premature future settings; one shared commit path, no stdin prompt, additive domain registration."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "New test-only domain uses the production framework for import/export, merge/replace, dry-run and live-only fixture operations."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "valid preview zero mutations/effects, atomic bulk rejection, help snapshots and raw/JSON export tests."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:FR-006",
+      "disposition": "covered",
+      "rationale": "The complete plan commits the single renderer to the exact source output contract, including human mode and stderr separation, then specifies the stable public errors/table and real process plus export checks. Typed DTO/schema and command matrix document this public surface. Batch-002 human-output absence is resolved by the later renderer exact-contract instruction, not by inventing a new format.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L273-L277",
+          "excerpt": "**Requirement:** Produce the documented JSON envelope, human output, stderr diagnostics, stable error codes and exit codes."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "FR-006.3: Single renderer and exit boundary"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Public errors use stable English text and object details, with field/issues where applicable"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| persistence_failed, internal_error | 1 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| usage_error, validation_failed, shortcut_conflict, limit_exceeded | 2 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| revision_conflict (`details.current_revision`) | 3 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| not_found | 4 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| unavailable (timeout: `details.outcome=unknown`) | 5 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "The enum+single renderer owns this mapping."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "raw/JSON export tests."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:SC-001",
+      "disposition": "covered",
+      "rationale": "The plan explicitly demands 100% settable-key accept/reject/reason parity through real adapters against an independently maintained cases inventory. Complete persisted-key classification and a descriptor-omission failure prevent sampled or self-comparison evidence. Batch-001 test-strategy absence is resolved by batch-002 concrete parity and inventory design, with batch-003 writer closure.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L318-L321",
+          "excerpt": "Parity tests show identical accept/reject decisions and reasons between UI commands and CLI for 100% of settable keys."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Every persisted key classified; 100% settable-key UI/CLI parity including English reasons"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "New inline unit tests and `src-tauri/tests/settings_validation.rs` exercise real adapters against an independently maintained cases inventory."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Build a reviewed manifest plus an independent test inventory from serialized default settings and all UI adapters; a descriptor omission fails, not silently hides a setting."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L317-L326",
+          "excerpt": "Exhaustive writer scan with no direct settings-file writer remaining, parity report"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:SC-002",
+      "disposition": "covered",
+      "rationale": "Barrier-driven real file/process tests interleave two CLI writers and a UI adapter over different/same keys, stale CAS and no-op. The fresh locked patch design and all-writer migration are verified by raw-generation transcripts; any lost committed field or bypassing direct writer blocks delivery. This provides the UI/CLI integration missing from batch-002 and the concrete test design missing from batch-001, without claiming those tests already passed.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L322-L325",
+          "excerpt": "In concurrency tests with interleaved UI and CLI writers, zero committed fields are lost and every stale expected revision is refused."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Two CLI writers and UI adapter writer with barriers; different/same keys, stale CAS, no-op"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L317-L326",
+          "excerpt": "Replace each snapshot rewrite with a minimal mutation applied to latest state; adapt fallback repairs and secret UI writes."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L412-L426",
+          "excerpt": "| Data integrity P0 | Concurrency/crash/no-op/CAS transcripts and raw generations; implementer then spec-test | Partial primitive diagnostics only; any direct writer or lost field blocks CLI enablement/delivery |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L347-L356",
+          "excerpt": "Required automated P0/P1 checks have zero unexplained failures;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "008-settings-cli:SC-003",
+      "disposition": "covered",
+      "rationale": "An explicit process-contract test gate produces all seven feature-owned error codes with actual stdout/stderr/exit, backed by an every-owned-code proof task and the documented mapping. Later domain codes stay with their owners. This resolves the batch-001/002 test-inventory absence using batch-003 execution design; historical local/stub regressions do not certify this success criterion.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L326-L328",
+          "excerpt": "Every error code owned by this feature (`usage_error`, `validation_failed`, `revision_conflict`, `not_found`, `unavailable`, `persistence_failed`, `internal_error`) is produced by at least one automated test with its documented exit code; domain codes (`shortcut_conflict`, `limit_exceeded`) are tested by the features that own them."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L347-L356",
+          "excerpt": "FR-006.5: Every owned code and exit proof"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Domain-specific policy stays with owning feature;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L412-L426",
+          "excerpt": "| Contract parity P0 | Full key inventory, genuine adapter parity and each owned code/exit; spec-test | Future domain codes owned by their features, not falsely counted covered here |"
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [
+    {
+      "requirement_id": "008-settings-cli:AC-001",
+      "decision_key": "windows-oldest-supported-release",
+      "question": "Which Windows release is the oldest supported target for the pending native console/installer/portable checks?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/logs/2026-10-13.md:L22-L31",
+          "excerpt": "The oldest supported Windows release is not specified in the examined repository documents; do not invent a support floor."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L398-L411",
+          "excerpt": "old flags and installer/portable identity on oldest supported OS and 24H2"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    }
+  ],
+  "extra_scope": [
+    {
+      "description": "A test-only fixture domain exercises future-domain import/export/merge/replace/live-only behavior using the production framework.",
+      "justification": "The spec explicitly approves a test-only fixture domain for 008; the plan limits the production domain to output, so this is verification scaffolding rather than prematurely shipped business behavior.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/spec.md:L287-L297",
+          "excerpt": "008 tests the framework with a test-only fixture domain."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "New test-only domain uses the production framework for import/export, merge/replace, dry-run and live-only fixture operations."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Only output production domain; no premature future settings;"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "legacy_namespace_feasibility",
+      "severity": "warning",
+      "description": "Linux session DBus and Windows session/desktop singleton probes cannot by themselves establish absence in another session of the same user/store. The batch promises refusal on unknown scope but does not provide a concrete mechanism to distinguish that uncertainty from a successful local negative probe. This is an unresolved implementation feasibility detail, not a request for replay or native release evidence to gate steps.",
+      "suggestion": "Keep the probe state model explicitly fail-closed for unprovable cross-session legacy absence and require deterministic adapter tests; synthesis may resolve this with a later concrete mechanism. Preserve actual second-session observations as pending release evidence.",
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/logs/2026-10-13.md:L22-L31",
+          "excerpt": "Possible design gap requiring proof/resolution: Linux session bus and Windows session/desktop namespace absence do not establish absence of another session of the same user/store."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L82-L97",
+          "excerpt": "| Linux | AF_UNIX under validated XDG_RUNTIME_DIR user directory or short private fallback; SO_PEERCRED UID | Query session DBus `com.pais.handy.SingleInstance` through NameHasOwner/GetNameOwner only; never own that name, serve ExecuteCallback or call it. Errors/unknown scope refuse mutation |"
+        },
+        {
+          "section_id": ".specs/constitution.md:L31-L36",
+          "excerpt": "Native evidence that needs Windows, Linux, an older Handy binary or a second user account is recorded as **pending release evidence** with the exact check to run."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "synthesized_batch_ids": [
+    "batch-001",
+    "batch-002",
+    "batch-003",
+    "batch-004"
+  ],
+  "resolutions": [
+    {
+      "issue_key": "finding:c1736aeb32824c5a0e0c",
+      "rationale": "The batch-001 finding expressly concerns its fragment. Batch-002 provides an independent descriptor/key inventory and locked commit/CAS service, stable English public errors and current_revision conflict mapping. Batch-003 supplies generic operations bound to the exact source contract and type/list/read-only/secret refusal tests. Combined with early JSON parser parity and non-creating reads, these cover AC-002; lock/reread/refusal plus exhaustive writer migration cover AC-004. No coverage is inferred from the inventory row alone. The detailed source response/guidance remains binding on the exact-contract implementation and tests.",
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Build a reviewed manifest plus an independent test inventory from serialized default settings and all UI adapters; a descriptor omission fails, not silently hides a setting."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Descriptor completeness, types, ranges, null, list/read-only/secret refusals, all UI command validation reasons;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "Implement generic operations and all parse/error JSON paths."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L18-L34",
+          "excerpt": "| Lock | One persistent settings.lock inode/handle per canonical store; fs2 cross-platform file locking | Same lock for UI, app mutations, startup and CLI; proposed dependency must be reviewed/pinned |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L307-L316",
+          "excerpt": "implement non-creating `read_snapshot`, lock/reload/patch `commit_mutation`, startup migration, no-op/CAS/overflow and durable replacement."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Service->>Disk: lock and reread"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| revision_conflict (`details.current_revision`) | 3 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L207-L244",
+          "excerpt": "Then the durable state and revision remain unchanged"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L76-L81",
+          "excerpt": "Migrate every writer before CLI set becomes reachable, including get_settings migration/default stores, shortcut fallback/reset commands, UI setters, audio/model selection repairs, model switches and history retention."
+        }
+      ]
+    },
+    {
+      "issue_key": "finding:f8cfb6006352a781d29d",
+      "rationale": "Later Step 5 explicitly requires an owner for live-only operations and forbids fallback for old or uncertain instances; the earlier descriptor/framework section supplies a fixture proving live-only unavailable. The same unavailable/no-write routing and shared service are used offline. This supplies the capability rule missing from batch-001, without delivering a production destination domain or old-version replay.",
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "live-only requires owner; old or uncertain instance never permits fallback;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Fixture domain proves bulk merge/replace/atomic all-or-nothing and live-only unavailable behavior"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L119-L206",
+          "excerpt": "Then unavailable is returned without a callback or store write"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Only output production domain; no premature future settings; one shared commit path, no stdin prompt, additive domain registration."
+        }
+      ]
+    },
+    {
+      "issue_key": "finding:cfe153e0db804d0cd86b",
+      "rationale": "Batch-002 defines the actual Domain trait, non-mutating validated preview, existing output descriptor delegation and full stable code/exit mapping. Batch-003 defines bounded file/stdin framework implementation, exact production-domain help/export tests and the single renderer whose outputs obey the exact source contract, including human mode. Generic parse/error paths and actual stdout/stderr/exits supply a verification boundary. These later excerpts resolve AC-006–008 and FR-005/006; no alternate envelope or domain business scope is introduced.",
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Domain trait registers command schema/help, file/`-` input, pure parsing/validation, preview, typed patch and export formatter."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Valid dry-run loads latest revision, validates fully, emits preview/revision with exit 0, and does not persist or call effects."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "`output get [KEY]` and `output set KEY VALUE` delegate to the same descriptors for existing paste_method, clipboard_handling, auto_submit, auto_submit_key, paste_delay_ms, paste_delay_after_ms, reliable_paste, typing_tool, external_script_path and append_trailing_space."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "Only output production domain; no premature future settings; one shared commit path, no stdin prompt, additive domain registration."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "FR-006.3: Single renderer and exit boundary"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L327-L336",
+          "excerpt": "outputs/exits obey exact contract."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L337-L346",
+          "excerpt": "raw/JSON export tests."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| persistence_failed, internal_error | 1 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| usage_error, validation_failed, shortcut_conflict, limit_exceeded | 2 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| revision_conflict (`details.current_revision`) | 3 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| not_found | 4 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "| unavailable (timeout: `details.outcome=unknown`) | 5 |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "The enum+single renderer owns this mapping."
+        }
+      ]
+    },
+    {
+      "issue_key": "finding:13e5b6562dc81b592d7c",
+      "rationale": "Batch-002 specifies 100% settable-key parity with genuine adapters and independent inventory. Batch-003 supplies barrier-driven two-CLI-plus-UI-adapter integration tests and all seven owned error codes with real stdout/stderr/exit. Batch-004 retains lost-field and each-owned-code gates. These are exhaustive concrete test-plan obligations, resolving the batch-001 fragment omission while preserving that no present AC/SC is certified.",
+      "citations": [
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "Every persisted key classified; 100% settable-key UI/CLI parity including English reasons"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L297-L306",
+          "excerpt": "New inline unit tests and `src-tauri/tests/settings_validation.rs` exercise real adapters against an independently maintained cases inventory."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L98-L118",
+          "excerpt": "Build a reviewed manifest plus an independent test inventory from serialized default settings and all UI adapters; a descriptor omission fails, not silently hides a setting."
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "Two CLI writers and UI adapter writer with barriers; different/same keys, stale CAS, no-op"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L412-L426",
+          "excerpt": "| Data integrity P0 | Concurrency/crash/no-op/CAS transcripts and raw generations; implementer then spec-test | Partial primitive diagnostics only; any direct writer or lost field blocks CLI enablement/delivery |"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L381-L397",
+          "excerpt": "All seven owned error codes with actual stdout/stderr/exit, malformed argv, two JSON placements, redaction sentinels in every branch including panic/error diagnostics;"
+        },
+        {
+          "section_id": ".specs/features/008-settings-cli/plan.md:L347-L356",
+          "excerpt": "FR-006.5: Every owned code and exit proof"
+        }
+      ]
+    }
+  ]
+}

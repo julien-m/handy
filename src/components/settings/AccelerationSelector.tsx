@@ -117,9 +117,17 @@ export const AccelerationSelector: FC<AccelerationSelectorProps> = ({
 
   const handleTranscribeChange = async (value: string) => {
     const { accelerator, gpuDevice } = decodeTranscribeValue(value);
-    // Save the device first to avoid `gpu + null` being normalized to Auto.
-    await updateSetting("transcribe_gpu_device", gpuDevice);
-    await updateSetting("transcribe_accelerator", accelerator);
+    // The backend refuses the GPU accelerator without a device (it would silently become
+    // Auto), so every intermediate state must stay valid: choose the device before switching
+    // to GPU, and leave GPU before clearing the device.
+    // The second write runs only if the first one succeeded (one refusal, one message).
+    if (accelerator === "gpu") {
+      if (await updateSetting("transcribe_gpu_device", gpuDevice)) {
+        await updateSetting("transcribe_accelerator", accelerator);
+      }
+    } else if (await updateSetting("transcribe_accelerator", accelerator)) {
+      await updateSetting("transcribe_gpu_device", gpuDevice);
+    }
   };
 
   return (

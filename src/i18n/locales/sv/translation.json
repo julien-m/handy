@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Hjälpmedelsåtkomst",
-        "description": "Krävs för att skriva transkriberad text i dina program."
+        "description": "Krävs för att skriva transkriberad text i dina program.",
+        "openSettings": "Öppna Systeminställningar",
+        "retry": "Försök igen",
+        "alreadyCheckedHint": "Om Handy redan är markerad tar du bort den och lägger till den igen."
       },
       "grant": "Bevilja behörighet",
       "granted": "Beviljad",
@@ -179,12 +182,51 @@
           "transcribe_with_post_process": {
             "name": "Snabbkommando för efterbearbetning",
             "description": "Valfritt: En dedikerad snabbknapp som alltid tillämpar AI-efterbearbetning på din transkription."
+          },
+          "retarget_to_active_app": {
+            "name": "Skicka till appen i förgrunden",
+            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen. Tryck igen för att ångra. Fästet finns kvar."
+          },
+          "skip_automatic_enter": {
+            "name": "Infoga utan Retur",
+            "description": "Tryck bara på den här tangenten under ett diktat för att infoga texten utan automatisk Retur. Tryck igen för att ångra."
           }
         },
         "errors": {
-          "restore": "Misslyckades med att återställa ursprungligt kortkommando",
-          "set": "Misslyckades med att ställa in kortkommando: {{error}}",
-          "reset": "Misslyckades med att återställa kortkommando till ursprungsvärdet"
+          "set": "Misslyckades med att ställa in kortkommando: {{error}}"
+        },
+        "list": {
+          "add": "Lägg till kortkommando",
+          "addLimit": "Upp till {{limit}} kortkommandon per åtgärd",
+          "change": "Klicka för att spela in en ny kombination",
+          "remove": "Ta bort detta kortkommando",
+          "removeLast": "Varje åtgärd behåller minst ett kortkommando",
+          "reset": "Återställ standardkortkommandot",
+          "errors": {
+            "conflict": "Används redan av {{action}} ({{shortcut}})",
+            "overlap": "Skulle även utlösa {{action}} ({{shortcut}})",
+            "invalid": "Ogiltigt kortkommando: {{error}}",
+            "registration": "Systemet avvisade detta kortkommando: {{error}}",
+            "generic": "Kortkommandot kunde inte sparas",
+            "conflictsUnavailable": "Konflikter mellan kortkommandon kunde inte kontrolleras"
+          },
+          "changeButton": "Ändra",
+          "discard": "Släng detta kortkommando",
+          "discardDraft": "Förkasta",
+          "save": "Spara",
+          "unsaved": "Inte sparad",
+          "lastHint": "Varje åtgärd behåller minst ett kortkommando. Ändra eller återställ det i stället.",
+          "limitHint": "{{count}} av {{limit}} kortkommandon. Ta bort ett för att lägga till ett annat.",
+          "draftConflict": "{{shortcut}} används redan av {{action}}. Inget sparades.",
+          "draftOverlap": "{{shortcut}} skulle även utlösa {{action}}. Inget sparades.",
+          "legacyOverlap": "{{shortcut}} överlappar med {{action}}",
+          "legacyDuplicate": "{{shortcut}} används även av {{action}}",
+          "legacyBody": "Det fungerar som före uppdateringen. Ändra det för att ta bort varningen.",
+          "systemRefused": "{{system}} nekade {{shortcut}}",
+          "systemRefusedGeneric": "Systemet nekade detta kortkommando",
+          "systemRefusedBody": "En annan app kan ha registrerat den här kombinationen. Välj en annan eller försök igen.",
+          "systemReason": "Systemmeddelande: {{error}}",
+          "retry": "Försök igen"
         }
       },
       "language": {
@@ -232,10 +274,66 @@
     "sound": {
       "title": "Ljud",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Välj din föredragna mikrofonenhet",
-        "placeholder": "Välj mikrofon...",
-        "loading": "Laddar..."
+        "placeholder": "Välj mikrofon..."
+      },
+      "microphonePriority": {
+        "title": "Mikrofonprioritet",
+        "description": "Handy spelar in med den första tillgängliga mikrofonen i den här ordningen och sedan med systemets standard. Otillgängliga mikrofoner behåller sin plats.",
+        "emptyTitle": "Ingen föredragen mikrofon",
+        "emptyBody": "Handy använder systemets standardmikrofon tills du lägger till en.",
+        "status": {
+          "available": "Tillgänglig",
+          "unavailable": "Otillgänglig",
+          "ambiguous": "Tvetydig",
+          "unknown": "Okänd"
+        },
+        "moveUp": "Flytta upp {{name}}",
+        "moveDown": "Flytta ned {{name}}",
+        "remove": "Ta bort {{name}}",
+        "addLabel": "Lägg till mikrofon",
+        "addPlaceholder": "Lägg till mikrofon…",
+        "noDevices": "Ingen mikrofon hittades att lägga till",
+        "duplicateChoice": "{{name}} finns redan i listan.",
+        "refresh": "Uppdatera tillgänglighet",
+        "checked": "Kontrollerades för {{seconds}} s sedan",
+        "refreshFailed": "Det gick inte att kontrollera enheterna",
+        "retry": "Försök igen",
+        "inUse": {
+          "title": "Används nu",
+          "description": "Mikrofonen som Handy spelar in med, eller den som användes vid senaste inspelningen. Den kan skilja sig från ditt förstahandsval.",
+          "notUsedYet": "Inte använd sedan start",
+          "systemDefault": "Systemets standardmikrofon",
+          "unnamed": "Namnlös mikrofon",
+          "lastRecording": "Senaste inspelning · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Förstahandsval",
+          "fallback": "Reserv",
+          "fallbackUnavailable": "Reserv · {{name}} otillgänglig",
+          "fallbackAmbiguous": "Reserv · {{name}} tvetydig",
+          "clamshell": "Mikrofon med stängt lock",
+          "system_default": "Systemstandard"
+        },
+        "clamshell": {
+          "title": "Mikrofon med stängt lock",
+          "description": "Provas först när locket är stängt. Din prioritetsordning ändras inte.",
+          "none": "Ingen"
+        },
+        "draft": {
+          "discard": "Förkasta",
+          "save": "Spara",
+          "saving": "Sparar…",
+          "saved": "Mikrofonprioritet sparad"
+        },
+        "conflict": {
+          "title": "Inställningarna ändrades någon annanstans",
+          "body": "Ordningen ändrades någon annanstans. Ladda om för att se den; dina ändringar förkastas.",
+          "reload": "Ladda om"
+        },
+        "errors": {
+          "duplicate": "Varje mikrofon får bara förekomma en gång.",
+          "empty": "Ett mikrofonnamn får inte vara tomt."
+        }
       },
       "channel": {
         "title": "Ingångskanal",
@@ -264,7 +362,8 @@
         "output": "Utmatning",
         "transcription": "Transkription",
         "history": "Historik",
-        "experimental": "Experimentellt"
+        "experimental": "Experimentellt",
+        "textFormatting": "Textformatering"
       },
       "experimentalToggle": {
         "label": "Experimentella funktioner",
@@ -273,6 +372,10 @@
       "lazyStreamClose": {
         "label": "Håll mikrofonen öppen mellan transkriptioner",
         "description": "Håller mikrofonströmmen öppen i 30 sekunder efter att inspelningen avslutats, vilket minskar latensen för transkriptioner efter varandra. Kan försämra Bluetooth-ljudkvaliteten medan den är aktiv."
+      },
+      "pasteVerification": {
+        "label": "Kontrollera inklistringen",
+        "description": "Med smart inklistring kontrolleras att det aktiva fältet ändrades efter inklistringen, klistrar in en gång till om det inte gjorde det och behåller sedan texten i återställningsbubblan i stället för att trycka Retur i ett tomt fält. Testfunktion."
       },
       "acceleration": {
         "transcribe": {
@@ -323,13 +426,18 @@
         "description": "Välj hur text infogas. Direkt: simulerar skrivande via systeminmatning. Ingen: hoppar över klistra in, uppdaterar endast historik/urklipp.",
         "options": {
           "clipboard": "Urklipp ({{modifier}}+V)",
+          "smartPaste": "Smart inklistring",
           "clipboardCtrlShiftV": "Urklipp (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Urklipp (Shift+Insert)",
           "direct": "Direkt",
           "none": "Ingen",
-          "externalScript": "Externt skript"
+          "externalScript": "Externt skript",
+          "clipboardMac": "Urklipp (⌘V)",
+          "smartPasteDescription": "Standard på macOS",
+          "noneDescription": "Endast historik och urklipp"
         },
-        "externalScriptPlaceholder": "/sökväg/till/ditt/skript.sh"
+        "externalScriptPlaceholder": "/sökväg/till/ditt/skript.sh",
+        "descriptionSmart": "Smart inklistring skriver direkt i fältet, annars klistrar den in och återställer urklippet."
       },
       "typingTool": {
         "title": "Skrivverktyg",
@@ -357,6 +465,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatisk Enter",
+        "description": "Skickas en gång, bara efter en lyckad infogning.",
+        "keyLabel": "Tangent att trycka",
+        "announced": "Automatisk Enter: {{value}}",
+        "note": "Ersätter Skicka automatiskt. Ingen Enter efter en misslyckad eller obekräftad infogning, med inklistringsmetoden Ingen, eller när appen tappade fokus.",
+        "options": {
+          "never": "Aldrig",
+          "always": "Alltid",
+          "alwaysDescription": "Varje lyckad infogning",
+          "pinOnly": "Bara i PIN-läge",
+          "pinOnlyDescription": "Bara fästa appar"
+        }
+      },
       "translateToEnglish": {
         "label": "Översätt till engelska",
         "description": "Översätt automatiskt tal från andra språk till engelska under transkription."
@@ -375,14 +497,6 @@
           "sec15": "Efter 15 sekunder (Felsökning)"
         }
       },
-      "customWords": {
-        "title": "Anpassade ord",
-        "description": "Hjälp modeller som stöds att känna igen namn och specialtermer. Ungefärlig korrigering är för närvarande begränsad till ord med bokstäverna A–Z och siffror.",
-        "placeholder": "Lägg till ett ord",
-        "add": "Lägg till",
-        "remove": "Ta bort {{word}}",
-        "duplicate": "\"{{word}}\" finns redan"
-      },
       "voiceActivityDetection": {
         "title": "Röstaktivitetsdetektering",
         "description": "Filtrerar bort tystnad från inspelningar. Modeller med streamingstöd använder en längre VAD-svans; om VAD inaktiveras spelas rått ljud in."
@@ -399,6 +513,11 @@
         "title": "Ta bort utfyllnadsord",
         "description": "Tar bort vanliga tvekljud från transkriberingar. Stäng av för att behålla dem."
       },
+      "smartParagraphs": {
+        "title": "Smarta stycken",
+        "description": "Delar upp långa dikteringar i stycken vid meningsslut, åtskilda av en tom rad. Listor, kod och befintliga radbrytningar behålls. Körs på den här datorn.",
+        "descriptionLimited": "Delar upp långa dikteringar i stycken vid meningsslut, åtskilda av en tom rad. Listor, kod och befintliga radbrytningar behålls. Körs på den här datorn. På det här systemet lämnas kinesiska och japanska dikteringar oförändrade."
+      },
       "chineseScript": {
         "title": "Kinesisk skrift",
         "description": "Skriver mandarin- och kantonesiska transkriptioner med förenklade eller traditionella tecken. Andra språk lämnas oförändrade.",
@@ -407,6 +526,171 @@
           "simplified": "Förenklad",
           "traditional": "Traditionell"
         }
+      },
+      "returnToApp": {
+        "title": "Återgå till dikteringens app",
+        "description": "Infoga i appen där dikteringen startade, även om du byter app under tiden.",
+        "unavailableUnreadable": "Inte tillgängligt på det här systemet: Handy kan inte läsa appen i förgrunden här. Texten hamnar i appen i förgrunden när du är klar.",
+        "unavailablePlatform": "Inte tillgängligt på det här systemet. Texten hamnar i appen i förgrunden när du är klar.",
+        "details": "Handy kommer ihåg appen i förgrunden när en diktering startar och växlar tillbaka till den innan texten infogas. När inställningen är av hamnar texten i appen i förgrunden när dikteringen slutar.",
+        "detailsLabel": "Om att återgå till dikteringens app"
+      },
+      "noFieldBubble": {
+        "title": "Visa bubblan när inget textfält har fokus",
+        "description": "Behåller texten i en bubbla i stället för att klistra in den i tomma intet."
+      },
+      "textFormatting": {
+        "smartSpacing": {
+          "label": "Smart mellanrum",
+          "description": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet. Om texten efter markören fortsätter meningen tas dikteringens slutpunkt bort.",
+          "descriptionLimited": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet. På det här systemet kan texten runt markören inte läsas, så bara ett mellanslag läggs till efter varje diktering."
+        },
+        "smartCapitalization": {
+          "label": "Smarta versaler",
+          "description": "Anpassar första bokstaven i varje diktering till texten före markören: versal i början av en mening, gemen när du fortsätter en. Förkortningar, ord som iPhone och dina egna ord behålls. Inget ändras om fältet inte kan läsas."
+        }
+      },
+      "defaultInputs": {
+        "title": "Ihågkomna fält",
+        "description": "Var Handy klistrar in för en app när dess aktiva element inte är ett textfält. Kom ihåg ett från märkesmenyn under en diktering.",
+        "field": "Fält: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Glöm",
+        "forgetLabel": "Glöm den ihågkomna inmatningen för {{app}}",
+        "forgetAll": "Glöm alla",
+        "forgetAllLabel": "Glöm alla ihågkomna inmatningar",
+        "empty": "Inget ihågkommet fält än. Använd märkesmenyn under en diktering.",
+        "failed": "Det gick inte att glömma den ihågkomna inmatningen."
+      }
+    },
+    "vocabulary": {
+      "group": "Vokabulär",
+      "title": "Vokabulär",
+      "description": "Namn och termer som modellen ska känna igen, när den stöder det. Ersättningar skriver i stället om texten efter igenkänningen.",
+      "placeholder": "Lägg till en term",
+      "inputLabel": "Ny vokabulärterm",
+      "add": "Lägg till",
+      "addHint": "Skriv en term för att lägga till den.",
+      "busy": "Vänta tills den pågående ändringen är klar.",
+      "paste": "Klistra in en lista…",
+      "count": "{{total}} av {{max}} termer",
+      "listLabel": "Vokabulärtermer",
+      "remove": "Ta bort {{term}}",
+      "retry": "Försök igen",
+      "loading": "Läser in vokabulären…",
+      "listFailed": "Det gick inte att läsa den sparade vokabulären. Inget har ändrats; försök igen för att läsa in den.",
+      "empty": {
+        "title": "Inga termer än",
+        "body": "Lägg till namn som Claude Code eller OpenClaw, en i taget eller som en inklistrad lista."
+      },
+      "flag": {
+        "empty": "Tom term, skickas inte. Ta bort den.",
+        "too_long": "Längre än 100 tecken, skickas inte. Ta bort den och lägg till en kortare version.",
+        "line_break": "Innehåller en radbrytning, skickas inte. Ta bort den och lägg till den igen.",
+        "forbidden_character": "Innehåller < > eller \", skickas inte. Ta bort den och lägg till den utan dessa tecken.",
+        "duplicate": "Samma som en tidigare term, skickas inte. Ta bort den.",
+        "over_capacity": "Över gränsen på 5 000 termer, skickas inte förrän listan är kortare.",
+        "over_budget": "Skickas inte: över modellens gräns."
+      },
+      "errors": {
+        "term_empty": "Ange en term.",
+        "term_too_long": "En term får ha högst 100 tecken.",
+        "term_line_break": "En term måste rymmas på en rad.",
+        "term_forbidden_character": "Ta bort tecknen < > eller \" från termen.",
+        "term_duplicate": "Varje term får förekomma en gång, och den här finns redan i vokabulären.",
+        "limit": "Vokabulären rymmer högst 5 000 termer. Ta bort en term för att lägga till en annan.",
+        "conflict": "Vokabulären ändrades under tiden och har lästs in igen. Försök igen.",
+        "notFound": "Den här termen var redan borttagen. Vokabulären har lästs in igen.",
+        "unknown": "Handy kunde inte bekräfta ändringen. Vokabulären har lästs in igen; kontrollera den innan du försöker igen.",
+        "committed": "Vokabulären sparades, men Handy kunde inte tillämpa den direkt. Listan har lästs in igen.",
+        "saved": "Din sparade vokabulär är oförändrad."
+      },
+      "status": {
+        "loading": "Kontrollerar vad modellen stöder…",
+        "selectedModel": "den valda modellen",
+        "used": {
+          "title": "Används vid igenkänning av {{model}}",
+          "sent": "{{sent}} av {{total}} termer skickas.",
+          "sentOne": "{{sent}} av 1 term skickas."
+        },
+        "notSent": {
+          "over_budget": "Skickas inte, över modellens gräns: {{terms}}.",
+          "invalid": "Skickas inte, ogiltiga: {{terms}}.",
+          "duplicate": "Skickas inte, dubbletter: {{terms}}.",
+          "over_capacity": "Skickas inte, utöver 5 000 termer: {{terms}}.",
+          "more": "och {{hidden}} till"
+        },
+        "noTermSent": {
+          "title": "Ingen term skickas till {{model}}",
+          "empty_vocabulary": "Vokabulären är tom. Lägg till termer för att använda dem vid igenkänning.",
+          "invalid_terms_only": "Alla sparade termer är ogiltiga eller dubbletter. Ta bort de markerade termerna och lägg till rättade.",
+          "over_budget": "Den första termen är över modellens gräns, så ingen term skickas. Ta bort den för att skicka termerna efter den."
+        },
+        "notSupported": {
+          "title": "{{model}} kan inte använda vokabulären vid igenkänning",
+          "body": "Ungefärlig korrigering efter igenkänningen används i stället. Välj en Whisper-modell för att skicka termer till igenkännaren."
+        },
+        "streaming": {
+          "title": "Används inte vid livestreaming",
+          "body": "{{model}} transkriberar live, vilket inte skickar någon igenkänningskontext. Ungefärlig korrigering tillämpas i stället på den slutliga texten."
+        },
+        "unknown": {
+          "title": "Stöd okänt tills modellen laddas",
+          "model_not_loaded": "Handy kontrollerar vad {{model}} stöder när den laddas.",
+          "capability_query_unanswered": "{{model}} svarade inte i tid, till exempel under en diktering. Handy kontrollerar igen efteråt."
+        },
+        "budgetUnverified": {
+          "title": "Vokabulärstöd kan inte bekräftas för {{model}}",
+          "body": "Den här modellen anger stöd för igenkänningskontext, men den här versionen har ingen dokumenterad gräns för den. Ingen term skickas; ungefärlig korrigering används i stället."
+        },
+        "failed": {
+          "title": "Det gick inte att läsa vokabulärens status",
+          "body": "Din vokabulär är sparad. Försök igen för att kontrollera vad modellen stöder."
+        }
+      },
+      "pasteBox": {
+        "title": "Klistra in termer",
+        "description": "En term per rad. Dubbletter hoppas över; ogiltiga rader måste rättas innan du lägger till.",
+        "label": "Termer att klistra in, en per rad",
+        "previewTitle": "Förhandsvisning",
+        "previewEmpty": "Klistra in eller skriv en term per rad för att se vad som läggs till.",
+        "sameAs": "{{term}} — samma som {{original}}",
+        "alreadyListed": "{{term}} — finns redan i listan",
+        "summary": {
+          "add": "{{n}} att lägga till",
+          "duplicateOne": "1 dubblett",
+          "duplicateMany": "{{n}} dubbletter",
+          "errorOne": "1 fel",
+          "errorMany": "{{n}} fel"
+        },
+        "kind": {
+          "add": "Lägg till",
+          "duplicate": "Dubblett",
+          "error": "Fel"
+        },
+        "line": {
+          "empty": "Rad {{line}}: tom rad, ta bort den",
+          "too_long": "Rad {{line}}: använd högst 100 tecken",
+          "line_break": "Rad {{line}}: håll termen på en rad",
+          "forbidden_character": "Rad {{line}}: ta bort tecknen < > eller \"",
+          "duplicate": "Rad {{line}}: samma som en tidigare term",
+          "over_capacity": "Rad {{line}}: över gränsen på 5 000 termer"
+        },
+        "note": {
+          "empty": "Din vokabulär är oförändrad tills du lägger till termerna.",
+          "checking": "Kontrollerar raderna…",
+          "fixOne": "Rätta rad {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
+          "fixMany": "Rätta raderna {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
+          "overCapacity": "Vokabulären rymmer högst 5 000 termer. Korta listan för att lägga till den. Din vokabulär är oförändrad.",
+          "nothingToAdd": "Alla rader finns redan i vokabulären.",
+          "ready": "Dubbletter hoppas över. Inget sparas förrän du lägger till termerna."
+        },
+        "cancel": "Avbryt",
+        "applyOne": "Lägg till 1 term",
+        "applyMany": "Lägg till {{n}} termer",
+        "applyZero": "Lägg till termer",
+        "applying": "Lägger till…",
+        "applied": "Termer tillagda i vokabulären."
       }
     },
     "postProcessing": {
@@ -441,26 +725,128 @@
           "refreshModels": "Uppdatera modeller"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vald prompt",
-          "description": "Välj en mall för att förfina transkriptioner eller skapa en ny. Använd ${output} inuti prompttexten för att referera till den fångade transkriptionen."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-efterbearbetning",
+          "enabledDescription": "Bearbeta dikteringar med en prompt. Av: ingen diktering bearbetas.",
+          "defaultTitle": "Standardprompt",
+          "defaultDescription": "Används av kortkommandot för AI-diktering. Vanlig diktering börjar med den senaste prompten du valde i indikatorn, eller Ingen.",
+          "none": "Ingen",
+          "invalidOption": "Ogiltig: redigera den innan du använder den"
         },
-        "noPrompts": "Inga prompter tillgängliga",
-        "selectPrompt": "Välj en prompt",
-        "createNew": "Skapa ny prompt",
-        "promptLabel": "Prompt-etikett",
-        "promptLabelPlaceholder": "Ange namn på prompt",
-        "promptInstructions": "Prompt-instruktioner",
-        "promptInstructionsPlaceholder": "Skriv instruktionerna som ska köras efter transkription. Exempel: Förbättra grammatik och tydlighet för följande text: ${output}",
-        "promptTip": "Tips: Använd <code>${output}</code> för att infoga den transkriberade texten i din prompt.",
-        "updatePrompt": "Uppdatera prompt",
-        "deletePrompt": "Ta bort prompt",
-        "createPrompt": "Skapa prompt",
-        "cancel": "Avbryt",
-        "selectToEdit": "Välj en prompt ovan för att visa och redigera dess detaljer.",
-        "createFirst": "Klicka på 'Skapa ny prompt' ovan för att skapa din första prompt för efterbearbetning."
+        "list": {
+          "title": "Promptar",
+          "count": "{{count}} av {{limit}} promptar",
+          "full": "{{limit}} av {{limit}} promptar: ta bort en för att lägga till en annan",
+          "new": "Ny prompt",
+          "empty": "Inga promptar än. Skapa en för att bearbeta dina dikteringar.",
+          "loading": "Läser in promptar…",
+          "loadFailed": "Promptarna kunde inte läsas in.",
+          "retry": "Försök igen",
+          "edit": "Redigera {{name}}",
+          "defaultProvider": "Standardleverantör",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Inget kortkommando",
+          "notReady": "Inte redo: {{reason}}",
+          "invalid": "Ogiltig: {{reason}}",
+          "reloadFailed": "Prompterna kunde inte uppdateras. Det som visas kan vara inaktuellt."
+        },
+        "issues": {
+          "name_empty": "namn saknas",
+          "name_too_long": "namnet är för långt",
+          "name_duplicate": "dubblettnamn",
+          "text_empty": "text saknas",
+          "text_too_long": "texten är för lång",
+          "override_incomplete": "leverantör eller modell saknas",
+          "unknown_provider": "okänd leverantör"
+        },
+        "reasons": {
+          "provider_error": "leverantören returnerade ett fel",
+          "empty_result": "leverantören returnerade ett tomt resultat",
+          "timeout": "inget svar inom 30 sekunder",
+          "provider_busy": "leverantören är fortfarande upptagen med en annan begäran",
+          "missing_endpoint": "slutpunkt saknas",
+          "missing_model": "modell saknas",
+          "missing_api_key": "API-nyckel saknas",
+          "provider_unavailable": "leverantören är inte tillgänglig på den här enheten",
+          "unknown_provider": "okänd leverantör",
+          "invalid_prompt": "prompten är ogiltig",
+          "prompt_missing": "prompten finns inte längre"
+        },
+        "editor": {
+          "editTitle": "Redigera prompt",
+          "newTitle": "Ny prompt",
+          "name": "Namn",
+          "namePlaceholder": "Promptens namn",
+          "text": "Prompt",
+          "textPlaceholder": "Skriv instruktionerna som ska tillämpas på transkriptionen. Exempel: Korta ner transkriptionen till det väsentliga. ${output}",
+          "textHint": "<code>${output}</code> ersätts med transkriptionen.",
+          "fieldErrors": {
+            "name_empty": "Ange ett namn (1–60 tecken).",
+            "name_too_long": "Använd högst 60 tecken.",
+            "name_duplicate": "En annan prompt har det här namnet. Namn måste vara unika.",
+            "text_empty": "Ange promptens text.",
+            "text_too_long": "Använd högst 8 000 tecken."
+          },
+          "provider": "Leverantör",
+          "defaultProviderOption": "Standardleverantör ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Skriv ett modellnamn",
+          "readyEndpoint": "Slutpunkt {{endpoint}} · Redo",
+          "readyProvider": "{{provider}} · {{model}} · Redo",
+          "notReadyTitle": "{{provider}} är inte redo: {{reason}}",
+          "notReadyBody": "Dikteringar med den här prompten hoppar över AI-steget och behåller originaltexten.",
+          "fix": {
+            "api_key": "Lägg till API-nyckel",
+            "endpoint": "Ange slutpunkt"
+          },
+          "shortcuts": "Kortkommandon (upp till {{limit}})",
+          "changedElsewhere": "Den här prompten har ändrats någon annanstans. Läs in den igen för att se ändringen, eller spara för att behålla din version.",
+          "reload": "Läs in igen",
+          "deletedElsewhere": "Den här prompten har tagits bort någon annanstans och kan inte längre sparas.",
+          "shortcutsSavedImmediately": "Ändringar av kortkommandon sparas direkt.",
+          "fixField": {
+            "api_key": "API-nyckel för {{provider}}",
+            "endpoint": "Slutpunkt för {{provider}}",
+            "hint": "Sparas när du lämnar fältet. Standardleverantören ändras inte."
+          }
+        },
+        "actions": {
+          "note": "Ändringarna gäller nästa diktering efter att du sparat.",
+          "fixFields": "Rätta de markerade fälten för att spara.",
+          "delete": "Ta bort prompt",
+          "cancel": "Avbryt",
+          "save": "Spara",
+          "saving": "Sparar…",
+          "saved": "Prompten har sparats."
+        },
+        "deleteDialog": {
+          "title": "Ta bort ”{{name}}”?",
+          "shortcuts": "Dess kortkommandon tas bort: {{shortcuts}}.",
+          "default": "Det är standardprompten: standarden blir Ingen.",
+          "body": "Det går inte att ångra.",
+          "cancel": "Avbryt",
+          "confirm": "Ta bort",
+          "close": "Stäng",
+          "deleted": "Prompten ”{{name}}” har tagits bort.",
+          "deletedWithShortcuts": "Prompten ”{{name}}” har tagits bort. Borttagna kortkommandon: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Exempeltext",
+          "samplePlaceholder": "Skriv eller klistra in en exempeltranskription",
+          "run": "Kör test",
+          "running": "Testar…",
+          "note": "Inget infogas och historiken ändras inte.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Testet misslyckades: {{reason}}",
+          "failedHint": "Kontrollera leverantörsinställningarna och kör testet igen.",
+          "retry": "Kör igen",
+          "busy": "Ett annat test körs fortfarande. Försök igen när det är klart.",
+          "skipped": "Ange en exempeltext för att testa prompten.",
+          "outdated": "Det här resultatet gäller en tidigare version av prompten eller exemplet. Kör testet igen."
+        },
+        "shortcutOwner": "prompten ”{{name}}”"
       }
     },
     "history": {
@@ -476,6 +862,7 @@
       "deleteError": "Misslyckades med att ta bort post. Försök igen.",
       "retranscribe": "Transkribera igen",
       "retranscribeError": "Misslyckades med att transkribera igen. Försök igen.",
+      "noAudio": "Ingen ljudinspelning sparades för den här posten, så den kan inte transkriberas igen.",
       "transcribing": "Transkriberar...",
       "transcriptionFailed": "Transkribering misslyckades. Du kan transkribera igen med hjälp av ikonen för nytt försök."
     },
@@ -516,7 +903,8 @@
       "historyLimit": {
         "title": "Historikgräns",
         "description": "Maximalt antal historikposter som ska sparas",
-        "entries": "poster"
+        "entries": "poster",
+        "invalid": "Ange ett heltal från {{min}} till {{max}}."
       },
       "recordingRetention": {
         "title": "Radera inspelningar automatiskt",
@@ -538,7 +926,8 @@
       },
       "postProcessingToggle": {
         "label": "Efterbearbetning",
-        "description": "Aktivera AI-driven textförfining efter transkription"
+        "description": "Aktivera AI-driven textförfining efter transkription",
+        "shortcutRefused": "Efterbearbetning är på, men systemet avvisade kortkommandot {{shortcut}}. Ändra det i inställningarna för efterbearbetning."
       },
       "muteWhileRecording": {
         "label": "Ljudlös under inspelning",
@@ -551,7 +940,8 @@
       "keyboardImplementation": {
         "title": "Tangentbordsimplementering",
         "description": "Välj tangentbordsgenvägens implementation.",
-        "bindingsReset": "Kortkommandona var inkompatibla och återställdes till standardvärden"
+        "bindingsReset": "Vissa kortkommandon var inkompatibla och återställdes till standardvärdet eller togs bort",
+        "conflictsKept": "Vissa kortkommandon krockar nu med en annan åtgärd. De har behållits och är markerade i inställningarna för kortkommandon."
       },
       "paths": {
         "appData": "Appdata:",
@@ -645,6 +1035,168 @@
         "label": "Visa nyheter",
         "description": "Visa versionsinformation efter Handy-uppdateringar"
       }
+    },
+    "replacements": {
+      "group": "Ersättningar",
+      "title": "Ersättningsregler",
+      "description": "Skriv om igenkänd text med din egen stavning. Tillämpas efter igenkänningen, till skillnad från Ordförråd.",
+      "loading": "Läser in ersättningsregler…",
+      "loadFailed": "Ersättningsreglerna kunde inte läsas in.",
+      "retry": "Försök igen",
+      "views": {
+        "label": "Regelvy",
+        "list": "Lista",
+        "text": "Text"
+      },
+      "import": "Importera…",
+      "export": {
+        "button": "Exportera…",
+        "done": "Reglerna exporterades till {{name}}.",
+        "notSynced": "Reglerna exporterades till {{name}}, men disken har ännu inte bekräftat skrivningen.",
+        "symbolicLink": "{{name}} är en länk: välj en annan fil. Inget exporterades.",
+        "readOnly": "{{name}} är skrivskyddad: välj en annan fil. Inget exporterades.",
+        "notWritten": "{{name}} kunde inte skrivas. Filen är oförändrad."
+      },
+      "add": {
+        "recognized": "Igenkänd text",
+        "replacement": "Ersättning",
+        "button": "Lägg till regel",
+        "needsText": "Ange den igenkända texten och ersättningen för att lägga till en regel."
+      },
+      "rule": {
+        "edit": "Redigera regeln {{recognized}}",
+        "done": "Klar med att redigera regeln {{recognized}}",
+        "delete": "Ta bort regeln {{recognized}}",
+        "recognized": "Igenkänd text för regel {{position}}",
+        "replacement": "Ersättning för regel {{position}}"
+      },
+      "count": "{{count}} av {{max}} regler · skiftlägesokänsligt, hela ord",
+      "empty": {
+        "title": "Inga ersättningsregler än",
+        "body": "Lägg till en regel eller klistra in rader som",
+        "paste": "Klistra in regler som text"
+      },
+      "draft": {
+        "note": "Osparade ändringar. Dikteringar använder de sparade reglerna tills du sparar.",
+        "discard": "Förkasta",
+        "save": "Spara",
+        "saving": "Sparar…",
+        "saved": "Ersättningsreglerna har sparats."
+      },
+      "commit": {
+        "invalid": "Vissa regler är ogiltiga. Rätta de markerade raderna och försök igen.",
+        "unchanged": "De sparade reglerna är oförändrade.",
+        "conflict": "Reglerna har ändrats på annat håll, till exempel från kommandoraden. Läs in dem igen för att fortsätta.",
+        "reload": "Läs in igen",
+        "reloadDiscards": "Om du läser in igen visas de sparade reglerna och dina osparade ändringar försvinner."
+      },
+      "bulk": {
+        "editor": "Regler som text",
+        "hint": "En regel per rad: recognized;replacement. Tabb fungerar också vid inklistring från kalkylark. Rader som börjar med # ignoreras.",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa",
+        "applying": "Tillämpar…",
+        "applied": "Ersättningsreglerna har tillämpats.",
+        "fixLine": "Rätta rad {{line}} för att tillämpa. De sparade reglerna är oförändrade.",
+        "fixLines": "Rätta de {{count}} felaktiga raderna för att tillämpa. De sparade reglerna är oförändrade.",
+        "ready": "Tillämpa ersätter de sparade reglerna med den här förhandsvisningen.",
+        "noChanges": "Inget att tillämpa: texten stämmer med de sparade reglerna."
+      },
+      "preview": {
+        "title": "Förhandsvisning",
+        "updating": "Uppdaterar förhandsvisningen…",
+        "errorOne": "1 fel · Tillämpa är inte tillgängligt",
+        "errorMany": "{{count}} fel · Tillämpa är inte tillgängligt",
+        "changes": "{{adds}} att lägga till · {{updates}} att uppdatera · {{deletes}} att ta bort",
+        "noChanges": "Inga ändringar",
+        "omitted": "Rader som inte visas: {{count}}",
+        "duplicateOf": "Samma igenkända text som rad {{lines}}",
+        "kinds": {
+          "add": "Lägg till",
+          "update": "Uppdatera",
+          "delete": "Ta bort",
+          "unchanged": "Oförändrad",
+          "ignored": "Ignorerad",
+          "error": "Fel"
+        },
+        "ignored": {
+          "header": "Rubrikrad",
+          "blank": "Tom rad",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Importera regler",
+        "close": "Stäng",
+        "fileOne": "{{name}} · 1 rad · UTF-8",
+        "fileMany": "{{name}} · {{count}} rader · UTF-8",
+        "mode": "Läge",
+        "merge": "Sammanfoga: uppdatera matchande regler, lägg till nya i slutet",
+        "replace": "Ersätt: filen blir hela regeluppsättningen",
+        "previewing": "Läser filen…",
+        "updateOne": "1 uppdatering",
+        "updateMany": "{{count}} uppdateringar",
+        "addOne": "1 tillägg",
+        "addMany": "{{count}} tillägg",
+        "deleteOne": "1 borttagning",
+        "deleteMany": "{{count}} borttagningar",
+        "errorOne": "1 fel",
+        "errorMany": "{{count}} fel",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (uppdateras, behåller position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (läggs till i slutet)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (tas bort)",
+        "noChanges": "Filen stämmer med de sparade reglerna: inget att importera.",
+        "firstError": "Rad {{line}}: {{reason}}",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa import",
+        "applying": "Importerar…",
+        "imported": "Reglerna har importerats."
+      },
+      "importRefusal": {
+        "encodingTitle": "Det gick inte att importera {{name}}: filen är inte UTF-8-text",
+        "encodingBody": "Inget importerades från filen. Exportera vanlig text eller CSV och importera sedan igen.",
+        "tooLargeTitle": "Det gick inte att importera {{name}}: filen är större än 1 MB",
+        "tooLargeBody": "Inget importerades. Dela upp filen i mindre filer och importera sedan var och en.",
+        "unreadableTitle": "Det gick inte att läsa {{name}}",
+        "unreadableBody": "Inget importerades. Kontrollera att filen fortfarande finns och att Handy kan öppna den.",
+        "dismiss": "Avfärda"
+      },
+      "deleteDialog": {
+        "title": "Ta bort den här regeln?",
+        "body": "{{recognized}} → {{replacement}} tas bort från listan. Spara för att tillämpa ändringen.",
+        "cancel": "Avbryt",
+        "confirm": "Ta bort"
+      },
+      "switchDialog": {
+        "title": "Spara eller förkasta dina ändringar",
+        "body": "Listan och texten redigerar samma regler. Spara eller förkasta dina osparade ändringar först.",
+        "cancel": "Avbryt",
+        "discard": "Förkasta",
+        "save": "Spara"
+      },
+      "issues": {
+        "recognizedEmpty": "Ange den igenkända texten.",
+        "recognizedTooLong": "Den igenkända texten får vara högst 100 tecken.",
+        "recognizedForbidden": "Den igenkända texten får inte innehålla radbrytning, tabb eller ;.",
+        "recognizedControl": "Den igenkända texten innehåller ett osynligt kontrolltecken.",
+        "recognizedComment": "Den igenkända texten får inte börja med #.",
+        "duplicate": "Varje igenkänd text får bara förekomma en gång; den här är redan definierad.",
+        "replacementEmpty": "Ange ersättningen.",
+        "replacementTooLong": "Ersättningen får vara högst 500 tecken.",
+        "replacementForbidden": "Ersättningen får inte innehålla radbrytning eller tabb.",
+        "replacementControl": "Ersättningen innehåller ett osynligt kontrolltecken.",
+        "missingSeparator": "Avgränsare saknas: lägg till ; följt av ersättningen",
+        "tooManyRules": "En regeluppsättning rymmer högst 1 000 regler.",
+        "invalidSavedRules": "De sparade reglerna är ogiltiga. Läs in dem igen innan du importerar.",
+        "unicodeUnavailable": "Reglerna kan inte kontrolleras just nu. Starta om Handy och försök igen.",
+        "invalidRule": "Den här regeln är ogiltig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Osparade ändringar",
+      "description": "Några av dina ersättningsregler är inte sparade. Stanna för att spara dem, eller förkasta dem och lämna.",
+      "stay": "Stanna",
+      "discard": "Förkasta och lämna"
     }
   },
   "footer": {
@@ -673,7 +1225,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy behöver behörighet för hjälpmedel för att kunna skriva transkriberad text.",
-    "openSettings": "Öppna systeminställningar"
+    "openSettings": "Öppna systeminställningar",
+    "offTitle": "Behörigheten för hjälpmedel är avstängd",
+    "smartPasteOff": "Smart inklistring kan varken infoga eller klistra in. Dina transkriptioner sparas så att de kan återställas."
   },
   "errors": {
     "loadDirectory": "Fel vid laddning av mapp: {{error}}",
@@ -689,9 +1243,38 @@
     "modelLoadFailedUnknown": "okänd modell",
     "noInputDeviceTitle": "Ingen mikrofon hittades",
     "noInputDevice": "Ingen ljudenhet hittades. Anslut en mikrofon eller ett headset och försök igen.",
+    "inputLostTitle": "Inspelningen avbröts",
+    "inputLost": "Mikrofonen kopplades från. Ljudet som spelats in fram till dess transkriberas.",
     "pasteFailedTitle": "Det gick inte att klistra in texten",
     "pasteFailed": "Texten kunde inte klistras in i det aktiva programmet.",
-    "transcriptionFailedTitle": "Transkriptionen misslyckades"
+    "pasteFailedNotSaved": "Texten kunde varken klistras in eller sparas i historiken.",
+    "transcriptionFailedTitle": "Transkriptionen misslyckades",
+    "settings": {
+      "committedNotApplied": "Inställningen sparades men kunde inte tillämpas direkt.",
+      "gpuDeviceRequired": "Välj en GPU-enhet innan du väljer GPU-acceleratorn.",
+      "outOfRange": "Värdet ligger utanför det tillåtna intervallet.",
+      "validationFailed": "Värdet accepteras inte för den här inställningen.",
+      "revisionConflict": "Inställningarna ändrades någon annanstans. Ladda om och försök igen.",
+      "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
+      "shortcutSessionBusy": "En diktering pågår. Försök igen när den är klar.",
+      "persistenceFailed": "Det gick inte att spara inställningarna: inställningsfilen kunde inte skrivas. Inget ändrades.",
+      "generic": "Inställningen kunde inte ändras.",
+      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte.",
+      "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet.",
+      "promptNameEmpty": "Ange ett namn på prompten.",
+      "promptNameTooLong": "Promptens namn får vara högst 60 tecken.",
+      "promptNameDuplicate": "En annan prompt har redan det här namnet. Namn måste vara unika.",
+      "promptTextEmpty": "Ange promptens text.",
+      "promptTextTooLong": "Promptens text får vara högst 8 000 tecken.",
+      "promptOverrideIncomplete": "Välj både en leverantör och en modell, eller använd standardleverantören.",
+      "promptUnknownProvider": "Den här leverantören är inte tillgänglig.",
+      "promptNotUsable": "Den här prompten är ogiltig. Redigera den innan du använder den.",
+      "limitExceeded": "Det högsta antalet har nåtts.",
+      "conflictTitle": "Inställningarna ändrades någon annanstans",
+      "conflictBody": "Kommandoraden eller ett annat fönster sparade en nyare version. Ladda om för att se den; din osparade ändring förkastas.",
+      "reload": "Ladda om",
+      "reloadFailed": "Inställningarna kunde inte läsas in igen. Försök igen."
+    }
   },
   "appLanguage": {
     "title": "Applikationsspråk",
@@ -709,7 +1292,78 @@
   "overlay": {
     "transcribing": "Transkriberar...",
     "processing": "Bearbetar...",
-    "loadingModel": "Laddar modell..."
+    "loadingModel": "Laddar modell...",
+    "fallbackNotice": "AI-bearbetningen misslyckades. Originaltexten användes.",
+    "destination": {
+      "label": "Mål: {{name}}",
+      "pinnedLabel": "Mål: {{name}}, fäst",
+      "frontmostApp": "App i förgrunden",
+      "remove": "Ta bort mål",
+      "unknownApp": "Målappen",
+      "choiceFailed": "Målet kunde inte ändras.",
+      "menu": {
+        "title": "Mål för den här dikteringen",
+        "frontmostNow": "I förgrunden nu",
+        "otherApps": "Andra appar",
+        "frontmostAtEnd": "App i förgrunden vid slutet",
+        "loading": "Läser in appar…",
+        "failed": "Listan över appar kunde inte läsas in.",
+        "pin": "Fäst {{name}}",
+        "unpin": "Lossa {{name}}",
+        "favorites": "Favoriter",
+        "addFavorite": "Lägg till {{name}} i favoriter",
+        "removeFavorite": "Ta bort {{name}} från favoriter",
+        "notOpen": "Inte öppen",
+        "rememberInput": {
+          "field": "Kom ihåg det här fältet för {{app}}",
+          "fieldAgain": "Kom ihåg det här fältet igen för {{app}}",
+          "terminal": "Kom ihåg den här terminalen",
+          "terminalAgain": "Kom ihåg den här terminalen igen",
+          "saved": {
+            "field": "Fält ihågkommet för {{app}}",
+            "terminal": "Terminal ihågkommen för {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klicka först i ett textfält i appen",
+            "passwordField": "Lösenordsfält kommer aldrig ihåg",
+            "unrecognizable": "Fältet har inget namn som Handy kan känna igen senare",
+            "terminalUnreadable": "Terminalen kunde inte läsas",
+            "full": "Du kan komma ihåg upp till 20 inmatningar.",
+            "stale": "Den här dikteringen har avslutats",
+            "failed": "Det gick inte att spara fältet"
+          }
+        }
+      },
+      "favoriteNotSaved": {
+        "full": "Du kan ha upp till 10 favoriter.",
+        "failed": "Favoriterna kunde inte sparas."
+      },
+      "refused": {
+        "stale": "Målet ändrades under tiden; listan har uppdaterats.",
+        "frozen": "Infogningen har börjat; målet kan inte längre ändras.",
+        "unavailable": "Den här appen är inte längre tillgänglig; listan har uppdaterats."
+      }
+    },
+    "prompt": {
+      "label": "Prompt för den här dikteringen: {{name}}",
+      "hint": "Håll pekaren över för att se alternativen",
+      "none": "Ingen (ingen AI-bearbetning)",
+      "menuTitle": "Prompt för den här dikteringen",
+      "note": "Gäller bara den här dikteringen. Standard förblir {{name}}.",
+      "noteRemembered": "Behålls för dina nästa vanliga dikteringar tills du väljer Ingen.",
+      "loading": "Läser in prompter…",
+      "failed": "Prompterna kunde inte läsas in.",
+      "choiceFailed": "Prompten kunde inte ändras.",
+      "refused": {
+        "sessionEnded": "Inspelningen har stoppats; prompten kan inte längre ändras.",
+        "processingOff": "AI-bearbetning är avstängd för den här dikteringen.",
+        "promptMissing": "Den här prompten finns inte längre.",
+        "promptNotUsable": "Den här prompten har fel; redigera den först i inställningarna."
+      }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatisk Retur av för det här diktatet"
+    }
   },
   "whatsNew": {
     "title": "Nytt i Handy v{{version}}"
@@ -724,5 +1378,49 @@
     "learnMore": "Så här löser du det",
     "recorderBlocked": "Det går inte att spela in kortkommandon just nu — macOS Secure Input blockerar tangenthändelser. Lös varningen om Secure Input först.",
     "dismiss": "Avfärda"
+  },
+  "smartPaste": {
+    "handOver": "Texten har lagts i urklipp för den fjärranslutna skärmen"
+  },
+  "recoveryBubble": {
+    "label": "Transkription sparad av Handy",
+    "previewLabel": "Transkription",
+    "reason": {
+      "appClosed": "{{app}} är inte längre öppen",
+      "appClosedUnnamed": "Appen är inte längre öppen",
+      "pinnedAppNotRunning": "{{app}} är fäst men inte öppen",
+      "pinnedAppNotRunningUnnamed": "Den fästa appen är inte öppen",
+      "activationFailed": "Det gick inte att ta fram {{app}}",
+      "activationFailedUnnamed": "Det gick inte att ta fram appen",
+      "insertionFailed": "Infogningen misslyckades",
+      "noTextField": "Inget textfält har fokus",
+      "defaultFieldNotFound": "Det ihågkomna fältet för {{app}} hittades inte",
+      "defaultFieldNotFoundUnnamed": "Det ihågkomna fältet hittades inte",
+      "defaultTerminalGone": "Den ihågkomna terminalen för {{app}} finns inte längre",
+      "defaultTerminalGoneUnnamed": "Den ihågkomna terminalen finns inte längre"
+    },
+    "explanation": {
+      "notInserted": "Handy infogade ingenting och skickade ingen Retur.",
+      "mayHaveReached": "En del av texten kan ha nått appen.",
+      "nothingSent": "Ingenting skickades till appen.",
+      "lateRead": "Appen läste urklippet sent: texten kan ha klistrats in ändå. Kontrollera innan du kopierar igen.",
+      "historyKept": "Transkriptionen sparas i Historik.",
+      "historyKeptFull": "Hela transkriptionen sparas i Historik.",
+      "historyNotKept": "Transkriptionen finns inte i Historik.",
+      "openAppDrag": "Öppna {{app}} och dra eller kopiera sedan texten.",
+      "openAppCopy": "Öppna {{app}} och kopiera sedan texten.",
+      "openUnnamedDrag": "Öppna appen och dra eller kopiera sedan texten.",
+      "openUnnamedCopy": "Öppna appen och kopiera sedan texten.",
+      "focusFieldDrag": "Klicka i ett textfält och dra eller kopiera sedan texten.",
+      "focusFieldCopy": "Klicka i ett textfält och kopiera sedan texten.",
+      "noFieldSetting": "Du kan stänga av den här kontrollen under Inställningar, Avancerat, Utdata."
+    },
+    "actions": {
+      "drag": "Dra till ett fält",
+      "copy": "Kopiera",
+      "why": "Varför?",
+      "hideDetails": "Dölj detaljer",
+      "close": "Stäng"
+    }
   }
 }

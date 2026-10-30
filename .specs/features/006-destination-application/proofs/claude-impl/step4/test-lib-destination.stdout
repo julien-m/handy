@@ -1,0 +1,45 @@
+
+running 40 tests
+test destination::delivery::tests::the_outcome_carries_the_actual_history_result_and_the_exact_method_kind ... ok
+test destination::insertion::tests::cases::a_closed_destination_inserts_nothing_anywhere_and_is_reported_app_closed ... ok
+test destination::insertion::tests::cases::a_switch_during_recording_activates_the_captured_app_before_dispatch ... ok
+test destination::insertion::tests::cases::handy_in_front_at_the_end_gives_a_context_without_target ... ok
+test destination::insertion::tests::cases::an_insertion_delay_longer_than_the_deadline_is_preserved_with_a_fresh_guard ... ok
+test destination::insertion::tests::cases::an_already_frontmost_destination_is_not_activated_but_still_rechecked ... ok
+test destination::insertion::tests::cases::a_recover_verdict_dispatches_nothing_and_no_enter_can_be_claimed ... ok
+test destination::insertion::tests::cases::focus_lost_during_the_insertion_delay_dispatches_nothing_and_never_reactivates ... ok
+test destination::insertion::tests::cases::a_stale_or_cancelled_request_never_activates ... ok
+test destination::insertion::tests::cases::destination_return_off_inserts_into_the_app_in_front_at_the_end ... ok
+test destination::insertion::tests::cases::cancellation_during_activation_stops_without_input ... ok
+test destination::insertion::tests::cases::a_method_error_after_dispatch_is_an_insertion_failure_to_recover ... ok
+test destination::insertion::tests::cases::paste_method_none_activates_nothing_and_is_skipped ... ok
+test destination::manager::tests::a_tentative_capture_changes_nothing_until_committed ... ok
+test destination::manager::tests::an_accepted_start_captures_the_frontmost_app_and_switches_do_not_change_it ... ok
+test destination::insertion::tests::cases::the_deadline_accepts_an_observation_at_999_and_1000_ms_and_refuses_1001 ... ok
+test destination::manager::tests::cancellation_invalidates_the_generation_and_late_callbacks ... ok
+test destination::manager::tests::a_stale_choice_cannot_redirect_the_next_dictation ... ok
+test destination::manager::tests::the_cross_removes_the_destination_and_a_queued_click_after_freeze_is_refused ... ok
+test destination::manager::tests::handy_or_an_unreadable_foreground_capture_no_destination ... ok
+test destination::manager::tests::setting_off_or_platform_without_capability_reads_no_foreground ... ok
+test destination::delivery::tests::a_failed_destination_names_its_target_and_ids_are_unique ... ok
+test destination::manager::tests::restart_and_pid_reuse_resolve_by_identity_and_fail_closed_when_ambiguous ... ok
+test destination::manager::tests::choosing_comet_changes_only_this_dictation_and_a_closed_app_is_refused ... ok
+test destination::outcome::tests::legacy_success_is_attempted_and_legacy_error_is_an_insertion_failure ... ok
+test destination::outcome::tests::the_wire_values_are_the_007_kind_names ... ok
+test destination::outcome::tests::every_007_kind_maps_to_its_status_reason_and_disposition ... ok
+test destination::recovery::tests::a_later_dictation_supersedes_the_retained_transcript_and_old_references_expire ... ok
+test destination::session::tests::a_choice_needs_the_exact_dictation_and_version_and_bumps_the_version ... ok
+test destination::manager::tests::the_menu_lists_frontmost_first_then_others_and_marks_the_current_one ... ok
+test destination::manager::tests::concurrent_enter_claims_and_recover_are_serialized_by_the_session_lock ... ok
+test destination::session::tests::backward_and_stale_disposition_changes_are_refused_unchanged ... ok
+test destination::session::tests::choices_are_accepted_through_processing_and_refused_once_frozen ... ok
+test destination::session::tests::enter_is_claimed_once_on_insert_and_a_later_recover_does_not_revoke_it ... ok
+test destination::session::tests::every_allowed_disposition_transition_is_accepted ... ok
+test destination::session::tests::badge_is_visible_only_when_on_supported_and_shown ... ok
+test destination::session::tests::removal_is_frontmost_at_end_and_repeating_it_or_the_same_app_is_a_no_op ... ok
+test settings_service::platform_capability::tests::the_build_supports_destination_exactly_on_macos_and_windows ... ok
+test destination::recovery::tests::a_reason_is_suppressed_only_after_a_consumer_acknowledges_presenting_it ... ok
+test destination::recovery::tests::without_consumers_an_outcome_is_still_delivered_and_never_twice ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 376 filtered out; finished in 0.00s
+

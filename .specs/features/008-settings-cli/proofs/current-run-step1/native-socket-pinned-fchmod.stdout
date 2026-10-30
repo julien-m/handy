@@ -1,0 +1,88 @@
+{
+  "platform": "Darwin",
+  "release": "25.5.0",
+  "machine": "arm64",
+  "scope": "Native macOS experiment only; no Linux or production claim",
+  "cases": [
+    {
+      "replacement": "none",
+      "initial_path": {
+        "device": 16777233,
+        "inode": 210965434,
+        "mode": "0o755",
+        "file_type": "0o140000",
+        "uid": 501,
+        "nlink": 1
+      },
+      "open": {
+        "flags": 16810240,
+        "result": -1,
+        "error": {
+          "errno": 102,
+          "errno_name": "EOPNOTSUPP",
+          "message": "Operation not supported on socket"
+        }
+      }
+    },
+    {
+      "replacement": "regular",
+      "initial_path": {
+        "device": 16777233,
+        "inode": 210965436,
+        "mode": "0o755",
+        "file_type": "0o140000",
+        "uid": 501,
+        "nlink": 1
+      },
+      "open": {
+        "flags": 16810240,
+        "result": -1,
+        "error": {
+          "errno": 102,
+          "errno_name": "EOPNOTSUPP",
+          "message": "Operation not supported on socket"
+        }
+      }
+    },
+    {
+      "replacement": "symlink",
+      "initial_path": {
+        "device": 16777233,
+        "inode": 210965438,
+        "mode": "0o755",
+        "file_type": "0o140000",
+        "uid": 501,
+        "nlink": 1
+      },
+      "open": {
+        "flags": 16810240,
+        "result": -1,
+        "error": {
+          "errno": 102,
+          "errno_name": "EOPNOTSUPP",
+          "message": "Operation not supported on socket"
+        }
+      }
+    },
+    {
+      "replacement": "socket",
+      "initial_path": {
+        "device": 16777233,
+        "inode": 210965440,
+        "mode": "0o755",
+        "file_type": "0o140000",
+        "uid": 501,
+        "nlink": 1
+      },
+      "open": {
+        "flags": 16810240,
+        "result": -1,
+        "error": {
+          "errno": 102,
+          "errno_name": "EOPNOTSUPP",
+          "message": "Operation not supported on socket"
+        }
+      }
+    }
+  ]
+}

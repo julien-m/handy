@@ -3,34 +3,53 @@ mod actions;
 mod apple_intelligence;
 mod audio_feedback;
 pub mod audio_toolkit;
+pub mod automatic_enter;
 mod autostart;
 mod catalog;
 mod chinese_script;
 pub mod cli;
 mod clipboard;
 mod commands;
+pub mod destination;
+pub mod dictation_keys;
+mod dictation_output;
 pub mod engine_supervisor;
 mod helpers;
 mod input;
 mod llm_client;
+mod main_window_placement;
 mod managers;
+/// History storage (text-only rows included), public for the history integration tests.
+pub use managers::history_store;
 mod memory;
+pub mod microphones;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+pub mod prompts;
+pub mod recognition_vocabulary;
+pub mod recovery;
 mod secure_input;
+#[cfg(target_os = "macos")]
+mod secure_input_shadow;
 mod settings;
+pub mod settings_service;
 mod shortcut;
 mod signal_handle;
+pub mod smart_capitalization;
+mod smart_paragraphs;
+pub mod smart_paste;
+pub mod smart_spacing;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
 mod utils;
+pub mod word_replacements;
 
 pub use cli::CliArgs;
 #[cfg(debug_assertions)]
 use specta_typescript::{BigIntExportBehavior, Typescript};
-use tauri_specta::{collect_commands, collect_events, Builder};
+use tauri_specta::{collect_events, Builder};
 pub use utils::env_flag_enabled;
 
 use env_filter::Builder as EnvFilterBuilder;
@@ -59,8 +78,13 @@ pub static FILE_LOG_LEVEL: AtomicU8 = AtomicU8::new(log::LevelFilter::Debug as u
 /// mode — the live log viewer is its only consumer and only exists in debug
 /// mode — so normal runs never broadcast log records (which can include file
 /// paths or transcribed text) onto the frontend event bus. Synced at startup
-/// and whenever debug mode is toggled (see `shortcut::change_debug_mode_setting`).
+/// and by the live effect of `debug_mode`/`log_level` (`settings_service::effects`).
 pub static WEBVIEW_LOG_STREAMING: AtomicBool = AtomicBool::new(false);
+
+/// True when this run was launched with `--debug`: Trace file logs and webview log streaming
+/// stay on for the whole run, whatever `debug_mode`/`log_level` changes (runtime-only override,
+/// never persisted).
+pub static DEBUG_OVERRIDE: AtomicBool = AtomicBool::new(false);
 
 fn level_filter_from_u8(value: u8) -> log::LevelFilter {
     match value {
@@ -96,10 +120,21 @@ fn build_console_filter() -> env_filter::Filter {
     builder.build()
 }
 
+/// Event emitted once `show_main_window` has shown the main window (feature 001, AC-002). The
+/// settings resume their status polling on it, since a reopened window does not always get a
+/// focus event (refused `set_focus`, Windows foreground lock, Wayland). The name is mirrored by
+/// `MAIN_WINDOW_SHOWN_EVENT` in `src/components/settings/microphone-priority/window-visibility.ts`.
+const MAIN_WINDOW_SHOWN_EVENT: &str = "main-window-shown";
+
 fn show_main_window(app: &AppHandle) {
     if let Some(main_window) = app.get_webview_window("main") {
         if let Err(e) = main_window.unminimize() {
             log::error!("Failed to unminimize webview window: {}", e);
+        }
+        // Opening (not re-focusing an open window) always places it at the center of the
+        // primary monitor, so it never appears on whichever monitor it was last left on.
+        if !main_window.is_visible().unwrap_or(false) {
+            main_window_placement::center_on_primary_monitor(&main_window);
         }
         if let Err(e) = main_window.show() {
             log::error!("Failed to show webview window: {}", e);
@@ -113,6 +148,10 @@ fn show_main_window(app: &AppHandle) {
                 log::error!("Failed to set activation policy to Regular: {}", e);
             }
         }
+        // Emitted after show(), so a visibility question asked on it finds the window visible.
+        if let Err(e) = app.emit(MAIN_WINDOW_SHOWN_EVENT, ()) {
+            log::error!("Failed to emit {}: {}", MAIN_WINDOW_SHOWN_EVENT, e);
+        }
         return;
     }
 
@@ -121,6 +160,25 @@ fn show_main_window(app: &AppHandle) {
         "Main window not found. Webview labels: {:?}",
         webview_labels
     );
+}
+
+/// Install the settings service right after `build()`: by then the single-instance plugin has
+/// exited this process (another Handy, old or new, is alive) or claimed the singleton for it.
+/// The GUI instance takes the startup lease and normalizes once; a store it cannot own leaves it
+/// read-only. A headless run is not the instance: it reads now and writes later as an offline
+/// writer. Only a real lease conflict (another instance owns this store although the
+/// single-instance check let this launch through) stops this process, with a message.
+fn install_settings_service(app: &tauri::App, headless_mode: bool) {
+    if headless_mode {
+        settings_service::tauri_adapter::install_offline(app.handle());
+        return;
+    }
+    if let Err(error) = settings_service::tauri_adapter::install_owned(app.handle()) {
+        log::error!("Another Handy instance owns this settings store: {error}");
+        eprintln!("Handy is already running with this settings store; this launch exits.");
+        // process::exit: the event loop has not started, nothing else needs unwinding.
+        std::process::exit(1);
+    }
 }
 
 /// Choose the macOS activation policy the process *launches* with.
@@ -215,7 +273,11 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(model_manager.clone());
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
+    app_handle.manage(prompts::session::PromptSessions::default());
     app_handle.manage(tray::TrayState::new());
+    destination::app::install(app_handle);
+    recovery::app::install(app_handle);
+    smart_paste::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -562,6 +624,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     let bound_backend = tm.current_backend();
 
     let runs = args.repeat.unwrap_or(1).max(1);
+    let replacements = crate::word_replacements::published::current_matcher(app);
     let mut times_ms: Vec<u64> = Vec::new();
     let mut text = String::new();
     for i in 0..runs {
@@ -575,7 +638,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
             }
         }
         let t = Instant::now();
-        match tm.transcribe(samples.clone()) {
+        match tm.transcribe(samples.clone(), &replacements) {
             Ok(out) => text = out,
             Err(e) => {
                 eprintln!("error: transcribe failed: {}", e);
@@ -622,6 +685,197 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     0
 }
 
+/// The typed commands of the app, in registration order: one list for the app and the bindings
+/// check (a macro, so the registry stays a single short builder).
+macro_rules! handy_commands {
+    () => {
+        tauri_specta::collect_commands![
+            shortcut::change_binding,
+            shortcut::reset_binding,
+            shortcut::edits::edit_binding_shortcuts,
+            shortcut::edits::get_shortcut_conflicts,
+            shortcut::edits::check_binding_shortcut_edit,
+            shortcut::change_shortcut_activation_setting,
+            shortcut::change_hold_threshold_ms_setting,
+            shortcut::change_audio_feedback_setting,
+            shortcut::change_audio_feedback_volume_setting,
+            shortcut::change_sound_theme_setting,
+            shortcut::change_theme_setting,
+            shortcut::change_start_hidden_setting,
+            shortcut::change_autostart_setting,
+            shortcut::change_translate_to_english_setting,
+            shortcut::change_selected_language_setting,
+            shortcut::change_overlay_position_setting,
+            shortcut::change_overlay_style_setting,
+            shortcut::change_debug_mode_setting,
+            shortcut::change_word_correction_threshold_setting,
+            shortcut::change_extra_recording_buffer_setting,
+            shortcut::change_paste_delay_ms_setting,
+            shortcut::change_paste_delay_after_ms_setting,
+            shortcut::change_reliable_paste_setting,
+            shortcut::change_paste_verification_setting,
+            shortcut::change_paste_method_setting,
+            shortcut::get_available_typing_tools,
+            shortcut::is_smart_paste_available,
+            shortcut::change_typing_tool_setting,
+            shortcut::change_external_script_path_setting,
+            shortcut::change_clipboard_handling_setting,
+            shortcut::change_auto_submit_setting,
+            shortcut::change_automatic_enter_setting,
+            shortcut::change_auto_submit_key_setting,
+            shortcut::change_post_process_enabled_setting,
+            shortcut::change_experimental_enabled_setting,
+            shortcut::change_post_process_base_url_setting,
+            shortcut::change_post_process_api_key_setting,
+            shortcut::change_post_process_model_setting,
+            shortcut::set_post_process_provider,
+            shortcut::fetch_post_process_models,
+            commands::prompts::get_prompt_library,
+            commands::prompts::add_post_process_prompt,
+            commands::prompts::update_post_process_prompt,
+            commands::prompts::delete_post_process_prompt,
+            commands::prompts::set_post_process_selected_prompt,
+            commands::prompts::set_post_process_prompt_provider_override,
+            commands::prompts::test_post_process_prompt,
+            commands::prompts::cancel_post_process_prompt_test,
+            commands::prompts::get_dictation_prompt,
+            commands::prompts::select_dictation_prompt,
+            shortcut::update_custom_words,
+            commands::vocabulary::get_vocabulary,
+            commands::vocabulary::preview_vocabulary_import,
+            commands::vocabulary::apply_vocabulary_import,
+            commands::vocabulary::add_vocabulary_term,
+            commands::vocabulary::remove_vocabulary_occurrence,
+            commands::vocabulary::get_vocabulary_status,
+            shortcut::suspend_all_bindings,
+            shortcut::resume_all_bindings,
+            shortcut::change_mute_while_recording_setting,
+            shortcut::change_append_trailing_space_setting,
+            shortcut::change_smart_capitalization_setting,
+            shortcut::change_smart_spacing_setting,
+            shortcut::change_return_to_dictation_app_setting,
+            shortcut::change_lazy_stream_close_setting,
+            shortcut::change_vad_enabled_setting,
+            shortcut::change_vad_backend_setting,
+            shortcut::change_filler_word_removal_enabled_setting,
+            shortcut::change_chinese_script_setting,
+            shortcut::change_smart_paragraphs_enabled_setting,
+            shortcut::change_app_language_setting,
+            shortcut::change_update_checks_setting,
+            shortcut::change_show_whats_new_on_update_setting,
+            shortcut::change_whats_new_last_seen_version_setting,
+            shortcut::change_keyboard_implementation_setting,
+            shortcut::get_keyboard_implementation,
+            shortcut::change_show_tray_icon_setting,
+            shortcut::change_transcribe_accelerator_setting,
+            shortcut::change_ort_accelerator_setting,
+            shortcut::change_transcribe_gpu_device,
+            shortcut::get_available_accelerators,
+            shortcut::handy_keys::start_handy_keys_recording,
+            shortcut::handy_keys::stop_handy_keys_recording,
+            secure_input::get_secure_input_status,
+            secure_input::run_keyboard_diagnostic,
+            trigger_update_check,
+            show_main_window_command,
+            commands::cancel_operation,
+            commands::destination::destination_snapshot,
+            commands::destination::destination_support,
+            commands::destination::destination_menu,
+            commands::destination::choose_destination,
+            commands::destination::remove_destination,
+            commands::destination::pin_destination,
+            commands::destination::unpin_destination,
+            commands::destination::toggle_destination_favorite,
+            commands::default_input::default_input_offer,
+            commands::default_input::remember_default_input,
+            commands::default_input::forget_default_input,
+            commands::default_input::forget_all_default_inputs,
+            commands::overlay::set_overlay_extent,
+            commands::overlay::hold_overlay_for_notice,
+            commands::recovery::recovery_bubble_view,
+            commands::recovery::recovery_bubble_rendered,
+            commands::recovery::recovery_bubble_close,
+            commands::recovery::recovery_bubble_copy,
+            commands::recovery::recovery_bubble_begin_drag,
+            commands::recovery::recovery_bubble_resize,
+            commands::recovery::change_show_recovery_bubble_without_text_field_setting,
+            commands::is_portable,
+            commands::is_update_checks_locked,
+            commands::get_app_dir_path,
+            commands::get_app_settings,
+            commands::get_settings_view,
+            commands::get_default_settings,
+            commands::get_log_dir_path,
+            commands::set_log_level,
+            commands::open_recordings_folder,
+            commands::open_log_dir,
+            commands::open_app_data_dir,
+            commands::check_apple_intelligence_available,
+            commands::initialize_enigo,
+            commands::initialize_shortcuts,
+            commands::models::get_available_models,
+            commands::models::get_model_info,
+            commands::models::download_model,
+            commands::models::delete_model,
+            commands::models::cancel_download,
+            commands::models::set_active_model,
+            commands::models::get_current_model,
+            commands::models::get_transcription_model_status,
+            commands::models::is_model_loading,
+            commands::models::rescan_local_models,
+            commands::audio::update_microphone_mode,
+            commands::audio::get_microphone_mode,
+            commands::audio::get_windows_microphone_permission_status,
+            commands::audio::open_microphone_privacy_settings,
+            commands::audio::get_available_microphones,
+            commands::audio::set_microphone_priority,
+            commands::audio::get_microphone_status,
+            commands::audio::get_available_output_devices,
+            commands::audio::set_selected_output_device,
+            commands::audio::get_selected_output_device,
+            commands::audio::play_test_sound,
+            commands::audio::check_custom_sounds,
+            commands::audio::set_clamshell_microphone,
+            commands::audio::get_clamshell_microphone,
+            commands::audio::is_recording,
+            commands::audio::get_microphone_channels,
+            commands::audio::set_selected_channel,
+            commands::transcription::set_model_unload_timeout,
+            commands::transcription::get_model_load_status,
+            commands::transcription::unload_model_manually,
+            commands::history::get_history_entries,
+            commands::history::toggle_history_entry_saved,
+            commands::history::get_audio_file_path,
+            commands::history::delete_history_entry,
+            commands::history::retry_history_entry_transcription,
+            commands::history::update_history_limit,
+            commands::history::update_recording_retention_period,
+            commands::replacements::get_word_replacements,
+            commands::replacements::check_word_replacements,
+            commands::replacements::preview_word_replacements,
+            commands::replacements::save_word_replacements,
+            commands::replacements::apply_word_replacements,
+            commands::replacements_files::import_word_replacements_file,
+            commands::replacements_files::export_word_replacements_file,
+            helpers::clamshell::is_laptop,
+        ]
+    };
+}
+
+/// The typed command and event registry (tauri-specta) shared by the app and the bindings
+/// check: `src/bindings.ts` is generated from it, identical in every rollout gate state.
+fn specta_builder() -> Builder<tauri::Wry> {
+    Builder::<tauri::Wry>::new()
+        .commands(handy_commands!())
+        .events(collect_events![
+            managers::history::HistoryUpdatePayload,
+            managers::transcription::StreamTextEvent,
+            managers::transcription::StreamPhaseEvent,
+            prompts::dictation::DictationPromptChanged,
+            prompts::dictation::PromptProcessingFailed,
+        ])
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run(cli_args: CliArgs) {
     // Avoid ggml-metal residency-set teardown assertions when a native engine
@@ -649,131 +903,7 @@ pub fn run(cli_args: CliArgs) {
     // when the variable is unset
     let console_filter = build_console_filter();
 
-    let specta_builder = Builder::<tauri::Wry>::new()
-        .commands(collect_commands![
-            shortcut::change_binding,
-            shortcut::reset_binding,
-            shortcut::change_shortcut_activation_setting,
-            shortcut::change_hold_threshold_ms_setting,
-            shortcut::change_audio_feedback_setting,
-            shortcut::change_audio_feedback_volume_setting,
-            shortcut::change_sound_theme_setting,
-            shortcut::change_theme_setting,
-            shortcut::change_start_hidden_setting,
-            shortcut::change_autostart_setting,
-            shortcut::change_translate_to_english_setting,
-            shortcut::change_selected_language_setting,
-            shortcut::change_overlay_position_setting,
-            shortcut::change_overlay_style_setting,
-            shortcut::change_debug_mode_setting,
-            shortcut::change_word_correction_threshold_setting,
-            shortcut::change_extra_recording_buffer_setting,
-            shortcut::change_paste_delay_ms_setting,
-            shortcut::change_paste_delay_after_ms_setting,
-            shortcut::change_reliable_paste_setting,
-            shortcut::change_paste_method_setting,
-            shortcut::get_available_typing_tools,
-            shortcut::change_typing_tool_setting,
-            shortcut::change_external_script_path_setting,
-            shortcut::change_clipboard_handling_setting,
-            shortcut::change_auto_submit_setting,
-            shortcut::change_auto_submit_key_setting,
-            shortcut::change_post_process_enabled_setting,
-            shortcut::change_experimental_enabled_setting,
-            shortcut::change_post_process_base_url_setting,
-            shortcut::change_post_process_api_key_setting,
-            shortcut::change_post_process_model_setting,
-            shortcut::set_post_process_provider,
-            shortcut::fetch_post_process_models,
-            shortcut::add_post_process_prompt,
-            shortcut::update_post_process_prompt,
-            shortcut::delete_post_process_prompt,
-            shortcut::set_post_process_selected_prompt,
-            shortcut::update_custom_words,
-            shortcut::suspend_all_bindings,
-            shortcut::resume_all_bindings,
-            shortcut::change_mute_while_recording_setting,
-            shortcut::change_append_trailing_space_setting,
-            shortcut::change_lazy_stream_close_setting,
-            shortcut::change_vad_enabled_setting,
-            shortcut::change_vad_backend_setting,
-            shortcut::change_filler_word_removal_enabled_setting,
-            shortcut::change_chinese_script_setting,
-            shortcut::change_app_language_setting,
-            shortcut::change_update_checks_setting,
-            shortcut::change_show_whats_new_on_update_setting,
-            shortcut::change_whats_new_last_seen_version_setting,
-            shortcut::change_keyboard_implementation_setting,
-            shortcut::get_keyboard_implementation,
-            shortcut::change_show_tray_icon_setting,
-            shortcut::change_transcribe_accelerator_setting,
-            shortcut::change_ort_accelerator_setting,
-            shortcut::change_transcribe_gpu_device,
-            shortcut::get_available_accelerators,
-            shortcut::handy_keys::start_handy_keys_recording,
-            shortcut::handy_keys::stop_handy_keys_recording,
-            secure_input::get_secure_input_status,
-            secure_input::run_keyboard_diagnostic,
-            trigger_update_check,
-            show_main_window_command,
-            commands::cancel_operation,
-            commands::is_portable,
-            commands::is_update_checks_locked,
-            commands::get_app_dir_path,
-            commands::get_app_settings,
-            commands::get_default_settings,
-            commands::get_log_dir_path,
-            commands::set_log_level,
-            commands::open_recordings_folder,
-            commands::open_log_dir,
-            commands::open_app_data_dir,
-            commands::check_apple_intelligence_available,
-            commands::initialize_enigo,
-            commands::initialize_shortcuts,
-            commands::models::get_available_models,
-            commands::models::get_model_info,
-            commands::models::download_model,
-            commands::models::delete_model,
-            commands::models::cancel_download,
-            commands::models::set_active_model,
-            commands::models::get_current_model,
-            commands::models::get_transcription_model_status,
-            commands::models::is_model_loading,
-            commands::models::rescan_local_models,
-            commands::audio::update_microphone_mode,
-            commands::audio::get_microphone_mode,
-            commands::audio::get_windows_microphone_permission_status,
-            commands::audio::open_microphone_privacy_settings,
-            commands::audio::get_available_microphones,
-            commands::audio::set_selected_microphone,
-            commands::audio::get_selected_microphone,
-            commands::audio::get_available_output_devices,
-            commands::audio::set_selected_output_device,
-            commands::audio::get_selected_output_device,
-            commands::audio::play_test_sound,
-            commands::audio::check_custom_sounds,
-            commands::audio::set_clamshell_microphone,
-            commands::audio::get_clamshell_microphone,
-            commands::audio::is_recording,
-            commands::audio::get_microphone_channels,
-            commands::audio::set_selected_channel,
-            commands::transcription::set_model_unload_timeout,
-            commands::transcription::get_model_load_status,
-            commands::transcription::unload_model_manually,
-            commands::history::get_history_entries,
-            commands::history::toggle_history_entry_saved,
-            commands::history::get_audio_file_path,
-            commands::history::delete_history_entry,
-            commands::history::retry_history_entry_transcription,
-            commands::history::update_history_limit,
-            commands::history::update_recording_retention_period,
-            helpers::clamshell::is_laptop,
-        ])
-        .events(collect_events![
-            managers::history::HistoryUpdatePayload,
-            managers::transcription::StreamTextEvent,
-            managers::transcription::StreamPhaseEvent,
-        ]);
+    let specta_builder = specta_builder();
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
     specta_builder
@@ -883,13 +1013,13 @@ pub fn run(cli_args: CliArgs) {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_macos_permissions::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             Some(vec![]),
         ))
         .manage(cli_args.clone())
+        .manage(word_replacements::published::PublishedReplacements::default())
         .setup(move |app| {
             #[cfg(target_os = "windows")]
             log::info!(
@@ -940,6 +1070,9 @@ pub fn run(cli_args: CliArgs) {
                 });
                 return Ok(());
             }
+
+            // The GUI instance owns the store: answer `handy settings` over the private channel.
+            settings_service::tauri_adapter::publish_endpoint(app.handle());
 
             // Create main window programmatically so we can set data_directory
             // for portable mode (redirects WebView2 cache to portable Data dir)
@@ -993,20 +1126,16 @@ pub fn run(cli_args: CliArgs) {
             #[cfg(any(target_os = "windows", target_os = "macos"))]
             shortcut::apply_window_theme(app.handle(), settings.theme);
 
-            // CLI --debug flag overrides debug_mode and log level (runtime-only, not persisted)
+            // CLI --debug flag overrides debug_mode and log level for the whole run (runtime-only,
+            // not persisted); later debug_mode/log_level changes keep it (see DEBUG_OVERRIDE).
+            DEBUG_OVERRIDE.store(cli_args.debug, Ordering::Relaxed);
             if cli_args.debug {
                 settings.debug_mode = true;
                 settings.log_level = settings::LogLevel::Trace;
             }
-
-            let tauri_log_level: tauri_plugin_log::LogLevel = settings.log_level.into();
-            let file_log_level: log::Level = tauri_log_level.into();
-            // Store the file log level in the atomic for the filter to use
-            FILE_LOG_LEVEL.store(file_log_level.to_level_filter() as u8, Ordering::Relaxed);
-            // Only forward logs to the webview while debug mode is on (the live log
-            // viewer is the sole consumer and only exists in debug mode). This also
-            // honors the runtime `--debug` override applied to `settings` above.
-            WEBVIEW_LOG_STREAMING.store(settings.debug_mode, Ordering::Relaxed);
+            // Only forward logs to the webview while debug mode is on (the live log viewer is the
+            // sole consumer and only exists in debug mode).
+            settings_service::apply_runtime_logging(&settings);
             let app_handle = app.handle().clone();
             app.manage(TranscriptionCoordinator::new(app_handle.clone()));
 
@@ -1095,12 +1224,14 @@ pub fn run(cli_args: CliArgs) {
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
 
+    // Order matters: the settings service must own settings_store.json before any reader, and
+    // the first reader is the macOS activation policy below, which runs before `setup`.
+    install_settings_service(&app, headless_mode);
+
     // Must sit between build() and run(): see the doc comment.
     #[cfg(target_os = "macos")]
     apply_startup_activation_policy(&mut app, headless_mode);
 
-    // `app` is only used by the macOS arm.
-    #[cfg_attr(not(target_os = "macos"), allow(unused_variables))]
     app.run(|app, event| match &event {
         #[cfg(target_os = "macos")]
         tauri::RunEvent::Reopen { .. } => {
@@ -1119,10 +1250,57 @@ pub fn run(cli_args: CliArgs) {
             }
             show_main_window(app);
         }
+        tauri::RunEvent::ExitRequested { code, api, .. } => {
+            smart_paste::app::settle_before_exit(app, *code, api)
+        }
+        tauri::RunEvent::Exit => settings_service::tauri_adapter::close_endpoint(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the
         // worker process, which exits by itself as soon as this process's end
         // of its stdin closes, even if it is hung. Waiting on an unload here
         // could block quitting behind a hung model load.
         _ => {}
     });
+}
+
+#[cfg(test)]
+mod bindings_tests {
+    /// `src/bindings.ts` is exactly what the registry generates, so a command or type change
+    /// cannot ship with stale bindings. `HANDY_WRITE_BINDINGS=1` regenerates the file instead
+    /// (the same export the debug app performs at startup).
+    #[test]
+    fn committed_bindings_match_the_registry() -> Result<(), Box<dyn std::error::Error>> {
+        use specta_typescript::{BigIntExportBehavior, Typescript};
+        let committed = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../src/bindings.ts");
+        let directory = tempfile::tempdir()?;
+        let generated = directory.path().join("bindings.ts");
+        let language = Typescript::default().bigint(BigIntExportBehavior::Number);
+        super::specta_builder().export(language, &generated)?;
+        let generated = std::fs::read_to_string(generated)?;
+        if std::env::var_os("HANDY_WRITE_BINDINGS").is_some() {
+            std::fs::write(&committed, &generated)?;
+        }
+        let committed = std::fs::read_to_string(committed)?;
+        // Name the first differing line, so a platform-dependent export is diagnosable from a
+        // CI log without the generated file.
+        let first_difference = committed
+            .lines()
+            .zip(generated.lines())
+            .enumerate()
+            .find(|(_, (left, right))| left != right)
+            .map(|(index, (left, right))| {
+                format!(
+                    "line {}: committed {left:?}, generated {right:?}",
+                    index + 1
+                )
+            })
+            .unwrap_or_else(|| {
+                let (left, right) = (committed.lines().count(), generated.lines().count());
+                format!("committed {left} lines, generated {right} lines")
+            });
+        assert!(
+            committed == generated,
+            "src/bindings.ts is stale ({first_difference}): run with HANDY_WRITE_BINDINGS=1"
+        );
+        Ok(())
+    }
 }

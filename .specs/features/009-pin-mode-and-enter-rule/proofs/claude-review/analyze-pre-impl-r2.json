@@ -1,0 +1,138 @@
+{
+  "findings": [
+    {
+      "finding_id": "AN-SEMANTIC-5308cc3e",
+      "category": "semantic",
+      "severity": "HIGH",
+      "locations": [],
+      "summary": "Stale, invalid or incomplete semantic review",
+      "recommendation": "Refresh the complete independent plan review and resolve its findings"
+    },
+    {
+      "finding_id": "AN-COVERAGE-f98d5803",
+      "category": "coverage",
+      "severity": "HIGH",
+      "locations": [
+        "spec.md",
+        "plan.md"
+      ],
+      "summary": "Requirement 009-pin-mode-and-enter-rule:AC-006 has no plan-task reference",
+      "recommendation": "Add a plan task that references AC-006, or cite it explicitly"
+    }
+  ],
+  "coverage": [
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "has_plan_task": false,
+      "task_refs": [],
+      "notes": "no plan task references this requirement"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 92.31,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "incomplete",
+  "metrics": {
+    "total_requirements": 13,
+    "covered_requirements": 12,
+    "coverage_percent": 92.31,
+    "critical_count": 0,
+    "high_count": 2,
+    "implementation_present": 0
+  }
+}

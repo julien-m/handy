@@ -1,0 +1,12 @@
+
+
+Running 3 tests using 3 workers
+
+
+
+
+[1A[2K[1/3] [chromium] › tests/pin-enter-ui.spec.ts:53:1 › arrow keys and Enter save Only in PIN mode and announce it
+[1A[2K[2/3] [chromium] › tests/pin-enter-ui.spec.ts:33:1 › the selector lists the three values with the current one marked
+[1A[2K[3/3] [chromium] › tests/pin-enter-ui.spec.ts:73:1 › Tab gives the selector then its key selector visible focus in reading order
+
+[1A[2K  3 passed (3.7s)

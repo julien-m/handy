@@ -1,0 +1,18 @@
+
+running 13 tests
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::all_51_scalar_ports_accept_the_same_typed_values ... ok
+test inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

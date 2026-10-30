@@ -1,0 +1,35 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T19:53:28.579146+00:00",
+  "feature_slug": "008-settings-cli",
+  "files": [
+    {
+      "path": ".specs/features/008-settings-cli/changelog.md",
+      "sha256": "704abfc4cd8a8087a042cb12fcddfa327569d747631154835ab224c0e60e356a"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "9fd8065d9609b7a6c57a5628829c062b0368476f7bb20f120c8e7ff005e4a0bd"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "743d4406186f723a3e312548bf3993283e20a35bb742c465a19e1a270ea69420"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/spec.md",
+      "sha256": "2930dc3e620d87f3490aa8a7871764007345039e5c2876982a6ad2387cffc608"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "a6f373fa171b025fc418e6484661b90c052ea6344c1f09c9ad2019480fd4555d"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "b6991b150bb6f78574c6b4f14126b3a52283d1bd03b39b4752f4b9a6cb80e6b1",
+  "receipt_hash": "eb3cc935ef41381b81e4a500c0b86ef13b968689dd7ae0f1986de0a77c769574",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

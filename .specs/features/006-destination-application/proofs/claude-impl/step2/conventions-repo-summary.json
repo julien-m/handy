@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "baselined_count": 657,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3525,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "note": "Compact summary of `livespec conventions verify --feature repo --json` stdout (full stdout not kept: 1.4 MB).",
+  "receipt_path": ".specs/conventions/runs/20261014T040939Z/receipt.json",
+  "run_id": "20261014T040939Z",
+  "verdict": "PASS",
+  "violation_counts": {
+    "warning:builtin.doc_coverage": 328,
+    "warning:builtin.max_file_lines": 11,
+    "warning:builtin.max_function_lines": 154
+  },
+  "violations_in_006_new_files": []
+}

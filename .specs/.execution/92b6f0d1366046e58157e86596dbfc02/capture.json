@@ -1,0 +1,42 @@
+{
+  "schema_version": "1",
+  "acceptance_evidence_policy": "2",
+  "scope_policy_version": "078.1",
+  "invocation": "92b6f0d1366046e58157e86596dbfc02",
+  "directory_identity": [
+    16777233,
+    209981289
+  ],
+  "project_root": "/Users/julienm/projects/handy",
+  "feature": "008-settings-cli",
+  "argv": [
+    "cargo",
+    "test",
+    "--manifest-path",
+    "src-tauri/Cargo.toml",
+    "--test",
+    "settings_platform"
+  ],
+  "runner_provenance": {},
+  "assertion_trace_sha256": null,
+  "started_ns": 1791872834532979000,
+  "finished_ns": 1791872835608166000,
+  "exit_code": 0,
+  "before": {},
+  "after": {},
+  "raw_before": {},
+  "raw_after": {},
+  "report_adapter": "junit",
+  "report_sha256": null,
+  "report_identity": null,
+  "stdout_sha256": "f104ec41dbbf9e1aa592cdd8a06a5468bdaa1e00a49e5fd439a0b0c27fb462d1",
+  "stderr_sha256": "ad9c1d0e73b8556706aa0cd1c0bd9802768a21fb9035b537ef66cb5f680b414a",
+  "acceptance_mapping": ".specs/features/008-settings-cli/proofs/current-step1/partial-mapping.json",
+  "gaps": [
+    "Unsupported runner: structured reports alone cannot certify execution",
+    "Execution input scope unavailable: [Errno 2] No such file or directory: '/Users/julienm/projects/handy/src-tauri/tests/settings_platform/handoff.rs'",
+    "Execution input scope unavailable: [Errno 2] No such file or directory: '/Users/julienm/projects/handy/src-tauri/tests/settings_platform/handoff.rs'",
+    "Missing or unstable fresh report: [Errno 2] No such file or directory: 'runner-report'",
+    "Missing actual assertion execution trace: [Errno 2] No such file or directory: 'runner-assertions'"
+  ]
+}

@@ -1,0 +1,1 @@
+retry_hypothesis: clipboard::tests::external_script_does_not_wait_for_inherited_stdio (pre-existing, upstream fe5b23c, 1 s recv timeout) timed out under host load average ~60 (uptime 07:19); not touched by the merge. retry_evidence: same test passed in the first merge run of --lib (513 passed). retry_result: see test-merge-targets-retry.*

@@ -1,0 +1,46 @@
+{
+  "scope": "Step1 only; partial FR001/FR004 and AC001/AC005 assertions, no full acceptance certification",
+  "files": [
+    {
+      "path": "src-tauri/src/main.rs",
+      "sha256": "f895f9ced17a4f6d2d81ae486ff4a479f9ee8b10a577ff8b6e011ce1f3cc85a5"
+    },
+    {
+      "path": "src-tauri/src/settings_service/console_windows.rs",
+      "sha256": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f"
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "sha256": "ac7acd7161763c89d751eb8103f2f14979870529616adba954d41e5cf5d653c4"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "sha256": "b9f574f2982198507a1864fe8184faad495fba3f5d22ca1e54fa08d51c71e45a"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform.rs",
+      "sha256": "0ecd891f88595efa1192532d2d6ad5511f244c80ce4910cd5742d1dea4d811b9"
+    }
+  ],
+  "checks": {
+    "red": "101",
+    "clippy": "101",
+    "green2": "0",
+    "green": "0",
+    "rustfmt": "0",
+    "clippy2": "0",
+    "lint": "0",
+    "format": "0",
+    "clean": "0",
+    "typecheck": "0"
+  },
+  "pending_release_evidence": [
+    "Windows native console PE=3, GUI console flash, cmd/PowerShell interactive/piped/redirection output/exits and parent console survival",
+    "Linux native DBus/private IPC X11/Wayland and cross-session owner absence proof",
+    "older Handy binary no activation/store change",
+    "second account/session access isolation"
+  ],
+  "retry_hypothesis": "Clippy reported existing fn-array type_complexity and replayed obsolete stub build output",
+  "retry_evidence": "Typealias in settings_platform.rs; clean -p handy; strict clippy2 transcript and real bridge symbols in bridge.json",
+  "retry_result": "PASS"
+}

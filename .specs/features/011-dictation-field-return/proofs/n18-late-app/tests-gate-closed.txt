@@ -1,0 +1,51 @@
+     Running tests/destination_field_capture.rs 
+test an_editable_input_whose_range_cannot_be_read_is_remembered_without_it ... ok
+test a_missing_permission_makes_no_query_and_an_error_remembers_nothing ... ok
+test a_deadline_before_the_verdict_misses_and_during_the_range_read_keeps_no_range ... ok
+test return_off_without_pin_or_handy_in_front_reads_nothing ... ok
+test an_editable_input_is_remembered_with_its_range_and_nothing_else_is_read ... ok
+test a_password_field_another_process_or_a_doubt_remembers_nothing ... ok
+test each_query_carries_the_remaining_budget_and_none_is_sent_below_5_ms ... ok
+test with_the_gate_closed_no_start_read_is_ever_spawned ... ok
+test a_pinned_application_not_running_reads_nothing ... ok
+test with_the_gate_closed_a_whole_dictation_reads_nothing_and_pastes_as_without_011 ... ok
+test a_pinned_application_in_the_background_has_its_input_read ... ok
+test a_read_answering_after_a_badge_choice_freeze_or_cancel_is_refused ... ok
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/destination_field_late.rs 
+test a_destination_silent_beyond_the_note_budget_gets_no_focus_change ... ok
+test a_late_focus_landing_elsewhere_never_pastes ... ok
+test a_caret_normalized_elsewhere_in_the_input_still_receives_the_paste ... ok
+test a_range_write_applied_a_moment_later_is_read_back_until_it_settles ... ok
+test a_range_write_answered_late_is_verified_at_the_guard_and_pastes ... ok
+test a_focus_write_answered_late_is_verified_at_the_guard_and_pastes ... ok
+test a_range_write_never_applied_in_time_never_pastes_over_the_selection ... ok
+test an_input_already_focused_whose_focus_write_is_refused_pastes_at_its_caret ... ok
+test a_range_normalized_into_a_selection_never_pastes ... ok
+test a_late_write_never_pastes_over_a_range_it_could_not_restore ... ok
+test a_destination_answering_late_after_its_activation_still_receives_the_paste ... ok
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/destination_field_privacy.rs 
+test the_sentinel_range_never_reaches_a_log_or_an_event ... ok
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/destination_field_recovery.rs 
+test a_bubble_that_cannot_be_presented_gives_one_paste_error ... ok
+test a_verified_input_inserts_without_any_010_query_and_enter_follows_009 ... ok
+test the_bubble_says_insertion_failed_nothing_sent_on_every_platform ... ok
+test the_010_port_answers_the_field_decision_without_classifying ... ok
+test another_application_in_front_before_enter_still_gets_no_enter ... ok
+test a_diverted_return_recovers_without_any_010_query_and_sends_no_enter ... ok
+test an_unchanged_attempt_or_no_remembered_input_is_classified_by_010_as_delivered ... ok
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests/destination_field_return.rs 
+test a_range_missing_at_the_start_makes_no_call_at_insertion_and_pastes_nothing ... ok
+test an_input_gone_with_nothing_changed_inserts_as_without_011 ... ok
+test a_cancellation_after_the_activation_never_moves_the_focus ... ok
+test an_input_in_another_window_has_its_window_raised_then_verified ... ok
+test a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence ... ok
+test the_destination_already_in_front_still_returns_to_its_input ... ok
+test an_attempt_out_of_budget_stops_without_sending_and_pastes_nothing ... ok
+test a_range_or_focus_changed_during_the_paste_delay_pastes_nothing ... ok
+test the_verified_input_receives_the_paste_at_its_restored_caret ... ok
+test every_attempt_that_may_have_changed_something_pastes_nothing ... ok
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

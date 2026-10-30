@@ -1,0 +1,6 @@
+bun test v1.3.9 (cf6cdbbb)
+settings-errors: all assertions passed
+shortcut-list-model: all assertions passed
+portableInstaller: all assertions passed
+keyboard: all assertions passed
+clipboard: all assertions passed

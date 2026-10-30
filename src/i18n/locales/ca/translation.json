@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accés a l'accessibilitat",
-        "description": "Necessari per escriure el text transcrit a les aplicacions."
+        "description": "Necessari per escriure el text transcrit a les aplicacions.",
+        "openSettings": "Obre la Configuració del Sistema",
+        "retry": "Torna-ho a provar",
+        "alreadyCheckedHint": "Si Handy ja està marcat, elimineu-lo i torneu-lo a afegir."
       },
       "grant": "Concediu el permís",
       "granted": "Concedit",
@@ -179,12 +182,51 @@
           "transcribe_with_post_process": {
             "name": "Drecera de postprocessament",
             "description": "Opcional: una drecera específica que sempre aplica postprocessament amb IA a la transcripció."
+          },
+          "retarget_to_active_app": {
+            "name": "Envia a l'app en primer pla",
+            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada. Torneu-la a prémer per desfer. La fixació es manté."
+          },
+          "skip_automatic_enter": {
+            "name": "Insereix sense Retorn",
+            "description": "Durant un dictat, premeu només aquesta tecla per inserir el text sense el Retorn automàtic. Torneu-la a prémer per desfer."
           }
         },
         "errors": {
-          "restore": "No s'ha pogut restaurar la drecera original",
-          "set": "No s'ha pogut definir la drecera: {{error}}",
-          "reset": "No s'ha pogut restablir la drecera al valor original"
+          "set": "No s'ha pogut definir la drecera: {{error}}"
+        },
+        "list": {
+          "add": "Afegeix una drecera",
+          "addLimit": "Fins a {{limit}} dreceres per acció",
+          "change": "Fes clic per enregistrar una combinació nova",
+          "remove": "Elimina aquesta drecera",
+          "removeLast": "Cada acció conserva almenys una drecera",
+          "reset": "Restableix la drecera per defecte",
+          "errors": {
+            "conflict": "Ja la fa servir {{action}} ({{shortcut}})",
+            "overlap": "També activaria {{action}} ({{shortcut}})",
+            "invalid": "Drecera no vàlida: {{error}}",
+            "registration": "El sistema ha rebutjat aquesta drecera: {{error}}",
+            "generic": "No s'ha pogut desar la drecera",
+            "conflictsUnavailable": "No s'han pogut comprovar els conflictes de dreceres"
+          },
+          "changeButton": "Canvia",
+          "discard": "Descarta aquesta drecera",
+          "discardDraft": "Descarta",
+          "save": "Desa",
+          "unsaved": "No desat",
+          "lastHint": "Cada acció conserva almenys una drecera. Canvieu-la o restabliu-la.",
+          "limitHint": "{{count}} de {{limit}} dreceres. Elimineu-ne una per afegir-ne una altra.",
+          "draftConflict": "{{shortcut}} ja l'utilitza {{action}}. No s'ha desat res.",
+          "draftOverlap": "{{shortcut}} també activaria {{action}}. No s'ha desat res.",
+          "legacyOverlap": "{{shortcut}} se solapa amb {{action}}",
+          "legacyDuplicate": "{{shortcut}} també l'utilitza {{action}}",
+          "legacyBody": "Continua funcionant com abans de l'actualització. Canvieu-la per eliminar aquest avís.",
+          "systemRefused": "{{system}} ha rebutjat {{shortcut}}",
+          "systemRefusedGeneric": "El sistema ha rebutjat aquesta drecera",
+          "systemRefusedBody": "Pot ser que una altra aplicació hagi registrat aquesta combinació. Trieu-ne una altra o torneu-ho a provar.",
+          "systemReason": "Missatge del sistema: {{error}}",
+          "retry": "Torna-ho a provar"
         }
       },
       "language": {
@@ -232,10 +274,66 @@
     "sound": {
       "title": "So",
       "microphone": {
-        "title": "Micròfon",
-        "description": "Selecciona el micròfon preferit",
-        "placeholder": "Seleccionaun micròfon...",
-        "loading": "S'està carregant..."
+        "placeholder": "Seleccionaun micròfon..."
+      },
+      "microphonePriority": {
+        "title": "Prioritat dels micròfons",
+        "description": "Handy enregistra amb el primer micròfon disponible en aquest ordre i després amb el predeterminat del sistema. Els micròfons no disponibles mantenen la seva posició.",
+        "emptyTitle": "Cap micròfon preferit",
+        "emptyBody": "Handy fa servir el micròfon predeterminat del sistema fins que n'afegiu un.",
+        "status": {
+          "available": "Disponible",
+          "unavailable": "No disponible",
+          "ambiguous": "Ambigu",
+          "unknown": "Desconegut"
+        },
+        "moveUp": "Puja {{name}}",
+        "moveDown": "Baixa {{name}}",
+        "remove": "Treu {{name}}",
+        "addLabel": "Afegeix un micròfon",
+        "addPlaceholder": "Afegeix un micròfon…",
+        "noDevices": "No s'ha detectat cap micròfon per afegir",
+        "duplicateChoice": "{{name}} ja és a la llista.",
+        "refresh": "Actualitza la disponibilitat",
+        "checked": "Comprovat fa {{seconds}} s",
+        "refreshFailed": "No s'han pogut comprovar els dispositius",
+        "retry": "Torna-ho a provar",
+        "inUse": {
+          "title": "En ús ara",
+          "description": "El micròfon amb què Handy està enregistrant, o el que va fer servir l'últim enregistrament. Pot ser diferent de la vostra primera opció.",
+          "notUsedYet": "Encara no s'ha fet servir des de l'inici",
+          "systemDefault": "Micròfon predeterminat del sistema",
+          "unnamed": "Micròfon sense nom",
+          "lastRecording": "Últim enregistrament · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Primera opció",
+          "fallback": "Alternativa",
+          "fallbackUnavailable": "Alternativa · {{name}} no disponible",
+          "fallbackAmbiguous": "Alternativa · {{name}} ambigu",
+          "clamshell": "Micròfon amb la tapa tancada",
+          "system_default": "Predeterminat del sistema"
+        },
+        "clamshell": {
+          "title": "Micròfon amb la tapa tancada",
+          "description": "Es prova primer quan la tapa està tancada. L'ordre de prioritat no canvia.",
+          "none": "Cap"
+        },
+        "draft": {
+          "discard": "Descarta",
+          "save": "Desa",
+          "saving": "S'està desant…",
+          "saved": "S'ha desat la prioritat dels micròfons"
+        },
+        "conflict": {
+          "title": "La configuració s'ha canviat en un altre lloc",
+          "body": "L'ordre s'ha canviat en un altre lloc. Torneu a carregar per veure'l; les vostres edicions es descartaran.",
+          "reload": "Torna a carregar"
+        },
+        "errors": {
+          "duplicate": "Cada micròfon només pot aparèixer una vegada.",
+          "empty": "El nom del micròfon no pot estar buit."
+        }
       },
       "channel": {
         "title": "Canal d'entrada",
@@ -264,7 +362,8 @@
         "output": "Sortida",
         "transcription": "Transcripció",
         "history": "Historial",
-        "experimental": "Experimental"
+        "experimental": "Experimental",
+        "textFormatting": "Format del text"
       },
       "experimentalToggle": {
         "label": "Funcions experimentals",
@@ -273,6 +372,10 @@
       "lazyStreamClose": {
         "label": "Mantén el micròfon obert entre transcripcions",
         "description": "Manté el flux d'àudio del micròfon obert durant 30 segons després d'aturar l'enregistrament per reduir la latència entre transcripcions consecutives. Mentre és actiu, pot reduir la qualitat de l'àudio Bluetooth."
+      },
+      "pasteVerification": {
+        "label": "Verifica l'enganxat",
+        "description": "Amb l'enganxat intel·ligent, comprova que el camp actiu ha canviat després d'enganxar, torna a enganxar una vegada si no, i després conserva el text a la bombolla de recuperació en lloc de prémer Retorn en un camp buit. Funció de prova."
       },
       "acceleration": {
         "transcribe": {
@@ -323,13 +426,18 @@
         "description": "Trieu com s'insereix el text. Directe: simula l'escriptura mitjançant l'entrada del sistema. Cap: no enganxa el text, només actualitza l'historial i el porta-retalls.",
         "options": {
           "clipboard": "Porta-retalls ({{modifier}}+V)",
+          "smartPaste": "Enganxat intel·ligent",
           "clipboardCtrlShiftV": "Porta-retalls (Ctrl+Maj+V)",
           "clipboardShiftInsert": "Porta-retalls (Maj+Insert)",
           "direct": "Directe",
           "none": "Cap",
-          "externalScript": "Script extern"
+          "externalScript": "Script extern",
+          "clipboardMac": "Porta-retalls (⌘V)",
+          "smartPasteDescription": "Predeterminat a macOS",
+          "noneDescription": "Només historial i porta-retalls"
         },
-        "externalScriptPlaceholder": "/camí/al/vostre/script.sh"
+        "externalScriptPlaceholder": "/camí/al/vostre/script.sh",
+        "descriptionSmart": "L'enganxat intel·ligent escriu directament al camp; si no pot, enganxa i restaura el porta-retalls."
       },
       "typingTool": {
         "title": "Eina d'escriptura",
@@ -357,6 +465,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Retorn automàtic",
+        "description": "S'envia una vegada, només després d'una inserció correcta.",
+        "keyLabel": "Tecla que es prem",
+        "announced": "Retorn automàtic: {{value}}",
+        "note": "Substitueix l'enviament automàtic. Cap Retorn després d'una inserció fallida o no confirmada, amb el mètode d'enganxar Cap, o si l'app ha perdut el focus.",
+        "options": {
+          "never": "Mai",
+          "always": "Sempre",
+          "alwaysDescription": "Cada inserció correcta",
+          "pinOnly": "Només en mode PIN",
+          "pinOnlyDescription": "Només apps fixades"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduïu a l'anglès",
         "description": "Tradueix automàticament la parla d'altres llengües a l'anglès durant la transcripció."
@@ -375,14 +497,6 @@
           "sec15": "Al cap de 15 segons (depuració)"
         }
       },
-      "customWords": {
-        "title": "Paraules personalitzades",
-        "description": "Ajudeu els models compatibles a reconèixer noms i termes especialitzats. Actualment, la correcció per similitu es limita a paraules amb lletres de la A a la Z i números.",
-        "placeholder": "Afegiu una paraula",
-        "add": "Afegiu",
-        "remove": "Suprimiu {{word}}",
-        "duplicate": "«{{word}}» ja existeix"
-      },
       "voiceActivityDetection": {
         "title": "Detecció d'activitat de veu",
         "description": "Filtra els silencis dels enregistraments. Els models compatibles amb la transcripció en temps real utilitzen un marge final de detecció de veu més llarg; si desactiveu la detecció, s'enregistra l'àudio sense filtrar."
@@ -399,6 +513,11 @@
         "title": "Elimina les falques",
         "description": "Elimina les expressions de vacil·lació habituals de les transcripcions. Desactiveu aquesta opció per conservar-les."
       },
+      "smartParagraphs": {
+        "title": "Paràgrafs intel·ligents",
+        "description": "Divideix els dictats llargs en paràgrafs al final de les frases, separats per una línia en blanc. Es conserven les llistes, el codi i els salts de línia existents. S'executa en aquest ordinador.",
+        "descriptionLimited": "Divideix els dictats llargs en paràgrafs al final de les frases, separats per una línia en blanc. Es conserven les llistes, el codi i els salts de línia existents. S'executa en aquest ordinador. En aquest sistema, els dictats en xinès i japonès no es modifiquen."
+      },
       "chineseScript": {
         "title": "Escriptura xinesa",
         "description": "Escriu les transcripcions en mandarí i cantonès amb caràcters simplificats o tradicionals. Els altres idiomes no es modifiquen.",
@@ -407,6 +526,171 @@
           "simplified": "Simplificat",
           "traditional": "Tradicional"
         }
+      },
+      "returnToApp": {
+        "title": "Torna a l'aplicació del dictat",
+        "description": "Insereix a l'aplicació on ha començat el dictat, encara que mentrestant canvieu d'aplicació.",
+        "unavailableUnreadable": "No disponible en aquest sistema: Handy no pot llegir l'aplicació en primer pla. El text va a l'aplicació en primer pla al final.",
+        "unavailablePlatform": "No disponible en aquest sistema. El text va a l'aplicació en primer pla al final.",
+        "details": "Handy recorda l'aplicació en primer pla quan comença un dictat i hi torna abans d'inserir el text. Si està desactivat, el text va a l'aplicació en primer pla quan acaba el dictat.",
+        "detailsLabel": "Quant a tornar a l'aplicació del dictat"
+      },
+      "noFieldBubble": {
+        "title": "Mostra la bombolla quan cap camp de text no té el focus",
+        "description": "Guarda el text en una bombolla en lloc d'enganxar-lo enlloc."
+      },
+      "textFormatting": {
+        "smartSpacing": {
+          "label": "Espaiat intel·ligent",
+          "description": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final. Si el text després del cursor continua la frase, s'elimina el punt final del dictat.",
+          "descriptionLimited": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final. En aquest sistema no es pot llegir el text al voltant del cursor, així que només s'afegeix un espai després de cada dictat."
+        },
+        "smartCapitalization": {
+          "label": "Majúscules intel·ligents",
+          "description": "Adapta la primera lletra de cada dictat al text abans del cursor: majúscula a l'inici d'una frase, minúscula quan la continues. Es conserven les sigles, paraules com iPhone i les teves paraules personalitzades. No canvia res si no es pot llegir el camp."
+        }
+      },
+      "defaultInputs": {
+        "title": "Camps recordats",
+        "description": "On enganxa Handy en una app quan el seu element actiu no és un camp de text. Recorda'n un des del menú de la insígnia durant un dictat.",
+        "field": "Camp: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Oblida",
+        "forgetLabel": "Oblida l'entrada recordada de {{app}}",
+        "forgetAll": "Oblida-ho tot",
+        "forgetAllLabel": "Oblida totes les entrades recordades",
+        "empty": "Encara no hi ha cap camp recordat. Fes servir el menú de la insígnia durant un dictat.",
+        "failed": "No s'ha pogut oblidar l'entrada recordada."
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulari",
+      "title": "Vocabulari",
+      "description": "Noms i termes que el model hauria de reconèixer, si ho admet. Els reemplaçaments, en canvi, reescriuen el text després del reconeixement.",
+      "placeholder": "Afegiu un terme",
+      "inputLabel": "Terme nou del vocabulari",
+      "add": "Afegeix",
+      "addHint": "Escriviu un terme per afegir-lo.",
+      "busy": "Espereu que acabi el canvi actual.",
+      "paste": "Enganxa una llista…",
+      "count": "Termes: {{total}} de {{max}}",
+      "listLabel": "Termes del vocabulari",
+      "remove": "Elimina {{term}}",
+      "retry": "Torna-ho a provar",
+      "loading": "S'està carregant el vocabulari…",
+      "listFailed": "No s'ha pogut llegir el vocabulari desat. No s'ha canviat res; torna-ho a provar per carregar-lo.",
+      "empty": {
+        "title": "Encara no hi ha termes",
+        "body": "Afegiu noms com Claude Code o OpenClaw, d'un en un o com una llista enganxada."
+      },
+      "flag": {
+        "empty": "Terme buit, no s'envia. Elimineu-lo.",
+        "too_long": "Té més de 100 caràcters, no s'envia. Elimineu-lo i afegiu-ne una versió més curta.",
+        "line_break": "Conté un salt de línia, no s'envia. Elimineu-lo i torneu-lo a afegir.",
+        "forbidden_character": "Conté < > o \", no s'envia. Elimineu-lo i afegiu-lo sense aquests caràcters.",
+        "duplicate": "Igual que un terme anterior, no s'envia. Elimineu-lo.",
+        "over_capacity": "Supera el límit de 5.000 termes, no s'envia fins que la llista sigui més curta.",
+        "over_budget": "No s'envia: supera el límit del model."
+      },
+      "errors": {
+        "term_empty": "Introduïu un terme.",
+        "term_too_long": "Un terme pot tenir com a màxim 100 caràcters.",
+        "term_line_break": "Un terme ha de cabre en una sola línia.",
+        "term_forbidden_character": "Traieu els caràcters < > o \" del terme.",
+        "term_duplicate": "Cada terme només pot aparèixer una vegada, i aquest ja és al vocabulari.",
+        "limit": "El vocabulari admet com a màxim 5.000 termes. Elimineu-ne un per afegir-ne un altre.",
+        "conflict": "El vocabulari ha canviat mentrestant i s'ha tornat a carregar. Torneu-ho a provar.",
+        "notFound": "Aquest terme ja s'havia eliminat. S'ha tornat a carregar el vocabulari.",
+        "unknown": "Handy no ha pogut confirmar el canvi. S'ha tornat a carregar el vocabulari; reviseu-lo abans de tornar-ho a provar.",
+        "committed": "El vocabulari s'ha desat, però Handy no l'ha pogut aplicar de seguida. S'ha tornat a carregar la llista.",
+        "saved": "El vocabulari desat no ha canviat."
+      },
+      "status": {
+        "loading": "S'està comprovant què admet el model…",
+        "selectedModel": "el model seleccionat",
+        "used": {
+          "title": "Utilitzat durant el reconeixement per {{model}}",
+          "sent": "Termes enviats: {{sent}} de {{total}}.",
+          "sentOne": "Termes enviats: {{sent}} d'1."
+        },
+        "notSent": {
+          "over_budget": "No s'envien, superen el límit del model: {{terms}}.",
+          "invalid": "No s'envien, no vàlids: {{terms}}.",
+          "duplicate": "No s'envien, duplicats: {{terms}}.",
+          "over_capacity": "No s'envien, més enllà de 5.000 termes: {{terms}}.",
+          "more": "i {{hidden}} més"
+        },
+        "noTermSent": {
+          "title": "No s'envia cap terme a {{model}}",
+          "empty_vocabulary": "El vocabulari és buit. Afegiu termes per utilitzar-los durant el reconeixement.",
+          "invalid_terms_only": "Tots els termes desats són no vàlids o duplicats. Elimineu els termes marcats i afegiu-ne versions corregides.",
+          "over_budget": "El primer terme supera el límit del model, així que no s'envia cap terme. Elimineu-lo per enviar els termes que el segueixen."
+        },
+        "notSupported": {
+          "title": "{{model}} no pot utilitzar el vocabulari durant el reconeixement",
+          "body": "En canvi, s'aplica una correcció aproximada després del reconeixement. Trieu un model Whisper per enviar termes al reconeixedor."
+        },
+        "streaming": {
+          "title": "No s'utilitza en la transcripció en temps real",
+          "body": "{{model}} transcriu en temps real, cosa que no envia cap context de reconeixement. En canvi, s'aplica una correcció aproximada al text final."
+        },
+        "unknown": {
+          "title": "Compatibilitat desconeguda fins que es carregui el model",
+          "model_not_loaded": "Handy comprova què admet {{model}} quan el carrega.",
+          "capability_query_unanswered": "{{model}} no ha respost a temps, per exemple durant un dictat. Handy ho tornarà a comprovar després."
+        },
+        "budgetUnverified": {
+          "title": "No es pot confirmar la compatibilitat del vocabulari amb {{model}}",
+          "body": "Aquest model declara context de reconeixement, però aquesta versió no hi té cap límit documentat. No s'envia cap terme; en canvi, s'aplica una correcció aproximada."
+        },
+        "failed": {
+          "title": "No s'ha pogut llegir l'estat del vocabulari",
+          "body": "El vocabulari està desat. Torneu-ho a provar per comprovar què admet el model."
+        }
+      },
+      "pasteBox": {
+        "title": "Enganxa termes",
+        "description": "Un terme per línia. Els duplicats s'ometen; cal corregir les línies no vàlides abans d'afegir-les.",
+        "label": "Termes per enganxar, un per línia",
+        "previewTitle": "Previsualització",
+        "previewEmpty": "Enganxeu o escriviu un terme per línia per veure què s'afegirà.",
+        "sameAs": "{{term}} — igual que {{original}}",
+        "alreadyListed": "{{term}} — ja és a la llista",
+        "summary": {
+          "add": "Per afegir: {{n}}",
+          "duplicateOne": "1 duplicat",
+          "duplicateMany": "Duplicats: {{n}}",
+          "errorOne": "1 error",
+          "errorMany": "Errors: {{n}}"
+        },
+        "kind": {
+          "add": "Afegir",
+          "duplicate": "Duplicat",
+          "error": "Error"
+        },
+        "line": {
+          "empty": "Línia {{line}}: línia buida, elimineu-la",
+          "too_long": "Línia {{line}}: feu servir com a màxim 100 caràcters",
+          "line_break": "Línia {{line}}: manteniu el terme en una sola línia",
+          "forbidden_character": "Línia {{line}}: traieu els caràcters < > o \"",
+          "duplicate": "Línia {{line}}: igual que un terme anterior",
+          "over_capacity": "Línia {{line}}: supera el límit de 5.000 termes"
+        },
+        "note": {
+          "empty": "El vocabulari no canvia fins que afegiu els termes.",
+          "checking": "S'estan comprovant les línies…",
+          "fixOne": "Corregiu la línia {{lines}} per afegir els termes. El vocabulari no ha canviat.",
+          "fixMany": "Corregiu les línies {{lines}} per afegir els termes. El vocabulari no ha canviat.",
+          "overCapacity": "El vocabulari admet com a màxim 5.000 termes. Escurceu la llista per afegir-la. El vocabulari no ha canviat.",
+          "nothingToAdd": "Totes les línies ja són al vocabulari.",
+          "ready": "Els duplicats s'ometen. No es desa res fins que afegiu els termes."
+        },
+        "cancel": "Cancel·la",
+        "applyOne": "Afegeix 1 terme",
+        "applyMany": "Afegeix {{n}} termes",
+        "applyZero": "Afegeix termes",
+        "applying": "S'està afegint…",
+        "applied": "S'han afegit els termes al vocabulari."
       }
     },
     "postProcessing": {
@@ -441,26 +725,128 @@
           "refreshModels": "Actualitzeu els models"
         }
       },
-      "prompts": {
-        "title": "Indicació",
-        "selectedPrompt": {
-          "title": "Indicació seleccionada",
-          "description": "Seleccioneu una plantilla per millorar les transcripcions o creeu-ne una de nova. Utilitzeu ${output} dins del text de la indicació per fer referència a la transcripció enregistrada."
+      "promptLibrary": {
+        "processing": {
+          "title": "Postprocessament amb IA",
+          "enabledDescription": "Processa els dictats amb un prompt. Desactivat: no es processa cap dictat.",
+          "defaultTitle": "Prompt per defecte",
+          "defaultDescription": "L'utilitza la drecera de dictat amb IA. El dictat simple comença amb l'últim prompt triat a l'indicador, o amb Cap.",
+          "none": "Cap",
+          "invalidOption": "No vàlid: edita'l abans de fer-lo servir"
         },
-        "noPrompts": "No hi ha indicacions disponibles",
-        "selectPrompt": "Seleccioneu una indicació",
-        "createNew": "Creeu una indicació nova",
-        "promptLabel": "Nom de la indicació",
-        "promptLabelPlaceholder": "Introduïu el nom de la indicació",
-        "promptInstructions": "Instruccions de la indicació",
-        "promptInstructionsPlaceholder": "Escriviu les instruccions que s'executaran després de la transcripció. Exemple: Millora la gramàtica i la claredat del text següol: ${output}",
-        "promptTip": "Consell: utilitzeu <code>${output}</code> per inserir el text transcrit a la indicació.",
-        "updatePrompt": "Actualitzeu la indicació",
-        "deletePrompt": "Suprimiu la indicació",
-        "createPrompt": "Creeu la indicació",
-        "cancel": "Cancel·leu",
-        "selectToEdit": "Seleccioneu una indicació more amunt per veure'n i editar-ne els detalls.",
-        "createFirst": "Feu clic a «Creeu una indicació nova» més amunt per crear la primera indicació de postprocessament."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} de {{limit}} prompts",
+          "full": "{{limit}} de {{limit}} prompts: elimina'n un per afegir-ne un altre",
+          "new": "Prompt nou",
+          "empty": "Encara no hi ha prompts. Crea'n un per processar els teus dictats.",
+          "loading": "S'estan carregant els prompts…",
+          "loadFailed": "No s'han pogut carregar els prompts.",
+          "retry": "Torna-ho a provar",
+          "edit": "Edita {{name}}",
+          "defaultProvider": "Proveïdor per defecte",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Sense drecera",
+          "notReady": "No està a punt: {{reason}}",
+          "invalid": "No vàlid: {{reason}}",
+          "reloadFailed": "No s’han pogut actualitzar els prompts. El que es mostra pot estar desactualitzat."
+        },
+        "issues": {
+          "name_empty": "falta el nom",
+          "name_too_long": "nom massa llarg",
+          "name_duplicate": "nom duplicat",
+          "text_empty": "falta el text",
+          "text_too_long": "text massa llarg",
+          "override_incomplete": "falta el proveïdor o el model",
+          "unknown_provider": "proveïdor desconegut"
+        },
+        "reasons": {
+          "provider_error": "el proveïdor ha retornat un error",
+          "empty_result": "el proveïdor ha retornat un resultat buit",
+          "timeout": "cap resposta en 30 segons",
+          "provider_busy": "el proveïdor encara està ocupat amb una altra sol·licitud",
+          "missing_endpoint": "falta el punt final",
+          "missing_model": "falta el model",
+          "missing_api_key": "falta la clau d'API",
+          "provider_unavailable": "proveïdor no disponible en aquest dispositiu",
+          "unknown_provider": "proveïdor desconegut",
+          "invalid_prompt": "el prompt no és vàlid",
+          "prompt_missing": "el prompt ja no existeix"
+        },
+        "editor": {
+          "editTitle": "Edita el prompt",
+          "newTitle": "Prompt nou",
+          "name": "Nom",
+          "namePlaceholder": "Nom del prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Escriu les instruccions que s'aplicaran a la transcripció. Exemple: Escurça la transcripció a l'essencial. ${output}",
+          "textHint": "<code>${output}</code> se substitueix per la transcripció.",
+          "fieldErrors": {
+            "name_empty": "Introdueix un nom (d'1 a 60 caràcters).",
+            "name_too_long": "Fes servir 60 caràcters com a màxim.",
+            "name_duplicate": "Un altre prompt té aquest nom. Els noms han de ser únics.",
+            "text_empty": "Introdueix el text del prompt.",
+            "text_too_long": "Fes servir 8.000 caràcters com a màxim."
+          },
+          "provider": "Proveïdor",
+          "defaultProviderOption": "Proveïdor per defecte ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Escriu el nom d'un model",
+          "readyEndpoint": "Punt final {{endpoint}} · A punt",
+          "readyProvider": "{{provider}} · {{model}} · A punt",
+          "notReadyTitle": "{{provider}} no està a punt: {{reason}}",
+          "notReadyBody": "Els dictats amb aquest prompt ometen el pas d'IA i conserven el text original.",
+          "fix": {
+            "api_key": "Afegeix una clau d'API",
+            "endpoint": "Defineix el punt final"
+          },
+          "shortcuts": "Dreceres (fins a {{limit}})",
+          "changedElsewhere": "Aquest prompt s'ha modificat en un altre lloc. Torna'l a carregar per veure el canvi o desa per conservar la teva versió.",
+          "reload": "Torna a carregar",
+          "deletedElsewhere": "Aquest prompt s'ha eliminat en un altre lloc i ja no es pot desar.",
+          "shortcutsSavedImmediately": "Els canvis de dreceres es desen immediatament.",
+          "fixField": {
+            "api_key": "Clau API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Es desa quan surts del camp. El proveïdor per defecte no canvia."
+          }
+        },
+        "actions": {
+          "note": "Els canvis s'apliquen al següent dictat després de desar.",
+          "fixFields": "Corregeix els camps marcats per desar.",
+          "delete": "Elimina el prompt",
+          "cancel": "Cancel·la",
+          "save": "Desa",
+          "saving": "S'està desant…",
+          "saved": "S'ha desat el prompt."
+        },
+        "deleteDialog": {
+          "title": "Vols eliminar «{{name}}»?",
+          "shortcuts": "Se n'eliminaran les dreceres: {{shortcuts}}.",
+          "default": "És el prompt per defecte: el valor per defecte passa a ser Cap.",
+          "body": "Aquesta acció no es pot desfer.",
+          "cancel": "Cancel·la",
+          "confirm": "Elimina",
+          "close": "Tanca",
+          "deleted": "S'ha eliminat el prompt «{{name}}».",
+          "deletedWithShortcuts": "S'ha eliminat el prompt «{{name}}». Dreceres eliminades: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Prova",
+          "sampleLabel": "Text d'exemple",
+          "samplePlaceholder": "Escriu o enganxa una transcripció d'exemple",
+          "run": "Executa la prova",
+          "running": "S'està provant…",
+          "note": "No s'insereix res i l'historial no canvia.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "La prova ha fallat: {{reason}}",
+          "failedHint": "Comprova la configuració del proveïdor i torna a executar la prova.",
+          "retry": "Torna a executar",
+          "busy": "Encara hi ha una altra prova en curs. Torna-ho a provar quan acabi.",
+          "skipped": "Introdueix un text d'exemple per provar el prompt.",
+          "outdated": "Aquest resultat correspon a una versió anterior del prompt o de la mostra. Torna a executar la prova."
+        },
+        "shortcutOwner": "el prompt «{{name}}»"
       }
     },
     "history": {
@@ -476,6 +862,7 @@
       "deleteError": "No s'ha pogut suprimir l'entrada. Torneu-ho a provar.",
       "retranscribe": "Torneu a transcriure",
       "retranscribeError": "No s'ha pogut tornar a transcriure. Torneu-ho a provar.",
+      "noAudio": "No s'ha desat cap enregistrament d'àudio per a aquesta entrada, així que no es pot tornar a transcriure.",
       "transcribing": "S'està transcrivint...",
       "transcriptionFailed": "La transcripció ha fallat. Podeu tornar a transcriure amb la icona de reintent."
     },
@@ -530,7 +917,8 @@
       "historyLimit": {
         "title": "Límit de l'historial",
         "description": "Nombre màxim d'entrades de l'historial que es conservaran",
-        "entries": "entrades"
+        "entries": "entrades",
+        "invalid": "Introduïu un nombre enter entre {{min}} i {{max}}."
       },
       "recordingRetention": {
         "title": "Supressió automàtica d'enregistraments",
@@ -552,7 +940,8 @@
       },
       "postProcessingToggle": {
         "label": "Postprocessament",
-        "description": "Activa la millora del text amb IA després de la transcripció"
+        "description": "Activa la millora del text amb IA després de la transcripció",
+        "shortcutRefused": "El postprocessament està activat, però el sistema ha rebutjat la drecera {{shortcut}}. Canvia-la a la configuració del postprocessament."
       },
       "muteWhileRecording": {
         "label": "Silencia durant l'enregistrament",
@@ -565,7 +954,8 @@
       "keyboardImplementation": {
         "title": "Implementació del teclat",
         "description": "Tria el motor de dreceres de teclat.",
-        "bindingsReset": "Les dreceres de teclat eren incompatibles i s'han restablert als valors per defecte"
+        "bindingsReset": "Algunes dreceres de teclat eren incompatibles i s'han restablert al valor per defecte o s'han eliminat",
+        "conflictsKept": "Algunes dreceres ara entren en conflicte amb una altra acció. S'han conservat i estan marcades a la configuració de les dreceres."
       },
       "paths": {
         "appData": "Dades de l'aplicació:",
@@ -645,6 +1035,168 @@
           "details": "La transcripció local de veu a text del Handy es basa en el transcribe.cpp i el ggml. Gràcies a la gran feina de Georgi Gerganov i dels col·laboradors."
         }
       }
+    },
+    "replacements": {
+      "group": "Substitucions",
+      "title": "Regles de substitució",
+      "description": "Reescriviu el text reconegut amb la vostra pròpia grafia. S'apliquen després del reconeixement, a diferència del Vocabulari.",
+      "loading": "S'estan carregant les regles de substitució…",
+      "loadFailed": "No s'han pogut carregar les regles de substitució.",
+      "retry": "Torna-ho a provar",
+      "views": {
+        "label": "Vista de les regles",
+        "list": "Llista",
+        "text": "Text"
+      },
+      "import": "Importa…",
+      "export": {
+        "button": "Exporta…",
+        "done": "S'han exportat les regles a {{name}}.",
+        "notSynced": "S'han exportat les regles a {{name}}, però el disc encara no ha confirmat l'escriptura.",
+        "symbolicLink": "{{name}} és un enllaç: trieu un altre fitxer. No s'ha exportat res.",
+        "readOnly": "{{name}} és només de lectura: trieu un altre fitxer. No s'ha exportat res.",
+        "notWritten": "No s'ha pogut escriure {{name}}. No s'ha modificat."
+      },
+      "add": {
+        "recognized": "Text reconegut",
+        "replacement": "Substitució",
+        "button": "Afegeix una regla",
+        "needsText": "Introduïu el text reconegut i la substitució per afegir una regla."
+      },
+      "rule": {
+        "edit": "Edita la regla {{recognized}}",
+        "done": "Acaba d'editar la regla {{recognized}}",
+        "delete": "Suprimeix la regla {{recognized}}",
+        "recognized": "Text reconegut de la regla {{position}}",
+        "replacement": "Substitució de la regla {{position}}"
+      },
+      "count": "{{count}} de {{max}} regles · sense distingir majúscules, paraules senceres",
+      "empty": {
+        "title": "Encara no hi ha cap regla de substitució",
+        "body": "Afegiu una regla o enganxeu línies com ara",
+        "paste": "Enganxa regles com a text"
+      },
+      "draft": {
+        "note": "Canvis no desats. Els dictats fan servir les regles desades fins que deseu.",
+        "discard": "Descarta",
+        "save": "Desa",
+        "saving": "S'està desant…",
+        "saved": "S'han desat les regles de substitució."
+      },
+      "commit": {
+        "invalid": "Algunes regles no són vàlides. Corregiu les files ressaltades i torneu-ho a provar.",
+        "unchanged": "Les regles desades no han canviat.",
+        "conflict": "Les regles s'han canviat en un altre lloc, per exemple des de la línia d'ordres. Torneu-les a carregar per continuar.",
+        "reload": "Torna a carregar",
+        "reloadDiscards": "En tornar a carregar es mostren les regles desades i es descarten els canvis no desats."
+      },
+      "bulk": {
+        "editor": "Regles com a text",
+        "hint": "Una regla per línia: recognized;replacement. També funciona una tabulació per enganxar des d'un full de càlcul. Les línies que comencen per # s'ignoren.",
+        "cancel": "Cancel·la",
+        "apply": "Aplica",
+        "applying": "S'està aplicant…",
+        "applied": "S'han aplicat les regles de substitució.",
+        "fixLine": "Corregiu la línia {{line}} per aplicar. Les regles desades no han canviat.",
+        "fixLines": "Corregiu les {{count}} línies amb errors per aplicar. Les regles desades no han canviat.",
+        "ready": "En aplicar, les regles desades se substitueixen per aquesta previsualització.",
+        "noChanges": "No hi ha res a aplicar: el text coincideix amb les regles desades."
+      },
+      "preview": {
+        "title": "Previsualització",
+        "updating": "S'està actualitzant la previsualització…",
+        "errorOne": "1 error · No es pot aplicar",
+        "errorMany": "{{count}} errors · No es pot aplicar",
+        "changes": "{{adds}} per afegir · {{updates}} per actualitzar · {{deletes}} per suprimir",
+        "noChanges": "Cap canvi",
+        "omitted": "Línies no mostrades: {{count}}",
+        "duplicateOf": "El mateix text reconegut que la línia {{lines}}",
+        "kinds": {
+          "add": "Addició",
+          "update": "Actualització",
+          "delete": "Supressió",
+          "unchanged": "Sense canvis",
+          "ignored": "Ignorada",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Línia de capçalera",
+          "blank": "Línia en blanc",
+          "comment": "Comentari"
+        }
+      },
+      "importDialog": {
+        "title": "Importa regles",
+        "close": "Tanca",
+        "fileOne": "{{name}} · 1 línia · UTF-8",
+        "fileMany": "{{name}} · {{count}} línies · UTF-8",
+        "mode": "Mode",
+        "merge": "Combina: actualitza les regles coincidents i afegeix les noves al final",
+        "replace": "Substitueix: el fitxer esdevé tot el conjunt de regles",
+        "previewing": "S'està llegint el fitxer…",
+        "updateOne": "1 actualització",
+        "updateMany": "{{count}} actualitzacions",
+        "addOne": "1 addició",
+        "addMany": "{{count}} addicions",
+        "deleteOne": "1 supressió",
+        "deleteMany": "{{count}} supressions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (actualització, manté la posició {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (afegida al final)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (suprimida)",
+        "noChanges": "Aquest fitxer coincideix amb les regles desades: no hi ha res a importar.",
+        "firstError": "Línia {{line}}: {{reason}}",
+        "cancel": "Cancel·la",
+        "apply": "Aplica la importació",
+        "applying": "S'està important…",
+        "imported": "S'han importat les regles."
+      },
+      "importRefusal": {
+        "encodingTitle": "No s'ha pogut importar {{name}}: no és text UTF-8",
+        "encodingBody": "No s'ha importat res d'aquest fitxer. Exporteu text pla o CSV i torneu a importar.",
+        "tooLargeTitle": "No s'ha pogut importar {{name}}: ocupa més d'1 MB",
+        "tooLargeBody": "No s'ha importat res. Dividiu el fitxer en fitxers més petits i importeu-los un per un.",
+        "unreadableTitle": "No s'ha pogut llegir {{name}}",
+        "unreadableBody": "No s'ha importat res. Comproveu que el fitxer encara existeix i que Handy el pot obrir.",
+        "dismiss": "Descarta"
+      },
+      "deleteDialog": {
+        "title": "Voleu suprimir aquesta regla?",
+        "body": "{{recognized}} → {{replacement}} se suprimirà de la llista. Deseu per aplicar el canvi.",
+        "cancel": "Cancel·la",
+        "confirm": "Suprimeix"
+      },
+      "switchDialog": {
+        "title": "Deseu o descarteu els canvis",
+        "body": "La llista i el text editen les mateixes regles. Primer deseu o descarteu els canvis no desats.",
+        "cancel": "Cancel·la",
+        "discard": "Descarta",
+        "save": "Desa"
+      },
+      "issues": {
+        "recognizedEmpty": "Introduïu el text reconegut.",
+        "recognizedTooLong": "El text reconegut està limitat a 100 caràcters.",
+        "recognizedForbidden": "El text reconegut no pot contenir cap salt de línia, tabulació ni ;.",
+        "recognizedControl": "El text reconegut conté un caràcter de control invisible.",
+        "recognizedComment": "El text reconegut no pot començar per #.",
+        "duplicate": "Cada text reconegut només pot aparèixer una vegada; aquest ja està definit.",
+        "replacementEmpty": "Introduïu la substitució.",
+        "replacementTooLong": "La substitució està limitada a 500 caràcters.",
+        "replacementForbidden": "La substitució no pot contenir cap salt de línia ni tabulació.",
+        "replacementControl": "La substitució conté un caràcter de control invisible.",
+        "missingSeparator": "Falta el separador: afegiu ; i després la substitució",
+        "tooManyRules": "Un conjunt de regles admet com a màxim 1.000 regles.",
+        "invalidSavedRules": "Les regles desades no són vàlides. Torneu-les a carregar abans d'importar.",
+        "unicodeUnavailable": "Ara no es poden comprovar les regles. Reinicieu Handy i torneu-ho a provar.",
+        "invalidRule": "Aquesta regla no és vàlida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Canvis no desats",
+      "description": "Algunes de les regles de substitució no s'han desat. Quedeu-vos per desar-les o descarteu-les i sortiu.",
+      "stay": "Queda't",
+      "discard": "Descarta i surt"
     }
   },
   "footer": {
@@ -676,7 +1228,9 @@
   },
   "accessibility": {
     "permissionsDescription": "El Handy necessita permisos d'accessibilitat per escriure el text transcrit.",
-    "openSettings": "Obriu la configuració del sistema"
+    "openSettings": "Obriu la configuració del sistema",
+    "offTitle": "El permís d'accessibilitat està desactivat",
+    "smartPasteOff": "L'enganxat intel·ligent no pot inserir ni enganxar. Les vostres transcripcions es conserven per recuperar-les."
   },
   "errors": {
     "loadDirectory": "Error en carregar el directori: {{error}}",
@@ -689,12 +1243,41 @@
     },
     "noInputDeviceTitle": "No s'ha trobat cap micròfon",
     "noInputDevice": "No s'ha detectat cap dispositiu d'entrada d'àudio. Connecteu un micròfon o uns auriculars amb micròfon i torneu-ho a provar.",
+    "inputLostTitle": "Enregistrament interromput",
+    "inputLost": "El micròfon s'ha desconnectat. S'està transcrivint l'àudio enregistrat fins aleshores.",
     "recordingFailed": "No s'ha pogut iniciar l'enregistrament: {{error}}",
     "modelLoadFailed": "No s'ha pogut carregar el model: {{model}}",
     "modelLoadFailedUnknown": "model desconegut",
     "pasteFailedTitle": "No s'ha pogut enganxar el text",
     "pasteFailed": "No s'ha pogut enganxar el text a l'aplicació activa.",
-    "transcriptionFailedTitle": "La transcripció ha fallat"
+    "pasteFailedNotSaved": "No s'ha pogut enganxar el text ni desar-lo a l'historial.",
+    "transcriptionFailedTitle": "La transcripció ha fallat",
+    "settings": {
+      "committedNotApplied": "La configuració s'ha desat, però no s'ha pogut aplicar immediatament.",
+      "gpuDeviceRequired": "Seleccioneu un dispositiu GPU abans de triar l'accelerador GPU.",
+      "outOfRange": "Aquest valor és fora de l'interval permès.",
+      "validationFailed": "Aquest valor no s'accepta per a aquesta configuració.",
+      "revisionConflict": "La configuració s'ha canviat en un altre lloc. Torneu a carregar i torneu-ho a provar.",
+      "unavailable": "Aquesta configuració no es pot canviar ara. Torneu-ho a provar més tard.",
+      "shortcutSessionBusy": "Hi ha un dictat en curs. Torna-ho a provar quan acabi.",
+      "persistenceFailed": "No s'ha pogut desar la configuració: no s'ha pogut escriure el fitxer de configuració. No s'ha canviat res.",
+      "generic": "No s'ha pogut canviar la configuració.",
+      "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran.",
+      "unsupportedPlatform": "Aquesta configuració no està disponible en aquest sistema.",
+      "promptNameEmpty": "Introdueix un nom per al prompt.",
+      "promptNameTooLong": "El nom del prompt ha de tenir com a màxim 60 caràcters.",
+      "promptNameDuplicate": "Un altre prompt ja té aquest nom. Els noms han de ser únics.",
+      "promptTextEmpty": "Introdueix el text del prompt.",
+      "promptTextTooLong": "El text del prompt ha de tenir com a màxim 8.000 caràcters.",
+      "promptOverrideIncomplete": "Tria un proveïdor i un model, o fes servir el proveïdor predeterminat.",
+      "promptUnknownProvider": "Aquest proveïdor no està disponible.",
+      "promptNotUsable": "Aquest prompt no és vàlid. Edita'l abans de fer-lo servir.",
+      "limitExceeded": "S'ha arribat al nombre màxim.",
+      "conflictTitle": "La configuració s'ha canviat en un altre lloc",
+      "conflictBody": "La línia d'ordres o una altra finestra ha desat una versió més nova. Torneu a carregar per veure-la; la vostra modificació no desada es descarta.",
+      "reload": "Torna a carregar",
+      "reloadFailed": "No s'ha pogut tornar a carregar la configuració. Torneu-ho a provar."
+    }
   },
   "appLanguage": {
     "title": "Llengua de l'aplicació",
@@ -712,7 +1295,78 @@
   "overlay": {
     "transcribing": "S'està transcrivint...",
     "processing": "S'està processant...",
-    "loadingModel": "S'està carregant el model..."
+    "loadingModel": "S'està carregant el model...",
+    "fallbackNotice": "El processament amb IA ha fallat. S'ha fet servir el text original.",
+    "destination": {
+      "label": "Destinació: {{name}}",
+      "pinnedLabel": "Destinació: {{name}}, fixada",
+      "frontmostApp": "App en primer pla",
+      "remove": "Treu la destinació",
+      "unknownApp": "L'app de destinació",
+      "choiceFailed": "No s'ha pogut canviar la destinació.",
+      "menu": {
+        "title": "Destinació d'aquest dictat",
+        "frontmostNow": "En primer pla ara",
+        "otherApps": "Altres apps",
+        "frontmostAtEnd": "App en primer pla al final",
+        "loading": "S'estan carregant les apps…",
+        "failed": "No s'ha pogut carregar la llista d'apps.",
+        "pin": "Fixa {{name}}",
+        "unpin": "Deixa de fixar {{name}}",
+        "favorites": "Preferits",
+        "addFavorite": "Afegeix {{name}} als preferits",
+        "removeFavorite": "Treu {{name}} dels preferits",
+        "notOpen": "No oberta",
+        "rememberInput": {
+          "field": "Recorda aquest camp per a {{app}}",
+          "fieldAgain": "Recorda de nou aquest camp per a {{app}}",
+          "terminal": "Recorda aquest terminal",
+          "terminalAgain": "Recorda de nou aquest terminal",
+          "saved": {
+            "field": "Camp recordat per a {{app}}",
+            "terminal": "Terminal recordat per a {{app}}"
+          },
+          "refused": {
+            "notTextField": "Primer fes clic en un camp de text de l'app",
+            "passwordField": "Els camps de contrasenya no es recorden mai",
+            "unrecognizable": "Aquest camp no té cap nom que Handy pugui reconèixer més tard",
+            "terminalUnreadable": "No s'ha pogut llegir el terminal",
+            "full": "Pots recordar fins a 20 entrades.",
+            "stale": "Aquest dictat ha acabat",
+            "failed": "No s'ha pogut desar el camp"
+          }
+        }
+      },
+      "favoriteNotSaved": {
+        "full": "Pots tenir fins a 10 preferits.",
+        "failed": "No s'han pogut desar els preferits."
+      },
+      "refused": {
+        "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",
+        "frozen": "La inserció ja ha començat; la destinació ja no pot canviar.",
+        "unavailable": "Aquesta app ja no està disponible; s'ha actualitzat la llista."
+      }
+    },
+    "prompt": {
+      "label": "Indicació d'aquest dictat: {{name}}",
+      "hint": "Passa el cursor per veure les opcions",
+      "none": "Cap (sense processament amb IA)",
+      "menuTitle": "Indicació d'aquest dictat",
+      "note": "Només s'aplica a aquest dictat. La predeterminada continua sent {{name}}.",
+      "noteRemembered": "Es manté per als propers dictats simples fins que triïs Cap.",
+      "loading": "S'estan carregant les indicacions…",
+      "failed": "No s'han pogut carregar les indicacions.",
+      "choiceFailed": "No s'ha pogut canviar la indicació.",
+      "refused": {
+        "sessionEnded": "L'enregistrament ha acabat; la indicació ja no pot canviar.",
+        "processingOff": "El processament amb IA està desactivat per a aquest dictat.",
+        "promptMissing": "Aquesta indicació ja no existeix.",
+        "promptNotUsable": "Aquesta indicació té errors; edita-la primer a la configuració."
+      }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat"
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} pot estar blocant 1 drecera",
@@ -724,5 +1378,49 @@
     "learnMore": "Com es resol",
     "recorderBlocked": "Ara no se'n poden enregistrar dreceres: l'entrada segura del macOS bloca els esdeveniments de tecla. Resol primer l'avís d'entrada segura.",
     "dismiss": "Descarta"
+  },
+  "smartPaste": {
+    "handOver": "Text col·locat al porta-retalls per a la pantalla remota"
+  },
+  "recoveryBubble": {
+    "label": "Transcripció guardada per Handy",
+    "previewLabel": "Transcripció",
+    "reason": {
+      "appClosed": "{{app}} ja no està oberta",
+      "appClosedUnnamed": "L'aplicació ja no està oberta",
+      "pinnedAppNotRunning": "{{app}} està fixada però no està oberta",
+      "pinnedAppNotRunningUnnamed": "L'aplicació fixada no està oberta",
+      "activationFailed": "No s'ha pogut portar {{app}} al davant",
+      "activationFailedUnnamed": "No s'ha pogut portar l'aplicació al davant",
+      "insertionFailed": "Error en inserir",
+      "noTextField": "Cap camp de text no té el focus",
+      "defaultFieldNotFound": "No s'ha trobat el camp recordat de {{app}}",
+      "defaultFieldNotFoundUnnamed": "No s'ha trobat el camp recordat",
+      "defaultTerminalGone": "El terminal recordat de {{app}} ja no existeix",
+      "defaultTerminalGoneUnnamed": "El terminal recordat ja no existeix"
+    },
+    "explanation": {
+      "notInserted": "Handy no ha inserit res ni ha enviat cap Retorn.",
+      "mayHaveReached": "Potser una part del text ha arribat a l'aplicació.",
+      "nothingSent": "No s'ha enviat res a l'aplicació.",
+      "lateRead": "L'aplicació ha llegit el porta-retalls tard: potser el text s'ha enganxat igualment. Comproveu-ho abans de tornar a copiar.",
+      "historyKept": "La transcripció es conserva a l'historial.",
+      "historyKeptFull": "La transcripció completa es conserva a l'historial.",
+      "historyNotKept": "La transcripció no és a l'historial.",
+      "openAppDrag": "Obriu {{app}} i després arrossegueu o copieu el text.",
+      "openAppCopy": "Obriu {{app}} i després copieu el text.",
+      "openUnnamedDrag": "Obriu l'aplicació i després arrossegueu o copieu el text.",
+      "openUnnamedCopy": "Obriu l'aplicació i després copieu el text.",
+      "focusFieldDrag": "Feu clic en un camp de text i després arrossegueu o copieu el text.",
+      "focusFieldCopy": "Feu clic en un camp de text i després copieu el text.",
+      "noFieldSetting": "Podeu desactivar aquesta comprovació a Configuració, Avançat, Sortida."
+    },
+    "actions": {
+      "drag": "Arrossega a un camp",
+      "copy": "Copia",
+      "why": "Per què?",
+      "hideDetails": "Amaga els detalls",
+      "close": "Tanca"
+    }
   }
 }

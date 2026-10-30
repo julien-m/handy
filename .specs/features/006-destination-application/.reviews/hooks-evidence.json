@@ -1,0 +1,1 @@
+{"hook_resolution_command": "livespec hooks resolve --event before --command plan --feature 006-destination-application", "resolved_hook_context_sha256": "69de8ee553d450cf369fa13cbb59f013db4633687ff58b1be8d88fafda897936", "hook_context_applied": true}

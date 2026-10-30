@@ -1,0 +1,175 @@
+# Implementation Progress — Multiple Dictation Shortcuts
+
+Core-first run authorized 2026-10-13. Read [the reviewed plan](plan.md) for the complete implementation steps. Integrated with feature 008 on 2026-10-14 (merge `22e0f33`, implementation `e2b0ab5`): every shortcut write now goes through the 008 settings service (ordered write, one revision per change, native preparation before the commit and compensation on refusal), and `handy settings shortcuts` is the 004 domain of the 008 CLI. See [Integration with 008](#integration-with-008-2026-10-14).
+
+| Step | Status | Files | Tests run | Result | Updated at |
+|---|---|---|---|---|---|
+| 1 — Native registry and ownership seams | Done (implemented, certification pending) | `shortcut/identity.rs`, `shortcut/tauri_impl.rs`, `shortcut/handy_keys.rs`, `secure_input.rs`, `secure_input_shadow.rs`, `shortcut/handler.rs`, `transcription_coordinator.rs`, `transcription_coordinator/quiescence.rs` (+ tests) | Identity and Carbon shadow tests; 8 quiescence tests driving the production `dispatch` (lease answered in input order, key-down owned before the request refuses it, key-down during the lease gated, external triggers pass, late answer never grants an abandoned request) ([integration proofs](proofs/claude-integration/2-cli-and-live-changes/)) | Every registration carries `(action, shortcut)` identity in both backends and Carbon shadows. Quiescence lease by message to the coordinator thread, input gate while held. Physical race on macOS pending release evidence | 2026-10-14 |
+| 2 — Lists, migration and conflict inventory | Done | `settings.rs`, `shortcut/action_shortcuts.rs`, `shortcut/action_shortcuts/tests.rs`, `shortcut/conflicts.rs`, `shortcut/implementation_switch.rs` (+ tests), `shortcut/migration_tests.rs` | 18 list-edit tests, 12 checker tests, 8 switch-repair tests, 6 migration tests, 2 identity tests in the full suite ([fix1 proofs](proofs/claude-fix1/)) | Implemented, certification pending: additive `additional_bindings`, 1–4 bounds, promotion, reset, normalized equality, modifier-only overlap, legacy conflicts kept and reported. Switch repair reads every entry with the destination parser, merges an alternative equivalent to the reset default, keeps conflicts and reports the ones the switch introduces | 2026-10-13 |
+| 3 — Reversible registry transactions | Done (implemented, certification pending) | `shortcut/edits.rs`, `shortcut/bindings_change.rs`, `shortcut/live_change.rs`, `shortcut/keyboard_switch.rs`, `shortcut/registration_delta.rs` (+ tests), `shortcut/mod.rs`, `settings_service/{sequence,native_changes,tauri_adapter}.rs` | 6 bindings-change tests (prepare, refused commit restores, OS refusal undoes the actions prepared before, probe), 3 keyboard-switch tests, sequence tests (prepared edit refused before/after preparation, extension committed in the same revision), toggle and delta tests; lib 226 targeted PASS ([integration proofs](proofs/claude-integration/2-cli-and-live-changes/)) | List edits, the post-processing toggle and the keyboard switch are prepared changes of the 008 service: lease, registration before the commit, one revision, compensation if the commit is refused, Secure Input reconciled after. No direct writer (`settings_writers` scan PASS). Compensation failures are logged, not gated (see below) | 2026-10-14 |
+| 4 — Coordinator ownership | Done | `transcription_coordinator.rs`, `shortcut/handler.rs`, `signal_handle.rs` (unchanged API) | 36 existing coordinator tests unchanged in expectations + 14 A/B and mixed-trigger tests | Implemented, certification pending: toggle/locked = any shortcut of the action, held = starting shortcut only, busy press owned by action (toggle) or shortcut (hold), global debounce and 50 ms grace unchanged, Stop uses starting metadata | 2026-10-13 |
+| 5 — Shortcuts CLI domain | Done (implemented, certification pending) | `settings_service/domains/shortcuts.rs` (+ tests), `settings_service/domains/mod.rs`, `settings_service/{errors,operations,render,cli,protocol,public}.rs`, `cli.rs`, `tests/shortcuts_cli.rs`, README, [contract](contracts/shortcuts-cli.md), 008 schema | 8 domain tests on a real store; 8 process tests of the real binary (offline list, offline refusal and dry run, routed add/remove/reset revisions, conflict and limit, last removal/unknown/stale unchanged, busy instance, older Handy, help) ([integration proofs](proofs/claude-integration/2-cli-and-live-changes/)) | `list` offline; `add`/`remove`/`reset` live-only with `--dry-run` and `--expected-revision`; codes `shortcut_conflict`, `limit_exceeded`, `validation_failed`, `not_found`, `unavailable` (`instance_required`, `shortcut_session_busy`). Real native registration through the CLI pending macOS evidence | 2026-10-14 |
+| 6 — Action lists and draft recorders | Done in code (UI pass `6413b2ad`); visual and native evidence pending with Julien | `shortcut-list.tsx`, `shortcut-list-rows.tsx`, `shortcut-list-alerts.tsx`, `use-shortcut-list.ts`, `shortcut-list-feedback.ts` (+ test), `shortcut-draft-model.ts` (+ test), `shortcut-list-render.test.tsx`, `shortcut-chip.tsx`, `ShortcutActivation.tsx`, `GeneralSettings.tsx`, `ui/{Alert,ResetButton,SettingContainer,Dropdown}.tsx`, `shortcut/edits.rs` (+ tests), `lib.rs`, `bindings.ts`, 26 locales; earlier: `shortcut-list-model.ts`, recorders, store | `bun run test:shortcut-states` (20 + 9), `test:shortcut-list`, `test:keyboard`, `test:settings-store`, lint, format, tsc, translations, build, `cargo test --lib` 897, clippy, fmt, conventions PASS ([UI proofs](proofs/claude-ui/summary.txt)) | Penflow states implemented: Add opens an empty recorder (Add unavailable), the recorded combination is checked without saving (`check_binding_shortcut_edit`) and shown valid or invalid with the conflict named and "Nothing was saved", only a valid draft is added (Add loading while it registers), a system refusal shows an alert with the system's message and Try again, inherited conflicts show an alert with Change on every involved row (Cancel included, delivery review finding), 4/4 and last-shortcut hints. Contract test ids. Not run: rendered window, Playwright baselines, physical recorder use | 2026-10-14 |
+| 7 — Acceptance, native regression, performance | Partial | None | macOS build and test suites only; full `cargo test` in [proofs](proofs/claude-integration/3-docs-full-suite/) | Native evidence below; CLI live path, busy refusal and keyboard switch through the CLI pending macOS evidence | 2026-10-14 |
+
+## Integration with 008 (2026-10-14)
+
+Every former "Waiting for 008" item, with what was built ([merge proofs](proofs/claude-integration/1-merge-dev/), [implementation proofs](proofs/claude-integration/2-cli-and-live-changes/)):
+
+| Item | Disposition |
+|---|---|
+| Merge of `dev` | `git merge dev` (`22e0f33`). Conflicts in `.specs/changelog.md`, `package.json` (both kept), `shortcut/mod.rs` (008 service kept, 004 behavior kept), `settingsStore.ts` (both import sets; the 004 typed refusals), `bindings.ts` (regenerated by the app's Specta export). `dev`'s single-shortcut `binding_change.rs` is superseded by the 004 list edit and removed |
+| Shortcut CLI operations | Done: `handy settings shortcuts list [ACTION]`, `add`, `remove`, `reset` with `--json`, `--dry-run`, `--expected-revision` ([contract](contracts/shortcuts-cli.md), README). `remove` finds the stored entry in any modifier order |
+| Commit through the revision service | Done: one ordered write, one revision per change, a no-op keeps the revision, the edit is re-planned on the locked settings. The native side is a `PreparedChange` of `settings_service::native_changes` (keys `bindings`, `post_process_enabled`, `keyboard_implementation`, built by `shortcut::live_change`), shared by the settings window and CLI writes routed to the instance: registration before the commit, compensation when the commit is refused, the key's live effect skipped. New 008 entry points: `tauri_adapter::{set_prepared_with, edit_prepared}`, `sequence::{write_edit_prepared, write_change_prepared}`, `PreparedChange::extend` (fields a prepared scalar implies, same revision) |
+| Live re-registration | Done: a CLI change routed to the running instance registers before its commit (no restart); the UI refreshes on `settings-changed`. Proven with the real binary against a simulated instance; with the real app, pending macOS evidence |
+| Coordinator lease | Done: `TranscriptionCoordinator::quiesce` asks the coordinator thread (message, 1 s answer bound); refused (`unavailable`, `shortcut_session_busy`) while recording, processing, a held, deferred or remembered input exists; shortcut input gated while held; released (and Secure Input reconciled) when the commit path ends |
+| Remaining direct writers | Done: keyboard switch = prepared `keyboard_implementation` whose repaired lists are committed in the same revision (a HandyKeys start failure now refuses the switch, nothing committed, instead of `dev`'s second commit back to Tauri); post-processing toggle = prepared `post_process_enabled`, always saved, refused shortcuts reported (UI) or logged (CLI `set`); startup HandyKeys fallback = one internal repair that also repairs the lists for Tauri. `settings_writers` scan PASS |
+| Live-only mutations (plan, review W2) | Applied as planned: without a running instance `add`/`remove`/`reset` are refused with `unavailable` and `details.reason = "instance_required"`, nothing written; `list` and `--dry-run` work offline (`registration_checked: false`). Documented in README and the contract |
+| Envelope details | The 008 error details gain allowlisted `reason`, `action_id`, `owning_action`, `owning_shortcut`, `kind`, `limit` (boxed, so the common error stays small); the checked 008 schema is regenerated. `handy settings get bindings` shows `additional_bindings` |
+| Settings window | Service refusals of a list edit come back as the typed `settings_refused` edit error (a `Result` command would add an `as any` to the generated bindings, refused by the conventions baseline); a busy session has its own message (`errors.settings.shortcutSessionBusy`, 26 locales) for list edits, legacy recorders, the toggle and the switch |
+
+Decisions to confirm at the delivery review:
+
+- **Post-processing toggle during a dictation.** The toggle is refused with `shortcut_session_busy` while a session exists (before this feature it applied mid-session). Reason: disabling releases the post-processing shortcuts, so a held one would lose its release (`plan.md:92`). The OS-refusal behavior of the toggle is unchanged (always saved, refusal reported).
+- **Compensation failures.** A failed undo after a refused commit is logged (`error!`) and the commit error is returned; the plan's "keep dispatch gated and return `internal_error` with a runtime-degraded diagnostic" is not built (no degraded gate).
+
+Not covered (remaining):
+
+- Recorder capture suspension (`suspend_all_bindings`/`resume_all_bindings`) does not take the lease (plan line 92); unchanged from before this feature.
+- Offline CLI `set keyboard_implementation` (no instance) writes the scalar only (008 behavior): no list repair until the next switch; the next start registers what the implementation can parse.
+- The plan's separate test targets (`shortcuts_registry`, `shortcuts_transactions`, `shortcuts_lifecycle`, `shortcuts_migration`) are not created; their cases are covered by the library tests and `tests/shortcuts_cli.rs`, except native registration, which needs the real app.
+
+## Not built, independent of 008
+
+- Nothing. The Tauri OS probe of a new cancel shortcut outside recording was built by the re-audit fixes below. While a recording runs, cancel keeps its current registration and an edited list applies from the next recording, so its OS refusal surfaces then; Linux cancel stays excluded from native probing.
+
+## Audit fix 1 (2026-10-13)
+
+Dispositions of the [independent audit](proofs/claude/independent-audit.md) (verdict PASS, 7 minor, 7 nits). Raw outputs in [fix1 proofs](proofs/claude-fix1/).
+
+| Finding | Disposition |
+|---|---|
+| m1 — no OS check for a disabled post-processing shortcut | Fixed: Tauri probe (register without handler, release at once) before saving; refusal returns `registration_failed` with the OS reason; a release failure is an error, never success. Mention removed from Waiting for 008. Cancel probe recorded above |
+| m2 — Tauri edit of an inherited conflict unregistered the other action | Fixed: pure delta hands a shared slot to the surviving registration after every addition succeeded; a refused edit leaves the slot with its holder. Tested against a fake backend with one slot per parsed combination |
+| m3 — switch repair compared text only, no conflict handling | Fixed: entries read with the destination parser; an alternative equivalent to the reset default is merged (reported with the binding); conflicts kept and registered as before, the ones the switch introduces returned in `conflicts` and announced by a translated toast; the lists flag them. 8 tests |
+| m4 — recorder states, Add enable/disable, retry | Deferred to the Penflow/UI pass, as decided; unchanged and still documented in Step 6 |
+| m5 — cancel legacy path untranslated, refused reset ignored | Fixed: `BindingResponse.edit_error` carries the typed refusal; the store throws it (reset included); both legacy recorders show it translated with the owning action |
+| m6 — no tests for rollback and Secure Input shadows | Fixed: rollback and delta tests in `registration_delta/tests.rs`; shadow planning extracted unchanged to `secure_input_shadow.rs` with 5 macOS tests (identity kept after widening, no degradation, one shadow per shortcut, modifier-only immune, fn/unreadable uncovered) |
+| m7 — conflict warnings stale, fetch failure only logged | Fixed: refresh on any action's shortcuts or the implementation; last known warnings kept on failure and a translated notice shown |
+| n1 — `dedup_ids` lists an action in both `covered` and `uncovered` | Documented, unchanged: the diagnostic lists are per shortcut status, an action with mixed alternatives appears in both on purpose |
+| n2 — inexact "reset to defaults" toast | Fixed in all 26 locales ("reset to their defaults or removed") |
+| n3 — Tab during HandyKeys capture blurs the chip | Documented, unchanged: belongs to the UI pass with m4; native check pending |
+| n4 — three 2.2 MB copies of the conventions output | Fixed: replaced by `conventions.summary.json` (verdict, counts, receipt path, stdout hash) per commit |
+| n5 — `constitution_sha256` in `conventions-gates.yaml` | No change: only that line differs from `dev`, and it already matches `.specs/constitution.md` and the 008 branch |
+| n6 — `warn!` for expected refusals | Documented, unchanged |
+| n7 — progress "Waiting for 008" probe item | Fixed with m1 |
+
+## Re-audit fix (2026-10-13)
+
+Dispositions of the [independent re-audit](proofs/claude-fix1/independent-reaudit.md) (verdict PASS, 1 minor, 6 nits). Raw outputs in [fix2 proofs](proofs/claude-fix2/).
+
+| Finding | Disposition |
+|---|---|
+| M1 — disabling post-processing unregistered a Tauri slot shared with Transcribe | Fixed: `change_post_process_enabled_setting` plans the release with `plan_deactivation` (delta from every post-processing registration to none, with the other registered actions as survivors) and applies it with `apply_registration_delta` before saving, so the shared slot is handed back to Transcribe. Test `disabling_an_action_hands_its_shared_slot_back_to_the_other_action` (both possible startup holders). Native check added below |
+| Cancel OS probe | Built: `preparation_for` probes additions to cancel with Tauri when cancel is not registered (outside recording) on platforms with dynamic cancel; while recording and on Linux nothing changes. Tests in `edits.rs` (4 preparation cases) |
+| Late post-processing activation (`let _ = register_shortcut`) | Fixed: enabling plans `plan_activation` (a slot another action already holds stays with it, as at startup, and the stored-conflict warning flags it) and registers with rollback before saving. A refusal returns `registration_failed`; the setting is not saved, the toggle reverts and shows `settings.debug.postProcessingToggle.shortcutRefused` with the translated reason (26 locales). Tests `enabling_an_action_leaves_a_slot_held_by_another_action_alone`, `a_refused_activation_registers_nothing`. `bindings.ts` regenerated with the app's Specta builder (`Result<null, ShortcutEditError>`) |
+| N1 — failed probe release | Fixed: one retry, then `error!`; the consequence (combination captured without handler until restart) is documented on `probe_shortcut` |
+| N2 — `hand_over` hid a failed release | Fixed: a failed release is logged with `warn!` and the survivor is not registered (the slot is still held, or free during recorder suspension, whose resume registers it). Test `a_failed_slot_release_does_not_register_the_survivor` |
+| N3 — unknown action ids could receive a slot | Fixed: `other_registered` keeps only default action ids, as startup does |
+| N4 — first switch to HandyKeys skipped the repair | Fixed: the first switch repairs the lists with the HandyKeys parser (`repair_bindings_for_implementation`) before HandyKeys initialization registers them, and returns the repaired ids |
+| N5 — invalid syntax on the legacy cancel path stayed English | Fixed: `change_binding`/`reset_binding` report `invalid_shortcut` in the response (`success: false`, typed `edit_error`), translated by the recorders like other refusals; `Err` remains only for an empty shortcut or an unknown action |
+| N6 — coverage and history residue | Mouse-based immunity tested (`mouse_based_shortcuts_are_immune`). The three 2.2 MB `conventions.stdout` files stay in this branch's history (`1e4617c`, `7f31bd6`, `8a4a614`): history is not rewritten here; merge into `dev` with a squash merge so they do not reach it |
+| `implementation.md` validation | Fixed: front matter and `## Acceptance Criteria Mapping`; `livespec validate` exits 0 |
+
+Verification ([fix2 proofs](proofs/claude-fix2/)): `cargo test --lib` 372 PASS / 16 ignored; filters `shortcut::` 69, `transcription_coordinator::` 50, `secure_input` 6 PASS; `cargo fmt --check`, `bun run lint`, `tsc --noEmit`, `check:translations`, `test:shortcut-list`, `test:keyboard`, `format:check` PASS; `livespec conventions verify --feature repo --json` PASS (run `20261013T182322Z`, 0 blocker, `new_count` 0, no warning in the rewritten files); `livespec validate` exit 0. One earlier full-suite run failed `clipboard::tests::external_script_does_not_wait_for_inherited_stdio` on a timeout ([excerpt](proofs/claude-fix2/cargo-test-lib-flaky-run.txt)); `clipboard.rs` is identical to `dev`, the test passed alone three times and in the recorded full run.
+
+## Independent spec review fix (2026-10-13)
+
+Finding of the [independent spec review](proofs/claude-review/independent-review.md) ("a shortcut refused by the OS blocks enabling post-processing"). Raw outputs in [fix3 proofs](proofs/claude-fix3/). `spec.md` and `plan.md` are unchanged, so the refreshed review receipts stay valid.
+
+`cf93910` refused to enable post-processing when the OS refused one of its shortcuts. That contradicts the spec (Header "Keep the existing activation behavior", Edge Cases "as today for its single shortcut", AC-002), and since the post-processing section, where its shortcuts are edited, only appears when post-processing is on (`Sidebar.tsx:63`), the user could no longer fix the shortcut. This fix returns to "as today" without the silent failure:
+
+| Part | Disposition |
+|---|---|
+| Activation always saved | `change_post_process_enabled_setting` always writes the toggle and returns `Result<RefusedShortcut[], string>` (never an error). The logic is the port-driven `edits::toggle_post_process`. Tests `enabling_post_processing_succeeds_although_the_os_refuses_a_shortcut`, `an_unchanged_toggle_touches_no_registration` |
+| Slot handover kept from `cf93910` | Enabling still plans `plan_activation` (a slot another action holds stays with it) and disabling `plan_deactivation` (a shared slot goes back to its holder). Tests `enabling_post_processing_leaves_a_shared_slot_to_its_holder`, `disabling_post_processing_hands_a_shared_slot_back`, plus the delta tests |
+| Refusal registers the rest | `register_activation` registers each addition on its own, keeps the accepted ones and returns each refusal; no rollback, since enabling adds no new shortcut (AC-004 refusal stays reserved to additions and changes). Test `a_refused_activation_keeps_the_accepted_shortcuts_and_reports_the_refusal` replaces `a_refused_activation_registers_nothing` |
+| Reported, never silent | The settings store records the refused shortcuts; the toggle shows one translated toast per refused shortcut (`settings.debug.postProcessingToggle.shortcutRefused`, now "Post Processing is on, but the system refused the shortcut {{shortcut}}…", 26 locales; the backend reason as description). The shortcut list shows a warning on the row (`shortcut-row-<action>-<n>-refused`, existing key `settings.general.shortcut.list.errors.registration`), which stays editable. Model tests in `shortcut-list-model.test.ts` |
+| Warning lifetime | Cleared when post-processing is disabled or the keyboard implementation is switched; dropped for a shortcut that is changed or removed through the list. Not tracked: a refused shortcut that a later re-registration (recorder resume, restart) happens to accept keeps its warning until changed or until the next toggle; a refusal at startup stays logged only, as before this feature |
+| `bindings.ts` | Regenerated by the app's Specta builder (debug binary, headless `--list-models`); byte-identical to the expected edit |
+
+**Plan contradiction to fix at the next plan revision (not changed now):** `plan.md:338` (Step 3) routes the post-processing toggle through the transactional `SettingsMutation` that registers before durable persistence, whose refusal leaves settings unchanged ("No saved rejection"), while `plan.md:76` says "retain the current post-processing/cancel enabled-state rules". The spec and this fix follow `plan.md:76`: the 008 migration of the toggle must keep saving it when the OS refuses a shortcut and report the refusal instead.
+
+Verification ([fix3 proofs](proofs/claude-fix3/)): `cargo test --lib` 376 PASS / 16 ignored; filters `shortcut::` 73 and `transcription_coordinator::` 50 PASS; `cargo fmt --check`, `bun run lint`, `tsc --noEmit`, `check:translations` (26 locales complete), `test:shortcut-list`, `format:check` PASS; `livespec conventions verify --feature repo --json` PASS (run `20261013T184932Z`, 0 blocker, `new_count` 0, no warning in the files changed by this fix); `livespec validate … --progression implement --model claude-opus-5-5 --review-max-chars 180000` → `Progression: READY`.
+
+## UI pass (2026-10-14)
+
+Code commit `6413b2ad` on `feature/ui-general-output`, against the Penflow screens `shortcut-settings`, `shortcut-settings-conflict` and `shortcut-settings-limit` ([contract](../../../penflow/flow-ui-contract/contract.json), [mockups](../../design/screens/004-multiple-dictation-shortcuts/)). Proofs: [UI proofs](proofs/claude-ui/summary.txt).
+
+| State (spec Behavioral AC) | Implementation | Test |
+|---|---|---|
+| Recorder empty / invalid / valid (has_validation) | Add opens a draft recorder that starts recording ("Press keys…", `data-validity="empty"`); the capture is checked by the new `check_binding_shortcut_edit` command (plan only, nothing registered or saved); a refusal marks it invalid (red chip, `aria-invalid`) with "⇧ ⌥ Space is already used by … Nothing was saved."; a check that passes marks it valid. Leaving an empty recorder closes it; a captured draft can be recorded again or discarded | `shortcut-draft-model.test.ts`, `shortcut-list-render.test.tsx`, `edits/tests.rs` (2 new) |
+| Add enabled / disabled / loading (is_submittable) | Add opens the draft when the action has room; with a draft only a valid one is added; `data-state="loading"` while it registers | `shortcut-draft-model.test.ts`, render test |
+| Idle / loading / error / success, retry (async_action) | List `data-state`; a system refusal (`registration_failed`) shows the alert "macOS refused ⌘ ⇧ 5" with the system's message and Try again, which repeats the same edit; other refusals are inline | `shortcut-list-feedback.test.ts`, render test |
+| Inherited conflict warning (AC-002) | Row icon (unchanged) plus one alert per conflicting stored shortcut with "It kept working as before the update…" and Change, which records that row again. The Cancel row now uses the same list (single mode, replace and reset through `edit_binding_shortcuts`, same backend path as `change_binding`), so its inherited conflicts are flagged too (delivery review finding on `GeneralSettings.tsx`) | `shortcut-list-feedback.test.ts` (both sides, Cancel included), render test |
+| 4/4 limit, last shortcut | "4 of 4 shortcuts. Remove one to add another." and "Each action keeps at least one shortcut. Change or reset it instead."; Add disabled at the limit, Remove disabled on the last shortcut | render test |
+
+Test ids: elements present in the default screen use `shortcut-settings-<action>-…` (`dictation`, `ai-dictation`, `cancel`); elements that only exist in the conflict and limit screens keep those prefixes (`shortcut-settings-conflict-dictation-conflict`, `-legacy`, `-change`, `-os`, `shortcut-settings-limit-dictation-limit`). Added where the contract has no node: `-recording-discard`, `-os-retry`, `-shortcut-refused`, `-shortcut-conflict`, `-conflicts-unavailable`.
+
+Differences with the mockup, and why:
+- Add is unavailable while the draft recorder is empty (mockup: Add looks enabled next to "Press keys…"), because the spec's has_validation requires it.
+- "Dictation with AI processing" stays on the Post Process page where Handy shows it (only when post-processing is enabled); the mockup groups it under General. Action names and the activation description keep Handy's existing texts.
+- The system refusal alert adds Try again and the system's own message (AC-004: "with the OS reason"); its body says "may have registered" since the OS does not say why.
+- A captured draft gets a discard button (no exit otherwise).
+- Audit m4 (recorder states, Add, retry) is resolved by this pass; n3 (Tab during HandyKeys capture) is unchanged and stays with the native check.
+
+The legacy non-capture mode of `GlobalShortcutInput`/`HandyKeysShortcutInput` is no longer used by any screen; it is left in place (removed by the hardening pass below).
+
+## UI hardening (2026-10-14)
+
+Branch `fix/ui-hardening-b`, from the warnings of the delivery review and audit of the general and output settings. Proofs: [hardening proofs](proofs/claude-hardening/summary.txt).
+
+| Warning | Fix | Test |
+|---|---|---|
+| HandyKeys recorder refused at start (macOS Secure Input): the draft stayed "recording", empty, with Add disabled and no way out | The chip reports a refused start to the list (`onStartFailed`); the draft becomes `blocked`: empty (`data-validity="empty"`), the reason inline (`secureInput.recorderBlocked`, or the backend's message) and Discard offered. A later successful start (`recordingStarted`) records again; a captured draft keeps its combination and only shows the reason | `shortcut-draft-model.test.ts` (5 new), `shortcut-list-feedback.test.ts`, `shortcut-list-render.test.tsx` (blocked row, inline reason) |
+| After `registration_failed` on the draft, Try again disappeared as soon as another edit replaced the list feedback | The system alert of the draft is derived from the draft itself (`draftSystemRefusal`) while it stays refused; Try again commits the draft again. The alert of another edit keeps its own retry. The draft commit is guarded by `canCommit` (no double submit) | `shortcut-list-feedback.test.ts` (4 new) |
+| The "Change" request was never cleared: a row removed then re-added with the same shortcut started recording on mount | One-shot requests (`record-request-model.ts`): consumed once the chip handled them, dropped when the shortcut leaves the list, numbers never reused; the draft's Add request works the same way | `record-request-model.test.ts` (6) |
+| Dead code: non-capture recorders, `updateBinding`/`resetBinding`, `useShortcutFailureText` | Removed after grep (no screen and no test used them); with them `describeShortcutFailure`, `describeSettingsFailure` and `src/lib/shortcut-edit-failure.ts`, which only served those paths. The recorders keep the capture path only; click-outside and chip text are shared in `shortcut-chip.tsx`. The backend commands `change_binding`/`reset_binding` stay (bindings, CLI parity) | `shortcut-list-model.test.ts` (legacy assertions removed), every suite |
+
+Not changed: the native check of the Secure Input refusal (press Add with Secure Input on) stays pending, with Julien.
+
+## Native evidence
+
+Obtained on macOS 26.5.2 (build 25F84, arm64), without human interaction:
+
+- The library and tests build and run natively; the conflict checker normalizes with the real Tauri (`global-hotkey`) and HandyKeys parsers on macOS, including side-specific and modifier-only HandyKeys syntax ([cargo test](proofs/claude/commit-2-busy-ownership/cargo-test.stdout)).
+
+Pending release evidence (never claimed as passed), each with its exact check:
+
+- macOS, Tauri backend, physical keys: add `ctrl+option+d` to Transcribe; restart Handy; in toggle mode start with `option+space`, stop with `ctrl+option+d`; in push-to-talk hold `option+space`, press and release `ctrl+option+d`, observe recording continues until `option+space` is released; in hold-or-toggle tap `option+space`, stop with `ctrl+option+d`.
+- macOS, HandyKeys backend with Accessibility permission: same matrix, plus a modifier-only shortcut (`option`) and the refusal of `option+space` on another action.
+- macOS OS refusal: register `ctrl+option+d` in another application, add it in Handy with the Tauri backend, observe the system reason and that the stored list is unchanged.
+- macOS Secure Input: with HandyKeys and two shortcuts, hold a password field focus (Secure Input on), press each shortcut, observe both Carbon shadows fire with the original identity and that releasing the starting shortcut ends a held session.
+- macOS OS refusal while post-processing is disabled: register `ctrl+option+p` in another application, add it to "Transcribe with Post-Processing" with the Tauri backend and post-processing off, observe the system reason and that the stored list is unchanged.
+- macOS inherited conflict, Tauri backend: store `transcribe = "alt+space"` and `transcribe_with_post_process = "option+space"` with post-processing on, restart, change Transcribe to `f5`, observe that `option+space` still starts a post-processing dictation without restart.
+- macOS inherited conflict when post-processing is disabled, Tauri backend: same store with post-processing on, restart, disable post-processing, observe that `alt+space` still starts a Transcribe dictation without restart.
+- macOS refused late activation: register the post-processing shortcut in another application while post-processing is off, enable post-processing with the Tauri backend, observe the toggle on and saved after restart, the translated toast naming the shortcut, the warning on its row in the Post Processing settings, and that changing that row to a free combination registers it and clears the warning.
+- macOS cancel OS refusal: register `ctrl+option+x` in another application, add it to Cancel outside recording with the Tauri backend, observe the system reason and that the stored list is unchanged.
+- macOS CLI live path (Tauri and HandyKeys): with the app running on an isolated store, `handy settings shortcuts add transcribe ctrl+option+d --json`, observe `ok` and the new revision, then press `ctrl+option+d` and observe a dictation without restart; `remove` it and observe that it no longer triggers; `handy settings set keyboard_implementation handy_keys --json`, observe both shortcuts still work.
+- macOS busy refusal: hold the push-to-talk shortcut, run `handy settings shortcuts add transcribe f13 --json` (and toggle post-processing in the settings), observe `unavailable`/`shortcut_session_busy`, the store unchanged, and that releasing the held shortcut still stops the dictation.
+- macOS CLI OS refusal: register `ctrl+option+x` in another application, `handy settings shortcuts add transcribe ctrl+option+x --json`, observe `validation_failed`/`registration_refused`, the store unchanged and the system reason in the app log.
+- Downgrade: save two shortcuts, start the previous Handy release on the same store, observe the first shortcut works and the second is ignored.
+- macOS settings window (UI pass): screenshots of `shortcut-settings`, `-conflict` and `-limit` states against the mockups, and the Behavioral AC baselines (Playwright or the native window), with Julien.
+- Windows and Linux: `cargo test --manifest-path src-tauri/Cargo.toml --lib shortcut transcription_coordinator` on each OS, then the physical toggle/push-to-talk A/B check with the Tauri backend; on Linux confirm the cancel shortcut stays hidden and unregistered.
+- Latency: four versus one shortcut per action, release build, paired samples per the plan's protocol (≤10 ms delta).
+
+No AC is certified by this run: every implemented AC is "implemented, certification pending".
+
+### Review round 1 (2026-10-14)
+
+Proofs: [round 1 proofs](proofs/claude-hardening-fix1/summary.txt).
+
+- **Recorders that disappear (audit).** A HandyKeys start answered after its chip unmounted (blocked draft clicked again, then Discard) is stopped at once, so the backend never keeps every shortcut suspended; a Tauri chip that unmounts while it holds the shortcuts suspended, or while its suspension is answered, resumes them (`recorder-lifecycle.ts`, tests `recorder-lifecycle.test.ts`). The HandyKeys key listener reads `finish` through a ref, so a list re-render (inline `onCapture`) no longer stops the backend mid-recording.
+- **One-shot requests (review).** The chip's request effect is `actOnRecordRequest`; `shortcut-list-render.test.tsx` plays Change on a row, its StrictMode replay, the row leaving and coming back with the same shortcut, and the draft chip remounted after a keyboard implementation switch: no second start.
+- **Stale start reason (review info).** A commit clears the start failure of a captured draft.
+- **Orphan translations.** `settings.general.shortcut.errors.restore` and `.reset` (unused since the non-capture recorders were removed, confirmed by grep) are removed from the 26 locales.

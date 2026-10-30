@@ -1,0 +1,22 @@
+bun test v1.3.9 (cf6cdbbb)
+
+src/overlay/pin-state.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './pin-state' from '/Users/julienm/projects/handy-wt/009-pin-mode/src/overlay/pin-state.test.ts'
+-------------------------------
+
+
+src/components/settings/automatic-enter-state.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './automatic-enter-state' from '/Users/julienm/projects/handy-wt/009-pin-mode/src/components/settings/automatic-enter-state.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 2 fail
+ 2 errors
+Ran 2 tests across 2 files. [21.00ms]

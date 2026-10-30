@@ -10,7 +10,42 @@ interface SettingContainerProps {
   layout?: "horizontal" | "stacked";
   disabled?: boolean;
   tooltipPosition?: "top" | "bottom";
+  /** Test id of the row; its title gets `${testId}-title` unless `titleTestId` is given. */
+  testId?: string;
+  /** Explicit test id of the title, overriding the one derived from `testId`. */
+  titleTestId?: string;
+  /** Makes the title a programmatic focus target (tabIndex -1) with this `data-focus-key`. */
+  titleFocusKey?: string;
+  /** Small decorative icon before the title (horizontal tooltip layout), hidden from assistive tech. */
+  icon?: React.ReactNode;
 }
+
+/**
+ * Attributes of the title heading: its test ID and, when it is a focus target, its focus key.
+ * @param titleTestId test ID of the title
+ * @param titleFocusKey focus key, or undefined when the title is not focusable
+ * @returns the heading attributes
+ */
+const titleAttributes = (titleTestId?: string, titleFocusKey?: string) =>
+  titleFocusKey === undefined
+    ? { "data-testid": titleTestId }
+    : {
+        "data-testid": titleTestId,
+        "data-focus-key": titleFocusKey,
+        tabIndex: -1,
+      };
+
+/**
+ * The row icon, decorative: the title names the setting.
+ * @param icon the icon, or undefined for none
+ * @returns the icon wrapper, or null
+ */
+const leadingIcon = (icon?: React.ReactNode) =>
+  icon === undefined ? null : (
+    <span className="text-mid-gray flex items-center" aria-hidden="true">
+      {icon}
+    </span>
+  );
 
 export const SettingContainer: React.FC<SettingContainerProps> = ({
   title,
@@ -21,7 +56,15 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   layout = "horizontal",
   disabled = false,
   tooltipPosition = "top",
+  testId,
+  titleTestId,
+  titleFocusKey,
+  icon,
 }) => {
+  const titleProps = titleAttributes(
+    titleTestId ?? (testId ? `${testId}-title` : undefined),
+    titleFocusKey,
+  );
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -54,9 +97,10 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   if (layout === "stacked") {
     if (descriptionMode === "tooltip") {
       return (
-        <div className={containerClasses}>
+        <div className={containerClasses} data-testid={testId}>
           <div className="flex items-center gap-2 mb-2">
             <h3
+              {...titleProps}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
             >
               {title}
@@ -105,9 +149,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     }
 
     return (
-      <div className={containerClasses}>
+      <div className={containerClasses} data-testid={testId}>
         <div className="mb-2">
-          <h3 className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}>
+          <h3
+            {...titleProps}
+            className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+          >
             {title}
           </h3>
           <p className={`text-sm ${disabled ? "opacity-50" : ""}`}>
@@ -126,10 +173,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
 
   if (descriptionMode === "tooltip") {
     return (
-      <div className={horizontalContainerClasses}>
+      <div className={horizontalContainerClasses} data-testid={testId}>
         <div className="max-w-2/3">
           <div className="flex items-center gap-2">
+            {leadingIcon(icon)}
             <h3
+              {...titleProps}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
             >
               {title}
@@ -179,9 +228,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   }
 
   return (
-    <div className={horizontalContainerClasses}>
+    <div className={horizontalContainerClasses} data-testid={testId}>
       <div className="max-w-2/3">
-        <h3 className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}>
+        <h3
+          {...titleProps}
+          className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+        >
           {title}
         </h3>
         <p className={`text-sm ${disabled ? "opacity-50" : ""}`}>

@@ -1,0 +1,76 @@
+schema_version: 2
+generated_from:
+  constitution: .specs/constitution.md
+  constitution_sha256: f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067
+  stack: .specs/stacks/_default.md
+commands:
+  lint:
+  - id: eslint
+    run: node_modules/.bin/eslint . --format json
+  format: []
+  typecheck: []
+builtin:
+  max_file_lines:
+    target: 400
+    limit: 500
+  max_function_lines:
+    target: 30
+    limit: 60
+  file_header:
+    swift: ^//\n//  [^\n]+\.swift
+    python: null
+  doc_coverage:
+    require_public_api: true
+  token_scale:
+    scale:
+    - 2
+    - 4
+    - 8
+    - 12
+    - 16
+    - 24
+    - 32
+    - 40
+    - 48
+    - 64
+    - 80
+    properties:
+    - padding
+    - margin
+    - spacing
+  suppression_directives:
+    budget: 0
+    whitelist: []
+  import_rules: []
+coverage:
+  typescript: full
+  react: full
+exclusions:
+- .specs/**
+- .git/**
+- .mimocode/**
+- .mypy_cache/**
+- .pytest_cache/**
+- .ruff_cache/**
+- .venv/**
+- build/**
+- coverage/**
+- dist/**
+- node_modules/**
+- playwright-report/**
+- '**/__pycache__/**'
+- '**/Generated/**'
+- '**/node_modules/**'
+- src/bindings.ts
+scope: repo
+ast_rules:
+  mode: enforce
+  backend:
+    name: ast-grep
+    command: sg
+    timeout_seconds: 10
+  catalogs:
+  - validator/conventions_ast/rule_catalog/ast_high.yaml
+  - validator/conventions_ast/rule_catalog/rust_high.yaml
+  - validator/conventions_ast/rule_catalog/swift_high.yaml
+  - validator/conventions_ast/rule_catalog/kotlin_high.yaml

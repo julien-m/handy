@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { focusFirstAvailable } from "./focus-return";
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -26,6 +27,13 @@ interface DialogProps {
   className?: string;
   contentClassName?: string;
   contentFades?: boolean;
+  /** Test id of the whole dialog (title, body and footer). */
+  testId?: string;
+  /**
+   * Takes the focus when the dialog closes and the element focused before it opened is gone,
+   * disabled or was none (for example a trigger disabled while a file picker was open).
+   */
+  returnFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
 const isVisible = (element: HTMLElement) => {
@@ -58,6 +66,8 @@ export const Dialog: React.FC<DialogProps> = ({
   className = "",
   contentClassName = "",
   contentFades = true,
+  testId,
+  returnFocusRef,
 }) => {
   const titleId = useId();
   const descriptionId = useId();
@@ -67,8 +77,10 @@ export const Dialog: React.FC<DialogProps> = ({
   useEffect(() => {
     if (!open) return;
 
+    // <body> is no element to return to: the fallback takes the focus instead.
     previousFocusRef.current =
-      document.activeElement instanceof HTMLElement
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement !== document.body
         ? document.activeElement
         : null;
 
@@ -86,10 +98,13 @@ export const Dialog: React.FC<DialogProps> = ({
     return () => {
       cancelAnimationFrame(animationFrame);
       document.body.style.overflow = previousOverflow;
-      previousFocusRef.current?.focus();
+      // The element focused before the dialog, else the fallback (native session finding N5).
+      if (!focusFirstAvailable([previousFocusRef.current])) {
+        focusFirstAvailable([returnFocusRef?.current]);
+      }
       previousFocusRef.current = null;
     };
-  }, [initialFocusRef, open]);
+  }, [initialFocusRef, open, returnFocusRef]);
 
   useEffect(() => {
     if (!open) return;
@@ -168,6 +183,7 @@ export const Dialog: React.FC<DialogProps> = ({
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
+        data-testid={testId}
         className={`flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-lg border border-mid-gray/20 bg-background shadow-xl outline-none sm:max-h-[calc(100dvh-3rem)] ${className}`}
       >
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-mid-gray/20 px-4 py-2.5">

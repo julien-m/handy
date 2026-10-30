@@ -1,0 +1,61 @@
+{
+  "platform": "Darwin",
+  "platform_release": "25.5.0",
+  "machine": "arm64",
+  "python": "3.14.7",
+  "started_monotonic_ns": 688151863120541,
+  "finished_monotonic_ns": 688151864295875,
+  "before": {
+    "listener_fd": {
+      "device": -1,
+      "inode": 527412,
+      "mode": "0o666",
+      "file_type": "0o140000",
+      "uid": 501,
+      "gid": 20,
+      "nlink": 0
+    },
+    "socket_path": {
+      "device": 16777233,
+      "inode": 210964519,
+      "mode": "0o755",
+      "file_type": "0o140000",
+      "uid": 501,
+      "gid": 20,
+      "nlink": 1
+    }
+  },
+  "syscall": {
+    "name": "fchmod",
+    "requested_mode": "0o600",
+    "result": -1,
+    "error": {
+      "errno": 22,
+      "errno_name": "EINVAL",
+      "message": "Invalid argument"
+    }
+  },
+  "after": {
+    "listener_fd": {
+      "device": -1,
+      "inode": 527412,
+      "mode": "0o666",
+      "file_type": "0o140000",
+      "uid": 501,
+      "gid": 20,
+      "nlink": 0
+    },
+    "socket_path": {
+      "device": 16777233,
+      "inode": 210964519,
+      "mode": "0o755",
+      "file_type": "0o140000",
+      "uid": 501,
+      "gid": 20,
+      "nlink": 1
+    }
+  },
+  "path_identity_preserved": true,
+  "path_mode_is_0600": false,
+  "scope": "Observed macOS only; no Linux or production claim"
+}

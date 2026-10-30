@@ -1,7 +1,9 @@
-use natural::phonetics::soundex;
+use custom_word_index::CustomWordIndex;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use strsim::levenshtein;
+
+#[path = "custom_word_index.rs"]
+mod custom_word_index;
 
 /// Builds an n-gram string by cleaning and concatenating words
 ///
@@ -22,123 +24,13 @@ fn build_match_key(word: &str) -> String {
         .collect()
 }
 
-struct CustomWordMatchKey {
-    word_index: usize,
-    key: String,
-}
-
-fn build_custom_word_match_keys(word: &str, word_index: usize) -> Vec<CustomWordMatchKey> {
-    let primary_key = build_match_key(word);
-    let mut keys = Vec::with_capacity(2);
-
-    // The fallback matcher is intentionally limited to ASCII terms. Its
-    // whitespace tokenization and Soundex scoring are not suitable for CJK
-    // scripts. Unicode custom words remain available to models that accept
-    // them as native decode prompts; they are simply skipped by this fallback.
-    if is_supported_fuzzy_key(&primary_key) {
-        keys.push(CustomWordMatchKey {
-            word_index,
-            key: primary_key.clone(),
-        });
-    }
-
-    if word.contains('&') {
-        let expanded_key = build_match_key(&word.replace('&', " and "));
-        if is_supported_fuzzy_key(&expanded_key) && expanded_key != primary_key {
-            keys.push(CustomWordMatchKey {
-                word_index,
-                key: expanded_key,
-            });
-        }
-    }
-
-    keys
-}
-
-fn is_supported_fuzzy_key(key: &str) -> bool {
-    !key.is_empty() && key.chars().all(|c| c.is_ascii_alphanumeric())
-}
-
-fn supports_soundex(key: &str) -> bool {
-    !key.is_empty() && key.chars().all(|c| c.is_ascii_alphabetic())
-}
-
-/// Finds the best matching custom word for a candidate string
-///
-/// Uses Levenshtein distance and Soundex phonetic matching to find
-/// the best match above the given threshold.
-///
-/// # Arguments
-/// * `candidate` - The cleaned/lowercased candidate string to match
-/// * `custom_words` - Original custom words (for returning the replacement)
-/// * `custom_word_match_keys` - Normalized custom-word keys for comparison
-/// * `threshold` - Maximum similarity score to accept
-///
-/// # Returns
-/// The best matching custom word and its score, if any match was found
-fn find_best_match<'a>(
-    candidate: &str,
-    custom_words: &'a [String],
-    custom_word_match_keys: &[CustomWordMatchKey],
-    threshold: f64,
-) -> Option<(&'a String, f64)> {
-    if !is_supported_fuzzy_key(candidate) || candidate.chars().count() > 50 {
-        return None;
-    }
-
-    let mut best_match: Option<&String> = None;
-    let mut best_score = f64::MAX;
-
-    for custom_word_key in custom_word_match_keys {
-        // Skip if lengths are too different (optimization + prevents over-matching)
-        // Use percentage-based check: max 25% length difference (prevents n-grams from
-        // matching significantly shorter custom words, e.g., "openaigpt" vs "openai")
-        let candidate_len = candidate.chars().count();
-        let custom_word_len = custom_word_key.key.chars().count();
-        let len_diff = candidate_len.abs_diff(custom_word_len) as f64;
-        let max_len = candidate_len.max(custom_word_len) as f64;
-        let max_allowed_diff = (max_len * 0.25).max(2.0); // At least 2 chars difference allowed
-        if len_diff > max_allowed_diff {
-            continue;
-        }
-
-        // Calculate Levenshtein distance (normalized by length)
-        let levenshtein_dist = levenshtein(candidate, &custom_word_key.key);
-        let levenshtein_score = if max_len > 0.0 {
-            levenshtein_dist as f64 / max_len
-        } else {
-            1.0
-        };
-
-        // Soundex is an English/ASCII phonetic algorithm. Numeric terms can
-        // still use edit distance, but must not receive a phonetic boost.
-        let phonetic_match = supports_soundex(candidate)
-            && supports_soundex(&custom_word_key.key)
-            && soundex(candidate, &custom_word_key.key);
-
-        // Combine scores: favor phonetic matches, but also consider string similarity
-        let combined_score = if phonetic_match {
-            levenshtein_score * 0.3 // Give significant boost to phonetic matches
-        } else {
-            levenshtein_score
-        };
-
-        // Accept if the score is good enough (configurable threshold)
-        if combined_score < threshold && combined_score < best_score {
-            best_match = Some(&custom_words[custom_word_key.word_index]);
-            best_score = combined_score;
-        }
-    }
-
-    best_match.map(|m| (m, best_score))
-}
-
 /// Applies custom word corrections to transcribed text using fuzzy matching
 ///
 /// This function corrects words in the input text by finding the best matches
 /// from a list of custom words using a combination of:
 /// - Levenshtein distance for string similarity
-/// - Soundex phonetic matching for pronunciation similarity
+/// - Soundex phonetic matching for pronunciation similarity, only for words whose letters are
+///   already within twice the threshold (a sound-alike never bridges a large spelling gap)
 /// - N-gram matching for multi-word speech artifacts (e.g., "Charge B" -> "ChargeBee")
 ///
 /// # Arguments
@@ -149,57 +41,31 @@ fn find_best_match<'a>(
 /// # Returns
 /// The corrected text with custom words applied
 pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -> String {
+    // Index the normalized comparison keys once per text (feature 003: up to 5,000 terms).
+    apply_custom_words_with(
+        text,
+        custom_words,
+        &CustomWordIndex::new(custom_words),
+        threshold,
+    )
+}
+
+/// `apply_custom_words` with an index of `custom_words` built by the caller, so text split in
+/// several pieces (around 002 replacements) indexes the vocabulary once.
+fn apply_custom_words_with(
+    text: &str,
+    custom_words: &[String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> String {
     if custom_words.is_empty() {
         return text.to_string();
     }
-
-    // Pre-compute normalized comparison keys to avoid repeated allocations.
-    let custom_word_match_keys: Vec<CustomWordMatchKey> = custom_words
-        .iter()
-        .enumerate()
-        .flat_map(|(index, word)| build_custom_word_match_keys(word, index))
-        .collect();
-
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut result = Vec::new();
     let mut i = 0;
-
     while i < words.len() {
-        let mut best_match: Option<(usize, &String, f64)> = None;
-
-        // Consider n-grams up to three words and choose the closest match. A
-        // longest-first match can consume a following ordinary word when both
-        // candidates happen to share a Soundex code (for example,
-        // "Charge B, che" matching "ChargeBee").
-        for n in (1..=3).rev() {
-            if i + n > words.len() {
-                continue;
-            }
-
-            let ngram_words = &words[i..i + n];
-            // Do not consume across a punctuation boundary. In
-            // "Charge B, che", the comma closes the candidate at "B,".
-            if ngram_words[..n.saturating_sub(1)]
-                .iter()
-                .any(|word| !extract_punctuation(word).1.is_empty())
-            {
-                continue;
-            }
-            let ngram = build_ngram(ngram_words);
-
-            if let Some((replacement, score)) =
-                find_best_match(&ngram, custom_words, &custom_word_match_keys, threshold)
-            {
-                let is_better = best_match
-                    .as_ref()
-                    .is_none_or(|(_, _, best_score)| score < *best_score);
-                if is_better {
-                    best_match = Some((n, replacement, score));
-                }
-            }
-        }
-
-        if let Some((n, replacement, _)) = best_match {
+        if let Some((n, replacement)) = best_ngram_at(&words, i, custom_words, index, threshold) {
             let ngram_words = &words[i..i + n];
             // Extract punctuation from first and last words of the n-gram.
             let (prefix, _) = extract_punctuation(ngram_words[0]);
@@ -215,8 +81,102 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
             i += 1;
         }
     }
-
     result.join(" ")
+}
+
+/// Length (1 to 3 words) and custom word of the closest n-gram starting at `words[start]`.
+fn best_ngram_at<'a>(
+    words: &[&str],
+    start: usize,
+    custom_words: &'a [String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> Option<(usize, &'a String)> {
+    let mut best_match: Option<(usize, &String, f64)> = None;
+    // Consider n-grams up to three words and choose the closest match. A
+    // longest-first match can consume a following ordinary word when both
+    // candidates happen to share a Soundex code (for example,
+    // "Charge B, che" matching "ChargeBee").
+    for n in (1..=3).rev() {
+        if start + n > words.len() {
+            continue;
+        }
+        let ngram_words = &words[start..start + n];
+        // Do not consume across a punctuation boundary. In
+        // "Charge B, che", the comma closes the candidate at "B,".
+        if ngram_words[..n.saturating_sub(1)]
+            .iter()
+            .any(|word| !extract_punctuation(word).1.is_empty())
+        {
+            continue;
+        }
+        if let Some((word_index, score)) = index.find_best(&build_ngram(ngram_words), threshold) {
+            let is_better = best_match
+                .as_ref()
+                .is_none_or(|(_, _, best_score)| score < *best_score);
+            if is_better {
+                best_match = Some((n, &custom_words[word_index], score));
+            }
+        }
+    }
+    best_match.map(|(n, replacement, _)| (n, replacement))
+}
+
+/// A piece of text; protected pieces come from explicit word replacements.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TextSpan<'a> {
+    pub text: &'a str,
+    pub is_protected: bool,
+}
+
+// @spec FR-005: Protect replaced spans from approximate correction — .specs/features/002-word-replacements/spec.md#fr-005
+/// Apply approximate custom-word correction only outside protected spans.
+///
+/// Without protected spans this is exactly `apply_custom_words` on the joined
+/// text. Otherwise each unprotected span is corrected on its own, so no n-gram
+/// crosses a protected span, and the whitespace at each seam is kept verbatim.
+pub fn apply_custom_words_outside_protected(
+    spans: &[TextSpan<'_>],
+    custom_words: &[String],
+    threshold: f64,
+) -> String {
+    if !spans.iter().any(|span| span.is_protected) {
+        let joined: String = spans.iter().map(|span| span.text).collect();
+        return apply_custom_words(&joined, custom_words, threshold);
+    }
+    // One index for every unprotected span (up to 5,000 terms, feature 003).
+    let index = CustomWordIndex::new(custom_words);
+    spans
+        .iter()
+        .map(|span| {
+            if span.is_protected {
+                span.text.to_string()
+            } else {
+                correct_keeping_edge_whitespace(span.text, custom_words, &index, threshold)
+            }
+        })
+        .collect()
+}
+
+fn correct_keeping_edge_whitespace(
+    text: &str,
+    custom_words: &[String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> String {
+    let core_start = text.len() - text.trim_start().len();
+    let core_end = text.trim_end().len();
+    if core_start >= core_end {
+        return text.to_string();
+    }
+    // apply_custom_words trims and rejoins words; the seams to protected spans
+    // keep their original whitespace instead.
+    format!(
+        "{}{}{}",
+        &text[..core_start],
+        apply_custom_words_with(&text[core_start..core_end], custom_words, index, threshold),
+        &text[core_end..]
+    )
 }
 
 /// Preserves the case pattern of the original word when applying a replacement
@@ -881,4 +841,111 @@ mod tests {
         let result = apply_custom_words(text, &custom_words, 1.0);
         assert_eq!(result, text);
     }
+
+    fn span(text: &str, is_protected: bool) -> TextSpan<'_> {
+        TextSpan { text, is_protected }
+    }
+
+    #[test]
+    fn protected_span_is_never_approximately_corrected() {
+        let custom_words = vec!["ChargeBee".to_string()];
+        let spans = [
+            span("pay with ", false),
+            span("Charge B", true),
+            span("; also: charge b today", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.5),
+            "pay with Charge B; also: ChargeBee today"
+        );
+    }
+
+    #[test]
+    fn ngrams_never_cross_a_protected_span() {
+        let custom_words = vec!["ChargeBee".to_string()];
+        let spans = [span("Charge ", false), span("B", true), span(" now", false)];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.5),
+            "Charge B now"
+        );
+    }
+
+    #[test]
+    fn seams_keep_original_whitespace_and_punctuation() {
+        let custom_words = vec!["Zzzz".to_string()];
+        let spans = [
+            span("  open\t", false),
+            span("Claude Code", true),
+            span("!  ", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.18),
+            "  open\tClaude Code!  "
+        );
+    }
+
+    #[test]
+    fn unprotected_text_uses_the_existing_correction_path() {
+        let text = "il cui nome è Charge B, che permette";
+        let custom_words = vec!["ChargeBee".to_string()];
+        assert_eq!(
+            apply_custom_words_outside_protected(&[span(text, false)], &custom_words, 0.5),
+            apply_custom_words(text, &custom_words, 0.5)
+        );
+    }
+
+    /// The vocabulary of the N22 report (2026-10-29), used with its threshold of 0.18.
+    fn n22_vocabulary() -> Vec<String> {
+        ["Claude Code", "OpenClaw", "LiveSpec", "Penflow"]
+            .map(String::from)
+            .to_vec()
+    }
+
+    // @spec AC-008: Sound-alike alone never bridges a large gap — .specs/features/003-recognition-vocabulary/spec.md#ac-008
+    #[test]
+    fn common_french_phrases_are_not_rewritten_into_custom_words() {
+        // "le vois pas" sounds like "LiveSpec" (Soundex L121) but 5 of its 9 letters differ.
+        for phrase in [
+            "je ne le vois pas",
+            "Je ne le vois pas.",
+            "il lave ce bac tous les soirs",
+            "il lave sept assiettes",
+            "un pain flou sur la photo",
+            "ajoute un clou de girofle",
+            "je le vois bien",
+        ] {
+            assert_eq!(
+                apply_custom_words(phrase, &n22_vocabulary(), 0.18),
+                phrase,
+                "{phrase}"
+            );
+        }
+    }
+
+    // @spec AC-008: Close sound-alikes are still corrected — .specs/features/003-recognition-vocabulary/spec.md#ac-008
+    #[test]
+    fn close_sound_alikes_are_still_corrected_at_the_default_threshold() {
+        for (heard, expected) in [
+            ("lance cloud code ici", "lance Claude Code ici"),
+            ("ouvre open claw", "ouvre OpenClaw"),
+            ("open clo marche", "OpenClaw marche"),
+            ("avec live spec", "avec LiveSpec"),
+            ("dans pen flow", "dans Penflow"),
+        ] {
+            assert_eq!(
+                apply_custom_words(heard, &n22_vocabulary(), 0.18),
+                expected,
+                "{heard}"
+            );
+        }
+        let charge_bee = vec!["ChargeBee".to_string()];
+        assert_eq!(
+            apply_custom_words("pay with Charge B today", &charge_bee, 0.18),
+            "pay with ChargeBee today"
+        );
+    }
 }
+
+#[cfg(test)]
+#[path = "custom_words_perf_tests.rs"]
+mod custom_words_perf_tests;

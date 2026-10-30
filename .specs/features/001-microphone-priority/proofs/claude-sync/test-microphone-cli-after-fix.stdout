@@ -1,0 +1,13 @@
+
+running 8 tests
+test set_priority_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test a_dry_run_previews_without_writing_and_help_lists_the_domain ... ok
+test list_without_a_running_handy_is_unavailable_with_empty_details ... ok
+test generic_set_of_either_microphone_key_names_the_microphones_domain ... ok
+test names_are_exact_including_spaces_and_a_leading_hyphen_after_the_separator ... ok
+test set_priority_offline_commits_the_order_that_get_reads_back ... ok
+test refused_orders_and_stale_revisions_write_nothing ... ok
+test a_running_instance_commits_set_priority_once_and_list_needs_its_audio_manager ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.68s
+

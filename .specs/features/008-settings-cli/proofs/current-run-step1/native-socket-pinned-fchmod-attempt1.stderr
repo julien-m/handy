@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step1/native-socket-pinned-fchmod.py", line 107, in <module>
+    main()
+    ~~~~^^
+  File "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step1/native-socket-pinned-fchmod.py", line 96, in main
+    results.append(observe_case(directory, replacement))
+                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step1/native-socket-pinned-fchmod.py", line 35, in observe_case
+    listener.bind(str(path))
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+OSError: AF_UNIX path too long

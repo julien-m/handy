@@ -1,0 +1,210 @@
+{
+  "note": "Compact summary of `livespec conventions verify --feature repo --json` stdout (full stdout not kept).",
+  "verdict": "PASS",
+  "receipt_path": ".specs/conventions/runs/20261014T053627Z/receipt.json",
+  "run_id": "20261014T053627Z",
+  "baseline": {
+    "baselined_count": 546,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3636,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "violation_counts": {
+    "warning:builtin.doc_coverage": 318,
+    "warning:builtin.max_file_lines": 13,
+    "warning:builtin.max_function_lines": 147
+  },
+  "violations_in_files_changed_vs_HEAD": [
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/actions.rs",
+      "line": 355,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/actions.rs",
+      "line": 355,
+      "message": "process_transcription_output has 33 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 11,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 25,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 38,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 51,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 64,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 64,
+      "message": "retry_history_entry_transcription has 50 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 118,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 128,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/lib.rs",
+      "line": 657,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 87,
+      "message": "update_transcription has 46 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 134,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 184,
+      "message": "cleanup_by_count has 31 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 216,
+      "message": "cleanup_by_time has 43 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 260,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 260,
+      "message": "get_history_entries has 56 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 367,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 394,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 403,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 425,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 102,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 442,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 604,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 621,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 638,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_file_lines",
+      "path": "src/components/settings/history/HistorySettings.tsx",
+      "line": 1,
+      "message": "453 lines > 400"
+    }
+  ]
+}

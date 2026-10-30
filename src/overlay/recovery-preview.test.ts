@@ -1,0 +1,190 @@
+/**
+ * Pure model of the recovery bubble (010): the reason line and its icon per reason, named or
+ * not, the explanation sentences (history kept only when saved, the partial-insertion detail
+ * only for method failures, "nothing was sent" for a missing permission, the late read, the
+ * platform advice) and the drag gesture threshold. Run with `bun run test:recovery-bubble`.
+ *
+ * Behavioral patterns from: system/testing/ui-behavioral-taxonomy.md
+ * Traits: dismissible_layer, has_drag_drop, has_tooltip, is_keyboard_navigable
+ */
+import { describe, expect, test } from "bun:test";
+import type { RecoveryBubbleView } from "@/bindings";
+import {
+  bubbleTexts,
+  dragOrigin,
+  dragStarts,
+  DRAG_THRESHOLD_PX,
+  pressMayDrag,
+} from "./recovery-preview";
+
+const view = (patch: Partial<RecoveryBubbleView> = {}): RecoveryBubbleView => ({
+  bubble_id: 3,
+  destination_generation: 9,
+  reason: "app_closed",
+  app_name: "Notes",
+  preview: "Hi Marie, the release moves to Thursday.",
+  truncated: false,
+  detail: "not_inserted",
+  late_read: false,
+  history: "kept",
+  can_drag: true,
+  ...patch,
+});
+const keys = (patch: Partial<RecoveryBubbleView>) =>
+  bubbleTexts(view(patch)).explanation.map((line) => line.key);
+
+describe("reason line (AC-003)", () => {
+  test("each reason has its sentence, named when the app is known", () => {
+    const cases: [RecoveryBubbleView["reason"], string, string][] = [
+      ["app_closed", "recoveryBubble.reason.appClosed", "warning"],
+      [
+        "pinned_app_not_running",
+        "recoveryBubble.reason.pinnedAppNotRunning",
+        "warning",
+      ],
+      [
+        "activation_failed",
+        "recoveryBubble.reason.activationFailed",
+        "warning",
+      ],
+      ["insertion_failed", "recoveryBubble.reason.insertionFailed", "error"],
+      ["no_text_field", "recoveryBubble.reason.noTextField", "info"],
+      [
+        "default_field_not_found",
+        "recoveryBubble.reason.defaultFieldNotFound",
+        "info",
+      ],
+      [
+        "default_terminal_gone",
+        "recoveryBubble.reason.defaultTerminalGone",
+        "warning",
+      ],
+    ];
+    for (const [reason, key, icon] of cases) {
+      const texts = bubbleTexts(view({ reason }));
+      expect(texts.reasonKey).toBe(key);
+      expect(texts.icon).toBe(icon);
+    }
+    expect(bubbleTexts(view()).reasonValues).toEqual({ app: "Notes" });
+  });
+  test("without a name the application noun is used, never an invented identity", () => {
+    const texts = bubbleTexts(view({ app_name: null }));
+    expect(texts.reasonKey).toBe("recoveryBubble.reason.appClosedUnnamed");
+    expect(texts.reasonValues).toEqual({});
+  });
+});
+
+describe("remembered input reasons (013 AC-006, AC-007)", () => {
+  test("named after the app, or the unnamed sentence without a name", () => {
+    for (const reason of [
+      "default_field_not_found",
+      "default_terminal_gone",
+    ] as const) {
+      const named = bubbleTexts(view({ reason }));
+      expect(named.reasonKey.endsWith("Unnamed")).toBe(false);
+      expect(named.reasonValues).toEqual({ app: "Notes" });
+      const unnamed = bubbleTexts(view({ reason, app_name: null }));
+      expect(unnamed.reasonKey).toBe(`${named.reasonKey}Unnamed`);
+      expect(unnamed.reasonValues).toEqual({});
+    }
+  });
+  test("a field not found advises clicking in the field; a gone terminal opening the app", () => {
+    expect(keys({ reason: "default_field_not_found" })).toEqual([
+      "recoveryBubble.explanation.notInserted",
+      "recoveryBubble.explanation.historyKept",
+      "recoveryBubble.explanation.focusFieldDrag",
+    ]);
+    expect(
+      keys({ reason: "default_field_not_found", can_drag: false }),
+    ).toContain("recoveryBubble.explanation.focusFieldCopy");
+    expect(keys({ reason: "default_terminal_gone" })).toContain(
+      "recoveryBubble.explanation.openAppDrag",
+    );
+  });
+});
+
+describe("explanation (AC-001, AC-005)", () => {
+  test("a reason decided before insertion says nothing was inserted, never 'some text'", () => {
+    expect(keys({})).toEqual([
+      "recoveryBubble.explanation.notInserted",
+      "recoveryBubble.explanation.historyKept",
+      "recoveryBubble.explanation.openAppDrag",
+    ]);
+    expect(keys({ reason: "no_text_field", detail: "not_inserted" })).toEqual([
+      "recoveryBubble.explanation.notInserted",
+      "recoveryBubble.explanation.historyKept",
+      "recoveryBubble.explanation.focusFieldDrag",
+      "recoveryBubble.explanation.noFieldSetting",
+    ]);
+  });
+  test("history is said kept only when the save succeeded", () => {
+    expect(keys({ history: "not_kept" })).toContain(
+      "recoveryBubble.explanation.historyNotKept",
+    );
+    expect(keys({ history: "not_kept" })).not.toContain(
+      "recoveryBubble.explanation.historyKept",
+    );
+  });
+  test("method failures may have reached the app; a missing permission sent nothing", () => {
+    const failed = {
+      reason: "insertion_failed",
+      detail: "may_have_reached",
+    } as const;
+    expect(keys(failed)).toEqual([
+      "recoveryBubble.explanation.mayHaveReached",
+      "recoveryBubble.explanation.historyKeptFull",
+    ]);
+    expect(keys({ ...failed, detail: "nothing_sent" })).toEqual([
+      "recoveryBubble.explanation.nothingSent",
+      "recoveryBubble.explanation.historyKeptFull",
+    ]);
+  });
+  test("a late read is said in the bubble itself, not only in the explanation", () => {
+    const late = {
+      reason: "insertion_failed",
+      detail: "may_have_reached",
+      late_read: true,
+    } as const;
+    expect(bubbleTexts(view(late)).lateReadKey).toBe(
+      "recoveryBubble.explanation.lateRead",
+    );
+    expect(keys(late)).not.toContain("recoveryBubble.explanation.lateRead");
+    expect(bubbleTexts(view()).lateReadKey).toBeNull();
+  });
+  test("without drag (Windows, Linux) the advice only mentions Copy", () => {
+    expect(keys({ can_drag: false })).toContain(
+      "recoveryBubble.explanation.openAppCopy",
+    );
+    expect(keys({ can_drag: false, app_name: null })).toContain(
+      "recoveryBubble.explanation.openUnnamedCopy",
+    );
+  });
+});
+
+describe("drag gesture (has_drag_drop: drag-start)", () => {
+  test("a drag starts only with the primary button held past the threshold", () => {
+    const start = { x: 10, y: 10 };
+    const beyond = { x: 10 + DRAG_THRESHOLD_PX + 1, y: 10 };
+    expect(dragStarts(start, beyond, 1)).toBe(true);
+    expect(dragStarts(start, { x: 11, y: 11 }, 1)).toBe(false);
+    expect(dragStarts(start, beyond, 0)).toBe(false);
+    expect(dragStarts(null, beyond, 1)).toBe(false);
+  });
+
+  test("a press that stays within the threshold is a click, not a drag", () => {
+    const start = { x: 40, y: 20 };
+    const edge = { x: start.x + DRAG_THRESHOLD_PX, y: start.y };
+    expect(dragStarts(start, start, 1)).toBe(false);
+    expect(dragStarts(start, edge, 1)).toBe(false);
+  });
+
+  test("the whole bubble drags: surface and handle may drag, controls never (N24)", () => {
+    expect(dragOrigin(null)).toBe("surface");
+    expect(dragOrigin("handle")).toBe("handle");
+    expect(dragOrigin("control")).toBe("control");
+    expect(dragOrigin("unknown")).toBe("surface");
+    expect(pressMayDrag(dragOrigin(null))).toBe(true);
+    expect(pressMayDrag(dragOrigin("handle"))).toBe(true);
+    expect(pressMayDrag(dragOrigin("control"))).toBe(false);
+  });
+});

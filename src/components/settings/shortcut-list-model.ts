@@ -1,0 +1,248 @@
+// Pure rules of the shortcut list UI: list limits and the translation of
+// backend refusals, stored conflicts and shortcuts the system refused into
+// user messages.
+import type {
+  RefusedShortcut,
+  ShortcutBinding,
+  ShortcutEditError,
+  StoredShortcutConflict,
+} from "@/bindings";
+import { settingsErrorKey } from "../../stores/settings-errors";
+
+/** Mirrors MAX_SHORTCUTS_PER_ACTION in src-tauri/src/shortcut/action_shortcuts.rs. */
+export const MAX_SHORTCUTS_PER_ACTION = 4;
+/** Mirrors PROMPT_TARGET_PREFIX in src-tauri/src/shortcut/prompt_targets.rs (005). */
+export const PROMPT_TARGET_PREFIX = "prompt:";
+/** Mirrors the 0–2 shortcuts of a prompt target (005 AC-006). */
+export const MAX_SHORTCUTS_PER_PROMPT = 2;
+/** Mirrors the action ids of src-tauri/src/dictation_keys/mod.rs (014). */
+export const DICTATION_KEY_ACTIONS = [
+  "retarget_to_active_app",
+  "skip_automatic_enter",
+] as const;
+
+/** How many shortcuts an action keeps, and whether it has a default. */
+export interface ShortcutLimits {
+  max: number;
+  /** Shortcuts that cannot be removed: 1 for an action, 0 for a prompt. */
+  min: number;
+  /** Whether the action has a default shortcut to reset to. */
+  resettable: boolean;
+}
+
+/** Limits of the dictation actions (004): 1 to 4 shortcuts and a default. */
+export const ACTION_SHORTCUT_LIMITS: ShortcutLimits = {
+  max: MAX_SHORTCUTS_PER_ACTION,
+  min: 1,
+  resettable: true,
+};
+/** Limits of a prompt target (005): 0 to 2 shortcuts and no default. */
+export const PROMPT_SHORTCUT_LIMITS: ShortcutLimits = {
+  max: MAX_SHORTCUTS_PER_PROMPT,
+  min: 0,
+  resettable: false,
+};
+// @spec FR-001: One key or none, with a default — .specs/features/014-in-dictation-keys/spec.md#fr-001
+/** Limits of a key used during a dictation (014): one key or none, and a default. */
+export const DICTATION_KEY_LIMITS: ShortcutLimits = {
+  max: 1,
+  min: 0,
+  resettable: true,
+};
+
+/**
+ * Whether an action is a key used during a dictation (014).
+ * @param actionId Action id.
+ */
+export const isDictationKey = (actionId: string): boolean =>
+  (DICTATION_KEY_ACTIONS as readonly string[]).includes(actionId);
+
+/**
+ * Action id of the shortcuts of a prompt.
+ * @param promptId Prompt id.
+ */
+export const promptTargetOf = (promptId: string): string =>
+  `${PROMPT_TARGET_PREFIX}${promptId}`;
+
+/**
+ * Prompt id of a prompt target, or null for any other action.
+ * @param actionId Action id.
+ */
+export const promptIdOf = (actionId: string): string | null =>
+  actionId.startsWith(PROMPT_TARGET_PREFIX)
+    ? actionId.slice(PROMPT_TARGET_PREFIX.length)
+    : null;
+
+/**
+ * Limits of an action's shortcut list.
+ * @param actionId Action id (a prompt target or a dictation action).
+ */
+export const limitsFor = (actionId: string): ShortcutLimits => {
+  if (promptIdOf(actionId) !== null) return PROMPT_SHORTCUT_LIMITS;
+  if (isDictationKey(actionId)) return DICTATION_KEY_LIMITS;
+  return ACTION_SHORTCUT_LIMITS;
+};
+
+/** A translation key with its interpolation values. */
+export interface TranslatedMessage {
+  key: string;
+  params: Record<string, string | number>;
+}
+
+/**
+ * Every shortcut of an action, first one first. A prompt target left
+ * without shortcuts has an empty first shortcut, which is not one (like
+ * `ShortcutBinding::shortcuts` in the backend).
+ * @param binding Stored binding of the action.
+ * @returns The ordered shortcuts.
+ */
+export const shortcutsOf = (binding: ShortcutBinding): string[] =>
+  [binding.current_binding, ...(binding.additional_bindings ?? [])].filter(
+    (shortcut) => shortcut !== "",
+  );
+
+/**
+ * Whether one more shortcut can be added.
+ * @param count Current number of shortcuts of the action.
+ * @param limits Limits of the action (a dictation action by default).
+ */
+export const canAddShortcut = (
+  count: number,
+  limits: ShortcutLimits = ACTION_SHORTCUT_LIMITS,
+): boolean => count < limits.max;
+
+/**
+ * Whether a shortcut can be removed: a dictation action keeps at least
+ * one, a prompt may lose its last one.
+ * @param count Current number of shortcuts of the action.
+ * @param limits Limits of the action (a dictation action by default).
+ */
+export const canRemoveShortcut = (
+  count: number,
+  limits: ShortcutLimits = ACTION_SHORTCUT_LIMITS,
+): boolean => count > limits.min;
+
+const LIST_KEY = "settings.general.shortcut.list";
+
+/**
+ * Message explaining why the backend refused an edit.
+ * @param error Typed refusal from `edit_binding_shortcuts`.
+ * @param actionName Translated display name of an action id.
+ * @returns The translation key and its values.
+ */
+export const describeEditError = (
+  error: ShortcutEditError,
+  actionName: (actionId: string) => string,
+): TranslatedMessage => {
+  switch (error.code) {
+    case "shortcut_conflict":
+      return describeConflict(error.conflict, actionName);
+    case "limit_exceeded":
+      return { key: `${LIST_KEY}.addLimit`, params: { limit: error.limit } };
+    case "last_shortcut":
+      return { key: `${LIST_KEY}.removeLast`, params: {} };
+    case "invalid_shortcut":
+      return {
+        key: `${LIST_KEY}.errors.invalid`,
+        params: { error: error.message },
+      };
+    case "registration_failed":
+      return {
+        key: `${LIST_KEY}.errors.registration`,
+        params: { error: error.message },
+      };
+    case "settings_refused":
+      return { key: settingsErrorKey(error.error), params: {} };
+    default:
+      return { key: `${LIST_KEY}.errors.generic`, params: {} };
+  }
+};
+
+/**
+ * Message naming the action that already owns a combination.
+ * @param conflict Conflict reported by the shared checker.
+ * @param actionName Translated display name of an action id.
+ */
+export const describeConflict = (
+  conflict: StoredShortcutConflict["conflict"],
+  actionName: (actionId: string) => string,
+): TranslatedMessage => ({
+  key:
+    conflict.kind === "duplicate"
+      ? `${LIST_KEY}.errors.conflict`
+      : `${LIST_KEY}.errors.overlap`,
+  params: {
+    action: actionName(conflict.owning_action),
+    shortcut: conflict.owning_shortcut,
+  },
+});
+
+/**
+ * Stored conflict reported for one shortcut of one action, if any.
+ * @param conflicts Conflicts from `get_shortcut_conflicts`.
+ * @param actionId Action owning the shortcut.
+ * @param shortcut Stored shortcut text.
+ */
+export const storedConflictFor = (
+  conflicts: ReadonlyArray<StoredShortcutConflict>,
+  actionId: string,
+  shortcut: string,
+): StoredShortcutConflict | undefined =>
+  conflicts.find(
+    (entry) => entry.action_id === actionId && entry.shortcut === shortcut,
+  );
+
+// @spec AC-002: Post-processing activation behaves as before — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
+/**
+ * Warning for a stored shortcut the system refused when post-processing was
+ * enabled, if it is still in the action's list. It stays editable.
+ * @param refusals Shortcuts refused at the last activation.
+ * @param actionId Action owning the shortcut.
+ * @param shortcut Stored shortcut text.
+ */
+export const refusalFor = (
+  refusals: ReadonlyArray<RefusedShortcut>,
+  actionId: string,
+  shortcut: string,
+): TranslatedMessage | undefined => {
+  const refusal = refusals.find(
+    (entry) => entry.action_id === actionId && entry.shortcut === shortcut,
+  );
+  return refusal
+    ? {
+        key: `${LIST_KEY}.errors.registration`,
+        params: { error: refusal.reason },
+      }
+    : undefined;
+};
+
+/**
+ * Refusals whose shortcut is still stored for its action: a shortcut that
+ * was changed or removed is no longer refused.
+ * @param refusals Shortcuts refused at the last activation.
+ * @param bindings Stored bindings of every action.
+ */
+export const keepStoredRefusals = (
+  refusals: ReadonlyArray<RefusedShortcut>,
+  bindings: Partial<Record<string, ShortcutBinding>>,
+): RefusedShortcut[] =>
+  refusals.filter((refusal) => {
+    const binding = bindings[refusal.action_id];
+    return binding ? shortcutsOf(binding).includes(refusal.shortcut) : false;
+  });
+
+/**
+ * Name of the prompt a prompt target belongs to, for messages naming the
+ * owner of a shortcut; the prompt id when the prompt is gone.
+ * @param prompts Prompts of the library.
+ * @param actionId Action id.
+ * @returns The prompt name, or null for a dictation action.
+ */
+export const promptNameOfTarget = (
+  prompts: ReadonlyArray<{ id: string; name: string }>,
+  actionId: string,
+): string | null => {
+  const promptId = promptIdOf(actionId);
+  if (promptId === null) return null;
+  return prompts.find((prompt) => prompt.id === promptId)?.name ?? promptId;
+};

@@ -1,0 +1,114 @@
+{
+  "scope": "Step1 platform corrections, audit split/docs and direct FR001/FR004 anchors; no full-AC certification",
+  "files": [
+    {
+      "path": "src-tauri/src/main.rs",
+      "lines": 49,
+      "sha256": "361b34864c240518379a2ee1c238ec06399fbd99aebfc7d2dbfc7f11240decbd"
+    },
+    {
+      "path": "src-tauri/src/cli.rs",
+      "lines": 73,
+      "sha256": "df76015f57a16c6574e4c15865e1181240e1e50683a4de97a8993c43a0406559"
+    },
+    {
+      "path": "src-tauri/src/settings_service/console_windows.rs",
+      "lines": 27,
+      "sha256": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f"
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "lines": 70,
+      "sha256": "ac7acd7161763c89d751eb8103f2f14979870529616adba954d41e5cf5d653c4"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/resources.rs",
+      "lines": 132,
+      "sha256": "e4ebf85a50d120c61e72d5f78f7ae01f1ec0694a215b8b20e97d0e3d55e53a83"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/socket.rs",
+      "lines": 188,
+      "sha256": "ad0320ade96edbeb2f9a48ec0b3aac3b529bdcd89c6cd158fabcc67153edad03"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/startup_fence.rs",
+      "lines": 67,
+      "sha256": "a330749224dc4f17d0766d9a70bff4187002d691fe91539dd1cee25003a3db53"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/tests.rs",
+      "lines": 67,
+      "sha256": "6ccfa8357ce70f22e90581436b8e2ab252772f54d9efc01ff371f66127e4a1bf"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "lines": 18,
+      "sha256": "7abf2bc65bce82a8cd5eca68131f29494315a24c350307c6c9dbe144bc2742af"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "lines": 274,
+      "sha256": "fd8aaa749a9db7ae5f19f1881121c73a197f70e802acd69e77c589218c64b9ba"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform.rs",
+      "lines": 21,
+      "sha256": "bc9a5d76f456812e146b53683f74d018cba0b3ee42770eb12e9899b6ea006e0c"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/cli_console.rs",
+      "lines": 182,
+      "sha256": "5d0ddbeee9a43509a9d71fcefb72971dc30af989ee7affce59421bdca7dfbf4e"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/unix.rs",
+      "lines": 152,
+      "sha256": "bb49b5bf6d48573c0018ae267c153e8daa961a2135d87e48566d97f69d2c32f1"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/windows.rs",
+      "lines": 45,
+      "sha256": "76434a7c0dddbc650bdea7a3be5e32b84bd04e41b0389d4831c3ada82985207d"
+    }
+  ],
+  "checks": {
+    "refactor-format": "0",
+    "refactor-test": "101",
+    "refactor-clippy2": "0",
+    "refactor-clippy": "101",
+    "refactor-test3": "0",
+    "refactor-lint": "0",
+    "refactor-rustfmt": "0",
+    "refactor-test2": "0",
+    "refactor-typecheck": "0",
+    "anchor-test": "0",
+    "anchor-clippy": "0",
+    "anchor-format": "0"
+  },
+  "test_ids": [
+    "handy/test/settings_platform::cli_console::only_gui_detaches_console",
+    "handy/test/settings_platform::cli_console::detach_success_including_no_attached_console_is_accepted",
+    "handy/test/settings_platform::cli_console::detach_failure_retains_error_kind_and_safe_operation_context",
+    "handy/test/settings_platform::cli_console::historical_startup_and_recording_flags_remain_combinable",
+    "handy/test/settings_platform::unix::absent_probe_creates_nothing",
+    "handy/test/settings_platform::cli_console::historical_value_flags_keep_values_and_transcription_combinations",
+    "handy/test/settings_platform::windows::pipe_identity_rejects_injection_and_isolates_user_and_store",
+    "handy/test/settings_platform::platform_unix::tests::failed_bind_restores_the_previous_creation_mask",
+    "handy/test/settings_platform::cli_console::historical_boolean_flags_keep_their_parser_values",
+    "handy/test/settings_platform::windows::session_negative_cannot_prove_other_sessions_absent",
+    "handy/test/settings_platform::windows::uncertainty_does_not_authorize_offline_operation",
+    "handy/test/settings_platform::unix::occupied_probe_never_notifies_or_modifies_store",
+    "handy/test/settings_platform::unix::ambiguous_legacy_resources_fail_closed",
+    "handy/test/settings_platform::cli_console::parsed_gui_detaches_console_and_headless_keeps_it",
+    "handy/test/settings_platform::unix::lock_and_file_refuse_hostile_aliases",
+    "handy/test/settings_platform::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions",
+    "handy/test/settings_platform::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode",
+    "handy/test/settings_platform::unix::new_socket_authenticates_peer_and_cleans_only_owned_inode",
+    "handy/test/settings_platform::unix::private_directory_refuses_permissions_alias_and_replacement",
+    "handy/test/settings_platform::unix::close_retains_socket_and_releases_lock_by_lifetime"
+  ],
+  "retry_hypothesis": "Unit tests inherited unavailable and MetadataExt from original monolithic module; extracted test module needed explicit imports",
+  "retry_evidence": "refactor-test.stderr E0425/E0599; tests.rs now explicit imports; refactor-test3.stdout reports20passed0failed; strict refactor-clippy2.exit0",
+  "retry_result": "PASS"
+}

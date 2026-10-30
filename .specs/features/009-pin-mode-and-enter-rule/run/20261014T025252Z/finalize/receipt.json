@@ -1,0 +1,35 @@
+{
+  "command": "spec-refine",
+  "created_at": "2026-10-14T02:52:52.421443+00:00",
+  "feature_slug": "009-pin-mode-and-enter-rule",
+  "files": [
+    {
+      "path": ".specs/features/009-pin-mode-and-enter-rule/changelog.md",
+      "sha256": "ed9852768acc9828f4b64b432272c1495208a12946ab3b85077cb2fd72791f70"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "1784055e19f10291e67c8c7942fbb74bebd57c2cdc74523c974e786c6563791b"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "244cc9da80c6e9d82f30856b4aa8bbd8d1cc670823ab931d1859ca204702c0d6"
+    },
+    {
+      "path": ".specs/features/009-pin-mode-and-enter-rule/spec.md",
+      "sha256": "35eb4a9d4cd350d4d1e0d5e6204ff24fa0fafac5c3d37c14551a17bbec47679d"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "bfe98a4c4a19ed9441f16a234a7d6bb277c05fdb20e0064fdb3fb5048a04153d"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "56bd6ca7d96e7f597b3153eead68074ad16e0de92248ae15138f42fb5fe13dbc",
+  "receipt_hash": "fac62b66615fd4bb576718e7a460645b674efd639864ddba84031525119af747",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

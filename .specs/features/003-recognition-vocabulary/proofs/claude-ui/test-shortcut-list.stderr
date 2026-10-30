@@ -1,0 +1,1 @@
+$ bun src/components/settings/shortcut-list-model.test.ts

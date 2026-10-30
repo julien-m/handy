@@ -1,0 +1,5 @@
+$ bun test src/stores/vocabulary-store.test.ts src/components/settings/vocabulary/vocabulary-model.test.ts src/components/settings/vocabulary/vocabulary-notices.test.tsx src/hooks/use-vocabulary.test.ts src/components/settings/vocabulary/vocabulary-retry.test.ts
+
+ 53 pass
+ 0 fail
+Ran 53 tests across 5 files. [246.00ms]

@@ -1,0 +1,18 @@
+
+running 1 test
+test transfer::get_returns_a_maximal_set_offline_and_from_a_running_instance ... FAILED
+
+failures:
+
+---- transfer::get_returns_a_maximal_set_offline_and_from_a_running_instance stdout ----
+
+thread 'transfer::get_returns_a_maximal_set_offline_and_from_a_running_instance' (50050556) panicked at tests/replacement_cli/transfer.rs:80:5:
+larger than one message
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    transfer::get_returns_a_maximal_set_offline_and_from_a_running_instance
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 16 filtered out; finished in 2.98s
+

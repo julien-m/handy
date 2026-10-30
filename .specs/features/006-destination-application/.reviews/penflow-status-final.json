@@ -1,0 +1,30 @@
+{
+  "workspace": "/Users/julienm/projects/handy/penflow",
+  "state": "incomplete",
+  "runtime_required": false,
+  "runtime_comparison": "BLOCKED",
+  "runtime_reason": "required_contract_artifacts_missing",
+  "present": [
+    "flow-ui-contract/",
+    "ui.pen",
+    "semantic-ui-tree.json"
+  ],
+  "missing": [
+    "expected-ui-tree.json",
+    "code-ir.json",
+    "ui.pen:desktop_frame_width",
+    "ui.pen:desktop_frame_height"
+  ],
+  "optional_present": [],
+  "design_registry_required": false,
+  "design_registry_missing": [],
+  "mockup_validation_required": false,
+  "mockup_validation_missing": [],
+  "flow_count": 1,
+  "screen_count": 1,
+  "required_profile": null,
+  "certified": false,
+  "verification_status": null,
+  "verification_reason": "not_requested",
+  "verdict": "BLOCKED"
+}

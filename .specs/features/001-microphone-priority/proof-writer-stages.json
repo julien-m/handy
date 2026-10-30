@@ -1,0 +1,122 @@
+[
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.013.generate_user_stories_with_gherkin_scenarios_and",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"Four ordered stories contain Gherkin and matching Mermaid. Repairwave1 aligns explicit Save commit and empty-list clamshell precedence with accepted Clarifications.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.013.generate_user_stories_with_gherkin_scenarios_and\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.014.generate_ac_and_fr_sections_with_sequential_numb",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"AC-001..008 and FR-001..008 sequential; each FR explicitly maps to >=1 AC; IDs preserved after review correction.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.014.generate_ac_and_fr_sections_with_sequential_numb\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.015.generate_key_entities_edge_cases_success_criteri",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"Three Key Entities, seven Edge Cases and SC-001..003 exist. No new cloud/auth Infrastructure Requirements in local microphone domain.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.015.generate_key_entities_edge_cases_success_criteri\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.016.apply_native_qe_analysis_to_enrich_risks_expecte",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"QE Analysis records eight dimensions, High criticality/shared blast radius/regression primary risk, expected P0/P1 evidence, low unexecuted-runtime confidence, nonfunctional expectations and explicit gaps/boundaries.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.016.apply_native_qe_analysis_to_enrich_risks_expecte\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.017.inject_behavioral_ac_section_via_llm_signal_extr",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"Behavioral AC injected from genuine LLM signal extraction and validator.taxonomy.detect_traits: async_action, has_drag_drop, has_validation, is_keyboard_navigable,is_submittable. Five parameterized Gherkin families plus visual states. Keyboard trait no visual_states emitted warning; explicit focus scenarios added.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.017.inject_behavioral_ac_section_via_llm_signal_extr\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.018.run_livespec_validate_structural_validation_retr",
+      "--evidence",
+      "{\"path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md\", \"output\": \"Actual argv livespec validate <spec.md> --format compact, cwd Handy root timeout90 exit0 stderr OK feature Score:100/100 after repairwave1; review-independent structural validation only.\", \"success_criteria_met\": true, \"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit": 0,
+    "stdout": "{\n  \"task_id\": \"task.018.run_livespec_validate_structural_validation_retr\",\n  \"status\": \"ACCEPTED\",\n  \"accepted\": true,\n  \"missing_evidence\": [],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  }
+]

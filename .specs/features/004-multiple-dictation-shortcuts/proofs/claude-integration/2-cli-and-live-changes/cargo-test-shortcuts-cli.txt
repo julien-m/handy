@@ -1,0 +1,19 @@
+    Blocking waiting for file lock on artifact directory
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 15s
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/shortcuts_cli-9d17b2aa50ba0b94)
+
+running 8 tests
+test an_older_handy_without_the_settings_channel_refuses_even_the_list ... ok
+test help_lists_the_shortcut_actions_and_generic_set_points_to_them ... ok
+test offline_list_reads_without_creating_the_store ... ok
+test offline_changes_are_refused_but_a_dry_run_previews_them ... ok
+test a_dictation_in_progress_refuses_the_change_with_shortcut_session_busy ... ok
+test last_removal_unknown_action_and_stale_revision_change_nothing ... ok
+test a_running_instance_commits_each_change_as_one_revision ... ok
+test conflicts_and_the_limit_are_refused_with_their_owner_and_limit ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.96s
+

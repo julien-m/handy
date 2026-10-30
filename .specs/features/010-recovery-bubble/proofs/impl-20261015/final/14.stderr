@@ -1,0 +1,11 @@
+$ bun test src/overlay/recovery-preview.test.ts && bun test src/overlay/recovery-bubble-render.test.tsx
+
+ 8 pass
+ 0 fail
+ 26 expect() calls
+Ran 8 tests across 1 file. [9.00ms]
+
+ 7 pass
+ 0 fail
+ 34 expect() calls
+Ran 7 tests across 1 file. [56.00ms]

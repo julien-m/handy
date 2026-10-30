@@ -1,0 +1,44 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+warning: field `stderr` is never read
+  --> tests/settings_cli/harness.rs:24:9
+   |
+21 | pub struct Run {
+   |            --- field in this struct
+...
+24 |     pub stderr: String,
+   |         ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `legacy_socket` is never used
+  --> tests/settings_cli/harness.rs:75:12
+   |
+48 | impl Portable {
+   | ------------- method in this implementation
+...
+75 |     pub fn legacy_socket(&self) -> &Path {
+   |            ^^^^^^^^^^^^^
+
+warning: `handy` (test "microphone_cli") generated 2 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.51s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/handy_app_lib-7f5ac070b7e42d2e)
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/handy-3ec1f30322835aae)
+     Running tests/destination_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_cli-26223fe39c521394)
+     Running tests/destination_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_platform-e3880375e59b10e4)
+     Running tests/destination_recovery.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_recovery-acc05fa6ce5fbe3c)
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-d764717a30422889)
+     Running tests/microphone_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_native-30d465a9123f9e15)
+     Running tests/microphone_resolution.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_resolution-3c5f5b76d53b9e45)
+     Running tests/microphone_sessions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_sessions-7fb87fa808d8921b)
+     Running tests/microphone_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_settings-46d726b75a9003e1)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_cli-116f00d547bdbe3d)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_domains-907d897927e28d4d)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_live-70e9761f33f0f421)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_platform-0fd93de8e3c2d387)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_transactions-72be443587f3dc65)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_validation-7d1d70ebbd94e14c)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_writers-56984e4bdc223b8e)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/shortcuts_cli-9d17b2aa50ba0b94)
+   Doc-tests handy_app_lib

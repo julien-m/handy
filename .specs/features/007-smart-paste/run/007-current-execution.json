@@ -1,0 +1,18 @@
+{
+  "model": "gpt-6.1-sol",
+  "model_source": "current session turn_context",
+  "flags": [
+    "--auto",
+    "--model=gpt-6.1-sol",
+    "--review-max-chars=200000"
+  ],
+  "retry_hypothesis": "paired review source context exceeds default 60000 chars",
+  "retry_evidence": "prepare-review returned paired_review_batch_budget_exceeded; expanded context is one 178207-character batch with no errors",
+  "retry_result": "PASS",
+  "user_overrides": [
+    "UI/Penflow/mockups deferred until shared pre-spec-ship pass",
+    "No global direct edits, source code, commit or push"
+  ],
+  "ledger_mutation": "MCP tool call requires approval, but approval policy is never",
+  "native_goal": "Active mirror retained; CLI goal regenerated with explicit enlarged review budget"
+}

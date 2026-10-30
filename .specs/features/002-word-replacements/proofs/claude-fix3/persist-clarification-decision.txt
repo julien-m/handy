@@ -1,0 +1,8 @@
+$ ~/projects/livespec/.venv/bin/python fix3_persist.py  (persist_clarification_decision x1)
+Tue Oct 13 18:10:09 UTC 2026
+{
+  "requirement_id": "002-word-replacements:AC-006",
+  "decision_key": "decision:ac-006:cjk-non-mark-extenders-accepted-false-positive",
+  "source_hash_after": "33ad772428c22b0c26f139587bdcb888b8a4d0a08cecbf40bc7a151de21335c5"
+}
+EXIT=0

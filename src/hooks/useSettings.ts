@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 import { useSettingsStore } from "../stores/settingsStore";
-import type { AppSettings as Settings, AudioDevice } from "@/bindings";
+import type {
+  AppSettings as Settings,
+  AudioDevice,
+  RefusedShortcut,
+  ShortcutEdit,
+  ShortcutEditError,
+} from "@/bindings";
 
 interface UseSettingsReturn {
   // State
@@ -17,15 +23,20 @@ interface UseSettingsReturn {
   updateSetting: <K extends keyof Settings>(
     key: K,
     value: Settings[K],
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   resetSetting: (key: keyof Settings) => Promise<void>;
   refreshSettings: () => Promise<void>;
   refreshAudioDevices: () => Promise<void>;
   refreshOutputDevices: () => Promise<void>;
 
   // Binding-specific actions
-  updateBinding: (id: string, binding: string) => Promise<void>;
-  resetBinding: (id: string) => Promise<void>;
+  editBindingShortcuts: (
+    id: string,
+    edit: ShortcutEdit,
+  ) => Promise<ShortcutEditError | null>;
+  setPostProcessEnabled: (enabled: boolean) => Promise<RefusedShortcut[]>;
+  refusedShortcuts: RefusedShortcut[];
+  clearRefusedShortcuts: () => void;
 
   // Convenience getters
   getSetting: <K extends keyof Settings>(key: K) => Settings[K] | undefined;
@@ -68,8 +79,10 @@ export const useSettings = (): UseSettingsReturn => {
     refreshSettings: store.refreshSettings,
     refreshAudioDevices: store.refreshAudioDevices,
     refreshOutputDevices: store.refreshOutputDevices,
-    updateBinding: store.updateBinding,
-    resetBinding: store.resetBinding,
+    editBindingShortcuts: store.editBindingShortcuts,
+    setPostProcessEnabled: store.setPostProcessEnabled,
+    refusedShortcuts: store.refusedShortcuts,
+    clearRefusedShortcuts: store.clearRefusedShortcuts,
     getSetting: store.getSetting,
     setPostProcessProvider: store.setPostProcessProvider,
     updatePostProcessBaseUrl: store.updatePostProcessBaseUrl,

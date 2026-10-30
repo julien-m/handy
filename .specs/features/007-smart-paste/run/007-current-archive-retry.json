@@ -1,0 +1,5 @@
+{
+  "retry_hypothesis": "archive drift caused by missing required Penflow contract display phrase in captured transcript, not review/progression failure",
+  "retry_evidence": ".specs/.runs/spec-plan-2026-10-12T19-38-25.424422-fd8b7214-policy2.json verify_result contains rule FAIL; actual plan summary now recorded with deferred uncertified UI state",
+  "retry_result": "PASS"
+}

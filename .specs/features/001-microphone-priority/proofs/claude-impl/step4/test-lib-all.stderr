@@ -1,0 +1,5 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.78s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/handy_app_lib-7f5ac070b7e42d2e)

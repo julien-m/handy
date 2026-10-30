@@ -1,0 +1,28 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "run_id": "20261014T032455Z",
+  "verdict": "PASS",
+  "blockers": 0,
+  "violations": 482,
+  "error_violations": [],
+  "baseline": {
+    "baselined_count": 654,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3528,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "receipt_path": ".specs/conventions/runs/20261014T032455Z/receipt.json",
+  "receipt_sha256": "40392978f1ab7b740ae49e732a128e50ffb42e6e3f319a45c79260f222d6d450",
+  "stdout_bytes": 2063804,
+  "stdout_sha256": "60fafc01f783e541072e897a49f510a22ddcc2331267be793e714b7c5883079f",
+  "stderr": [
+    "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec"
+  ],
+  "run_directory": ".specs/conventions/runs/20261014T032455Z",
+  "run_files": [
+    "receipt.json"
+  ],
+  "note": "Full stdout and receipt not committed; the run directory was moved to the Trash after this summary."
+}

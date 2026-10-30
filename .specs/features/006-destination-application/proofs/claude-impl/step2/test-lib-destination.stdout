@@ -1,0 +1,30 @@
+
+running 25 tests
+test destination::outcome::tests::every_007_kind_maps_to_its_status_reason_and_disposition ... ok
+test destination::manager::tests::restart_and_pid_reuse_resolve_by_identity_and_fail_closed_when_ambiguous ... ok
+test destination::outcome::tests::legacy_success_is_attempted_and_legacy_error_is_an_insertion_failure ... ok
+test destination::manager::tests::an_accepted_start_captures_the_frontmost_app_and_switches_do_not_change_it ... ok
+test destination::manager::tests::cancellation_invalidates_the_generation_and_late_callbacks ... ok
+test destination::manager::tests::a_tentative_capture_changes_nothing_until_committed ... ok
+test destination::manager::tests::setting_off_or_platform_without_capability_reads_no_foreground ... ok
+test destination::manager::tests::handy_or_an_unreadable_foreground_capture_no_destination ... ok
+test destination::manager::tests::the_cross_removes_the_destination_and_a_queued_click_after_freeze_is_refused ... ok
+test destination::manager::tests::a_stale_choice_cannot_redirect_the_next_dictation ... ok
+test destination::recovery::tests::a_later_dictation_supersedes_the_retained_transcript_and_old_references_expire ... ok
+test destination::session::tests::choices_are_accepted_through_processing_and_refused_once_frozen ... ok
+test destination::session::tests::a_choice_needs_the_exact_dictation_and_version_and_bumps_the_version ... ok
+test destination::session::tests::backward_and_stale_disposition_changes_are_refused_unchanged ... ok
+test destination::session::tests::enter_is_claimed_once_on_insert_and_a_later_recover_does_not_revoke_it ... ok
+test destination::manager::tests::choosing_comet_changes_only_this_dictation_and_a_closed_app_is_refused ... ok
+test destination::session::tests::badge_is_visible_only_when_on_supported_and_shown ... ok
+test destination::session::tests::every_allowed_disposition_transition_is_accepted ... ok
+test destination::session::tests::removal_is_frontmost_at_end_and_repeating_it_or_the_same_app_is_a_no_op ... ok
+test destination::manager::tests::the_menu_lists_frontmost_first_then_others_and_marks_the_current_one ... ok
+test settings_service::platform_capability::tests::the_build_supports_destination_exactly_on_macos_and_windows ... ok
+test destination::outcome::tests::the_wire_values_are_the_007_kind_names ... ok
+test destination::manager::tests::concurrent_enter_claims_and_recover_are_serialized_by_the_session_lock ... ok
+test destination::recovery::tests::without_consumers_an_outcome_is_still_delivered_and_never_twice ... ok
+test destination::recovery::tests::a_reason_is_suppressed_only_after_a_consumer_acknowledges_presenting_it ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 376 filtered out; finished in 0.00s
+

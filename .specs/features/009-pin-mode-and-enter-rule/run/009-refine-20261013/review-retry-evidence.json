@@ -1,0 +1,15 @@
+{
+  "retry_hypothesis": "Concurrent external edits invalidated review sources during independent dispatch; reviewer sections match original snapshot exactly",
+  "retry_evidence": {
+    "prepared_context": "9288cdc13b23feba6175d1281e6cef555c6aa59e8a743e1b9c9ba28eaaf5b9b2",
+    "ingested_context": "8c8b3fb3d09b51727c9fda342e5b3d7e2e4ffdc2fa47ec5f904ddf79ab1d7802",
+    "changed_sources": [
+      ".specs/features/007-smart-paste/spec.md",
+      ".specs/stacks/_default.md"
+    ],
+    "validator_errors": [
+      "incomplete_or_duplicate_sections"
+    ]
+  },
+  "retry_result": "PASS: fresh spec/plan independent reviews complete+ready; Analyze covered13/13; progression implementREADY"
+}

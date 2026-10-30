@@ -1,0 +1,7 @@
+{
+  "command": "livespec validate .specs/features/008-settings-cli --progression implement --model gpt-6.1-sol --review-max-chars 240000",
+  "exit_code": 0,
+  "output": "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec\nProgression: READY\n",
+  "tool_chunk_id": "6fce50",
+  "evidence_scope": "Observed semantic progression command only; no runtime acceptance certification."
+}

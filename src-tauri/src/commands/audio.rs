@@ -1,7 +1,12 @@
 use crate::audio_feedback;
 use crate::audio_toolkit::audio::{list_input_devices, list_output_devices, AudioRecorder};
-use crate::managers::audio::{AudioRecordingManager, MicrophoneMode};
-use crate::settings::{get_settings, write_settings};
+use crate::managers::audio::AudioRecordingManager;
+use crate::microphones::{priority, status::MicrophoneStatus};
+use crate::settings::get_settings;
+use crate::settings_service::{
+    command_error::SettingsCommandError, errors::ValidationReason, protocol::Revision,
+    tauri_adapter, ui_value::UiValue,
+};
 use log::warn;
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -154,29 +159,15 @@ pub fn open_microphone_privacy_settings() -> Result<(), String> {
     }
 }
 
+/// Commit the microphone mode; its live effect (stopping or starting the cpal stream, blocking
+/// CoreAudio) runs on a blocking thread, never on the webview/main run loop.
 #[tauri::command]
 #[specta::specta]
-pub async fn update_microphone_mode(app: AppHandle, always_on: bool) -> Result<(), String> {
-    // Update settings (fast, stays inline)
-    let mut settings = get_settings(&app);
-    settings.always_on_microphone = always_on;
-    write_settings(&app, settings);
-
-    // Update the audio manager mode. update_mode can stop/start the cpal stream
-    // (blocking CoreAudio) and takes the manager std mutexes — run it on a
-    // blocking thread, NOT inline on the webview/main run loop (a slow device
-    // open/close would freeze the UI).
-    let rm = app.state::<Arc<AudioRecordingManager>>().inner().clone();
-    let new_mode = if always_on {
-        MicrophoneMode::AlwaysOn
-    } else {
-        MicrophoneMode::OnDemand
-    };
-
-    tokio::task::spawn_blocking(move || rm.update_mode(new_mode))
-        .await
-        .map_err(|e| format!("audio task join failed: {}", e))?
-        .map_err(|e| format!("Failed to update microphone mode: {}", e))
+pub async fn update_microphone_mode(
+    app: AppHandle,
+    always_on: UiValue<bool>,
+) -> Result<(), SettingsCommandError> {
+    tauri_adapter::write(app, "always_on_microphone", always_on).await
 }
 
 #[tauri::command]
@@ -212,34 +203,44 @@ pub async fn get_available_microphones() -> Result<Vec<AudioDevice>, String> {
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
+// @spec FR-007: UI saves through the CLI's validation and transaction — .specs/features/001-microphone-priority/spec.md#fr-007
+/// Save the complete microphone priority (feature 001) with the revision the editor started
+/// from: the same validation, transaction and refusals as `handy settings microphones
+/// set-priority`, so a stale revision is `revision_conflict` and nothing partial is written.
+/// The live effect is queued; a recording in progress keeps its microphone. Returns the
+/// committed revision (unchanged for an identical order).
 #[tauri::command]
 #[specta::specta]
-pub async fn set_selected_microphone(app: AppHandle, device_name: String) -> Result<(), String> {
-    let mut settings = get_settings(&app);
-    settings.selected_microphone = if device_name == "default" {
-        None
-    } else {
-        Some(device_name)
-    };
-    write_settings(&app, settings);
-
-    // Update the audio manager to use the new device. update_selected_device
-    // can restart the cpal stream (blocking CoreAudio) — run it on a blocking
-    // thread, not inline on the webview/main run loop.
-    let rm = app.state::<Arc<AudioRecordingManager>>().inner().clone();
-    tokio::task::spawn_blocking(move || rm.update_selected_device())
-        .await
-        .map_err(|e| format!("audio task join failed: {}", e))?
-        .map_err(|e| format!("Failed to update selected device: {}", e))
+pub async fn set_microphone_priority(
+    app: AppHandle,
+    order: UiValue<Vec<String>>,
+    expected_revision: Option<u64>,
+) -> Result<u64, SettingsCommandError> {
+    let order = serde_json::from_value::<Vec<String>>(order.into_json()).map_err(|_| {
+        SettingsCommandError::invalid(priority::PRIORITY_KEY, ValidationReason::CanonicalType)
+    })?;
+    tauri_adapter::blocking(move || {
+        let change = priority::priority_change(order)?;
+        let expected = expected_revision.map(Revision);
+        Ok(tauri_adapter::write_change(&app, &change, expected)?
+            .revision
+            .0)
+    })
+    .await
 }
 
+/// Saved order, availability of each choice and the microphone in use, from one bounded device
+/// observation taken off the webview thread (the same projection as `microphones list`).
 #[tauri::command]
 #[specta::specta]
-pub fn get_selected_microphone(app: AppHandle) -> Result<String, String> {
-    let settings = get_settings(&app);
-    Ok(settings
-        .selected_microphone
-        .unwrap_or_else(|| "default".to_string()))
+pub async fn get_microphone_status(app: AppHandle) -> Result<MicrophoneStatus, String> {
+    tokio::task::spawn_blocking(move || {
+        let configured = get_settings(&app).microphone_priority;
+        let manager = app.state::<Arc<AudioRecordingManager>>();
+        manager.microphone_status(configured)
+    })
+    .await
+    .map_err(|e| format!("audio task join failed: {e}"))
 }
 
 #[tauri::command]
@@ -268,17 +269,14 @@ pub async fn get_available_output_devices() -> Result<Vec<AudioDevice>, String> 
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
+/// `None` selects the system default output device; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
-pub fn set_selected_output_device(app: AppHandle, device_name: String) -> Result<(), String> {
-    let mut settings = get_settings(&app);
-    settings.selected_output_device = if device_name == "default" {
-        None
-    } else {
-        Some(device_name)
-    };
-    write_settings(&app, settings);
-    Ok(())
+pub async fn set_selected_output_device(
+    app: AppHandle,
+    device_name: UiValue<Option<String>>,
+) -> Result<(), SettingsCommandError> {
+    tauri_adapter::write(app, "selected_output_device", device_name).await
 }
 
 #[tauri::command]
@@ -304,17 +302,14 @@ pub async fn play_test_sound(app: AppHandle, sound_type: String) {
     audio_feedback::play_test_sound(&app, sound);
 }
 
+/// `None` selects the system default device while the lid is closed; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
-pub fn set_clamshell_microphone(app: AppHandle, device_name: String) -> Result<(), String> {
-    let mut settings = get_settings(&app);
-    settings.clamshell_microphone = if device_name == "default" {
-        None
-    } else {
-        Some(device_name)
-    };
-    write_settings(&app, settings);
-    Ok(())
+pub async fn set_clamshell_microphone(
+    app: AppHandle,
+    device_name: UiValue<Option<String>>,
+) -> Result<(), SettingsCommandError> {
+    tauri_adapter::write(app, "clamshell_microphone", device_name).await
 }
 
 #[tauri::command]
@@ -361,20 +356,19 @@ pub async fn get_microphone_channels(device_name: String) -> Result<u16, String>
     .map_err(|e| format!("audio task join failed: {e}"))?
 }
 
+/// Restarting cpal can block, so the channel change runs off the webview/main run loop. The
+/// runtime change is prepared before committing, so a rejected active-recording change is never
+/// stored; a refused commit restores the channel published when the ordered write started. The
+/// preparation is shared with routed CLI writes (`settings_service::native_changes`).
 #[tauri::command]
 #[specta::specta]
-pub async fn set_selected_channel(app: AppHandle, channel: Option<u16>) -> Result<(), String> {
-    // Restarting cpal can block, so keep it off the webview/main run loop. Apply
-    // the runtime change before persisting it so a rejected active-recording
-    // change does not become effective on the next launch.
-    let manager = app.state::<Arc<AudioRecordingManager>>().inner().clone();
-    tokio::task::spawn_blocking(move || manager.update_selected_channel(channel))
-        .await
-        .map_err(|e| format!("audio task join failed: {e}"))?
-        .map_err(|e| format!("Failed to update channel selection: {e}"))?;
-
-    let mut settings = get_settings(&app);
-    settings.selected_channel = channel;
-    write_settings(&app, settings);
-    Ok(())
+pub async fn set_selected_channel(
+    app: AppHandle,
+    channel: UiValue<Option<u16>>,
+) -> Result<(), SettingsCommandError> {
+    let channel = channel.into_json();
+    tauri_adapter::blocking(move || {
+        tauri_adapter::set_prepared(&app, "selected_channel", channel).map(|_| ())
+    })
+    .await
 }

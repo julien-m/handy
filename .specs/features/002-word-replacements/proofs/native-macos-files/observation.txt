@@ -1,0 +1,6 @@
+2026-10-28, build handy-gates-closed (fc362e37), Computer Use :
+- Export : dialogue macOS ouvert, fichier écrit avec en-tête + 2 règles dans l'ordre.
+- Import fusion de handy-test-import.txt : aperçu « 1 mise à jour, 1 ajout, 0 erreur », appliqué, 3 règles (CLI révision 10).
+- Import d'un fichier non UTF-8 : alerte « Impossible d'importer … ce n'est pas du texte UTF-8. Rien n'a été importé », bouton Ignorer. L'alerte est rendue au-dessus du titre REMPLACEMENTS, donc visuellement à la fin de la section Vocabulaire (N6).
+- Édition sur la ligne, Enregistrer (révision 9), suppression avec confirmation (focus sur la règle suivante), bascule Liste/Texte bloquée tant qu'il y a une modification (dialogue Enregistrer/Abandonner/Annuler).
+- Focus perdu (racine de la page) après « Terminer la modification », après Enregistrer et après la fermeture d'un dialogue (N5).

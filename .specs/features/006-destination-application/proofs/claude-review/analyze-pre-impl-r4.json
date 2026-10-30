@@ -1,0 +1,169 @@
+{
+  "findings": [],
+  "coverage": [
+    {
+      "requirement_id": "006-destination-application:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:AC-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:FR-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "006-destination-application:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "covered",
+  "metrics": {
+    "total_requirements": 17,
+    "covered_requirements": 17,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 0,
+    "implementation_present": 1
+  }
+}

@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Izin Aksesibilitas",
-        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda."
+        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda.",
+        "openSettings": "Buka Pengaturan Sistem",
+        "retry": "Coba lagi",
+        "alreadyCheckedHint": "Jika Handy sudah dicentang, hapus lalu tambahkan lagi."
       },
       "grant": "Berikan Izin",
       "granted": "Diizinkan",
@@ -179,12 +182,51 @@
           "transcribe_with_post_process": {
             "name": "Pintasan Pascaproses",
             "description": "Opsional: pintasan khusus yang selalu menerapkan pascaproses AI pada transkripsi Anda."
+          },
+          "retarget_to_active_app": {
+            "name": "Kirim ke aplikasi di depan",
+            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan. Tekan lagi untuk membatalkan. Sematan tetap."
+          },
+          "skip_automatic_enter": {
+            "name": "Sisipkan tanpa Enter",
+            "description": "Saat dikte, tekan tombol ini saja untuk menyisipkan teks tanpa Enter otomatis. Tekan lagi untuk membatalkan."
           }
         },
         "errors": {
-          "restore": "Gagal memulihkan pintasan asli",
-          "set": "Gagal mengatur pintasan: {{error}}",
-          "reset": "Gagal mengembalikan pintasan ke nilai awal"
+          "set": "Gagal mengatur pintasan: {{error}}"
+        },
+        "list": {
+          "add": "Tambah pintasan",
+          "addLimit": "Hingga {{limit}} pintasan per tindakan",
+          "change": "Klik untuk merekam kombinasi baru",
+          "remove": "Hapus pintasan ini",
+          "removeLast": "Setiap tindakan menyimpan setidaknya satu pintasan",
+          "reset": "Atur ulang ke pintasan bawaan",
+          "errors": {
+            "conflict": "Sudah digunakan oleh {{action}} ({{shortcut}})",
+            "overlap": "Juga akan memicu {{action}} ({{shortcut}})",
+            "invalid": "Pintasan tidak valid: {{error}}",
+            "registration": "Sistem menolak pintasan ini: {{error}}",
+            "generic": "Pintasan tidak dapat disimpan",
+            "conflictsUnavailable": "Bentrokan pintasan tidak dapat diperiksa"
+          },
+          "changeButton": "Ubah",
+          "discard": "Buang pintasan ini",
+          "discardDraft": "Buang",
+          "save": "Simpan",
+          "unsaved": "Belum disimpan",
+          "lastHint": "Setiap tindakan menyimpan setidaknya satu pintasan. Ubah atau atur ulang pintasan itu.",
+          "limitHint": "{{count}} dari {{limit}} pintasan. Hapus satu untuk menambahkan yang lain.",
+          "draftConflict": "{{shortcut}} sudah digunakan oleh {{action}}. Tidak ada yang disimpan.",
+          "draftOverlap": "{{shortcut}} juga akan memicu {{action}}. Tidak ada yang disimpan.",
+          "legacyOverlap": "{{shortcut}} tumpang tindih dengan {{action}}",
+          "legacyDuplicate": "{{shortcut}} juga digunakan oleh {{action}}",
+          "legacyBody": "Pintasan ini tetap berfungsi seperti sebelum pembaruan. Ubah untuk menghapus peringatan ini.",
+          "systemRefused": "{{system}} menolak {{shortcut}}",
+          "systemRefusedGeneric": "Sistem menolak pintasan ini",
+          "systemRefusedBody": "Aplikasi lain mungkin telah mendaftarkan kombinasi ini. Pilih kombinasi lain atau coba lagi.",
+          "systemReason": "Pesan sistem: {{error}}",
+          "retry": "Coba lagi"
         }
       },
       "language": {
@@ -232,10 +274,66 @@
     "sound": {
       "title": "Suara",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Pilih perangkat mikrofon yang Anda inginkan",
-        "placeholder": "Pilih mikrofon...",
-        "loading": "Memuat..."
+        "placeholder": "Pilih mikrofon..."
+      },
+      "microphonePriority": {
+        "title": "Prioritas mikrofon",
+        "description": "Handy merekam dengan mikrofon pertama yang tersedia sesuai urutan ini, lalu dengan bawaan sistem. Mikrofon yang tidak tersedia tetap di posisinya.",
+        "emptyTitle": "Tidak ada mikrofon pilihan",
+        "emptyBody": "Handy menggunakan mikrofon bawaan sistem hingga Anda menambahkan mikrofon.",
+        "status": {
+          "available": "Tersedia",
+          "unavailable": "Tidak tersedia",
+          "ambiguous": "Ambigu",
+          "unknown": "Tidak diketahui"
+        },
+        "moveUp": "Pindahkan {{name}} ke atas",
+        "moveDown": "Pindahkan {{name}} ke bawah",
+        "remove": "Hapus {{name}}",
+        "addLabel": "Tambah mikrofon",
+        "addPlaceholder": "Tambah mikrofon…",
+        "noDevices": "Tidak ada mikrofon terdeteksi untuk ditambahkan",
+        "duplicateChoice": "{{name}} sudah ada di daftar.",
+        "refresh": "Segarkan ketersediaan",
+        "checked": "Diperiksa {{seconds}} dtk lalu",
+        "refreshFailed": "Tidak dapat memeriksa perangkat",
+        "retry": "Coba lagi",
+        "inUse": {
+          "title": "Sedang digunakan",
+          "description": "Mikrofon yang sedang dipakai Handy untuk merekam, atau yang dipakai pada rekaman terakhir. Bisa berbeda dari pilihan pertama Anda.",
+          "notUsedYet": "Belum digunakan sejak dibuka",
+          "systemDefault": "Mikrofon bawaan sistem",
+          "unnamed": "Mikrofon tanpa nama",
+          "lastRecording": "Rekaman terakhir · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Pilihan pertama",
+          "fallback": "Cadangan",
+          "fallbackUnavailable": "Cadangan · {{name}} tidak tersedia",
+          "fallbackAmbiguous": "Cadangan · {{name}} ambigu",
+          "clamshell": "Mikrofon saat laptop ditutup",
+          "system_default": "Bawaan sistem"
+        },
+        "clamshell": {
+          "title": "Mikrofon saat laptop ditutup",
+          "description": "Dicoba lebih dulu saat laptop ditutup. Urutan prioritas Anda tidak berubah.",
+          "none": "Tidak ada"
+        },
+        "draft": {
+          "discard": "Buang",
+          "save": "Simpan",
+          "saving": "Menyimpan…",
+          "saved": "Prioritas mikrofon disimpan"
+        },
+        "conflict": {
+          "title": "Pengaturan diubah di tempat lain",
+          "body": "Urutan diubah di tempat lain. Muat ulang untuk melihatnya; suntingan Anda akan dibuang.",
+          "reload": "Muat ulang"
+        },
+        "errors": {
+          "duplicate": "Setiap mikrofon hanya boleh muncul sekali.",
+          "empty": "Nama mikrofon tidak boleh kosong."
+        }
       },
       "channel": {
         "title": "Kanal Masukan",
@@ -264,7 +362,8 @@
         "output": "Keluaran",
         "transcription": "Transkripsi",
         "history": "Riwayat",
-        "experimental": "Eksperimental"
+        "experimental": "Eksperimental",
+        "textFormatting": "Format teks"
       },
       "experimentalToggle": {
         "label": "Fitur Eksperimental",
@@ -273,6 +372,10 @@
       "lazyStreamClose": {
         "label": "Biarkan Mikrofon Tetap Aktif di Antara Transkripsi",
         "description": "Membiarkan aliran mikrofon tetap terbuka selama 30 detik setelah perekaman berhenti untuk mengurangi latensi pada transkripsi beruntun. Dapat menurunkan kualitas audio Bluetooth saat aktif."
+      },
+      "pasteVerification": {
+        "label": "Verifikasi tempel",
+        "description": "Dengan tempel pintar, memeriksa apakah kolom aktif berubah setelah menempel, menempel sekali lagi jika tidak, lalu menyimpan teks di gelembung pemulihan alih-alih menekan Enter di kolom kosong. Fitur uji coba."
       },
       "acceleration": {
         "transcribe": {
@@ -323,13 +426,18 @@
         "description": "Pilih cara teks dimasukkan. Langsung: mensimulasikan pengetikan melalui masukan sistem. Tidak Ada: melewati proses tempel dan hanya memperbarui riwayat/papan klip.",
         "options": {
           "clipboard": "Papan klip ({{modifier}}+V)",
+          "smartPaste": "Tempel cerdas",
           "clipboardCtrlShiftV": "Papan klip (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Papan klip (Shift+Insert)",
           "direct": "Langsung",
           "none": "Tidak Ada",
-          "externalScript": "Skrip Eksternal"
+          "externalScript": "Skrip Eksternal",
+          "clipboardMac": "Papan klip (⌘V)",
+          "smartPasteDescription": "Bawaan di macOS",
+          "noneDescription": "Hanya riwayat dan papan klip"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "Tempel cerdas menulis langsung ke kolom; jika tidak bisa, menempel lalu memulihkan papan klip Anda."
       },
       "typingTool": {
         "title": "Alat Pengetikan",
@@ -357,6 +465,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Enter Otomatis",
+        "description": "Dikirim sekali, hanya setelah penyisipan berhasil.",
+        "keyLabel": "Tombol yang ditekan",
+        "announced": "Enter Otomatis: {{value}}",
+        "note": "Menggantikan Kirim Otomatis. Tidak ada Enter setelah penyisipan gagal atau tidak terkonfirmasi, dengan metode tempel Tidak Ada, atau saat aplikasi kehilangan fokus.",
+        "options": {
+          "never": "Tidak pernah",
+          "always": "Selalu",
+          "alwaysDescription": "Setiap penyisipan berhasil",
+          "pinOnly": "Hanya dalam mode PIN",
+          "pinOnlyDescription": "Hanya aplikasi yang disematkan"
+        }
+      },
       "translateToEnglish": {
         "label": "Terjemahkan ke Bahasa Inggris",
         "description": "Terjemahkan ucapan dari bahasa lain ke bahasa Inggris secara otomatis selama transkripsi."
@@ -375,14 +497,6 @@
           "sec15": "Setelah 15 detik (Debug)"
         }
       },
-      "customWords": {
-        "title": "Kata Khusus",
-        "description": "Bantu model yang didukung mengenali nama dan istilah khusus. Koreksi fuzzy saat ini terbatas pada kata yang menggunakan huruf A–Z dan angka.",
-        "placeholder": "Tambahkan kata",
-        "add": "Tambah",
-        "remove": "Hapus {{word}}",
-        "duplicate": "\"{{word}}\" sudah ada"
-      },
       "voiceActivityDetection": {
         "title": "Deteksi Aktivitas Suara",
         "description": "Saring keheningan dari rekaman. Model yang mendukung streaming menggunakan ekor VAD yang lebih panjang; menonaktifkan VAD akan merekam audio mentah."
@@ -399,6 +513,11 @@
         "title": "Hapus Kata Pengisi",
         "description": "Menghapus kata pengisi umum dari transkripsi. Nonaktifkan untuk mempertahankannya."
       },
+      "smartParagraphs": {
+        "title": "Paragraf cerdas",
+        "description": "Membagi dikte panjang menjadi paragraf di akhir kalimat, dipisahkan oleh satu baris kosong. Daftar, kode, dan baris baru yang ada tetap dipertahankan. Berjalan di komputer ini.",
+        "descriptionLimited": "Membagi dikte panjang menjadi paragraf di akhir kalimat, dipisahkan oleh satu baris kosong. Daftar, kode, dan baris baru yang ada tetap dipertahankan. Berjalan di komputer ini. Di sistem ini, dikte berbahasa Tionghoa dan Jepang tidak diubah."
+      },
       "chineseScript": {
         "title": "Aksara Tionghoa",
         "description": "Menulis transkripsi Mandarin dan Kanton dengan aksara Sederhana atau Tradisional. Bahasa lain tidak diubah.",
@@ -407,6 +526,171 @@
           "simplified": "Sederhana",
           "traditional": "Tradisional"
         }
+      },
+      "returnToApp": {
+        "title": "Kembali ke aplikasi dikte",
+        "description": "Sisipkan ke aplikasi tempat dikte dimulai, meskipun Anda berpindah aplikasi sementara itu.",
+        "unavailableUnreadable": "Tidak tersedia di sistem ini: Handy tidak dapat membaca aplikasi terdepan di sini. Teks masuk ke aplikasi yang berada di depan saat selesai.",
+        "unavailablePlatform": "Tidak tersedia di sistem ini. Teks masuk ke aplikasi yang berada di depan saat selesai.",
+        "details": "Handy mengingat aplikasi di depan saat dikte dimulai dan kembali ke aplikasi itu sebelum menyisipkan teks. Jika nonaktif, teks masuk ke aplikasi yang berada di depan saat dikte selesai.",
+        "detailsLabel": "Tentang kembali ke aplikasi dikte"
+      },
+      "noFieldBubble": {
+        "title": "Tampilkan gelembung saat tidak ada kolom teks yang difokuskan",
+        "description": "Menyimpan teks dalam gelembung alih-alih menempelkannya ke mana-mana."
+      },
+      "textFormatting": {
+        "smartSpacing": {
+          "label": "Spasi Cerdas",
+          "description": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir. Jika teks setelah kursor melanjutkan kalimat, titik di akhir dikte dihapus.",
+          "descriptionLimited": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir. Di sistem ini teks di sekitar kursor tidak dapat dibaca, jadi hanya satu spasi yang ditambahkan setelah setiap dikte."
+        },
+        "smartCapitalization": {
+          "label": "Kapitalisasi cerdas",
+          "description": "Menyesuaikan huruf pertama setiap dikte dengan teks sebelum kursor: huruf kapital di awal kalimat, huruf kecil saat Anda melanjutkannya. Singkatan, kata seperti iPhone, dan kata kustom Anda tetap dipertahankan. Tidak ada yang berubah jika kolom tidak dapat dibaca."
+        }
+      },
+      "defaultInputs": {
+        "title": "Kolom yang diingat",
+        "description": "Tempat Handy menempel untuk aplikasi saat elemen aktifnya bukan kolom teks. Ingat satu dari menu lencana selama dikte.",
+        "field": "Kolom: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Lupakan",
+        "forgetLabel": "Lupakan input yang diingat untuk {{app}}",
+        "forgetAll": "Lupakan semua",
+        "forgetAllLabel": "Lupakan semua input yang diingat",
+        "empty": "Belum ada kolom yang diingat. Gunakan menu lencana selama dikte.",
+        "failed": "Tidak dapat melupakan input yang diingat."
+      }
+    },
+    "vocabulary": {
+      "group": "Kosakata",
+      "title": "Kosakata",
+      "description": "Nama dan istilah yang perlu dikenali model, jika model mendukungnya. Sebaliknya, penggantian menulis ulang teks setelah pengenalan.",
+      "placeholder": "Tambahkan istilah",
+      "inputLabel": "Istilah kosakata baru",
+      "add": "Tambah",
+      "addHint": "Ketik istilah untuk menambahkannya.",
+      "busy": "Tunggu hingga perubahan saat ini selesai.",
+      "paste": "Tempel daftar…",
+      "count": "{{total}} dari {{max}} istilah",
+      "listLabel": "Istilah kosakata",
+      "remove": "Hapus {{term}}",
+      "retry": "Coba lagi",
+      "loading": "Memuat kosakata…",
+      "listFailed": "Kosakata yang tersimpan tidak dapat dibaca. Tidak ada yang diubah; coba lagi untuk memuatnya.",
+      "empty": {
+        "title": "Belum ada istilah",
+        "body": "Tambahkan nama seperti Claude Code atau OpenClaw, satu per satu atau sebagai daftar yang ditempel."
+      },
+      "flag": {
+        "empty": "Istilah kosong, tidak dikirim. Hapus istilah ini.",
+        "too_long": "Lebih dari 100 karakter, tidak dikirim. Hapus lalu tambahkan versi yang lebih pendek.",
+        "line_break": "Berisi jeda baris, tidak dikirim. Hapus lalu tambahkan lagi.",
+        "forbidden_character": "Berisi < > atau \", tidak dikirim. Hapus lalu tambahkan tanpa karakter tersebut.",
+        "duplicate": "Sama dengan istilah sebelumnya, tidak dikirim. Hapus istilah ini.",
+        "over_capacity": "Melebihi batas 5.000 istilah, tidak dikirim sampai daftar lebih pendek.",
+        "over_budget": "Tidak dikirim: melebihi batas model."
+      },
+      "errors": {
+        "term_empty": "Masukkan istilah.",
+        "term_too_long": "Istilah boleh berisi maksimal 100 karakter.",
+        "term_line_break": "Istilah harus muat dalam satu baris.",
+        "term_forbidden_character": "Hapus karakter < > atau \" dari istilah.",
+        "term_duplicate": "Setiap istilah hanya boleh muncul sekali, dan istilah ini sudah ada di kosakata.",
+        "limit": "Kosakata menampung maksimal 5.000 istilah. Hapus satu istilah untuk menambahkan yang lain.",
+        "conflict": "Kosakata berubah sementara itu dan telah dimuat ulang. Coba lagi.",
+        "notFound": "Istilah ini sudah dihapus. Kosakata telah dimuat ulang.",
+        "unknown": "Handy tidak dapat memastikan perubahan. Kosakata telah dimuat ulang; periksa sebelum mencoba lagi.",
+        "committed": "Kosakata sudah disimpan, tetapi Handy tidak dapat langsung menerapkannya. Daftar telah dimuat ulang.",
+        "saved": "Kosakata yang tersimpan tidak berubah."
+      },
+      "status": {
+        "loading": "Memeriksa dukungan model…",
+        "selectedModel": "model yang dipilih",
+        "used": {
+          "title": "Digunakan saat pengenalan oleh {{model}}",
+          "sent": "{{sent}} dari {{total}} istilah dikirim.",
+          "sentOne": "{{sent}} dari 1 istilah dikirim."
+        },
+        "notSent": {
+          "over_budget": "Tidak dikirim, melebihi batas model: {{terms}}.",
+          "invalid": "Tidak dikirim, tidak valid: {{terms}}.",
+          "duplicate": "Tidak dikirim, duplikat: {{terms}}.",
+          "over_capacity": "Tidak dikirim, melebihi 5.000 istilah: {{terms}}.",
+          "more": "dan {{hidden}} lainnya"
+        },
+        "noTermSent": {
+          "title": "Tidak ada istilah yang dikirim ke {{model}}",
+          "empty_vocabulary": "Kosakata kosong. Tambahkan istilah untuk menggunakannya saat pengenalan.",
+          "invalid_terms_only": "Semua istilah tersimpan tidak valid atau duplikat. Hapus istilah yang ditandai dan tambahkan versi yang sudah diperbaiki.",
+          "over_budget": "Istilah pertama melebihi batas model, sehingga tidak ada istilah yang dikirim. Hapus istilah itu agar istilah setelahnya terkirim."
+        },
+        "notSupported": {
+          "title": "{{model}} tidak dapat menggunakan kosakata saat pengenalan",
+          "body": "Sebagai gantinya, koreksi fuzzy diterapkan setelah pengenalan. Pilih model Whisper untuk mengirim istilah ke pengenal."
+        },
+        "streaming": {
+          "title": "Tidak digunakan dalam streaming langsung",
+          "body": "{{model}} mentranskripsi secara langsung, sehingga tidak mengirim konteks pengenalan. Sebagai gantinya, koreksi fuzzy diterapkan pada teks akhir."
+        },
+        "unknown": {
+          "title": "Dukungan belum diketahui sampai model dimuat",
+          "model_not_loaded": "Handy memeriksa dukungan {{model}} saat memuatnya.",
+          "capability_query_unanswered": "{{model}} tidak menjawab tepat waktu, misalnya saat dikte berlangsung. Handy akan memeriksa lagi setelahnya."
+        },
+        "budgetUnverified": {
+          "title": "Dukungan kosakata untuk {{model}} tidak dapat dipastikan",
+          "body": "Model ini mendeklarasikan konteks pengenalan, tetapi build ini tidak memiliki batas terdokumentasi untuknya. Tidak ada istilah yang dikirim; sebagai gantinya, koreksi fuzzy diterapkan."
+        },
+        "failed": {
+          "title": "Tidak dapat membaca status kosakata",
+          "body": "Kosakata Anda tersimpan. Coba lagi untuk memeriksa dukungan model."
+        }
+      },
+      "pasteBox": {
+        "title": "Tempel istilah",
+        "description": "Satu istilah per baris. Duplikat dilewati; baris yang tidak valid harus diperbaiki sebelum ditambahkan.",
+        "label": "Istilah untuk ditempel, satu per baris",
+        "previewTitle": "Pratinjau",
+        "previewEmpty": "Tempel atau ketik satu istilah per baris untuk melihat apa yang akan ditambahkan.",
+        "sameAs": "{{term}} — sama dengan {{original}}",
+        "alreadyListed": "{{term}} — sudah ada di daftar",
+        "summary": {
+          "add": "{{n}} untuk ditambahkan",
+          "duplicateOne": "1 duplikat",
+          "duplicateMany": "{{n}} duplikat",
+          "errorOne": "1 kesalahan",
+          "errorMany": "{{n}} kesalahan"
+        },
+        "kind": {
+          "add": "Tambah",
+          "duplicate": "Duplikat",
+          "error": "Kesalahan"
+        },
+        "line": {
+          "empty": "Baris {{line}}: baris kosong, hapus",
+          "too_long": "Baris {{line}}: gunakan maksimal 100 karakter",
+          "line_break": "Baris {{line}}: tulis istilah dalam satu baris",
+          "forbidden_character": "Baris {{line}}: hapus karakter < > atau \"",
+          "duplicate": "Baris {{line}}: sama dengan istilah sebelumnya",
+          "over_capacity": "Baris {{line}}: melebihi batas 5.000 istilah"
+        },
+        "note": {
+          "empty": "Kosakata Anda tidak berubah sampai Anda menambahkan istilah.",
+          "checking": "Memeriksa baris…",
+          "fixOne": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
+          "fixMany": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
+          "overCapacity": "Kosakata menampung maksimal 5.000 istilah. Persingkat daftar untuk menambahkannya. Kosakata Anda tidak berubah.",
+          "nothingToAdd": "Semua baris sudah ada di kosakata.",
+          "ready": "Duplikat dilewati. Tidak ada yang disimpan sampai Anda menambahkan istilah."
+        },
+        "cancel": "Batal",
+        "applyOne": "Tambah 1 istilah",
+        "applyMany": "Tambah {{n}} istilah",
+        "applyZero": "Tambah istilah",
+        "applying": "Menambahkan…",
+        "applied": "Istilah ditambahkan ke kosakata."
       }
     },
     "postProcessing": {
@@ -441,26 +725,128 @@
           "refreshModels": "Segarkan model"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt Terpilih",
-          "description": "Pilih templat untuk menyempurnakan transkripsi atau buat yang baru. Gunakan ${output} dalam teks prompt untuk merujuk ke hasil transkripsi."
+      "promptLibrary": {
+        "processing": {
+          "title": "Pascaproses AI",
+          "enabledDescription": "Proses dikte dengan prompt. Nonaktif: tidak ada dikte yang diproses.",
+          "defaultTitle": "Prompt bawaan",
+          "defaultDescription": "Digunakan oleh pintasan dikte AI. Dikte biasa dimulai dengan prompt terakhir yang Anda pilih di indikator, atau Tidak ada.",
+          "none": "Tidak ada",
+          "invalidOption": "Tidak valid: edit sebelum digunakan"
         },
-        "noPrompts": "Tidak ada prompt yang tersedia",
-        "selectPrompt": "Pilih prompt",
-        "createNew": "Buat Prompt Baru",
-        "promptLabel": "Label Prompt",
-        "promptLabelPlaceholder": "Masukkan nama prompt",
-        "promptInstructions": "Instruksi Prompt",
-        "promptInstructionsPlaceholder": "Tulis instruksi yang dijalankan setelah transkripsi. Contoh: Perbaiki tata bahasa dan kejelasan teks berikut: ${output}",
-        "promptTip": "Tips: Gunakan <code>${output}</code> untuk menyisipkan teks hasil transkripsi ke prompt Anda.",
-        "updatePrompt": "Perbarui Prompt",
-        "deletePrompt": "Hapus Prompt",
-        "createPrompt": "Buat Prompt",
-        "cancel": "Batal",
-        "selectToEdit": "Pilih prompt di atas untuk melihat dan mengedit detailnya.",
-        "createFirst": "Klik 'Buat Prompt Baru' di atas untuk membuat prompt pascaproses pertama Anda."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}} dari {{limit}} prompt",
+          "full": "{{limit}} dari {{limit}} prompt: hapus satu untuk menambahkan yang lain",
+          "new": "Prompt baru",
+          "empty": "Belum ada prompt. Buat satu untuk memproses dikte Anda.",
+          "loading": "Memuat prompt…",
+          "loadFailed": "Prompt tidak dapat dimuat.",
+          "retry": "Coba lagi",
+          "edit": "Ubah {{name}}",
+          "defaultProvider": "Penyedia bawaan",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Tanpa pintasan",
+          "notReady": "Belum siap: {{reason}}",
+          "invalid": "Tidak valid: {{reason}}",
+          "reloadFailed": "Prompt tidak dapat dimuat ulang. Yang ditampilkan mungkin sudah usang."
+        },
+        "issues": {
+          "name_empty": "nama kosong",
+          "name_too_long": "nama terlalu panjang",
+          "name_duplicate": "nama duplikat",
+          "text_empty": "teks kosong",
+          "text_too_long": "teks terlalu panjang",
+          "override_incomplete": "penyedia atau model belum diisi",
+          "unknown_provider": "penyedia tidak dikenal"
+        },
+        "reasons": {
+          "provider_error": "penyedia mengembalikan galat",
+          "empty_result": "penyedia mengembalikan hasil kosong",
+          "timeout": "tidak ada jawaban dalam 30 detik",
+          "provider_busy": "penyedia masih sibuk dengan permintaan lain",
+          "missing_endpoint": "endpoint belum diisi",
+          "missing_model": "model belum diisi",
+          "missing_api_key": "kunci API belum diisi",
+          "provider_unavailable": "penyedia tidak tersedia di perangkat ini",
+          "unknown_provider": "penyedia tidak dikenal",
+          "invalid_prompt": "prompt tidak valid",
+          "prompt_missing": "prompt sudah tidak ada"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "Prompt baru",
+          "name": "Nama",
+          "namePlaceholder": "Nama prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Tulis instruksi yang diterapkan pada transkrip. Contoh: Persingkat transkrip menjadi intinya saja. ${output}",
+          "textHint": "<code>${output}</code> diganti dengan transkrip.",
+          "fieldErrors": {
+            "name_empty": "Masukkan nama (1–60 karakter).",
+            "name_too_long": "Gunakan paling banyak 60 karakter.",
+            "name_duplicate": "Prompt lain sudah memakai nama ini. Nama harus unik.",
+            "text_empty": "Masukkan teks prompt.",
+            "text_too_long": "Gunakan paling banyak 8.000 karakter."
+          },
+          "provider": "Penyedia",
+          "defaultProviderOption": "Penyedia bawaan ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Ketik nama model",
+          "readyEndpoint": "Endpoint {{endpoint}} · Siap",
+          "readyProvider": "{{provider}} · {{model}} · Siap",
+          "notReadyTitle": "{{provider}} belum siap: {{reason}}",
+          "notReadyBody": "Dikte dengan prompt ini melewati langkah AI dan mempertahankan teks asli.",
+          "fix": {
+            "api_key": "Tambahkan kunci API",
+            "endpoint": "Atur endpoint"
+          },
+          "shortcuts": "Pintasan (maksimal {{limit}})",
+          "changedElsewhere": "Prompt ini diubah di tempat lain. Muat ulang untuk melihat perubahannya, atau simpan untuk mempertahankan versi Anda.",
+          "reload": "Muat ulang",
+          "deletedElsewhere": "Prompt ini dihapus di tempat lain dan tidak dapat disimpan lagi.",
+          "shortcutsSavedImmediately": "Perubahan pintasan langsung disimpan.",
+          "fixField": {
+            "api_key": "Kunci API untuk {{provider}}",
+            "endpoint": "Endpoint {{provider}}",
+            "hint": "Disimpan saat Anda meninggalkan kolom. Penyedia bawaan tidak berubah."
+          }
+        },
+        "actions": {
+          "note": "Perubahan berlaku untuk dikte berikutnya setelah Anda menyimpan.",
+          "fixFields": "Perbaiki kolom yang ditandai untuk menyimpan.",
+          "delete": "Hapus prompt",
+          "cancel": "Batal",
+          "save": "Simpan",
+          "saving": "Menyimpan…",
+          "saved": "Prompt disimpan."
+        },
+        "deleteDialog": {
+          "title": "Hapus “{{name}}”?",
+          "shortcuts": "Pintasannya akan dihapus: {{shortcuts}}.",
+          "default": "Ini prompt bawaan: bawaannya menjadi Tidak ada.",
+          "body": "Tindakan ini tidak dapat dibatalkan.",
+          "cancel": "Batal",
+          "confirm": "Hapus",
+          "close": "Tutup",
+          "deleted": "Prompt “{{name}}” dihapus.",
+          "deletedWithShortcuts": "Prompt “{{name}}” dihapus. Pintasan yang dihapus: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Uji",
+          "sampleLabel": "Teks contoh",
+          "samplePlaceholder": "Ketik atau tempel contoh transkrip",
+          "run": "Jalankan uji",
+          "running": "Menguji…",
+          "note": "Tidak ada yang disisipkan dan riwayat tidak berubah.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} dtk",
+          "failedTitle": "Uji gagal: {{reason}}",
+          "failedHint": "Periksa pengaturan penyedia, lalu jalankan uji lagi.",
+          "retry": "Jalankan lagi",
+          "busy": "Uji lain masih berjalan. Coba lagi setelah selesai.",
+          "skipped": "Masukkan teks contoh untuk menguji prompt.",
+          "outdated": "Hasil ini untuk versi prompt atau sampel sebelumnya. Jalankan pengujian lagi."
+        },
+        "shortcutOwner": "prompt “{{name}}”"
       }
     },
     "history": {
@@ -476,6 +862,7 @@
       "deleteError": "Gagal menghapus entri. Silakan coba lagi.",
       "retranscribe": "Transkripsikan ulang",
       "retranscribeError": "Gagal mentranskripsikan ulang. Silakan coba lagi.",
+      "noAudio": "Tidak ada rekaman audio yang disimpan untuk entri ini, jadi entri ini tidak dapat ditranskripsi ulang.",
       "transcribing": "Mentranskripsikan...",
       "transcriptionFailed": "Transkripsi gagal. Anda dapat mentranskripsikan ulang menggunakan ikon coba lagi."
     },
@@ -530,7 +917,8 @@
       "historyLimit": {
         "title": "Batas Riwayat",
         "description": "Jumlah maksimum entri riwayat yang disimpan",
-        "entries": "entri"
+        "entries": "entri",
+        "invalid": "Masukkan bilangan bulat dari {{min}} sampai {{max}}."
       },
       "recordingRetention": {
         "title": "Hapus Rekaman Secara Otomatis",
@@ -552,7 +940,8 @@
       },
       "postProcessingToggle": {
         "label": "Pascaproses",
-        "description": "Aktifkan penyempurnaan teks berbasis AI setelah transkripsi"
+        "description": "Aktifkan penyempurnaan teks berbasis AI setelah transkripsi",
+        "shortcutRefused": "Pascaproses aktif, tetapi sistem menolak pintasan {{shortcut}}. Ubah pintasan itu di pengaturan Pascaproses."
       },
       "muteWhileRecording": {
         "label": "Bisukan Saat Merekam",
@@ -565,7 +954,8 @@
       "keyboardImplementation": {
         "title": "Implementasi Keyboard",
         "description": "Pilih backend pintasan keyboard.",
-        "bindingsReset": "Pintasan keyboard tidak kompatibel dan telah dikembalikan ke nilai awal"
+        "bindingsReset": "Beberapa pintasan keyboard tidak kompatibel dan telah dikembalikan ke nilai awal atau dihapus",
+        "conflictsKept": "Beberapa pintasan kini bentrok dengan tindakan lain. Pintasan tersebut dipertahankan dan ditandai di pengaturan pintasan."
       },
       "paths": {
         "appData": "Data Aplikasi:",
@@ -645,6 +1035,168 @@
           "details": "Fitur ucapan-ke-teks lokal Handy dibangun menggunakan transcribe.cpp dan ggml. Terima kasih kepada Georgi Gerganov dan para kontributor atas karya luar biasa mereka."
         }
       }
+    },
+    "replacements": {
+      "group": "Penggantian",
+      "title": "Aturan penggantian",
+      "description": "Tulis ulang teks yang dikenali dengan ejaan Anda sendiri. Diterapkan setelah pengenalan, berbeda dengan Kosakata.",
+      "loading": "Memuat aturan penggantian…",
+      "loadFailed": "Aturan penggantian tidak dapat dimuat.",
+      "retry": "Coba lagi",
+      "views": {
+        "label": "Tampilan aturan",
+        "list": "Daftar",
+        "text": "Teks"
+      },
+      "import": "Impor…",
+      "export": {
+        "button": "Ekspor…",
+        "done": "Aturan diekspor ke {{name}}.",
+        "notSynced": "Aturan diekspor ke {{name}}, tetapi disk belum mengonfirmasi penulisan.",
+        "symbolicLink": "{{name}} adalah tautan: pilih file lain. Tidak ada yang diekspor.",
+        "readOnly": "{{name}} hanya-baca: pilih file lain. Tidak ada yang diekspor.",
+        "notWritten": "{{name}} tidak dapat ditulis. File tidak berubah."
+      },
+      "add": {
+        "recognized": "Teks yang dikenali",
+        "replacement": "Pengganti",
+        "button": "Tambah aturan",
+        "needsText": "Masukkan teks yang dikenali dan penggantinya untuk menambahkan aturan."
+      },
+      "rule": {
+        "edit": "Edit aturan {{recognized}}",
+        "done": "Selesai mengedit aturan {{recognized}}",
+        "delete": "Hapus aturan {{recognized}}",
+        "recognized": "Teks yang dikenali pada aturan {{position}}",
+        "replacement": "Pengganti pada aturan {{position}}"
+      },
+      "count": "{{count}} dari {{max}} aturan · tidak peka huruf besar/kecil, kata utuh",
+      "empty": {
+        "title": "Belum ada aturan penggantian",
+        "body": "Tambahkan aturan, atau tempel baris seperti",
+        "paste": "Tempel aturan sebagai teks"
+      },
+      "draft": {
+        "note": "Perubahan belum disimpan. Dikte menggunakan aturan tersimpan sampai Anda menyimpan.",
+        "discard": "Buang",
+        "save": "Simpan",
+        "saving": "Menyimpan…",
+        "saved": "Aturan penggantian disimpan."
+      },
+      "commit": {
+        "invalid": "Beberapa aturan tidak valid. Perbaiki baris yang ditandai, lalu coba lagi.",
+        "unchanged": "Aturan tersimpan tidak berubah.",
+        "conflict": "Aturan diubah di tempat lain, misalnya dari baris perintah. Muat ulang untuk melanjutkan.",
+        "reload": "Muat ulang",
+        "reloadDiscards": "Memuat ulang akan menampilkan aturan yang tersimpan dan membuang perubahan yang belum disimpan."
+      },
+      "bulk": {
+        "editor": "Aturan sebagai teks",
+        "hint": "Satu aturan per baris: recognized;replacement. Tab juga dapat digunakan untuk menempel dari spreadsheet. Baris yang diawali # diabaikan.",
+        "cancel": "Batal",
+        "apply": "Terapkan",
+        "applying": "Menerapkan…",
+        "applied": "Aturan penggantian diterapkan.",
+        "fixLine": "Perbaiki baris {{line}} untuk menerapkan. Aturan tersimpan tidak berubah.",
+        "fixLines": "Perbaiki {{count}} baris yang bermasalah untuk menerapkan. Aturan tersimpan tidak berubah.",
+        "ready": "Terapkan akan mengganti aturan tersimpan dengan pratinjau ini.",
+        "noChanges": "Tidak ada yang perlu diterapkan: teks sama dengan aturan tersimpan."
+      },
+      "preview": {
+        "title": "Pratinjau",
+        "updating": "Memperbarui pratinjau…",
+        "errorOne": "1 kesalahan · Terapkan tidak tersedia",
+        "errorMany": "{{count}} kesalahan · Terapkan tidak tersedia",
+        "changes": "{{adds}} ditambahkan · {{updates}} diperbarui · {{deletes}} dihapus",
+        "noChanges": "Tidak ada perubahan",
+        "omitted": "Baris tidak ditampilkan: {{count}}",
+        "duplicateOf": "Teks yang dikenali sama dengan baris {{lines}}",
+        "kinds": {
+          "add": "Tambah",
+          "update": "Perbarui",
+          "delete": "Hapus",
+          "unchanged": "Tidak berubah",
+          "ignored": "Diabaikan",
+          "error": "Kesalahan"
+        },
+        "ignored": {
+          "header": "Baris header",
+          "blank": "Baris kosong",
+          "comment": "Komentar"
+        }
+      },
+      "importDialog": {
+        "title": "Impor aturan",
+        "close": "Tutup",
+        "fileOne": "{{name}} · 1 baris · UTF-8",
+        "fileMany": "{{name}} · {{count}} baris · UTF-8",
+        "mode": "Mode",
+        "merge": "Gabungkan: perbarui aturan yang cocok, tambahkan aturan baru di akhir",
+        "replace": "Ganti: file menjadi seluruh kumpulan aturan",
+        "previewing": "Membaca file…",
+        "updateOne": "1 pembaruan",
+        "updateMany": "{{count}} pembaruan",
+        "addOne": "1 penambahan",
+        "addMany": "{{count}} penambahan",
+        "deleteOne": "1 penghapusan",
+        "deleteMany": "{{count}} penghapusan",
+        "errorOne": "1 kesalahan",
+        "errorMany": "{{count}} kesalahan",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (diperbarui, tetap di posisi {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (ditambahkan di akhir)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (dihapus)",
+        "noChanges": "File ini sama dengan aturan tersimpan: tidak ada yang perlu diimpor.",
+        "firstError": "Baris {{line}}: {{reason}}",
+        "cancel": "Batal",
+        "apply": "Terapkan impor",
+        "applying": "Mengimpor…",
+        "imported": "Aturan diimpor."
+      },
+      "importRefusal": {
+        "encodingTitle": "Tidak dapat mengimpor {{name}}: file ini bukan teks UTF-8",
+        "encodingBody": "Tidak ada yang diimpor dari file tersebut. Ekspor sebagai teks biasa atau CSV, lalu impor lagi.",
+        "tooLargeTitle": "Tidak dapat mengimpor {{name}}: ukurannya lebih dari 1 MB",
+        "tooLargeBody": "Tidak ada yang diimpor. Pecah file menjadi beberapa file yang lebih kecil, lalu impor satu per satu.",
+        "unreadableTitle": "Tidak dapat membaca {{name}}",
+        "unreadableBody": "Tidak ada yang diimpor. Pastikan file masih ada dan Handy dapat membukanya.",
+        "dismiss": "Tutup"
+      },
+      "deleteDialog": {
+        "title": "Hapus aturan ini?",
+        "body": "{{recognized}} → {{replacement}} akan dihapus dari daftar. Simpan untuk menerapkan perubahan.",
+        "cancel": "Batal",
+        "confirm": "Hapus"
+      },
+      "switchDialog": {
+        "title": "Simpan atau buang perubahan Anda",
+        "body": "Daftar dan teks mengedit aturan yang sama. Simpan atau buang dulu perubahan yang belum disimpan.",
+        "cancel": "Batal",
+        "discard": "Buang",
+        "save": "Simpan"
+      },
+      "issues": {
+        "recognizedEmpty": "Masukkan teks yang dikenali.",
+        "recognizedTooLong": "Teks yang dikenali dibatasi hingga 100 karakter.",
+        "recognizedForbidden": "Teks yang dikenali tidak boleh berisi baris baru, tab, atau ;.",
+        "recognizedControl": "Teks yang dikenali berisi karakter kontrol yang tidak terlihat.",
+        "recognizedComment": "Teks yang dikenali tidak boleh diawali #.",
+        "duplicate": "Setiap teks yang dikenali hanya boleh muncul sekali; teks ini sudah didefinisikan.",
+        "replacementEmpty": "Masukkan pengganti.",
+        "replacementTooLong": "Pengganti dibatasi hingga 500 karakter.",
+        "replacementForbidden": "Pengganti tidak boleh berisi baris baru atau tab.",
+        "replacementControl": "Pengganti berisi karakter kontrol yang tidak terlihat.",
+        "missingSeparator": "Pemisah tidak ada: tambahkan ; lalu penggantinya",
+        "tooManyRules": "Satu kumpulan aturan berisi paling banyak 1.000 aturan.",
+        "invalidSavedRules": "Aturan tersimpan tidak valid. Muat ulang sebelum mengimpor.",
+        "unicodeUnavailable": "Aturan tidak dapat diperiksa saat ini. Mulai ulang Handy, lalu coba lagi.",
+        "invalidRule": "Aturan ini tidak valid."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Perubahan belum disimpan",
+      "description": "Beberapa aturan penggantian Anda belum disimpan. Tetap di sini untuk menyimpannya, atau buang dan keluar.",
+      "stay": "Tetap di sini",
+      "discard": "Buang dan keluar"
     }
   },
   "footer": {
@@ -676,7 +1228,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy memerlukan izin aksesibilitas untuk mengetik teks hasil transkripsi.",
-    "openSettings": "Buka Pengaturan Sistem"
+    "openSettings": "Buka Pengaturan Sistem",
+    "offTitle": "Izin aksesibilitas nonaktif",
+    "smartPasteOff": "Tempel cerdas tidak dapat menyisipkan atau menempel. Transkrip Anda disimpan untuk dipulihkan."
   },
   "errors": {
     "loadDirectory": "Kesalahan saat memuat direktori: {{error}}",
@@ -689,12 +1243,41 @@
     },
     "noInputDeviceTitle": "Mikrofon Tidak Ditemukan",
     "noInputDevice": "Tidak ada perangkat masukan audio yang terdeteksi. Hubungkan mikrofon atau headset lalu coba lagi.",
+    "inputLostTitle": "Rekaman terputus",
+    "inputLost": "Mikrofon terputus. Audio yang direkam hingga saat itu sedang ditranskripsikan.",
     "recordingFailed": "Gagal memulai perekaman: {{error}}",
     "modelLoadFailed": "Gagal memuat model: {{model}}",
     "modelLoadFailedUnknown": "model tidak dikenal",
     "pasteFailedTitle": "Gagal Menempelkan Teks",
     "pasteFailed": "Teks tidak dapat ditempelkan ke aplikasi aktif.",
-    "transcriptionFailedTitle": "Transkripsi Gagal"
+    "pasteFailedNotSaved": "Teks tidak dapat ditempel maupun disimpan ke riwayat.",
+    "transcriptionFailedTitle": "Transkripsi Gagal",
+    "settings": {
+      "committedNotApplied": "Pengaturan telah disimpan, tetapi tidak dapat langsung diterapkan.",
+      "gpuDeviceRequired": "Pilih perangkat GPU sebelum memilih akselerator GPU.",
+      "outOfRange": "Nilai ini berada di luar rentang yang diizinkan.",
+      "validationFailed": "Nilai ini tidak diterima untuk pengaturan ini.",
+      "revisionConflict": "Pengaturan telah diubah di tempat lain. Muat ulang dan coba lagi.",
+      "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
+      "shortcutSessionBusy": "Dikte sedang berlangsung. Coba lagi setelah selesai.",
+      "persistenceFailed": "Tidak dapat menyimpan pengaturan: file pengaturan tidak dapat ditulis. Tidak ada yang diubah.",
+      "generic": "Pengaturan tidak dapat diubah.",
+      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",
+      "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini.",
+      "promptNameEmpty": "Masukkan nama untuk prompt.",
+      "promptNameTooLong": "Nama prompt maksimal 60 karakter.",
+      "promptNameDuplicate": "Prompt lain sudah memakai nama ini. Nama harus unik.",
+      "promptTextEmpty": "Masukkan teks prompt.",
+      "promptTextTooLong": "Teks prompt maksimal 8.000 karakter.",
+      "promptOverrideIncomplete": "Pilih penyedia dan model, atau gunakan penyedia default.",
+      "promptUnknownProvider": "Penyedia ini tidak tersedia.",
+      "promptNotUsable": "Prompt ini tidak valid. Edit sebelum digunakan.",
+      "limitExceeded": "Jumlah maksimum telah tercapai.",
+      "conflictTitle": "Pengaturan diubah di tempat lain",
+      "conflictBody": "Baris perintah atau jendela lain menyimpan versi yang lebih baru. Muat ulang untuk melihatnya; perubahan Anda yang belum disimpan akan dibuang.",
+      "reload": "Muat ulang",
+      "reloadFailed": "Pengaturan tidak dapat dimuat ulang. Coba lagi."
+    }
   },
   "appLanguage": {
     "title": "Bahasa Aplikasi",
@@ -712,7 +1295,78 @@
   "overlay": {
     "transcribing": "Mentranskripsikan...",
     "processing": "Memproses...",
-    "loadingModel": "Memuat model..."
+    "loadingModel": "Memuat model...",
+    "fallbackNotice": "Pemrosesan AI gagal. Teks asli yang digunakan.",
+    "destination": {
+      "label": "Tujuan: {{name}}",
+      "pinnedLabel": "Tujuan: {{name}}, disematkan",
+      "frontmostApp": "Aplikasi di depan",
+      "remove": "Hapus tujuan",
+      "unknownApp": "Aplikasi tujuan",
+      "choiceFailed": "Tujuan tidak dapat diubah.",
+      "menu": {
+        "title": "Tujuan dikte ini",
+        "frontmostNow": "Di depan sekarang",
+        "otherApps": "Aplikasi lain",
+        "frontmostAtEnd": "Aplikasi di depan saat selesai",
+        "loading": "Memuat aplikasi…",
+        "failed": "Daftar aplikasi tidak dapat dimuat.",
+        "pin": "Sematkan {{name}}",
+        "unpin": "Lepas sematan {{name}}",
+        "favorites": "Favorit",
+        "addFavorite": "Tambahkan {{name}} ke favorit",
+        "removeFavorite": "Hapus {{name}} dari favorit",
+        "notOpen": "Tidak terbuka",
+        "rememberInput": {
+          "field": "Ingat kolom ini untuk {{app}}",
+          "fieldAgain": "Ingat lagi kolom ini untuk {{app}}",
+          "terminal": "Ingat terminal ini",
+          "terminalAgain": "Ingat lagi terminal ini",
+          "saved": {
+            "field": "Kolom diingat untuk {{app}}",
+            "terminal": "Terminal diingat untuk {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klik dulu di kolom teks aplikasi",
+            "passwordField": "Kolom kata sandi tidak pernah diingat",
+            "unrecognizable": "Kolom ini tidak punya nama yang bisa dikenali Handy nanti",
+            "terminalUnreadable": "Terminal tidak dapat dibaca",
+            "full": "Anda dapat mengingat hingga 20 input.",
+            "stale": "Dikte ini sudah berakhir",
+            "failed": "Tidak dapat menyimpan kolom"
+          }
+        }
+      },
+      "favoriteNotSaved": {
+        "full": "Anda dapat menyimpan hingga 10 favorit.",
+        "failed": "Favorit tidak dapat disimpan."
+      },
+      "refused": {
+        "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",
+        "frozen": "Penyisipan sudah dimulai; tujuan tidak dapat diubah lagi.",
+        "unavailable": "Aplikasi ini tidak tersedia lagi; daftar telah diperbarui."
+      }
+    },
+    "prompt": {
+      "label": "Prompt untuk dikte ini: {{name}}",
+      "hint": "Arahkan kursor untuk melihat opsi",
+      "none": "Tidak ada (tanpa pemrosesan AI)",
+      "menuTitle": "Prompt untuk dikte ini",
+      "note": "Hanya berlaku untuk dikte ini. Bawaan tetap {{name}}.",
+      "noteRemembered": "Disimpan untuk dikte biasa berikutnya sampai Anda memilih Tidak ada.",
+      "loading": "Memuat prompt…",
+      "failed": "Prompt tidak dapat dimuat.",
+      "choiceFailed": "Prompt tidak dapat diubah.",
+      "refused": {
+        "sessionEnded": "Perekaman sudah berhenti; prompt tidak dapat diubah lagi.",
+        "processingOff": "Pemrosesan AI nonaktif untuk dikte ini.",
+        "promptMissing": "Prompt ini sudah tidak ada.",
+        "promptNotUsable": "Prompt ini bermasalah; edit dulu di pengaturan."
+      }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Enter otomatis mati untuk dikte ini"
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} mungkin memblokir 1 pintasan",
@@ -724,5 +1378,49 @@
     "learnMore": "Cara memperbaiki",
     "recorderBlocked": "Pintasan tidak dapat direkam saat ini — macOS Secure Input memblokir peristiwa tombol. Selesaikan peringatan Secure Input terlebih dahulu.",
     "dismiss": "Tutup"
+  },
+  "smartPaste": {
+    "handOver": "Teks ditempatkan di papan klip untuk layar jarak jauh"
+  },
+  "recoveryBubble": {
+    "label": "Transkrip yang disimpan oleh Handy",
+    "previewLabel": "Transkrip",
+    "reason": {
+      "appClosed": "{{app}} tidak lagi terbuka",
+      "appClosedUnnamed": "Aplikasi tidak lagi terbuka",
+      "pinnedAppNotRunning": "{{app}} disematkan tetapi tidak terbuka",
+      "pinnedAppNotRunningUnnamed": "Aplikasi yang disematkan tidak terbuka",
+      "activationFailed": "Tidak dapat membawa {{app}} ke depan",
+      "activationFailedUnnamed": "Tidak dapat membawa aplikasi ke depan",
+      "insertionFailed": "Gagal menyisipkan",
+      "noTextField": "Tidak ada kolom teks yang difokuskan",
+      "defaultFieldNotFound": "Kolom yang diingat untuk {{app}} tidak ditemukan",
+      "defaultFieldNotFoundUnnamed": "Kolom yang diingat tidak ditemukan",
+      "defaultTerminalGone": "Terminal yang diingat untuk {{app}} sudah tidak ada",
+      "defaultTerminalGoneUnnamed": "Terminal yang diingat sudah tidak ada"
+    },
+    "explanation": {
+      "notInserted": "Handy tidak menyisipkan apa pun dan tidak mengirim Enter.",
+      "mayHaveReached": "Sebagian teks mungkin sudah sampai ke aplikasi.",
+      "nothingSent": "Tidak ada yang dikirim ke aplikasi.",
+      "lateRead": "Aplikasi membaca papan klip terlambat: teks mungkin akhirnya sudah ditempel. Periksa sebelum menyalin lagi.",
+      "historyKept": "Transkrip disimpan di Riwayat.",
+      "historyKeptFull": "Transkrip lengkap disimpan di Riwayat.",
+      "historyNotKept": "Transkrip tidak ada di Riwayat.",
+      "openAppDrag": "Buka {{app}}, lalu seret atau salin teksnya.",
+      "openAppCopy": "Buka {{app}}, lalu salin teksnya.",
+      "openUnnamedDrag": "Buka aplikasinya, lalu seret atau salin teksnya.",
+      "openUnnamedCopy": "Buka aplikasinya, lalu salin teksnya.",
+      "focusFieldDrag": "Klik di kolom teks, lalu seret atau salin teksnya.",
+      "focusFieldCopy": "Klik di kolom teks, lalu salin teksnya.",
+      "noFieldSetting": "Anda dapat mematikan pemeriksaan ini di Pengaturan, Lanjutan, Output."
+    },
+    "actions": {
+      "drag": "Seret ke kolom",
+      "copy": "Salin",
+      "why": "Mengapa?",
+      "hideDetails": "Sembunyikan detail",
+      "close": "Tutup"
+    }
   }
 }

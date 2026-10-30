@@ -1,0 +1,15 @@
+
+running 1 test
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... FAILED
+
+failures:
+
+---- contracts::operation_schema_requires_the_same_variant_fields_as_serde stdout ----
+Error: "missing discriminated variant"
+
+
+failures:
+    contracts::operation_schema_requires_the_same_variant_fields_as_serde
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+

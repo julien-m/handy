@@ -1,0 +1,2 @@
+HEAD baseline: git archive HEAD (e3bc314fd931ced04a1a03f811ff919eb76966f6) of src-tauri and src extracted to a scratch directory, then
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets (warn mode, shared target dir).

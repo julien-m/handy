@@ -1,0 +1,3 @@
+ src/bindings.ts | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+bindings exported by the debug binary (CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target, isolated HOME, headless --list-models from src-tauri/, exit 0); diff --stat against HEAD 3fd745d

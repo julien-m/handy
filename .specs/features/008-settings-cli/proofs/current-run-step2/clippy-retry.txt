@@ -1,0 +1,1 @@
+retry_hypothesis="Strict clippy rejected clone of Copy Option<u16> in projection" retry_evidence="clippy.stderr clone_on_copy public.rs75; projection now copies selected_channel" retry_result="PASS"

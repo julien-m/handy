@@ -1,0 +1,169 @@
+/* Recovery bubble (010), in its own window at the indicator's place. Built from the overlay
+   tokens of RecordingOverlay.css and the shared palette (penflow/style-provenance.md): overlay
+   surface and border, hairline fills, muted text, 15 px padding, 16 px corners, 400 px wide.
+   No new color and no new font; icon colors are the alert colors of the settings UI. */
+
+:root {
+  --rb-width: 400px;
+  --rb-text: color-mix(in srgb, var(--color-text) 90%, transparent);
+}
+
+html,
+body {
+  margin: 0;
+  background: transparent;
+}
+
+.rb-stage {
+  display: inline-block;
+  font-family: var(--s-font);
+}
+
+.rb-bubble {
+  box-sizing: border-box;
+  width: var(--rb-width);
+  display: flex;
+  flex-direction: column;
+  gap: 11.25px;
+  padding: 15px;
+  border-radius: 16px;
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  color: var(--rb-text);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.rb-row {
+  display: flex;
+  align-items: center;
+  gap: 7.5px;
+}
+
+.rb-icon {
+  flex: none;
+  width: 15px;
+  height: 15px;
+}
+.rb-icon-warning {
+  color: #f0b100; /* yellow-500, the destination reasons */
+}
+.rb-icon-error {
+  color: #fb2c36; /* red-500, insertion failed */
+}
+.rb-icon-info {
+  color: #2b7fff; /* blue-500, no text field */
+}
+
+.rb-reason {
+  flex: 1;
+  margin: 0;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.rb-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: var(--s-hair);
+  color: var(--s-muted);
+  cursor: pointer;
+}
+.rb-close-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.rb-preview {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--s-hair);
+}
+/* The first two lines of the transcript, with an ellipsis when it is longer. */
+.rb-preview-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  font-style: italic;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rb-late-read {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--rb-text);
+}
+
+.rb-explanation {
+  padding: 11.25px;
+  border-radius: 12px;
+  background: var(--s-hair);
+}
+.rb-explanation p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--s-muted);
+}
+
+.rb-actions {
+  flex-wrap: wrap;
+}
+
+.rb-pill,
+.rb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7.5px;
+  padding: 7.5px 12px;
+  border: 0;
+  border-radius: 18px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rb-text);
+  cursor: pointer;
+}
+.rb-pill {
+  background: var(--s-hair);
+}
+.rb-link {
+  background: transparent;
+}
+.rb-strong {
+  font-weight: 600;
+}
+.rb-pill-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--s-muted);
+}
+.rb-drag,
+.rb-bubble[data-drag-surface="true"] {
+  cursor: grab;
+}
+.rb-bubble[data-drag-surface="true"]:active {
+  cursor: grabbing;
+}
+.rb-bubble[data-drag-surface="true"] [data-drag-role="control"] {
+  cursor: pointer;
+}
+
+.rb-close:focus-visible,
+.rb-pill:focus-visible,
+.rb-link:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: 2px;
+}

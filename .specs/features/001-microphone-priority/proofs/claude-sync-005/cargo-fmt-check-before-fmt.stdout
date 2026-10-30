@@ -1,0 +1,13 @@
+Diff in /Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri/src/settings_service/cli.rs:8:
+     route::route,
+ };
+ use crate::cli::{
+-    ChangeOptions, CliArgs, CliCommand, ImportModeArg, MicrophonesAction, OutputAction, PromptsAction,
+-    ReplacementsAction, SettingsArgs, SettingsCommand, ShortcutsAction, VocabularyAction,
+-    VocabularyImportMode,
++    ChangeOptions, CliArgs, CliCommand, ImportModeArg, MicrophonesAction, OutputAction,
++    PromptsAction, ReplacementsAction, SettingsArgs, SettingsCommand, ShortcutsAction,
++    VocabularyAction, VocabularyImportMode,
+ };
+ use crate::word_replacements::exchange_file;
+ use clap::{error::ErrorKind, Parser};

@@ -1,0 +1,11 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.86s
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_transactions-33267347c000f7ed)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-72004ee74b1f5400)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-aa5408538288bb37)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_live-2a3b848cc67dfe3f)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_validation-b2da366f4b1dda66)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_writers-695c7d279ea9c2c8)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/shortcuts_cli-19d24b59a3ea9608)

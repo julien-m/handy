@@ -1,0 +1,25 @@
+
+running 20 tests
+test detach_success_including_no_attached_console_is_accepted ... ok
+test only_gui_detaches_console ... ok
+test detach_failure_retains_error_kind_and_safe_operation_context ... ok
+test pipe_identity_rejects_injection_and_isolates_user_and_store ... ok
+test session_negative_cannot_prove_other_sessions_absent ... ok
+test uncertainty_does_not_authorize_offline_operation ... ok
+test historical_startup_and_recording_flags_remain_combinable ... ok
+test platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test historical_value_flags_keep_values_and_transcription_combinations ... ok
+test unix::absent_probe_creates_nothing ... ok
+test historical_boolean_flags_keep_their_parser_values ... ok
+test platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test platform_unix::tests::failed_bind_restores_the_previous_creation_mask ... ok
+test parsed_gui_detaches_console_and_headless_keeps_it ... ok
+test unix::occupied_probe_never_notifies_or_modifies_store ... ok
+test unix::new_socket_authenticates_peer_and_cleans_only_owned_inode ... ok
+test unix::ambiguous_legacy_resources_fail_closed ... ok
+test unix::lock_and_file_refuse_hostile_aliases ... ok
+test unix::private_directory_refuses_permissions_alias_and_replacement ... ok
+test unix::close_retains_socket_and_releases_lock_by_lifetime ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

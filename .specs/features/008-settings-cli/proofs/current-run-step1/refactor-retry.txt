@@ -1,0 +1,1 @@
+retry_hypothesis="Moved unit tests lacked inherited unavailable/MetadataExt imports" retry_evidence="refactor-test.stderr E0425/E0599; imports corrected; refactor-test3.stdout20passed0failed; refactor-clippy2.exit0" retry_result="PASS"

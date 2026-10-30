@@ -5,7 +5,17 @@
 
 
 export const commands = {
-async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, string>> {
+/**
+ * Replaces the first shortcut of action `id`, as the settings recorder did before multiple
+ * shortcuts, as one ordered settings write (see [`edits::apply_shortcut_edit`]). Alternatives
+ * are kept; the new shortcut goes through the shared validation and conflict check. Runs on the
+ * blocking pool, never on the main thread.
+ * 
+ * # Errors
+ * An empty shortcut, or a refusal of the settings service (busy, persistence); every refusal of
+ * the edit itself, invalid syntax included, is reported in the response.
+ */
+async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_binding", { id, binding }) };
 } catch (e) {
@@ -13,7 +23,14 @@ async changeBinding(id: string, binding: string) : Promise<Result<BindingRespons
     else return { status: "error", error: e  as any };
 }
 },
-async resetBinding(id: string) : Promise<Result<BindingResponse, string>> {
+/**
+ * Restores the single default shortcut of action `id`; alternatives are removed.
+ * 
+ * # Errors
+ * An unknown action or a refusal of the settings service; refusals of the edit are in the
+ * response.
+ */
+async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("reset_binding", { id }) };
 } catch (e) {
@@ -21,7 +38,30 @@ async resetBinding(id: string) : Promise<Result<BindingResponse, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, string>> {
+/**
+ * Applies one edit to the shortcut list of action `id` and saves it, on the blocking pool.
+ * Every refusal is in the response, typed: a refusal of the edit, or `settings_refused` when
+ * the settings service could not save it (nothing is then saved either).
+ */
+async editBindingShortcuts(id: string, edit: ShortcutEdit) : Promise<ShortcutEditResponse> {
+    return await TAURI_INVOKE("edit_binding_shortcuts", { id, edit });
+},
+/**
+ * Stored shortcuts that conflict with another stored shortcut. They stay
+ * registered as before; the settings flag them until the user changes them.
+ */
+async getShortcutConflicts() : Promise<StoredShortcutConflict[]> {
+    return await TAURI_INVOKE("get_shortcut_conflicts");
+},
+/**
+ * Checks one edit of action `id` against the published settings without registering or saving
+ * anything, so the settings can show a recorded shortcut as valid or invalid before it is added.
+ * The system's own registration check runs only when the edit is applied.
+ */
+async checkBindingShortcutEdit(id: string, edit: ShortcutEdit) : Promise<ShortcutEditError | null> {
+    return await TAURI_INVOKE("check_binding_shortcut_edit", { id, edit });
+},
+async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_shortcut_activation_setting", { activation }) };
 } catch (e) {
@@ -29,7 +69,7 @@ async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<
     else return { status: "error", error: e  as any };
 }
 },
-async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, string>> {
+async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_hold_threshold_ms_setting", { ms }) };
 } catch (e) {
@@ -37,7 +77,7 @@ async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_audio_feedback_setting", { enabled }) };
 } catch (e) {
@@ -45,7 +85,7 @@ async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, string>> {
+async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_audio_feedback_volume_setting", { volume }) };
 } catch (e) {
@@ -53,7 +93,7 @@ async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, st
     else return { status: "error", error: e  as any };
 }
 },
-async changeSoundThemeSetting(theme: string) : Promise<Result<null, string>> {
+async changeSoundThemeSetting(theme: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_sound_theme_setting", { theme }) };
 } catch (e) {
@@ -61,7 +101,7 @@ async changeSoundThemeSetting(theme: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeThemeSetting(theme: string) : Promise<Result<null, string>> {
+async changeThemeSetting(theme: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_theme_setting", { theme }) };
 } catch (e) {
@@ -69,7 +109,7 @@ async changeThemeSetting(theme: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_start_hidden_setting", { enabled }) };
 } catch (e) {
@@ -77,7 +117,7 @@ async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutostartSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAutostartSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_autostart_setting", { enabled }) };
 } catch (e) {
@@ -85,7 +125,7 @@ async changeAutostartSetting(enabled: boolean) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_translate_to_english_setting", { enabled }) };
 } catch (e) {
@@ -93,7 +133,7 @@ async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeSelectedLanguageSetting(language: string) : Promise<Result<null, string>> {
+async changeSelectedLanguageSetting(language: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_selected_language_setting", { language }) };
 } catch (e) {
@@ -101,7 +141,7 @@ async changeSelectedLanguageSetting(language: string) : Promise<Result<null, str
     else return { status: "error", error: e  as any };
 }
 },
-async changeOverlayPositionSetting(position: string) : Promise<Result<null, string>> {
+async changeOverlayPositionSetting(position: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_overlay_position_setting", { position }) };
 } catch (e) {
@@ -109,7 +149,7 @@ async changeOverlayPositionSetting(position: string) : Promise<Result<null, stri
     else return { status: "error", error: e  as any };
 }
 },
-async changeOverlayStyleSetting(style: string) : Promise<Result<null, string>> {
+async changeOverlayStyleSetting(style: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_overlay_style_setting", { style }) };
 } catch (e) {
@@ -117,7 +157,7 @@ async changeOverlayStyleSetting(style: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_debug_mode_setting", { enabled }) };
 } catch (e) {
@@ -125,7 +165,7 @@ async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<null, string>> {
+async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_word_correction_threshold_setting", { threshold }) };
 } catch (e) {
@@ -133,7 +173,7 @@ async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<n
     else return { status: "error", error: e  as any };
 }
 },
-async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, string>> {
+async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_extra_recording_buffer_setting", { ms }) };
 } catch (e) {
@@ -141,7 +181,7 @@ async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, strin
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteDelayMsSetting(ms: number) : Promise<Result<null, string>> {
+async changePasteDelayMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_delay_ms_setting", { ms }) };
 } catch (e) {
@@ -149,7 +189,7 @@ async changePasteDelayMsSetting(ms: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, string>> {
+async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_delay_after_ms_setting", { ms }) };
 } catch (e) {
@@ -157,7 +197,7 @@ async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_reliable_paste_setting", { enabled }) };
 } catch (e) {
@@ -165,7 +205,18 @@ async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteMethodSetting(method: string) : Promise<Result<null, string>> {
+/**
+ * 007 AC-019 (experimental): paste verification after the smart-paste Cmd+V.
+ */
+async changePasteVerificationSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_paste_verification_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_method_setting", { method }) };
 } catch (e) {
@@ -176,7 +227,14 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, string>> {
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
-async changeTypingToolSetting(tool: string) : Promise<Result<null, string>> {
+/**
+ * Whether the paste method selector offers smart paste: macOS only, and only once dictation
+ * delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+ */
+async isSmartPasteAvailable() : Promise<boolean> {
+    return await TAURI_INVOKE("is_smart_paste_available");
+},
+async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
 } catch (e) {
@@ -184,7 +242,7 @@ async changeTypingToolSetting(tool: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null, string>> {
+async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_external_script_path_setting", { path }) };
 } catch (e) {
@@ -192,7 +250,7 @@ async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null
     else return { status: "error", error: e  as any };
 }
 },
-async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, string>> {
+async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_clipboard_handling_setting", { handling }) };
 } catch (e) {
@@ -200,7 +258,7 @@ async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, st
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_auto_submit_setting", { enabled }) };
 } catch (e) {
@@ -208,7 +266,20 @@ async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, string>> 
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, string>> {
+/**
+ * Automatic Enter (009): `never`, `always` or `pin_only`, with the validation shared with the CLI.
+ * Registered in both gate states; a closed build has no descriptor for it and refuses it with
+ * `not_found`, as an open build refuses `change_auto_submit_setting`.
+ */
+async changeAutomaticEnterSetting(policy: string) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_automatic_enter_setting", { policy }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_auto_submit_key_setting", { key }) };
 } catch (e) {
@@ -216,7 +287,16 @@ async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+/**
+ * Enables or disables post-processing and always saves the choice, as
+ * before this feature, as one ordered settings write (see
+ * [`edits::set_post_process_enabled`]). A shortcut the system refuses stays
+ * stored and editable, and is returned so the settings say so.
+ * 
+ * # Errors
+ * A refusal of the settings service (persistence); the toggle itself is never refused.
+ */
+async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<RefusedShortcut[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_enabled_setting", { enabled }) };
 } catch (e) {
@@ -224,7 +304,7 @@ async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_experimental_enabled_setting", { enabled }) };
 } catch (e) {
@@ -232,7 +312,10 @@ async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Promise<Result<null, string>> {
+/**
+ * Only the custom provider's base URL is editable.
+ */
+async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_base_url_setting", { providerId, baseUrl }) };
 } catch (e) {
@@ -240,7 +323,10 @@ async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Pro
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promise<Result<null, string>> {
+/**
+ * Store a provider API key (secret, UI-only); the provider must exist.
+ */
+async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_api_key_setting", { providerId, apiKey }) };
 } catch (e) {
@@ -248,7 +334,10 @@ async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promi
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessModelSetting(providerId: string, model: string) : Promise<Result<null, string>> {
+/**
+ * Store the model chosen for an existing provider.
+ */
+async changePostProcessModelSetting(providerId: string, model: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_model_setting", { providerId, model }) };
 } catch (e) {
@@ -256,7 +345,10 @@ async changePostProcessModelSetting(providerId: string, model: string) : Promise
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessProvider(providerId: string) : Promise<Result<null, string>> {
+/**
+ * Select an existing post-processing provider.
+ */
+async setPostProcessProvider(providerId: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_provider", { providerId }) };
 } catch (e) {
@@ -272,7 +364,28 @@ async fetchPostProcessModels(providerId: string) : Promise<Result<string[], stri
     else return { status: "error", error: e  as any };
 }
 },
-async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, string>> {
+/**
+ * The library as published: each prompt with its issues, shortcuts and provider readiness, and
+ * the default prompt. Runs on the blocking pool (the Apple Intelligence check is synchronous).
+ * 
+ * # Errors
+ * `internal_error` if the worker could not run.
+ */
+async getPromptLibrary() : Promise<Result<PromptLibraryView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_prompt_library") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Create a prompt; the id is generated once, outside the (re-runnable) edit.
+ * 
+ * # Errors
+ * `validation_failed` with a prompt reason, `limit_exceeded` at 50 prompts, or a commit refusal.
+ */
+async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("add_post_process_prompt", { name, prompt }) };
 } catch (e) {
@@ -280,7 +393,13 @@ async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPro
     else return { status: "error", error: e  as any };
 }
 },
-async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, string>> {
+/**
+ * Rename and rewrite a prompt; the edited prompt must be valid.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` with a prompt reason, or a commit refusal.
+ */
+async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_post_process_prompt", { id, name, prompt }) };
 } catch (e) {
@@ -288,7 +407,16 @@ async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promis
     else return { status: "error", error: e  as any };
 }
 },
-async deletePostProcessPrompt(id: string) : Promise<Result<null, string>> {
+/**
+ * Delete a prompt and its shortcuts (the UI confirms first, naming them); a deleted default
+ * becomes None. Its shortcuts are released before the commit and registered again if the
+ * commit is refused. Returns the removed shortcuts.
+ * 
+ * # Errors
+ * `not_found`; `unavailable` (`shortcut_session_busy`) during a dictation when the prompt has
+ * shortcuts; or a commit refusal. Nothing is removed then.
+ */
+async deletePostProcessPrompt(id: string) : Promise<Result<string[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_post_process_prompt", { id }) };
 } catch (e) {
@@ -296,7 +424,13 @@ async deletePostProcessPrompt(id: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, string>> {
+/**
+ * Choose the default prompt of the post-processing shortcut, or None.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` (`prompt_not_usable`) for a prompt with issues.
+ */
+async setPostProcessSelectedPrompt(id: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_selected_prompt", { id }) };
 } catch (e) {
@@ -304,9 +438,136 @@ async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateCustomWords(words: string[]) : Promise<Result<null, string>> {
+/**
+ * Set the provider and model a prompt uses, or return it to the default provider with `None`.
+ * 
+ * # Errors
+ * `not_found`; `validation_failed` with `prompt_override_incomplete`, `prompt_unknown_provider`
+ * or `unsupported_platform` (Apple Intelligence off Apple silicon).
+ */
+async setPostProcessPromptProviderOverride(id: string, providerOverride: PromptProviderOverride | null) : Promise<Result<null, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words }) };
+    return { status: "ok", data: await TAURI_INVOKE("set_post_process_prompt_provider_override", { id, providerOverride }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Run the editor's draft prompt on the sample within the 30-second budget and return the
+ * result, provider, model and duration, or the typed failure. Never inserts text or writes
+ * history; a second test while one runs answers `busy`.
+ * 
+ * # Errors
+ * `validation_failed` for a draft the library would refuse (empty text, incomplete or unknown
+ * override, `unsupported_platform`).
+ */
+async testPostProcessPrompt(request: PromptTestRequest) : Promise<Result<PromptTestResult, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("test_post_process_prompt", { request }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Cancel the running prompt test (closing the editor); its late result reads `cancelled`.
+ */
+async cancelPostProcessPromptTest() : Promise<void> {
+    await TAURI_INVOKE("cancel_post_process_prompt_test");
+},
+/**
+ * Prompt of the dictation in progress, for the indicator (`None`: no dictation).
+ */
+async getDictationPrompt() : Promise<DictationPromptView | null> {
+    return await TAURI_INVOKE("get_dictation_prompt");
+},
+/**
+ * Choose the prompt of recording `session_id` from the indicator (`None`: no processing); the
+ * default prompt is unchanged. The indicator shows the acknowledged view, never its own guess.
+ * 
+ * # Errors
+ * `session_ended` after the stop or for another session, `processing_off`, `prompt_missing`,
+ * `prompt_not_usable`; nothing changes.
+ */
+async selectDictationPrompt(sessionId: number, promptId: string | null) : Promise<Result<DictationPromptView, PromptChoiceRefusal>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("select_dictation_prompt", { sessionId, promptId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Whole vocabulary list from the settings UI, committed as the vocabulary domain's change: same
+ * validator as the CLI (unchanged legacy rows stay exempt), compare-and-set on
+ * `expected_revision` when the UI passes its base revision.
+ */
+async updateCustomWords(words: string[], expectedRevision: number | null) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Saved vocabulary and its revision.
+ */
+async getVocabulary() : Promise<VocabularyList> {
+    return await TAURI_INVOKE("get_vocabulary");
+},
+/**
+ * Preview a bulk input (one term per line) against the saved list; pure, nothing is written.
+ */
+async previewVocabularyImport(input: string, mode: VocabularyImportMode) : Promise<VocabularyImportPreview> {
+    return await TAURI_INVOKE("preview_vocabulary_import", { input, mode });
+},
+/**
+ * Apply a previewed bulk input as one atomic candidate at the preview's revision.
+ */
+async applyVocabularyImport(input: string, mode: VocabularyImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_vocabulary_import", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Add one term.
+ */
+async addVocabularyTerm(term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_vocabulary_term", { term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Remove the occurrence at `index`, which must still hold `term` (legacy duplicates are removed
+ * one row at a time).
+ */
+async removeVocabularyOccurrence(index: number, term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_vocabulary_occurrence", { index, term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Status of the vocabulary for the selected model (one of five), from the loaded model and the
+ * exact preparation of the next request; never loads a model.
+ * 
+ * # Errors
+ * `internal_error` with reason `context_budget_unverified` for a model whose declared mechanism
+ * has no documented budget; `unavailable` before the transcription manager exists.
+ */
+async getVocabularyStatus() : Promise<Result<VocabularyStatusReport, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_vocabulary_status") };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -335,7 +596,7 @@ async resumeAllBindings() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_mute_while_recording_setting", { enabled }) };
 } catch (e) {
@@ -343,7 +604,7 @@ async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_append_trailing_space_setting", { enabled }) };
 } catch (e) {
@@ -351,7 +612,45 @@ async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
-async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, string>> {
+/**
+ * Settings UI write of `smart_capitalization` (015), through the shared validator and one
+ * revisioned commit; the next insertion reads it.
+ */
+async changeSmartCapitalizationSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_capitalization_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Settings UI write of `smart_spacing` (017), through the shared validator and one revisioned
+ * commit; the next insertion reads it.
+ */
+async changeSmartSpacingSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_spacing_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
+ * destination capability refuses `true` and `false` with `validation_failed` and the typed reason
+ * `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
+ * dictation starts, so no live effect runs.
+ */
+async changeReturnToDictationAppSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_return_to_dictation_app_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_lazy_stream_close_setting", { enabled }) };
 } catch (e) {
@@ -359,7 +658,7 @@ async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, stri
     else return { status: "error", error: e  as any };
 }
 },
-async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_vad_enabled_setting", { enabled }) };
 } catch (e) {
@@ -367,7 +666,12 @@ async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, string>> 
     else return { status: "error", error: e  as any };
 }
 },
-async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, string>> {
+/**
+ * Swap the VAD detector (and reopen the microphone when needed) before committing, off the
+ * webview thread; a refused commit restores the backend published when the write started. The
+ * preparation is shared with routed CLI writes (`settings_service::native_changes`).
+ */
+async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_vad_backend_setting", { backend }) };
 } catch (e) {
@@ -375,7 +679,7 @@ async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_filler_word_removal_enabled_setting", { enabled }) };
 } catch (e) {
@@ -383,7 +687,7 @@ async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<n
     else return { status: "error", error: e  as any };
 }
 },
-async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, string>> {
+async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_chinese_script_setting", { script }) };
 } catch (e) {
@@ -391,7 +695,19 @@ async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeAppLanguageSetting(language: string) : Promise<Result<null, string>> {
+/**
+ * Turn smart paragraphs (016) on or off through the settings service; the next dictation
+ * follows the stored value.
+ */
+async changeSmartParagraphsEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_paragraphs_enabled_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async changeAppLanguageSetting(language: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_app_language_setting", { language }) };
 } catch (e) {
@@ -399,7 +715,7 @@ async changeAppLanguageSetting(language: string) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_update_checks_setting", { enabled }) };
 } catch (e) {
@@ -407,7 +723,7 @@ async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, string>
     else return { status: "error", error: e  as any };
 }
 },
-async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_show_whats_new_on_update_setting", { enabled }) };
 } catch (e) {
@@ -415,7 +731,10 @@ async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null,
     else return { status: "error", error: e  as any };
 }
 },
-async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<null, string>> {
+/**
+ * UI-owned marker (read-only for the CLI); the trimmed version is stored as given.
+ */
+async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_whats_new_last_seen_version_setting", { version }) };
 } catch (e) {
@@ -424,12 +743,16 @@ async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<nul
 }
 },
 /**
- * Change the keyboard implementation with runtime switching.
- * This will unregister all shortcuts from the old implementation,
- * validate shortcuts for the new implementation (resetting invalid ones to defaults),
- * and register them with the new implementation.
+ * Change the keyboard implementation with runtime switching, as one ordered write: the shared
+ * validator checks the value, every registration moves to the new implementation with the
+ * lists repaired for it, then the implementation and the repaired lists are committed in one
+ * revision (see [`live_change::keyboard_implementation`]); a refused commit moves them back.
+ * 
+ * # Errors
+ * A refused value, `unavailable` during a dictation session or when HandyKeys cannot start
+ * (nothing changed), or a refusal of the commit.
  */
-async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, string>> {
+async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_keyboard_implementation_setting", { implementation }) };
 } catch (e) {
@@ -443,7 +766,7 @@ async changeKeyboardImplementationSetting(implementation: string) : Promise<Resu
 async getKeyboardImplementation() : Promise<string> {
     return await TAURI_INVOKE("get_keyboard_implementation");
 },
-async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_show_tray_icon_setting", { enabled }) };
 } catch (e) {
@@ -451,7 +774,7 @@ async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, string>
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetting) : Promise<Result<null, string>> {
+async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetting) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_transcribe_accelerator_setting", { accelerator }) };
 } catch (e) {
@@ -459,7 +782,7 @@ async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetti
     else return { status: "error", error: e  as any };
 }
 },
-async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<Result<null, string>> {
+async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_ort_accelerator_setting", { accelerator }) };
 } catch (e) {
@@ -467,7 +790,7 @@ async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranscribeGpuDevice(device: string | null) : Promise<Result<null, string>> {
+async changeTranscribeGpuDevice(device: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_transcribe_gpu_device", { device }) };
 } catch (e) {
@@ -538,6 +861,158 @@ async showMainWindowCommand() : Promise<Result<null, string>> {
 async cancelOperation() : Promise<void> {
     await TAURI_INVOKE("cancel_operation");
 },
+/**
+ * Current session snapshot, if a dictation has started.
+ */
+async destinationSnapshot() : Promise<DestinationSnapshot | null> {
+    return await TAURI_INVOKE("destination_snapshot");
+},
+/**
+ * Runtime support of destination return in this instance (AC-007 reason); `None` when this
+ * build does not offer destination return (rollout gate closed), so the settings hide it.
+ */
+async destinationSupport() : Promise<DestinationSupport | null> {
+    return await TAURI_INVOKE("destination_support");
+},
+/**
+ * Badge menu of the exact dictation and version (frontmost first, then windowed apps, then
+ * the saved favorites of 012).
+ */
+async destinationMenu(dictationId: DictationId, selectionVersion: number) : Promise<MenuAnswer> {
+    return await TAURI_INVOKE("destination_menu", { dictationId, selectionVersion });
+},
+/**
+ * Apply a badge choice for the exact dictation and version; refused unchanged otherwise.
+ */
+async chooseDestination(dictationId: DictationId, selectionVersion: number, choice: MenuChoice) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("choose_destination", { dictationId, selectionVersion, choice });
+},
+/**
+ * The badge cross: same mutation as "Frontmost app at the end"; the setting is untouched.
+ */
+async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge "Pin <destination>" (009): pin the current destination of the exact dictation and
+ * version; it stays the destination of the next dictations until unpinned or Handy quits.
+ */
+async pinDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("pin_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge "Unpin" (009): before insertion this dictation gets back the route of its start.
+ */
+async unpinDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("unpin_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge star (012): add the application behind `token` to the favorites, or remove it, through
+ * the settings service, then answer the same menu re-ordered. The destination, its selection
+ * version and the pin never change; the menu stays open.
+ */
+async toggleDestinationFavorite(dictationId: DictationId, selectionVersion: number, token: number) : Promise<FavoriteAnswer> {
+    return await TAURI_INVOKE("toggle_destination_favorite", { dictationId, selectionVersion, token });
+},
+/**
+ * The "Remember" entry of the badge menu for the destination of the exact dictation and
+ * version; `None` without an application destination or where the feature is not offered.
+ */
+async defaultInputOffer(dictationId: DictationId, selectionVersion: number) : Promise<RememberOffer | null> {
+    return await TAURI_INVOKE("default_input_offer", { dictationId, selectionVersion });
+},
+/**
+ * Remember the destination's focused field or terminal for its application; the destination,
+ * its version and the pin never change.
+ */
+async rememberDefaultInput(dictationId: DictationId, selectionVersion: number) : Promise<RememberAnswer> {
+    return await TAURI_INVOKE("remember_default_input", { dictationId, selectionVersion });
+},
+/**
+ * Settings window "Forget": forget the remembered input of `identity`.
+ */
+async forgetDefaultInput(identity: ApplicationIdentity) : Promise<Result<DefaultInput[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("forget_default_input", { identity }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Settings window "Forget all": forget every remembered input.
+ */
+async forgetAllDefaultInputs() : Promise<Result<DefaultInput[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("forget_all_default_inputs") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
+ * the base size of the current indicator form; the window stays anchored to its screen edge.
+ */
+async setOverlayExtent(width: number, height: number) : Promise<void> {
+    await TAURI_INVOKE("set_overlay_extent", { width, height });
+},
+/**
+ * Keep the overlay up for `duration_ms` (capped at 15 s) so a notice stays visible after the
+ * dictation ended; `0` ends the hold. Ignored when the overlay style is none.
+ */
+async holdOverlayForNotice(durationMs: number) : Promise<void> {
+    await TAURI_INVOKE("hold_overlay_for_notice", { durationMs });
+},
+/**
+ * The current bubble's projection (preview, reason, metadata), for the recovery window only.
+ */
+async recoveryBubbleView() : Promise<RecoveryBubbleView | null> {
+    return await TAURI_INVOKE("recovery_bubble_view");
+},
+/**
+ * The recovery view rendered bubble `bubble_id` for the first time (it is now presented).
+ */
+async recoveryBubbleRendered(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_rendered", { bubbleId });
+},
+/**
+ * Close bubble `bubble_id`; the history entry is untouched.
+ */
+async recoveryBubbleClose(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_close", { bubbleId });
+},
+/**
+ * Copy the full transcript of bubble `bubble_id` (deliberate Copy), written on a blocking
+ * worker; success closes the bubble, a failure leaves it open (logged without the text).
+ */
+async recoveryBubbleCopy(bubbleId: BubbleId, destinationGeneration: number) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_copy", { bubbleId, destinationGeneration });
+},
+/**
+ * Start the native drag of bubble `bubble_id` from the mouse event in progress (macOS).
+ */
+async recoveryBubbleBeginDrag(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_begin_drag", { bubbleId });
+},
+/**
+ * The recovery view needs `width` × `height` logical points.
+ */
+async recoveryBubbleResize(width: number, height: number) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_resize", { width, height });
+},
+/**
+ * "Show the bubble when no text field is focused" (010), through the shared settings service:
+ * refused off macOS (`unsupported_platform`) and unknown with the gate closed (`not_found`).
+ */
+async changeShowRecoveryBubbleWithoutTextFieldSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_show_recovery_bubble_without_text_field_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
 },
@@ -560,13 +1035,11 @@ async getAppSettings() : Promise<Result<AppSettings, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async getDefaultSettings() : Promise<Result<AppSettings, string>> {
-    try {
-    return { status: "ok", data: await TAURI_INVOKE("get_default_settings") };
-} catch (e) {
-    if(e instanceof Error) throw e;
-    else return { status: "error", error: e  as any };
-}
+async getSettingsView() : Promise<SettingsView> {
+    return await TAURI_INVOKE("get_settings_view");
+},
+async getDefaultSettings() : Promise<AppSettings> {
+    return await TAURI_INVOKE("get_default_settings");
 },
 async getLogDirPath() : Promise<Result<string, string>> {
     try {
@@ -576,7 +1049,10 @@ async getLogDirPath() : Promise<Result<string, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setLogLevel(level: LogLevel) : Promise<Result<null, string>> {
+/**
+ * The file log level follows the committed value (live effect of `log_level`).
+ */
+async setLogLevel(level: LogLevel) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_log_level", { level }) };
 } catch (e) {
@@ -724,7 +1200,11 @@ async rescanLocalModels() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateMicrophoneMode(alwaysOn: boolean) : Promise<Result<null, string>> {
+/**
+ * Commit the microphone mode; its live effect (stopping or starting the cpal stream, blocking
+ * CoreAudio) runs on a blocking thread, never on the webview/main run loop.
+ */
+async updateMicrophoneMode(alwaysOn: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_microphone_mode", { alwaysOn }) };
 } catch (e) {
@@ -759,17 +1239,28 @@ async getAvailableMicrophones() : Promise<Result<AudioDevice[], string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedMicrophone(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * Save the complete microphone priority (feature 001) with the revision the editor started
+ * from: the same validation, transaction and refusals as `handy settings microphones
+ * set-priority`, so a stale revision is `revision_conflict` and nothing partial is written.
+ * The live effect is queued; a recording in progress keeps its microphone. Returns the
+ * committed revision (unchanged for an identical order).
+ */
+async setMicrophonePriority(order: string[], expectedRevision: number | null) : Promise<Result<number, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("set_selected_microphone", { deviceName }) };
+    return { status: "ok", data: await TAURI_INVOKE("set_microphone_priority", { order, expectedRevision }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async getSelectedMicrophone() : Promise<Result<string, string>> {
+/**
+ * Saved order, availability of each choice and the microphone in use, from one bounded device
+ * observation taken off the webview thread (the same projection as `microphones list`).
+ */
+async getMicrophoneStatus() : Promise<Result<MicrophoneStatus, string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("get_selected_microphone") };
+    return { status: "ok", data: await TAURI_INVOKE("get_microphone_status") };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -783,7 +1274,10 @@ async getAvailableOutputDevices() : Promise<Result<AudioDevice[], string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedOutputDevice(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * `None` selects the system default output device; a name is stored as is.
+ */
+async setSelectedOutputDevice(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_output_device", { deviceName }) };
 } catch (e) {
@@ -805,7 +1299,10 @@ async playTestSound(soundType: string) : Promise<void> {
 async checkCustomSounds() : Promise<CustomSounds> {
     return await TAURI_INVOKE("check_custom_sounds");
 },
-async setClamshellMicrophone(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * `None` selects the system default device while the lid is closed; a name is stored as is.
+ */
+async setClamshellMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_clamshell_microphone", { deviceName }) };
 } catch (e) {
@@ -832,7 +1329,13 @@ async getMicrophoneChannels(deviceName: string) : Promise<Result<number, string>
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedChannel(channel: number | null) : Promise<Result<null, string>> {
+/**
+ * Restarting cpal can block, so the channel change runs off the webview/main run loop. The
+ * runtime change is prepared before committing, so a rejected active-recording change is never
+ * stored; a refused commit restores the channel published when the ordered write started. The
+ * preparation is shared with routed CLI writes (`settings_service::native_changes`).
+ */
+async setSelectedChannel(channel: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_channel", { channel }) };
 } catch (e) {
@@ -840,8 +1343,13 @@ async setSelectedChannel(channel: number | null) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async setModelUnloadTimeout(timeout: ModelUnloadTimeout) : Promise<void> {
-    await TAURI_INVOKE("set_model_unload_timeout", { timeout });
+async setModelUnloadTimeout(timeout: ModelUnloadTimeout) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_model_unload_timeout", { timeout }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 async getModelLoadStatus() : Promise<Result<ModelLoadStatus, string>> {
     try {
@@ -899,7 +1407,10 @@ async retryHistoryEntryTranscription(id: number) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async updateHistoryLimit(limit: number) : Promise<Result<null, string>> {
+/**
+ * The history cleanup is the live effect of `history_limit` (run before success is returned).
+ */
+async updateHistoryLimit(limit: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_history_limit", { limit }) };
 } catch (e) {
@@ -907,7 +1418,10 @@ async updateHistoryLimit(limit: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, string>> {
+/**
+ * The recording cleanup is the live effect of `recording_retention_period`.
+ */
+async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_recording_retention_period", { period }) };
 } catch (e) {
@@ -916,10 +1430,104 @@ async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, stri
 }
 },
 /**
- * Checks if the Mac is a laptop by detecting battery presence
+ * The published rules and their revision.
+ */
+async getWordReplacements() : Promise<ReplacementRulesView> {
+    return await TAURI_INVOKE("get_word_replacements");
+},
+/**
+ * Issues of a draft list (fields, duplicate keys, set size), from the shared validator; empty
+ * when the draft can be saved.
+ */
+async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
+    return await TAURI_INVOKE("check_word_replacements", { rules });
+},
+/**
+ * Preview `input` (bulk text or imported file) in `mode` against the published rules, on a
+ * blocking worker: a 1,000,000-byte input never stalls the main thread.
  * 
- * This uses pmset to check for battery information.
- * Returns true if a battery is detected (laptop), false otherwise (desktop)
+ * # Errors
+ * `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
+ */
+async previewWordReplacements(input: string, mode: ImportMode) : Promise<Result<ReplacementPreviewView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("preview_word_replacements", { input, mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Save the complete draft list as the rule set, in one commit at `expected_revision`, and
+ * return the saved rules with their revision.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `validation_failed` (`invalid_items`; the fields
+ * come from `check_word_replacements`) for an invalid draft, `revision_conflict` with the
+ * current revision when the settings moved on, and every refusal of the settings service.
+ */
+async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
+ * `expected_revision`, the revision its preview was computed at, and return the saved rules.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `limit_exceeded` above 1,000,000 bytes,
+ * `validation_failed` (`invalid_items`; the lines come from `preview_word_replacements`), and
+ * the refusals of `save_word_replacements`.
+ */
+async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Open the import dialog of the main window and read the chosen file; `None` when cancelled.
+ * Nothing is saved: the editor previews the text, then applies it at the preview's revision.
+ * 
+ * # Errors
+ * `ReplacementFileError` with `limit_exceeded` above 1,000,000 bytes, `validation_failed`
+ * (reason `invalid_encoding`) for a file that is not UTF-8, `usage_error` for an unreadable file.
+ */
+async importWordReplacementsFile() : Promise<Result<ReplacementImportFile | null, ReplacementFileError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_word_replacements_file") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Open the export dialog of the main window and write the saved rules (canonical exchange
+ * format) atomically to the chosen file; `None` when cancelled. Unsaved draft edits are not
+ * exported.
+ * 
+ * # Errors
+ * `ReplacementFileError` with `persistence_failed` (reason `export_symbolic_link`,
+ * `export_read_only` or `export_not_written`); the destination is unchanged.
+ */
+async exportWordReplacementsFile() : Promise<Result<ReplacementExportFile | null, ReplacementFileError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_word_replacements_file") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Whether this computer is a laptop (macOS: a battery is reported by `pmset`; other
+ * platforms: always false). The doc comment is shared by every platform's definition because
+ * it is exported into `src/bindings.ts`, which must not depend on the build platform.
  */
 async isLaptop() : Promise<Result<boolean, string>> {
     try {
@@ -935,11 +1543,15 @@ async isLaptop() : Promise<Result<boolean, string>> {
 
 
 export const events = __makeEvents__<{
+dictationPromptChanged: DictationPromptChanged,
 historyUpdatePayload: HistoryUpdatePayload,
+promptProcessingFailed: PromptProcessingFailed,
 streamPhaseEvent: StreamPhaseEvent,
 streamTextEvent: StreamTextEvent
 }>({
+dictationPromptChanged: "dictation-prompt-changed",
 historyUpdatePayload: "history-update-payload",
+promptProcessingFailed: "prompt-processing-failed",
 streamPhaseEvent: "stream-phase-event",
 streamTextEvent: "stream-text-event"
 })
@@ -950,6 +1562,15 @@ streamTextEvent: "stream-text-event"
 
 /** user-defined types **/
 
+/**
+ * A command-line tool that addresses the terminals of its application (spec decision
+ * `capability_by_bundle`): adding a type of application means adding a variant.
+ */
+export type AddressingTool = 
+/**
+ * cmux (Ghostty-based terminal): `Contents/Resources/bin/cmux`.
+ */
+"cmux"
 /**
  * The container-level `serde(default)` (backed by the `Default` impl below)
  * guarantees every field — including ones added in the future — falls back to
@@ -985,23 +1606,99 @@ hold_threshold_ms?: number; audio_feedback?: boolean; audio_feedback_volume?: nu
  * upgrading from before this key existed are blanked by the migration so they
  * see the current release's notes — see `apply_settings_migrations`.
  */
-whats_new_last_seen_version?: string; selected_model?: string; onboarding_completed?: boolean; always_on_microphone?: boolean; selected_microphone?: string | null; 
+whats_new_last_seen_version?: string; selected_model?: string; onboarding_completed?: boolean; always_on_microphone?: boolean; 
+/**
+ * Legacy single microphone choice, kept stored unchanged for a downgrade; replaced by
+ * `microphone_priority` (feature 001) and written by no surface.
+ */
+selected_microphone?: string | null; 
+/**
+ * Ordered microphone choices tried at every stream opening before the system default; the
+ * empty list means the system default. Stores without this key are migrated from
+ * `selected_microphone` in `apply_settings_migrations`.
+ */
+microphone_priority?: string[]; 
 /**
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
  */
-selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
+selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; 
+/**
+ * Ordered explicit corrections, independent from approximate custom words.
+ */
+word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; 
+/**
+ * Automatic Enter of 009, filled only by a build with the `destination-return` gate open
+ * (fresh install `never`, upgrade from `auto_submit`); absent from a closed build, which
+ * never writes it. An invalid stored value reads as absent (see `automatic_enter::migration`).
+ */
+automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; 
+/**
+ * Prompt last chosen on the indicator during a plain dictation (005 FR-007): the next plain
+ * dictations start with it while AI post-processing is on; `None` starts them with None.
+ */
+plain_dictation_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+/**
+ * Smart capitalization (015): adapt the first letter of a dictation to the text before the
+ * cursor. On for a new installation (`get_default_settings`); a store without the key is an
+ * upgrade and reads off (field default and `apply_settings_migrations`).
+ */
+smart_capitalization?: boolean; 
+/**
+ * Smart spacing (017): fit the spaces at the two edges of a dictation to the text around
+ * the selection, and decide its trailing space instead of `append_trailing_space`. On for a
+ * new installation (`get_default_settings`); a store without the key is an upgrade and
+ * reads off (field default and `apply_settings_migrations`).
+ */
+smart_spacing?: boolean; 
+/**
+ * Return to the application where the dictation started before inserting (006).
+ */
+return_to_dictation_app?: boolean; 
+/**
+ * Favorite destination applications of the badge menu (012), oldest first; written only
+ * through `destination::favorites` changes. Read leniently: unreadable entries are dropped.
+ */
+destination_favorites?: FavoriteApp[]; 
+/**
+ * Remembered default input per application (013), at most one per identity; written only
+ * through `destination::default_input::model` changes. Read leniently like the favorites.
+ */
+destination_default_inputs?: DefaultInput[]; 
+/**
+ * "Show the bubble when no text field is focused" (010): set in memory by the
+ * normalization for this build (`recovery::setting`); absent with the `destination-return`
+ * gate closed, which never writes it.
+ */
+show_recovery_bubble_without_text_field?: boolean | null; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
 /**
  * Debug-gated ("beta") receipt-sequenced paste: restore the clipboard only
  * after the target app actually reads the transcript, instead of after a
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
-reliable_paste?: boolean; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
+reliable_paste?: boolean; 
+/**
+ * Experimental paste verification (feature 007 AC-019, finding N11): with smart paste,
+ * check through accessibility that the focused field changed after Cmd+V, send Cmd+V once
+ * more if it did not, and hand an unchanged field to the recovery bubble. Off by default.
+ */
+paste_verification?: boolean; 
+/**
+ * Internal marker of the one-time macOS migration to smart paste (feature 007, see
+ * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+ * treated as never migrated.
+ */
+smart_paste_migration_version?: number; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
  */
-chinese_script?: ChineseScript; transcribe_accelerator?: TranscribeAcceleratorSetting; ort_accelerator?: OrtAcceleratorSetting; 
+chinese_script?: ChineseScript; 
+/**
+ * Smart paragraphs (feature 016): split a long dictation into paragraphs before insertion.
+ * Off by default, for new installs and for stores written before the feature.
+ */
+smart_paragraphs_enabled?: boolean; transcribe_accelerator?: TranscribeAcceleratorSetting; ort_accelerator?: OrtAcceleratorSetting; 
 /**
  * Stable transcribe.cpp device selector. This is derived from the backend's
  * `device_id` when available (or its name for backends such as Metal),
@@ -1018,10 +1715,105 @@ vad_backend?: VadBackend;
  * `overlay_position` (position `none` → style `None`).
  */
 overlay_style?: OverlayStyle }
+/**
+ * Stable application identity: bundle identifier on macOS; application user model ID on
+ * Windows when available, otherwise the canonical executable path.
+ */
+export type ApplicationIdentity = { kind: "bundle_id"; value: string } | { kind: "aumid"; value: string } | { kind: "executable_path"; value: string }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
+/**
+ * The single automatic Enter option of 009 (gate `destination-return` open): replaces the
+ * auto-submit switch; the key stays `auto_submit_key`.
+ */
+export type AutomaticEnterPolicy = 
+/**
+ * No automatic Enter.
+ */
+"never" | 
+/**
+ * One Enter after every successful insertion.
+ */
+"always" | 
+/**
+ * One Enter only when the dictation's destination came from the pin.
+ */
+"pin_only"
+/**
+ * Availability of one configured choice, observed separately from the saved order.
+ */
+export type Availability = 
+/**
+ * Exactly one present device has this name.
+ */
+"available" | 
+/**
+ * A complete enumeration found no device with this name.
+ */
+"unavailable" | 
+/**
+ * Several present devices share this name; none is chosen arbitrarily.
+ */
+"ambiguous" | 
+/**
+ * The enumeration failed or timed out: absence is not proven.
+ */
+"unknown"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
-export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; error: string | null }
+export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; 
+/**
+ * English description of the refusal, for older callers.
+ */
+error: string | null; 
+/**
+ * Typed refusal, which the settings UI translates.
+ */
+edit_error: ShortcutEditError | null }
+/**
+ * Identity of one bubble; a closed bubble's identity is never reused.
+ */
+export type BubbleId = number
+/**
+ * Why the bubble appears (spec AC-003 reasons). Distinct from 006's `context::RecoveryReason`,
+ * which is only the reason of a pre-insertion verdict.
+ */
+export type BubbleReason = 
+/**
+ * "<App> is no longer open".
+ */
+"app_closed" | 
+/**
+ * "<App> is pinned but not open".
+ */
+"pinned_app_not_running" | 
+/**
+ * "Could not bring <App> forward".
+ */
+"activation_failed" | 
+/**
+ * "Insertion failed".
+ */
+"insertion_failed" | 
+/**
+ * "No text field is focused".
+ */
+"no_text_field" | 
+/**
+ * 013: "The remembered field of <App> was not found".
+ */
+"default_field_not_found" | 
+/**
+ * 013: "The remembered terminal of <App> no longer exists".
+ */
+"default_terminal_gone"
+/**
+ * Unit of a context budget.
+ */
+export type BudgetUnit = "tokens"
+/**
+ * Candidate rule; new rules receive a durable ID only when committed.
+ */
+export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
 /**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
@@ -1031,8 +1823,189 @@ export type ChineseScript =
  * Keep whatever script the model produced.
  */
 "as_transcribed" | "simplified" | "traditional"
+/**
+ * Answer of a badge choice or removal: the updated session, or why it is refused unchanged.
+ */
+export type ChoiceAnswer = { status: "chosen"; value: DestinationSnapshot } | { status: "refused"; value: SelectionRefusal }
+/**
+ * Availability of one configured choice.
+ */
+export type ChoiceStatus = { 
+/**
+ * Configured exact name.
+ */
+name: string; 
+/**
+ * Observed status.
+ */
+status: Availability }
 export type ClipboardHandling = "dont_modify" | "copy_to_clipboard"
+/**
+ * Why a candidate cannot be used.
+ */
+export type ConflictKind = 
+/**
+ * The same combination is already assigned.
+ */
+"duplicate" | 
+/**
+ * A modifier-only shortcut would fire together with the other one.
+ */
+"modifier_overlap"
+/**
+ * Documented context budget of one mechanism.
+ */
+export type ContextBudget = { value: number; unit: BudgetUnit }
+/**
+ * How the vocabulary reaches the engine.
+ */
+export type ContextMechanism = 
+/**
+ * Whisper run extension `initial_prompt`, terms joined with ", ".
+ */
+"whisper_initial_prompt" | 
+/**
+ * Generic `RunOptions::vocabulary` (Qwen3-ASR, Fun-ASR, Granite with the GGUF capability).
+ */
+"generic_vocabulary" | 
+/**
+ * Generic `RunOptions::prompt` used as recognition context.
+ */
+"context_prompt"
 export type CustomSounds = { start: boolean; stop: boolean }
+/**
+ * The remembered input of one application.
+ */
+export type DefaultInput = { identity: ApplicationIdentity; display_name: string; target: DefaultTarget }
+/**
+ * Kind of remembered target the menu offers.
+ */
+export type DefaultInputKind = "field" | "terminal"
+/**
+ * Where Handy pastes for an application whose active element is not a text field.
+ */
+export type DefaultTarget = ({ kind: "field" } & FieldFingerprint) | ({ kind: "terminal" } & TerminalTarget)
+/**
+ * Badge menu of one dictation: applications, then "Frontmost app at the end".
+ */
+export type DestinationMenu = { dictation_id: DictationId; selection_version: number; entries: MenuEntry[]; 
+/**
+ * True when "Frontmost app at the end" is the current choice.
+ */
+frontmost_at_end_current: boolean }
+/**
+ * Session snapshot sent to the UI (`destination-changed`) and returned by session commands.
+ */
+export type DestinationSnapshot = { dictation_id: DictationId; destination_generation: number; selection_version: number; phase: SessionPhase; return_enabled: boolean; support: DestinationSupport; selection: SelectionView; 
+/**
+ * Where the current selection comes from; `pinned` shows the pin mark (009).
+ */
+source: DestinationSource; 
+/**
+ * The session pin, if an application is pinned (009); the badge menu offers Unpin then.
+ */
+pin: PinView | null; disposition: RecoveryDisposition; 
+/**
+ * « Insert without Enter » is on for this dictation (014); omitted when off.
+ */
+enter_skipped?: boolean }
+/**
+ * Where the destination of a dictation comes from (009 adds `Pinned`).
+ */
+export type DestinationSource = 
+/**
+ * Frontmost application when the recording actually started.
+ */
+"captured" | 
+/**
+ * Chosen explicitly from the badge menu during the dictation.
+ */
+"badge" | 
+/**
+ * No destination: the application frontmost at insertion, as before this feature.
+ */
+"frontmost_at_end" | 
+/**
+ * The session pin of 009: activated even with destination return off.
+ */
+"pinned"
+/**
+ * Runtime support of destination return in the running instance.
+ */
+export type DestinationSupport = { state: "supported" } | { state: "unsupported"; reason: SupportReason }
+/**
+ * Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
+ */
+export type DictationId = number
+/**
+ * The indicator's prompt changed (`None`: no dictation in progress).
+ */
+export type DictationPromptChanged = { prompt: DictationPromptView | null }
+/**
+ * The indicator's view of the dictation prompt.
+ */
+export type DictationPromptView = { 
+/**
+ * Session the choice must name (stale UI events of another session are refused).
+ */
+session_id: number; 
+/**
+ * Prompt of this dictation; `None` means no AI processing.
+ */
+prompt_id: string | null; prompt_name: string | null; 
+/**
+ * False when AI post-processing is off: the menu is hidden and the prompt stays None.
+ */
+selectable: boolean; 
+/**
+ * A plain dictation with processing on: a choice is kept for the next plain dictations
+ * (FR-007); otherwise it applies to this dictation only.
+ */
+remembered: boolean }
+/**
+ * Why the effective input was chosen.
+ */
+export type EffectiveReason = 
+/**
+ * The first configured choice opened.
+ */
+"first_choice" | 
+/**
+ * A later configured choice opened after earlier ones failed.
+ */
+"fallback" | 
+/**
+ * The clamshell override opened while the lid is confirmed closed.
+ */
+"clamshell" | 
+/**
+ * The system default opened.
+ */
+"system_default"
+/**
+ * The input in use, or the last one used, as reported to the user.
+ */
+export type EffectiveReport = { scope: EffectiveScope; 
+/**
+ * Device name read from the opened stream (null when not used yet or unnamed).
+ */
+name: string | null; reason: EffectiveReason | null; capture_generation: number | null }
+/**
+ * What the effective input describes.
+ */
+export type EffectiveScope = 
+/**
+ * A recording is running, or the always-on stream is open, on this input.
+ */
+"current" | 
+/**
+ * No current stream: the input of the last recording since launch.
+ */
+"last_recording" | 
+/**
+ * No recording since launch.
+ */
+"not_used_yet"
 export type EngineType = 
 /**
  * Any GGML/GGUF model loaded through transcribe-cpp (Whisper, Parakeet,
@@ -1040,25 +2013,457 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * One refused position of a domain input: zero-based `index`, closed `code` and its fixed
+ * message; never the candidate value.
+ */
+export type ErrorItem = { index: number; code: ErrorReason; message: string }
+/**
+ * Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
+ * their own variants. Each has a fixed English message and never carries a candidate value.
+ */
+export type ErrorReason = 
+/**
+ * The operation or setting needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session owns the shortcuts until it ends (004).
+ */
+"shortcut_session_busy" | 
+/**
+ * A live-only change was asked without a running instance (004).
+ */
+"instance_required" | 
+/**
+ * The last shortcut of a dictation action cannot be removed (004).
+ */
+"last_shortcut" | 
+/**
+ * The action keeps a single shortcut (004).
+ */
+"alternatives_unsupported" | 
+/**
+ * The system refused to register the shortcut (004).
+ */
+"registration_refused" | 
+/**
+ * The shortcut text is not valid for the active keyboard implementation (004).
+ */
+"invalid_shortcut" | 
+/**
+ * A replacement rule has no recognized text (002).
+ */
+"recognized_empty" | 
+/**
+ * A recognized text is longer than 100 characters (002).
+ */
+"recognized_too_long" | 
+/**
+ * A recognized text holds a line break, a tab or `;` (002).
+ */
+"recognized_forbidden_character" | 
+/**
+ * A recognized text holds a control or bidirectional formatting character (002).
+ */
+"recognized_control_character" | 
+/**
+ * A recognized text starts with `#`, like an exchange comment (002).
+ */
+"recognized_leading_comment" | 
+/**
+ * Two rules have the same normalized recognized text (002).
+ */
+"duplicate_recognized" | 
+/**
+ * A replacement rule has no replacement text (002).
+ */
+"replacement_empty" | 
+/**
+ * A replacement text is longer than 500 characters (002).
+ */
+"replacement_too_long" | 
+/**
+ * A replacement text holds a line break or a tab (002).
+ */
+"replacement_forbidden_character" | 
+/**
+ * A replacement text holds a control or bidirectional formatting character (002).
+ */
+"replacement_control_character" | 
+/**
+ * A replacement rule has an empty id (002).
+ */
+"empty_rule_id" | 
+/**
+ * Two replacement rules share an id (002).
+ */
+"duplicate_rule_id" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator (002).
+ */
+"missing_separator" | 
+/**
+ * The rule set would hold more than 1000 rules (002).
+ */
+"too_many_rules" | 
+/**
+ * The saved rules are invalid, so no import can be previewed on them (002).
+ */
+"invalid_saved_rules" | 
+/**
+ * The Unicode data needed to validate rules is unavailable (002).
+ */
+"unicode_data_unavailable" | 
+/**
+ * The running instance's answer does not fit one channel message (002).
+ */
+"reply_too_large" | 
+/**
+ * The export file could not be written; the destination is unchanged (002).
+ */
+"export_not_written" | 
+/**
+ * The export destination is a symbolic link, refused; nothing is written (002).
+ */
+"export_symbolic_link" | 
+/**
+ * The export destination is a file the user cannot write; it is unchanged (002).
+ */
+"export_read_only" | 
+/**
+ * A vocabulary term is empty once trimmed (003).
+ */
+"term_empty" | 
+/**
+ * A vocabulary term exceeds 100 characters (003).
+ */
+"term_too_long" | 
+/**
+ * A vocabulary term contains a line break (003).
+ */
+"term_line_break" | 
+/**
+ * A vocabulary term contains `<`, `>`, `"` or NUL (003).
+ */
+"term_forbidden_character" | 
+/**
+ * A vocabulary term repeats another term (003).
+ */
+"term_duplicate" | 
+/**
+ * The loaded model declares a recognition-context mechanism whose budget is not documented
+ * for this build (003): a durable internal defect, never a retryable state.
+ */
+"context_budget_unverified" | 
+/**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_invalid" | 
+/**
+ * The microphone choices change only through `handy settings microphones` (001).
+ */
+"microphones_domain" | 
+/**
+ * A microphone choice is empty or only whitespace (001).
+ */
+"microphone_name_empty" | 
+/**
+ * A microphone choice appears more than once (001).
+ */
+"microphone_name_duplicate"
+/**
+ * Whether the report describes a prepared next request or a dispatched one.
+ */
+export type EvidenceKind = 
+/**
+ * The next request, prepared exactly as a dictation would; no run happened.
+ */
+"prepared"
+/**
+ * A saved term that is not sent, at its stored position.
+ */
+export type ExcludedTerm = { index: number; term: string; reason: ExclusionReason }
+/**
+ * Why a saved term does not reach the engine.
+ */
+export type ExclusionReason = "empty" | "too_long" | "line_break" | "forbidden_character" | "duplicate" | "over_capacity" | 
+/**
+ * Valid, but after the first term that did not fit the budget.
+ */
+"over_budget" | 
+/**
+ * Valid, but this model or mode receives no context at all.
+ */
+"no_context"
+/**
+ * Why the AI step produced no usable text. Codes are stored in history and shown translated;
+ * they never carry a provider message, a URL or a credential.
+ */
+export type FailureReason = 
+/**
+ * The provider or the HTTP request failed.
+ */
+"provider_error" | 
+/**
+ * The reply was empty or only whitespace once cleaned.
+ */
+"empty_result" | 
+/**
+ * The whole step exceeded `PROCESSING_BUDGET`.
+ */
+"timeout" | 
+/**
+ * The previous Apple Intelligence request is still running natively.
+ */
+"provider_busy" | "missing_endpoint" | "missing_model" | "missing_api_key" | "provider_unavailable" | "unknown_provider" | "invalid_prompt" | "prompt_missing"
+/**
+ * Answer of a star toggle (012): the re-ordered menu (same tokens), the session refusal
+ * (stale, frozen, unknown token), or the settings refusal.
+ */
+export type FavoriteAnswer = { status: "menu"; value: DestinationMenu } | { status: "refused"; value: SelectionRefusal } | { status: "not_saved"; value: FavoriteNotSaved }
+/**
+ * One favorite application: its 006 identity and the name shown while it is not running.
+ */
+export type FavoriteApp = { identity: ApplicationIdentity; display_name: string }
+/**
+ * Why a star toggle was not saved (012): the favorites are full, or the settings service
+ * refused or failed the write. The favorites and the session are unchanged.
+ */
+export type FavoriteNotSaved = "full" | "failed"
+/**
+ * Stable field identifier translated at UI/CLI boundaries.
+ */
+export type Field = "id" | "recognized" | "replacement" | "rules" | 
+/**
+ * A whole exchange line, before it can be split into fields.
+ */
+"line"
+/**
+ * Accessibility fingerprint of a text field: never its value, selected text or DOM classes.
+ */
+export type FieldFingerprint = { role: string; subrole: string | null; 
+/**
+ * `AXTitle`, else `AXDescription`.
+ */
+name: string | null; 
+/**
+ * `AXPlaceholderValue`.
+ */
+placeholder: string | null; 
+/**
+ * `AXDOMIdentifier`, only when it does not look generated.
+ */
+dom_id: string | null }
+/**
+ * An issue in one input field before a rule has an ordered position.
+ */
+export type FieldIssue = { field: Field; kind: IssueKind }
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
-export type HistoryEntry = { id: number; file_name: string; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+/**
+ * One history row. `file_name` is `None` for a text-only row (no audio recording).
+ */
+export type HistoryEntry = ({ post_process_prompt_id: string | null; post_process_prompt_name: string | null; post_process_provider_id: string | null; post_process_model: string | null; 
+/**
+ * Failure code (`timeout`, `provider_error`, ...) when the original text was used.
+ */
+post_process_failure: string | null }) & { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+/**
+ * Whether the explanation may say the transcript is in History (saved only).
+ */
+export type HistoryNote = "kept" | "not_kept"
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
+/**
+ * Why a line carries no rule.
+ */
+export type IgnoredLine = "blank" | "comment" | "header"
 /**
  * Result of changing keyboard implementation
  */
 export type ImplementationChangeResult = { success: boolean; 
 /**
- * List of binding IDs that were reset to defaults due to incompatibility
+ * Binding IDs whose shortcuts were reset to the default or removed
+ * because the new implementation cannot register them
  */
-reset_bindings: string[] }
+reset_bindings: string[]; 
+/**
+ * Stored shortcuts that conflict under the new implementation and did
+ * not before. They are kept, as inherited conflicts are, and flagged in
+ * the settings.
+ */
+conflicts: StoredShortcutConflict[] }
+/**
+ * How imported rules combine with the saved set (AC-005).
+ */
+export type ImportMode = 
+/**
+ * Update matching keys in place and append new rules in input order.
+ */
+"merge" | 
+/**
+ * The input becomes the whole set; the bulk editor always uses this mode.
+ */
+"replace"
+/**
+ * The candidate list a bulk input would produce, and why it could not be applied.
+ */
+export type ImportPreview = { mode: VocabularyImportMode; 
+/**
+ * New unique terms, in input order.
+ */
+added: VocabularyPreviewLine[]; 
+/**
+ * Lines skipped because their key repeats an earlier line or (merge) a saved term.
+ */
+duplicates: VocabularyPreviewLine[]; 
+/**
+ * Invalid lines: any of them refuses the whole input.
+ */
+issues: LineIssue[]; 
+/**
+ * The complete list applying this preview would save.
+ */
+candidate: string[]; 
+/**
+ * Applying would exceed `MAX_TERMS` (merge: any addition while the list is full).
+ */
+over_capacity: boolean }
+/**
+ * Stable validation kind; diagnostics never contain user rule text.
+ */
+export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" | "forbidden_character" | "leading_comment" | "duplicate_key" | "too_many_rules" | "unicode_data_unavailable" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator.
+ */
+"missing_separator" | 
+/**
+ * The saved base set is itself invalid, so no preview can be applied to it.
+ */
+"invalid_saved_rules" | 
+/**
+ * A control character (C0, DEL, C1) or a bidirectional embedding, override or isolate
+ * control, which the exchange format and the inserted text must not carry.
+ */
+"control_character"
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
  */
 key_down: number; key_up: number; flags_changed: number; mouse: number; duration_ms: number }
 export type KeyboardImplementation = "tauri" | "handy_keys"
-export type LLMPrompt = { id: string; name: string; prompt: string }
+/**
+ * One prompt of the library. `id`, `name` and `prompt` keep their historical wire names; the
+ * fields added by 005 are absent from stores written before it and never serialized when
+ * unset, so a store without overrides or starters stays byte-identical for earlier versions.
+ */
+export type LLMPrompt = { id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider and its model.
+ */
+provider_override?: PromptProviderOverride | null; 
+/**
+ * Added by the one-time starter migration (still editable and deletable).
+ */
+starter?: boolean }
+/**
+ * One refused input line.
+ */
+export type LineIssue = { index: number; issue: TermIssue }
+/**
+ * One prompt of the library listing: its view, its 0–2 shortcuts and its readiness.
+ */
+export type ListedPrompt = ({ id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Added by the starter migration.
+ */
+starter: boolean; 
+/**
+ * Why the prompt cannot be used until edited; empty for a valid prompt.
+ */
+issues: PromptIssue[] }) & { shortcuts: string[]; readiness: Readiness }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
+/**
+ * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
+ * the badge handles both without exception paths).
+ */
+export type MenuAnswer = { status: "menu"; value: DestinationMenu } | { status: "refused"; value: SelectionRefusal }
+/**
+ * A badge choice: an entry token of the current menu, or "Frontmost app at the end" (the cross).
+ */
+export type MenuChoice = { kind: "application"; token: number } | { kind: "frontmost_at_end" }
+/**
+ * One application entry of the badge menu, addressed by an opaque manager token.
+ */
+export type MenuEntry = { token: number; display_name: string; icon_ref: string | null; 
+/**
+ * The current destination of this dictation.
+ */
+current: boolean; 
+/**
+ * The application frontmost when the menu opened (listed first).
+ */
+frontmost: boolean; 
+/**
+ * The application of the session pin (009); the others are "This dictation only" while
+ * an application is pinned.
+ */
+pinned: boolean; 
+/**
+ * A favorite application (012), listed in the favorites section near the badge.
+ */
+favorite: boolean; 
+/**
+ * False only for a favorite with no running instance: shown "Not open", never chosen.
+ */
+running: boolean }
+/**
+ * One status read.
+ */
+export type MicrophoneStatus = { 
+/**
+ * Committed order of normal choices.
+ */
+configured_order: string[]; 
+/**
+ * Status of each configured choice, in saved order.
+ */
+availability: ChoiceStatus[]; 
+/**
+ * RFC 3339 time of the device observation.
+ */
+availability_observed_at: string; effective_input: EffectiveReport; warning: StatusWarning | null }
 export type ModelInfo = { id: string; name: string; description: string; filename: string; source: ModelSource; size_mb: number; is_downloaded: boolean; is_downloading: boolean; partial_size: number; is_directory: boolean; engine_type: EngineType; accuracy_score: number; speed_score: number; supports_translation: boolean; is_recommended: boolean; supported_languages: string[]; supports_language_selection: boolean; is_custom: boolean; supports_streaming: boolean; supports_language_detection: boolean }
 export type ModelLoadStatus = { is_loaded: boolean; current_model: string | null }
 /**
@@ -1086,7 +2491,35 @@ sha256: string | null } } |
  */
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
+/**
+ * One stored occurrence, with the reason it is excluded from the recognition context, if any.
+ */
+export type Occurrence = { 
+/**
+ * Zero-based position in the stored list.
+ */
+index: number; 
+/**
+ * Stored text, unchanged.
+ */
+term: string; 
+/**
+ * Why this occurrence is excluded from the context; `None` when it is eligible.
+ */
+issue: TermIssue | null }
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
+/**
+ * Durable outcome of a failed operation; clients must reread before retrying either one.
+ */
+export type Outcome = 
+/**
+ * A timed-out or unconfirmed operation may or may not have committed.
+ */
+"unknown" | 
+/**
+ * The write is durable, but a live effect failed afterwards and is reconciled later.
+ */
+"committed"
 export type OverlayPosition = "top" | "bottom"
 /**
  * Which recording overlay to display. `Minimal` and `Live` share one base
@@ -1096,10 +2529,368 @@ export type OverlayPosition = "top" | "bottom"
  */
 export type OverlayStyle = "none" | "minimal" | "live"
 export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
-export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
+export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script" | "smart_paste"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
+/**
+ * What the badge shows of the pin (name and icon reference only).
+ */
+export type PinView = { display_name: string; icon_ref: string | null }
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * One preview row; deletions have no input line number.
+ */
+export type PreviewLine = { line_number: number | null; status: PreviewStatus; ignored: IgnoredLine | null; 
+/**
+ * Existing rule updated, kept unchanged or deleted by this row.
+ */
+rule_id: RuleId | null; 
+/**
+ * Resulting content for add/update/unchanged, removed content for delete.
+ */
+recognized: string | null; replacement: string | null; issues: FieldIssue[]; 
+/**
+ * Other input lines sharing this line's normalized key.
+ */
+duplicate_lines: number[] }
+/**
+ * Per-line outcome shown before Apply (AC-003).
+ */
+export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
+/**
+ * Why a choice on the indicator was refused; nothing changed.
+ */
+export type PromptChoiceRefusal = 
+/**
+ * No recording of that session any more (stopped, cancelled or another session).
+ */
+"session_ended" | 
+/**
+ * AI post-processing is off for this dictation.
+ */
+"processing_off" | 
+/**
+ * The prompt is not in the library.
+ */
+"prompt_missing" | 
+/**
+ * The prompt has issues and cannot be used until edited.
+ */
+"prompt_not_usable"
+/**
+ * Why a prompt is not valid (and cannot be used until edited). Legacy prompts that break a rule
+ * stay in the library with their issues listed.
+ */
+export type PromptIssue = 
+/**
+ * The trimmed name is empty.
+ */
+"name_empty" | 
+/**
+ * The trimmed name is longer than `MAX_NAME_CHARS`.
+ */
+"name_too_long" | 
+/**
+ * Another prompt has the same trimmed name, ignoring case.
+ */
+"name_duplicate" | 
+/**
+ * The text is empty or only whitespace (precision of AC-001, decision 2026-10-14).
+ */
+"text_empty" | 
+/**
+ * The text is longer than `MAX_TEXT_CHARS`.
+ */
+"text_too_long" | 
+/**
+ * The override names a provider but no model (or the reverse).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have.
+ */
+"unknown_provider"
+/**
+ * The library with its default prompt (None when absent or no longer in the library).
+ */
+export type PromptLibraryView = { 
+/**
+ * Default prompt of the post-processing shortcut, or `None`.
+ */
+default_prompt_id: string | null; 
+/**
+ * The AI post-processing switch: off, no dictation is processed.
+ */
+post_process_enabled: boolean; prompts: ListedPrompt[] }
+/**
+ * The AI step of a dictation failed and the original text was used for insertion. The notice
+ * (translated key `overlay.fallbackNotice`, English source "AI processing failed. The original
+ * text was used.") never says whether the insertion succeeded: 006, 007 and 010 report that.
+ */
+export type PromptProcessingFailed = { session_id: number; prompt_name: string | null; reason: FailureReason; 
+/**
+ * Minimum display time of the notice, in milliseconds.
+ */
+notice_ms: number }
+/**
+ * Provider and model a prompt uses instead of the default ones (005). API keys stay per
+ * provider: an override names a provider id and a model, never a credential.
+ */
+export type PromptProviderOverride = { provider_id: string; model: string }
+/**
+ * The editor's draft and the sample to process.
+ */
+export type PromptTestRequest = { 
+/**
+ * Prompt text as edited (not necessarily saved).
+ */
+text: string; 
+/**
+ * Provider override as edited; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Sample text (prefilled by the UI with the last transcript, editable).
+ */
+sample: string }
+/**
+ * Result shown by the test panel; never a provider message or credential.
+ */
+export type PromptTestResult = { status: PromptTestStatus; text: string | null; failure: FailureReason | null; provider_id: string | null; model: string | null; duration_ms: number }
+/**
+ * How the test ended.
+ */
+export type PromptTestStatus = "success" | "failed" | 
+/**
+ * Another test is still running; this one did not start.
+ */
+"busy" | "cancelled" | 
+/**
+ * The sample is empty: nothing to process.
+ */
+"skipped"
+/**
+ * Public readiness of a prompt: which provider and model it uses and what is missing.
+ */
+export type Readiness = { provider_id: string | null; model: string | null; is_override: boolean; ready: boolean; missing: ReadinessIssue | null }
+/**
+ * Why a prompt cannot process right now. Never carries a credential.
+ */
+export type ReadinessIssue = 
+/**
+ * The provider has no base URL.
+ */
+"missing_endpoint" | 
+/**
+ * No model is configured for the provider (or in the override).
+ */
+"missing_model" | 
+/**
+ * The provider needs an API key and has none.
+ */
+"missing_api_key" | 
+/**
+ * Apple Intelligence is not available on this device right now.
+ */
+"provider_unavailable" | 
+/**
+ * The provider does not exist in this build.
+ */
+"unknown_provider" | 
+/**
+ * The prompt has validation issues and must be edited first.
+ */
+"invalid_prompt" | 
+/**
+ * The prompt is no longer in the library.
+ */
+"prompt_missing"
+/**
+ * What the explanation adds about input that may have been sent (spec AC-001).
+ */
+export type ReasonDetail = 
+/**
+ * Decided before insertion: nothing was dispatched.
+ */
+"not_inserted" | 
+/**
+ * "Some text may have reached the application" (a method that may have sent input).
+ */
+"may_have_reached" | 
+/**
+ * Smart paste `permission_missing`: nothing was sent to the application.
+ */
+"nothing_sent"
+/**
+ * Recognition mode of the selected model's dictations.
+ */
+export type RecognitionMode = "batch" | "streaming"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
+/**
+ * Targeted projection rendered by the recovery window (event `recovery-bubble-changed` and
+ * command `recovery_bubble_view`). No full transcript, no window title.
+ */
+export type RecoveryBubbleView = { bubble_id: BubbleId; destination_generation: number; reason: BubbleReason; 
+/**
+ * Destination name, `None` when no application can be named (localized noun then).
+ */
+app_name: string | null; 
+/**
+ * Beginning of the transcript, at most `PREVIEW_MAX_CHARS` characters; the view shows
+ * its first two lines with an ellipsis.
+ */
+preview: string; 
+/**
+ * True when the transcript is longer than `preview`.
+ */
+truncated: boolean; detail: ReasonDetail; 
+/**
+ * 007 reported a read after "not read": the text may have been pasted after all.
+ */
+late_read: boolean; history: HistoryNote; 
+/**
+ * The macOS drag handle is offered.
+ */
+can_drag: boolean }
+/**
+ * The single per-dictation decision "insert or recover", and the only Enter veto.
+ */
+export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
+/**
+ * A post-processing shortcut the backend refused when post-processing was
+ * enabled. It stays stored and editable; the settings flag its row.
+ * `reason` is the backend's message, in English.
+ */
+export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
+/**
+ * Answer of "Remember".
+ */
+export type RememberAnswer = { status: "saved"; value: RememberOffer } | { status: "refused"; value: RememberRefusal }
+/**
+ * The "Remember" entry of the badge menu.
+ */
+export type RememberOffer = { kind: DefaultInputKind; app_name: string; 
+/**
+ * The application already has a remembered input (the entry says "again").
+ */
+remembered: boolean }
+/**
+ * Why nothing was remembered; the list is unchanged.
+ */
+export type RememberRefusal = 
+/**
+ * Another dictation or version, or no application destination.
+ */
+"stale" | 
+/**
+ * The focused element is not an editable text field of the instance.
+ */
+"not_text_field" | 
+/**
+ * The focused element is a password field.
+ */
+"password_field" | 
+/**
+ * No name, placeholder or stable DOM id.
+ */
+"unrecognizable" | 
+/**
+ * The addressing tool did not answer usably.
+ */
+"terminal_unreadable" | 
+/**
+ * 20 applications already have an input.
+ */
+"full" | 
+/**
+ * The settings write failed.
+ */
+"failed"
+/**
+ * A completed export of the saved rules.
+ */
+export type ReplacementExportFile = { 
+/**
+ * Name of the written file, without its directory.
+ */
+file_name: string; 
+/**
+ * Number of exported rules.
+ */
+count: number; 
+/**
+ * False when the file was replaced but the disk did not confirm the rename yet.
+ */
+durable: boolean }
+/**
+ * Refusal of a rule file: the typed settings error and the chosen file name (never its path).
+ */
+export type ReplacementFileError = { file_name: string; error: SettingsCommandError }
+/**
+ * A rule file chosen in the import dialog, read as bounded UTF-8 text.
+ */
+export type ReplacementImportFile = { 
+/**
+ * Name of the chosen file, without its directory.
+ */
+file_name: string; 
+/**
+ * Exact file text (at most 1,000,000 bytes), previewed and applied by the editor.
+ */
+text: string }
+/**
+ * Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
+ * deletion rows are always listed; ignored rows and error rows are each listed up to
+ * `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
+ */
+export type ReplacementPreview = { mode: ImportMode; 
+/**
+ * SHA-256 of the exact input text, so Apply can prove it used this input.
+ */
+input_sha256: string; lines: PreviewLine[]; set_issues: IssueKind[]; candidate: CandidateRule[]; 
+/**
+ * The candidate equals the saved set in content, identity and order.
+ */
+is_noop: boolean; 
+/**
+ * Ignored input lines (blank, comment, header), listed or not.
+ */
+ignored_lines: number; 
+/**
+ * Input lines with an error, listed or not.
+ */
+error_lines: number; 
+/**
+ * Input lines left out of `lines`: ignored or error lines beyond the listed bound, and rule
+ * lines after the 1000th (which make the input too large anyway).
+ */
+omitted_lines: number }
+/**
+ * A bulk or import preview against the rules saved at `revision`.
+ */
+export type ReplacementPreviewView = { revision: number; preview: ReplacementPreview }
+/**
+ * Persisted content; normalized keys and positions are derived from the list.
+ */
+export type ReplacementRule = { id: RuleId; recognized: string; replacement: string }
+/**
+ * Saved rules in order, with the settings revision they were read at.
+ */
+export type ReplacementRulesView = { revision: number; rules: ReplacementRule[] }
+/**
+ * One rule of the editor's draft; a new rule has no id until it is saved.
+ */
+export type RuleDraft = { id: RuleId | null; recognized: string; replacement: string }
+/**
+ * Stable opaque rule identity; exchange files carry content rather than IDs.
+ */
+export type RuleId = string
+/**
+ * Ordered rule issue; index is zero-based or absent for a whole-set issue.
+ */
+export type RuleIssue = { rule_index: number | null; field: Field; kind: IssueKind }
+/**
+ * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
+ */
 export type SecretMap = Partial<{ [key in string]: string }>
 export type SecureInputStatus = { 
 /**
@@ -1134,6 +2925,88 @@ uncovered_bindings: string[];
  */
 recorder_blocked: boolean }
 /**
+ * A refused badge choice; the session is unchanged.
+ */
+export type SelectionRefusal = 
+/**
+ * Another dictation, or an older `selection_version`.
+ */
+"stale" | 
+/**
+ * Insertion has begun (or the session ended): choices are closed.
+ */
+"frozen" | 
+/**
+ * The chosen entry is unknown, closed or no longer running.
+ */
+"unavailable"
+/**
+ * What the badge shows for the current selection.
+ */
+export type SelectionView = { kind: "frontmost_at_end" } | { kind: "application"; display_name: string; icon_ref: string | null }
+/**
+ * Lifecycle of one dictation's session.
+ */
+export type SessionPhase = "recording" | "processing" | "inserting" | "finished" | "cancelled"
+/**
+ * Error of a settings UI command: the stable code and English message shared with the CLI,
+ * plus the field and typed reason the UI maps to a translation (never free-text parsing).
+ */
+export type SettingsCommandError = { 
+/**
+ * Stable category, identical to the CLI error code.
+ */
+code: SettingsErrorCode; 
+/**
+ * Stable English message, identical to the CLI message.
+ */
+message: string; 
+/**
+ * Recognized setting key the refusal concerns, if any.
+ */
+field: string | null; 
+/**
+ * Typed validation reason, if any.
+ */
+reason: ValidationReason | null; 
+/**
+ * `committed` when the value is stored but a live effect failed; `unknown` when unconfirmed.
+ */
+outcome: Outcome | null; 
+/**
+ * Revision the outcome or conflict refers to.
+ */
+current_revision: number | null; 
+/**
+ * Closed machine reason (`details.reason` on the CLI), if any; omitted when absent.
+ */
+detail_reason?: ErrorReason | null; 
+/**
+ * Refused input positions (`details.items` on the CLI), for example vocabulary terms;
+ * omitted when empty.
+ */
+items?: ErrorItem[] | null }
+/**
+ * Stable wire categories; their fixed exit meanings never depend on input text.
+ */
+export type SettingsErrorCode = "usage_error" | "validation_failed" | "shortcut_conflict" | "limit_exceeded" | "revision_conflict" | "not_found" | "unavailable" | "persistence_failed" | "internal_error"
+/**
+ * Published settings with their revision, so the UI can discard refreshes older than an event.
+ */
+export type SettingsView = { 
+/**
+ * Durable revision of `settings`.
+ */
+revision: number; 
+/**
+ * Settings as every reader of this process sees them.
+ */
+settings: AppSettings; 
+/**
+ * True when this process could not own the settings store: every change is refused.
+ */
+read_only: boolean }
+/**
  * How the transcribe shortcut's key events drive a recording.
  */
 export type ShortcutActivation = 
@@ -1151,8 +3024,98 @@ export type ShortcutActivation =
  * (`hold_threshold_ms`).
  */
 "hold_or_toggle"
-export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; current_binding: string }
+export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; 
+/**
+ * First shortcut of the action. Kept at this location so earlier Handy
+ * versions, which only read this field, keep that shortcut working.
+ */
+current_binding: string; 
+/**
+ * Alternative shortcuts after `current_binding`, in order. Backward
+ * compatibility: stores written before multiple shortcuts lack the field
+ * and load it empty; older versions ignore it when reading. Never
+ * serialized when empty, so a single-shortcut store stays byte-identical.
+ */
+additional_bindings?: string[] }
+/**
+ * A conflict with an existing shortcut, naming its owning action.
+ */
+export type ShortcutConflict = { kind: ConflictKind; owning_action: string; owning_shortcut: string }
+/**
+ * A requested change to the shortcut list of one action.
+ */
+export type ShortcutEdit = 
+/**
+ * Append an alternative shortcut.
+ */
+{ kind: "add"; shortcut: string } | 
+/**
+ * Remove one shortcut; removing the first promotes the next one.
+ */
+{ kind: "remove"; shortcut: string } | 
+/**
+ * Replace one shortcut in place.
+ */
+{ kind: "replace"; previous: string; shortcut: string } | 
+/**
+ * Restore the single default shortcut.
+ */
+{ kind: "reset" }
+/**
+ * Why an edit was refused. Codes map to the settings CLI envelope (008):
+ * `shortcut_conflict` and `limit_exceeded` as is, `not_found` for unknown
+ * entries, every other code as `validation_failed`.
+ */
+export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutConflict } | { code: "limit_exceeded"; limit: number } | { code: "last_shortcut" } | { code: "alternatives_unsupported" } | { code: "invalid_shortcut"; message: string } | { code: "not_found"; shortcut: string } | { code: "action_not_found"; action_id: string } | { code: "registration_failed"; message: string } | 
+/**
+ * The settings service refused or could not save the change (persistence, unavailable):
+ * nothing was saved, and the registrations are as before.
+ */
+{ code: "settings_refused"; error: SettingsCommandError }
+/**
+ * Outcome of a shortcut list edit: the saved binding, or why nothing was
+ * saved.
+ */
+export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
+/**
+ * Why a status was reached, where the status alone does not say it.
+ */
+export type StatusReason = 
+/**
+ * `no_term_sent`: the vocabulary is empty.
+ */
+"empty_vocabulary" | 
+/**
+ * `no_term_sent`: every saved term is invalid, a duplicate or over capacity.
+ */
+"invalid_terms_only" | 
+/**
+ * `no_term_sent`: the first eligible term does not fit the budget.
+ */
+"over_budget" | 
+/**
+ * `unknown_until_model_loads`: the selected model is not loaded.
+ */
+"model_not_loaded" | 
+/**
+ * `unknown_until_model_loads`: the model is loaded but the engine did not answer the
+ * capability query in time (for example during a dictation).
+ */
+"capability_query_unanswered"
+/**
+ * Typed warning of a status read.
+ */
+export type StatusWarning = 
+/**
+ * The devices could not be listed in time: every status is unknown.
+ */
+"enumeration_failed"
+/**
+ * A conflict between two stored shortcuts, reported as a warning. Upgrades
+ * keep such shortcuts registered exactly as before (decision 2026-10-12).
+ */
+export type StoredShortcutConflict = { action_id: string; shortcut: string; conflict: ShortcutConflict }
 /**
  * Phase of the streaming overlay card, emitted to drive its UI state.
  */
@@ -1186,6 +3149,51 @@ export type StreamTextEvent = { committed: string; tentative: string }
  */
 export type StreamWorkKind = "transcribing" | "polishing"
 /**
+ * Why destination return is unavailable.
+ */
+export type SupportReason = 
+/**
+ * This build has no destination capability (Linux).
+ */
+"platform_unsupported" | 
+/**
+ * The running instance cannot read the frontmost application.
+ */
+"frontmost_unreadable"
+/**
+ * Why a term (new or stored) is refused or excluded from the recognition context.
+ */
+export type TermIssue = 
+/**
+ * Nothing left after trimming.
+ */
+"empty" | 
+/**
+ * More than `MAX_TERM_CHARS` Unicode scalar values.
+ */
+"too_long" | 
+/**
+ * A line separator inside the term.
+ */
+"line_break" | 
+/**
+ * `<`, `>`, `"` or NUL.
+ */
+"forbidden_character" | 
+/**
+ * Same key as an earlier term.
+ */
+"duplicate" | 
+/**
+ * Stored beyond the first `MAX_TERMS` positions (legacy list only).
+ */
+"over_capacity"
+/**
+ * A terminal of an application with an addressing tool: the workspace UUID (spec decision
+ * `terminal_identity_workspace`), never a `workspace:N` reference.
+ */
+export type TerminalTarget = { tool: AddressingTool; workspace_id: string; workspace_name: string }
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -1193,6 +3201,144 @@ export type Theme = "system" | "light" | "dark"
 export type TranscribeAcceleratorSetting = "auto" | "cpu" | "gpu"
 export type TypingTool = "auto" | "wtype" | "kwtype" | "dotool" | "ydotool" | "xdotool"
 export type VadBackend = "silero" | "earshot"
+/**
+ * Closed canonical reasons prevent an arbitrary candidate/error string entering details. The
+ * snake_case name is the stable key the settings UI maps to a translation.
+ */
+export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_range" | "ui_only" | "shortcuts_domain" | "vocabulary_domain" | "prompts_domain" | "unknown_prompt" | "updater_disabled" | "gpu_device_required" | 
+/**
+ * Domain input (file or stdin) is not UTF-8 text; `details.offset` names the first bad byte.
+ */
+"invalid_encoding" | 
+/**
+ * Domain input does not follow the domain's exchange format.
+ */
+"invalid_input" | 
+/**
+ * Collection owned by `handy settings replacements`.
+ */
+"replacements_domain" | 
+/**
+ * Items of a domain list or exchange input failed validation; `details.items` locates them.
+ */
+"invalid_items" | 
+/**
+ * Smart paste is not selectable on this platform or in this build (feature 007).
+ */
+"smart_paste_unavailable" | 
+/**
+ * On macOS, smart paste replaces the beta reliable paste (feature 007).
+ */
+"reliable_paste_replaced" | 
+/**
+ * The setting or operation needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session (recording, processing, a held or remembered shortcut) is running;
+ * the shortcut registrations cannot change until it ends.
+ */
+"shortcut_session_busy" | 
+/**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"prompt_override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"prompt_unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_not_usable" | 
+/**
+ * The microphone choices change only through the microphones domain (feature 001).
+ */
+"microphones_domain" | 
+/**
+ * The favorite applications change only through the destination domain or the badge star
+ * (feature 012).
+ */
+"destination_domain" | 
+/**
+ * More favorite applications than the menu keeps (feature 012).
+ */
+"favorites_full" | 
+/**
+ * A favorite has a blank identity or name, a name too long, or repeats another (012).
+ */
+"favorite_invalid" | 
+/**
+ * More remembered inputs than kept (feature 013).
+ */
+"default_inputs_full" | 
+/**
+ * A remembered input repeats an application or has an invalid name or target (013).
+ */
+"default_input_invalid"
+/**
+ * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
+ * word replacements (002) export their own `ImportMode`.
+ */
+export type VocabularyImportMode = 
+/**
+ * Keep the saved list and append the new unique terms in input order.
+ */
+"merge" | 
+/**
+ * Make the input the whole list, in input order.
+ */
+"replace"
+/**
+ * A paste preview against the saved list at `revision`; nothing is written.
+ */
+export type VocabularyImportPreview = { revision: number; preview: ImportPreview; 
+/**
+ * True when Apply can commit the whole candidate.
+ */
+applicable: boolean }
+/**
+ * The saved vocabulary at one revision: every stored occurrence, unchanged, with the reason it
+ * is excluded from the recognition context.
+ */
+export type VocabularyList = { revision: number; terms: Occurrence[] }
+/**
+ * One input line kept or skipped, with its zero-based line index. Exported to TypeScript under
+ * a vocabulary name: word replacements (002) export their own `PreviewLine`.
+ */
+export type VocabularyPreviewLine = { index: number; 
+/**
+ * Validated text (trimmed, whitespace collapsed).
+ */
+term: string }
+/**
+ * The five statuses of the spec (AC-003).
+ */
+export type VocabularyStatus = "used_during_recognition" | "no_term_sent" | "not_supported" | "not_used_streaming" | "unknown_until_model_loads"
+/**
+ * Status of the vocabulary for the selected model, with the terms sent and not sent.
+ */
+export type VocabularyStatusReport = { model_id: string; mode: RecognitionMode; status: VocabularyStatus; reason: StatusReason | null; mechanism: ContextMechanism | null; budget: ContextBudget | null; terms_sent: string[]; terms_not_sent: ExcludedTerm[]; evidence_kind: EvidenceKind }
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

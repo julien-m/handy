@@ -1,0 +1,34 @@
+    Updating crates.io index
+     Locking 16 packages to latest compatible versions
+      Adding windows-sys v0.60.2 (available: v0.61.2)
+ Downloading crates ...
+  Downloaded windows-targets v0.53.5
+  Downloaded libc v0.2.190
+  Downloaded windows_x86_64_msvc v0.53.1
+  Downloaded winapi v0.3.9
+   Compiling windows_x86_64_msvc v0.53.1
+   Compiling winapi v0.3.9
+    Checking windows-targets v0.53.5
+    Checking windows-sys v0.60.2
+    Checking fs2 v0.4.3
+    Checking handy-windows-settings-check v0.0.0 (/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step3/windows-check)
+error[E0583]: file not found for module `replace`
+ --> /Users/julienm/projects/handy/src-tauri/src/settings_service/windows_store.rs:3:1
+  |
+3 | mod replace;
+  | ^^^^^^^^^^^^
+  |
+  = help: to create the module `replace`, create file "/Users/julienm/projects/handy/src-tauri/src/settings_service/replace.rs" or "/Users/julienm/projects/handy/src-tauri/src/settings_service/replace/mod.rs"
+  = note: if there is a `mod replace` elsewhere in the crate already, import it with `use crate::...` instead
+
+error[E0583]: file not found for module `security`
+ --> /Users/julienm/projects/handy/src-tauri/src/settings_service/windows_store.rs:4:1
+  |
+4 | mod security;
+  | ^^^^^^^^^^^^^
+  |
+  = help: to create the module `security`, create file "/Users/julienm/projects/handy/src-tauri/src/settings_service/security.rs" or "/Users/julienm/projects/handy/src-tauri/src/settings_service/security/mod.rs"
+  = note: if there is a `mod security` elsewhere in the crate already, import it with `use crate::...` instead
+
+For more information about this error, try `rustc --explain E0583`.
+error: could not compile `handy-windows-settings-check` (bin "handy-windows-settings-check") due to 2 previous errors

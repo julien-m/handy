@@ -1,0 +1,31 @@
+Merge dev (1797c2c0) into feature/ui-002-replacements (30284113) — post-merge checks, run 2026-10-14
+Conflicts: package.json, src/components/settings/advanced/AdvancedSettings.tsx, src/components/ui/Input.tsx
+
+tsc                      exit 0
+lint                     exit 0
+format-check             exit 0
+check-translations       exit 0
+build                    exit 0
+test-keyboard            exit 0
+test-shortcut-list       exit 0
+test-settings-errors     exit 0
+test-settings-store      exit 0
+test-word-replacements   exit 0
+test-indicator           exit 0
+test-vocabulary          exit 0
+test-shortcut-states     exit 0
+test-output-settings     exit 0
+cargo-fmt-check          exit 0
+cargo-clippy             exit 0
+cargo-test-lib           exit 0
+conventions-repo         exit 0
+
+Commands:
+  tsc: bunx tsc --noEmit | lint: bun run lint | format-check: bun run format:check
+  check-translations: bun run check:translations | build: bun run build
+  test-*: bun run test:<name> (every test: script in package.json except playwright)
+  cargo-fmt-check: (src-tauri) cargo fmt --check
+  cargo-clippy: (src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target cargo clippy --lib --bins -- -D warnings
+  cargo-test-lib: (src-tauri) same target, cargo test --lib -> test result: ok. 911 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 2.78s
+  conventions-repo: livespec conventions verify --feature repo --json -> verdict PASS, blockers 0; raw output not committed; receipt .specs/conventions/runs/20261014T145251Z/receipt.json (git-ignored)
+  bindings: debug build + copied binary run with isolated HOME and --list-models; Specta rewrote src/bindings.ts byte-identical to the merged file (149 commands registered = 149 in bindings)

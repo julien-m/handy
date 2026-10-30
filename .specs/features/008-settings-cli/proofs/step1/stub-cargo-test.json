@@ -1,0 +1,9 @@
+{
+  "command": "HANDY_FORCE_AI_STUB=1 cargo test",
+  "cwd": "/Users/julienm/projects/handy/src-tauri",
+  "exit_code": 0,
+  "elapsed_seconds": 9.117,
+  "timeout_seconds": 300,
+  "stdout": "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/step1/stub-cargo-test.out",
+  "stderr": "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/step1/stub-cargo-test.err"
+}

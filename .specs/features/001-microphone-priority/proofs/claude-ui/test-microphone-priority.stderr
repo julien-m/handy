@@ -1,0 +1,18 @@
+$ bun test src/components/settings/microphone-priority
+
+src/components/settings/microphone-priority/save-priority.test.ts:
+Microphone priority write failed: 122 |       "refreshSettings,focusStable,error:errors.settings.committedNotApplied,refreshStatus",
+123 |     );
+124 |   });
+125 | 
+126 |   test("a thrown command error is an untyped failure with a retry", async () => {
+127 |     reply = new Error("ipc");
+                      ^
+error: ipc
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/components/settings/microphone-priority/save-priority.test.ts:127:17)
+
+
+ 75 pass
+ 0 fail
+ 218 expect() calls
+Ran 75 tests across 6 files. [90.00ms]

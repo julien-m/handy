@@ -1,0 +1,19 @@
+# 002 word replacements — UI step verification (2026-10-14T14:17:57Z)
+# HEAD 8dedd720 + working tree
+exit=0  bun run lint
+exit=0  bun run format:check
+exit=0  bunx tsc --noEmit
+exit=0  bun run check:translations
+exit=0  bun run build
+exit=0  bun run test:word-replacements
+exit=0  bun run test:settings-store
+exit=0  bun run test:settings-errors
+exit=0  bun run test:shortcut-list
+exit=0  cd src-tauri && cargo test --lib commands::replacements
+exit=0  cd src-tauri && cargo clippy --lib --bins -- -D warnings
+exit=0  cd src-tauri && cargo fmt -- --check
+exit=0  livespec conventions verify --feature repo --json  -> verdict PASS, new_count 0, blockers 0, warnings in touched files 0, receipt .specs/conventions/runs/20261014T141942Z/receipt.json (raw output not committed)
+# Bindings: CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target cargo build (debug), binary copied at once to the scratchpad,
+# then from src-tauri/: HOME=<isolated empty dir> <copied binary> --list-models -> exit=0; src/bindings.ts diff: +65 lines, additions only
+# (importWordReplacementsFile, exportWordReplacementsFile, ReplacementImportFile, ReplacementExportFile, ReplacementFileError).
+# Visual: Vite + mocked IPC screenshots in vite-mock-ipc/ (layout only, not native proof).

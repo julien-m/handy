@@ -1,0 +1,42 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+warning: field `stderr` is never read
+  --> tests/settings_cli/harness.rs:24:9
+   |
+21 | pub struct Run {
+   |            --- field in this struct
+...
+24 |     pub stderr: String,
+   |         ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `legacy_socket` is never used
+  --> tests/settings_cli/harness.rs:75:12
+   |
+48 | impl Portable {
+   | ------------- method in this implementation
+...
+75 |     pub fn legacy_socket(&self) -> &Path {
+   |            ^^^^^^^^^^^^^
+
+warning: `handy` (test "microphone_cli") generated 2 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 49.81s
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-fb9d334e8b1e9e3f)
+     Running tests/microphone_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_native-c71bfcfef2bc4772)
+     Running tests/microphone_resolution.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_resolution-c22ee9fae002e0c5)
+     Running tests/microphone_sessions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_sessions-68be651f60e77f3a)
+     Running tests/microphone_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_settings-eeae6d41d6d525ac)
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_cli-7aa23a2439e3e75e)
+     Running tests/replacement_exchange.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_exchange-abd3d05827bc5ce1)
+     Running tests/replacement_performance.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_performance-da9c4ff17217d64a)
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_pipeline-a04055f54f9cddba)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_transactions-bca95c1b5b7e2a45)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_cli-2e9f7d3dc780ff0d)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_domains-96004cb3f83ec93b)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_live-7533af37a7e7aeb4)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_platform-6fb4f40265a7fc4e)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_transactions-19196911baf71444)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_validation-6f669b9ac2f0ed9c)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_writers-d146d33db69bcd1c)

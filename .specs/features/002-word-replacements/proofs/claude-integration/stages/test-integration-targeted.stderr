@@ -1,0 +1,7 @@
+    Blocking waiting for file lock on artifact directory
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 39.80s
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_pipeline-0866a6ae95f8b8f4)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_transactions-33267347c000f7ed)

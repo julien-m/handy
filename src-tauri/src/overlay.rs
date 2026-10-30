@@ -53,13 +53,31 @@ const OVERLAY_HEIGHT: f64 = 50.0;
 const OVERLAY_STREAM_WIDTH: f64 = 400.0;
 const OVERLAY_STREAM_HEIGHT: f64 = 120.0;
 
-/// Overlay window size (logical) for a given UI state.
+#[path = "overlay_surface.rs"]
+mod surface;
+use surface::SURFACE;
+
+// Placement, extent and notice hold of the indicator around the pill (005, 006, 007).
+#[path = "overlay_indicator.rs"]
+mod indicator;
+pub use indicator::{hold_overlay_for_notice, set_overlay_extent};
+use indicator::{place_overlay, reassert_after_show};
+
+// Monitor the indicator stays on while the dictation has a destination (006 AC-009).
+#[path = "overlay_anchor.rs"]
+mod anchor;
+use anchor::placement_monitor;
+pub use anchor::{begin_dictation_placement, hold_placement_for_destination};
+
+/// Overlay window size (logical) for a given UI state, grown to the extent the indicator asked
+/// for (prompt pill, destination badge, menus, notices).
 fn overlay_dimensions(state: &str) -> (f64, f64) {
-    if state == "streaming" {
+    let base = if state == "streaming" {
         (OVERLAY_STREAM_WIDTH, OVERLAY_STREAM_HEIGHT)
     } else {
         (OVERLAY_WIDTH, OVERLAY_HEIGHT)
-    }
+    };
+    SURFACE.grow(base)
 }
 
 static LAST_MIC_LEVEL_EMIT: AtomicU64 = AtomicU64::new(0);
@@ -248,7 +266,7 @@ fn calculate_overlay_position(
     width: f64,
     height: f64,
 ) -> Option<(f64, f64)> {
-    let monitor = get_monitor_with_cursor(app_handle)?;
+    let monitor = placement_monitor(app_handle)?;
     let scale = monitor.scale_factor();
     let monitor_x = monitor.position().x as f64 / scale;
     let monitor_y = monitor.position().y as f64 / scale;
@@ -275,6 +293,33 @@ fn calculate_overlay_position(
     };
 
     Some((x, y))
+}
+
+/// Position (logical) of a `width` × `height` surface at the indicator's place: 010's recovery
+/// bubble appears there, in place of the indicator, or beside it while a notice holds it.
+pub fn indicator_place(app_handle: &AppHandle, width: f64, height: f64) -> Option<(f64, f64)> {
+    let place = calculate_overlay_position(app_handle, width, height)?;
+    let held = SURFACE
+        .is_held()
+        .then(|| indicator::visible_frame(app_handle));
+    let Some((frame, bounds)) = held.flatten() else {
+        return Some(place);
+    };
+    let at_bottom = settings::get_settings(app_handle).overlay_position == OverlayPosition::Bottom;
+    Some(surface::stack_beside(
+        frame,
+        (width, height),
+        bounds,
+        at_bottom,
+    ))
+}
+
+// @spec FR-002: The bubble takes the indicator's place — .specs/features/010-recovery-bubble/spec.md#fr-002
+/// The bubble takes the indicator's place: the indicator is hidden as at the end of a
+/// dictation, which keeps any notice hold (005 AI failure, 007 hand-over) until its duration
+/// ends; the bubble shows in its own window without cutting those notices.
+pub fn yield_to_recovery(app_handle: &AppHandle) {
+    hide_recording_overlay(app_handle);
 }
 
 /// Current overlay window size in logical units (points), for repositioning
@@ -344,9 +389,11 @@ fn place_windows_overlay(
 ) -> Result<(), String> {
     use windows::Win32::UI::WindowsAndMessaging::{SetWindowPos, SWP_NOACTIVATE, SWP_NOZORDER};
 
-    let monitor = get_monitor_with_cursor(app_handle)
-        .ok_or_else(|| "failed to determine the monitor containing the cursor".to_string())?;
+    let monitor = placement_monitor(app_handle)
+        .ok_or_else(|| "failed to determine the monitor of the overlay".to_string())?;
     let text_scale = windows_text_scale_factor();
+    let (logical_width, logical_height) =
+        indicator::fit_to(&monitor, text_scale, (logical_width, logical_height));
     let (x, y, width, height) = windows_overlay_bounds(
         *monitor.position(),
         *monitor.size(),
@@ -514,80 +561,19 @@ fn show_overlay_state_on_main(app_handle: &AppHandle, state: &str) {
         // Invalidate any delayed hide still in flight from a previous session
         // (see `hide_recording_overlay`).
         OVERLAY_SHOW_GENERATION.fetch_add(1, Ordering::SeqCst);
+        SURFACE.mark_session(true, state == "streaming");
+        #[cfg(target_os = "windows")]
+        WINDOWS_OVERLAY_IS_STREAMING.store(state == "streaming", Ordering::Relaxed);
 
-        #[cfg(target_os = "linux")]
-        let shown_with_layer_shell = if LAYER_SHELL_ACTIVE.load(Ordering::SeqCst) {
-            let position = settings::get_settings(app_handle).overlay_position;
-            match overlay_window.gtk_window() {
-                Ok(gtk_window) => {
-                    configure_layer_shell_surface(&gtk_window, position, width, height)
-                }
-                Err(error) => log::error!("Failed to access GTK overlay window: {error}"),
-            }
-            let _ = overlay_window.show();
-            true
-        } else {
-            false
-        };
-        #[cfg(not(target_os = "linux"))]
-        let shown_with_layer_shell = false;
-
-        if !shown_with_layer_shell {
-            let size_started = std::time::Instant::now();
-            #[cfg(not(target_os = "windows"))]
-            let _ =
-                overlay_window.set_size(tauri::Size::Logical(tauri::LogicalSize { width, height }));
-            #[cfg(target_os = "windows")]
-            WINDOWS_OVERLAY_IS_STREAMING.store(state == "streaming", Ordering::Relaxed);
-            let size_elapsed = size_started.elapsed();
-
-            let pos_started = std::time::Instant::now();
-            #[cfg(not(target_os = "windows"))]
-            let set_pos_elapsed =
-                if let Some((x, y)) = calculate_overlay_position(app_handle, width, height) {
-                    let set_pos_started = std::time::Instant::now();
-                    let _ = overlay_window
-                        .set_position(tauri::Position::Logical(tauri::LogicalPosition { x, y }));
-                    set_pos_started.elapsed()
-                } else {
-                    std::time::Duration::ZERO
-                };
-            #[cfg(target_os = "windows")]
-            let set_pos_elapsed = {
-                let set_pos_started = std::time::Instant::now();
-                if let Err(error) =
-                    place_windows_overlay(app_handle, &overlay_window, width, height)
-                {
-                    log::error!("Failed to place recording overlay: {error}");
-                }
-                set_pos_started.elapsed()
-            };
-            let pos_calc_elapsed = pos_started.elapsed() - set_pos_elapsed;
-
-            let show_started = std::time::Instant::now();
-            let _ = overlay_window.show();
-            let show_elapsed = show_started.elapsed();
-
-            // On Windows, aggressively re-assert "topmost" in the native Z-order after showing
-            #[cfg(target_os = "windows")]
-            force_overlay_topmost(&overlay_window);
-
-            // Re-assert bounds after show(): the pre-show move crosses the DPI
-            // boundary, and tao's WM_DPICHANGED reflow clobbers the first placement.
-            #[cfg(target_os = "windows")]
-            if let Err(error) = place_windows_overlay(app_handle, &overlay_window, width, height) {
-                log::error!("Failed to re-assert recording overlay position: {error}");
-            }
-
-            log::debug!(
-                "overlay '{}': set_size={:?} pos_calc={:?} set_pos={:?} show={:?}",
-                state,
-                size_elapsed,
-                pos_calc_elapsed,
-                set_pos_elapsed,
-                show_elapsed
-            );
-        }
+        let started = std::time::Instant::now();
+        place_overlay(app_handle, &overlay_window, width, height);
+        let _ = overlay_window.show();
+        reassert_after_show(app_handle, &overlay_window, width, height);
+        log::debug!(
+            "overlay '{}': placed and shown in {:?}",
+            state,
+            started.elapsed()
+        );
 
         let _ = overlay_window.emit("show-overlay", state);
     }
@@ -693,6 +679,7 @@ pub fn hide_recording_overlay(app_handle: &AppHandle) {
         // Snapshot before doing anything observable, so any show that lands
         // after this point invalidates the delayed hide below.
         let scheduled_at = OVERLAY_SHOW_GENERATION.load(Ordering::SeqCst);
+        SURFACE.mark_session(false, false);
         // Emit event to trigger fade-out animation
         let _ = overlay_window.emit("hide-overlay", ());
         // Hide the window after a short delay to allow animation to complete,
@@ -704,7 +691,14 @@ pub fn hide_recording_overlay(app_handle: &AppHandle) {
                 log::debug!("Skipping stale overlay hide: a newer session is showing the overlay");
                 return;
             }
+            // A notice (005 AI failure, 007 hand-over) keeps the window up; the end of its hold
+            // hides it.
+            if SURFACE.is_held() {
+                log::debug!("Overlay hide deferred: a notice holds the indicator");
+                return;
+            }
             let _ = window_clone.hide();
+            SURFACE.clear_extent();
         });
     }
 }

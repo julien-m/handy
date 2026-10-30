@@ -1,0 +1,38 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Checking handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error: called `.err().expect()` on a `Result` value
+  --> tests/settings_validation/scalars.rs:24:14
+   |
+24 |               .err()
+   |  ______________^
+25 | |             .expect("invalid canonical input must fail");
+   | |___________________^ help: try: `expect_err`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#err_expect
+   = note: `-D clippy::err-expect` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::err_expect)]`
+
+error: called `.err().expect()` on a `Result` value
+  --> tests/settings_validation/scalars.rs:38:10
+   |
+38 |           .err()
+   |  __________^
+39 | |         .expect("unknown key must fail");
+   | |_______________^ help: try: `expect_err`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#err_expect
+
+error: called `.err().expect()` on a `Result` value
+  --> tests/settings_validation/scalars.rs:46:14
+   |
+46 |               .err()
+   |  ______________^
+47 | |             .expect("protected field must fail");
+   | |___________________^ help: try: `expect_err`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#err_expect
+
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (test "settings_validation") due to 3 previous errors

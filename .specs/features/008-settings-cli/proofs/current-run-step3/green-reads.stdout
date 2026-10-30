@@ -1,0 +1,8 @@
+
+running 3 tests
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

@@ -1,0 +1,40 @@
+{
+  "target": "009-pin-mode-and-enter-rule",
+  "plan_only": true,
+  "spec_modified": false,
+  "application_modified": false,
+  "other_feature_written": false,
+  "changed_guarded_files": [],
+  "unchanged_inputs_count": 336,
+  "review_model": "gpt-6",
+  "review_max_chars": 400000,
+  "spec_review_reused_raw_after_budget_change": "prepared batch prompts exactly equal; validator ingested actual independent reviewer JSON against expanded budget",
+  "budget_retry": {
+    "retry_hypothesis": "complete paired review exceeded default 60000-char budget",
+    "retry_evidence": "prepared.errors=paired_review_batch_budget_exceeded, batches=[]",
+    "retry_result": "PASS: expanded prepared.errors=[], batches=1, complete source bytes retained"
+  },
+  "scope_refinement": "Inspect qualifier repeated adjacent to 010 link; 010 is full context, not imported normative business scope; prepared inventory =13 obligations009",
+  "runtime_proof": "No application tests/builds or native UI certification claimed; future release gates remain in plan",
+  "steps": 7,
+  "diagrams": 4,
+  "plan_sha256": "edac341429a01b8325d434bf125e9f2960fb95acb1064fa9a1a1e45364d5c286",
+  "current_prepared_context": "16fa010ef267b6e37b559113a144e58a9ca3acda8469add31214daaa650a1f5d",
+  "semantic_review": {
+    "spec_complete": true,
+    "spec_ready": true,
+    "plan_complete": true,
+    "plan_ready": true
+  },
+  "analyze": {
+    "covered_requirements": 13,
+    "total_requirements": 13,
+    "critical": 0,
+    "high": 0
+  },
+  "progression_implement": "READY",
+  "progression_command": "livespec validate .specs/features/009-pin-mode-and-enter-rule --progression implement --model gpt-6 --review-max-chars 400000",
+  "after_plan_hooks_resolved": true,
+  "after_refine_hooks_resolved": true,
+  "code_spec_guard_changed": []
+}

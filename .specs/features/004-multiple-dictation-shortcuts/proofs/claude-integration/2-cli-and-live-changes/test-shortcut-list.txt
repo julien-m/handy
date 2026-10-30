@@ -1,0 +1,2 @@
+$ bun src/components/settings/shortcut-list-model.test.ts
+shortcut-list-model: all assertions passed

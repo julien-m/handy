@@ -1,0 +1,1 @@
+retry_hypothesis="Clippy err_expect lint now applies because mutation Debug redacts values" retry_evidence="final2-clippy.stderr scalars24/38/46; tests now use expect_err on redacted mutation" retry_result="PASS"

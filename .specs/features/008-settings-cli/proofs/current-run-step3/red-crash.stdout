@@ -1,0 +1,16 @@
+
+running 1 test
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... FAILED
+
+failures:
+
+---- processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks stdout ----
+NESTED 18800 READY
+Error: Disconnected
+
+
+failures:
+    processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.06s
+

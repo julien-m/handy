@@ -1,0 +1,6 @@
+$ bun run format:check
+Tue Oct 13 18:49:11 UTC 2026
+$ prettier --check . && cd src-tauri && cargo fmt -- --check
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0

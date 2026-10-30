@@ -1,0 +1,13 @@
+{
+  "kind": "spec",
+  "rounds": [
+    {
+      "context_hash": "9877a0161ca7d89f05f43ff1b3217e382951d649eab0dfab9d8770d6ef997447",
+      "ready": true
+    },
+    {
+      "context_hash": "8d6d711437b539df22a549f53dda9eb46bb5a488bab08df364670326def5f64e",
+      "ready": true
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error[E0599]: no method named `should_detach_console` found for struct `CliArgs` in the current scope
+   --> tests/settings_platform.rs:256:24
+    |
+256 |         assert!(parsed.should_detach_console(), "{flags:?}");
+    |                        ^^^^^^^^^^^^^^^^^^^^^ method not found in `CliArgs`
+    |
+   ::: tests/../src/cli.rs:6:1
+    |
+  6 | pub struct CliArgs {
+    | ------------------ method `should_detach_console` not found for this struct
+
+error[E0599]: no method named `should_detach_console` found for struct `CliArgs` in the current scope
+   --> tests/settings_platform.rs:266:25
+    |
+266 |         assert!(!parsed.should_detach_console(), "{flags:?}");
+    |                         ^^^^^^^^^^^^^^^^^^^^^ method not found in `CliArgs`
+    |
+   ::: tests/../src/cli.rs:6:1
+    |
+  6 | pub struct CliArgs {
+    | ------------------ method `should_detach_console` not found for this struct
+
+For more information about this error, try `rustc --explain E0599`.
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (test "settings_platform") due to 2 previous errors

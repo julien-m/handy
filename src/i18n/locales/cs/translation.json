@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Přístup k usnadnění",
-        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací."
+        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací.",
+        "openSettings": "Otevřít Nastavení systému",
+        "retry": "Zkusit znovu",
+        "alreadyCheckedHint": "Pokud je Handy už zaškrtnutý, odeberte ho a pak ho přidejte znovu."
       },
       "grant": "Udělit oprávnění",
       "granted": "Uděleno",
@@ -199,12 +202,51 @@
           "transcribe_with_post_process": {
             "name": "Klávesa pro následné zpracování",
             "description": "Volitelné: Vyhrazená klávesová zkratka, která vždy použije AI následné zpracování na váš přepis."
+          },
+          "retarget_to_active_app": {
+            "name": "Odeslat do aplikace v popředí",
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté. Dalším stiskem to vrátíte. Připnutí zůstává."
+          },
+          "skip_automatic_enter": {
+            "name": "Vložit bez Enteru",
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text se vloží bez automatického Enteru. Dalším stiskem to vrátíte."
           }
         },
         "errors": {
-          "restore": "Nepodařilo se obnovit původní zkratku",
-          "set": "Nepodařilo se nastavit zkratku: {{error}}",
-          "reset": "Nepodařilo se vrátit zkratku na původní hodnotu"
+          "set": "Nepodařilo se nastavit zkratku: {{error}}"
+        },
+        "list": {
+          "add": "Přidat zkratku",
+          "addLimit": "Až {{limit}} zkratky na akci",
+          "change": "Klikněte pro nahrání nové kombinace",
+          "remove": "Odebrat tuto zkratku",
+          "removeLast": "Každá akce si ponechá alespoň jednu zkratku",
+          "reset": "Obnovit výchozí zkratku",
+          "errors": {
+            "conflict": "Již používá {{action}} ({{shortcut}})",
+            "overlap": "Spustila by také {{action}} ({{shortcut}})",
+            "invalid": "Neplatná zkratka: {{error}}",
+            "registration": "Systém tuto zkratku odmítl: {{error}}",
+            "generic": "Zkratku se nepodařilo uložit",
+            "conflictsUnavailable": "Konflikty zkratek se nepodařilo ověřit"
+          },
+          "changeButton": "Změnit",
+          "discard": "Zahodit tuto zkratku",
+          "discardDraft": "Zahodit",
+          "save": "Uložit",
+          "unsaved": "Neuloženo",
+          "lastHint": "Každá akce si ponechává alespoň jednu zkratku. Místo toho ji změňte nebo obnovte.",
+          "limitHint": "{{count}} z {{limit}} zkratek. Odeberte jednu, abyste mohli přidat další.",
+          "draftConflict": "{{shortcut}} už používá {{action}}. Nic nebylo uloženo.",
+          "draftOverlap": "{{shortcut}} by spustila i {{action}}. Nic nebylo uloženo.",
+          "legacyOverlap": "{{shortcut}} se překrývá s {{action}}",
+          "legacyDuplicate": "{{shortcut}} používá také {{action}}",
+          "legacyBody": "Funguje dál jako před aktualizací. Změňte ji, aby toto upozornění zmizelo.",
+          "systemRefused": "{{system}} odmítl {{shortcut}}",
+          "systemRefusedGeneric": "Systém tuto zkratku odmítl",
+          "systemRefusedBody": "Tuto kombinaci možná zaregistrovala jiná aplikace. Vyberte jinou nebo to zkuste znovu.",
+          "systemReason": "Zpráva systému: {{error}}",
+          "retry": "Zkusit znovu"
         }
       },
       "language": {
@@ -232,10 +274,66 @@
     "sound": {
       "title": "Zvuk",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Vyberte preferované zařízení mikrofonu",
-        "placeholder": "Vyberte mikrofon...",
-        "loading": "Načítání..."
+        "placeholder": "Vyberte mikrofon..."
+      },
+      "microphonePriority": {
+        "title": "Priorita mikrofonů",
+        "description": "Handy nahrává prvním dostupným mikrofonem v tomto pořadí, poté výchozím mikrofonem systému. Nedostupné mikrofony si zachovají své místo.",
+        "emptyTitle": "Žádný preferovaný mikrofon",
+        "emptyBody": "Handy používá výchozí mikrofon systému, dokud nějaký nepřidáte.",
+        "status": {
+          "available": "Dostupný",
+          "unavailable": "Nedostupný",
+          "ambiguous": "Nejednoznačný",
+          "unknown": "Neznámý"
+        },
+        "moveUp": "Posunout {{name}} nahoru",
+        "moveDown": "Posunout {{name}} dolů",
+        "remove": "Odebrat {{name}}",
+        "addLabel": "Přidat mikrofon",
+        "addPlaceholder": "Přidat mikrofon…",
+        "noDevices": "Nebyl zjištěn žádný mikrofon k přidání",
+        "duplicateChoice": "{{name}} už je v seznamu.",
+        "refresh": "Obnovit dostupnost",
+        "checked": "Zkontrolováno před {{seconds}} s",
+        "refreshFailed": "Zařízení se nepodařilo zkontrolovat",
+        "retry": "Zkusit znovu",
+        "inUse": {
+          "title": "Nyní používaný",
+          "description": "Mikrofon, kterým Handy nahrává, nebo ten použitý při posledním nahrávání. Může se lišit od vaší první volby.",
+          "notUsedYet": "Od spuštění zatím nepoužit",
+          "systemDefault": "Výchozí mikrofon systému",
+          "unnamed": "Mikrofon bez názvu",
+          "lastRecording": "Poslední nahrávání · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "První volba",
+          "fallback": "Náhradní",
+          "fallbackUnavailable": "Náhradní · {{name}} nedostupný",
+          "fallbackAmbiguous": "Náhradní · {{name}} nejednoznačný",
+          "clamshell": "Mikrofon při zavřeném víku",
+          "system_default": "Výchozí systému"
+        },
+        "clamshell": {
+          "title": "Mikrofon při zavřeném víku",
+          "description": "Zkouší se jako první, když je víko zavřené. Vaše pořadí priorit zůstává beze změny.",
+          "none": "Žádný"
+        },
+        "draft": {
+          "discard": "Zahodit",
+          "save": "Uložit",
+          "saving": "Ukládání…",
+          "saved": "Priorita mikrofonů uložena"
+        },
+        "conflict": {
+          "title": "Nastavení bylo změněno jinde",
+          "body": "Pořadí bylo změněno jinde. Načtěte znovu, abyste ho viděli; vaše úpravy budou zahozeny.",
+          "reload": "Načíst znovu"
+        },
+        "errors": {
+          "duplicate": "Každý mikrofon smí být uveden jen jednou.",
+          "empty": "Název mikrofonu nesmí být prázdný."
+        }
       },
       "channel": {
         "title": "Vstupní kanál",
@@ -264,7 +362,8 @@
         "output": "Výstup",
         "transcription": "Přepis",
         "history": "Historie",
-        "experimental": "Experimentální"
+        "experimental": "Experimentální",
+        "textFormatting": "Formátování textu"
       },
       "experimentalToggle": {
         "label": "Experimentální funkce",
@@ -273,6 +372,10 @@
       "lazyStreamClose": {
         "label": "Ponechat mikrofon zapnutý mezi přepisy",
         "description": "Ponechá stream mikrofonu otevřený po dobu 30 sekund po zastavení nahrávání, čímž se sníží latence při opakovaném přepisu. Může zhoršit kvalitu zvuku Bluetooth."
+      },
+      "pasteVerification": {
+        "label": "Ověřit vložení",
+        "description": "Při chytrém vkládání ověří, že se aktivní pole po vložení změnilo, jinak vloží ještě jednou a poté ponechá text v bublině obnovení místo stisknutí Enter v prázdném poli. Testovací funkce."
       },
       "acceleration": {
         "transcribe": {
@@ -323,13 +426,18 @@
         "description": "Vyberte, jak se text vkládá. Přímé: simuluje psaní přes systémový vstup. Žádné: přeskočí vložení a aktualizuje pouze historii/schránku.",
         "options": {
           "clipboard": "Schránka ({{modifier}}+V)",
+          "smartPaste": "Chytré vložení",
           "clipboardCtrlShiftV": "Schránka (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Schránka (Shift+Insert)",
           "direct": "Přímé",
           "none": "Žádné",
-          "externalScript": "Externí skript"
+          "externalScript": "Externí skript",
+          "clipboardMac": "Schránka (⌘V)",
+          "smartPasteDescription": "Výchozí v macOS",
+          "noneDescription": "Pouze historie a schránka"
         },
-        "externalScriptPlaceholder": "/cesta/k/vasemu/skriptu.sh"
+        "externalScriptPlaceholder": "/cesta/k/vasemu/skriptu.sh",
+        "descriptionSmart": "Chytré vložení zapisuje přímo do pole, jinak vloží text a obnoví schránku."
       },
       "typingTool": {
         "title": "Nástroj pro psaní",
@@ -357,6 +465,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatický Enter",
+        "description": "Odešle se jednou, jen po úspěšném vložení.",
+        "keyLabel": "Klávesa ke stisknutí",
+        "announced": "Automatický Enter: {{value}}",
+        "note": "Nahrazuje automatické odeslání. Žádný Enter po neúspěšném nebo nepotvrzeném vložení, s metodou vložení Žádná ani když aplikace ztratila fokus.",
+        "options": {
+          "never": "Nikdy",
+          "always": "Vždy",
+          "alwaysDescription": "Každé úspěšné vložení",
+          "pinOnly": "Jen v režimu PIN",
+          "pinOnlyDescription": "Jen připnuté aplikace"
+        }
+      },
       "translateToEnglish": {
         "label": "Překládat do angličtiny",
         "description": "Během přepisu automaticky překládat řeč z jiných jazyků do angličtiny."
@@ -375,14 +497,6 @@
           "sec15": "Po 15 sekundách (Debug)"
         }
       },
-      "customWords": {
-        "title": "Vlastní slova",
-        "description": "Pomozte podporovaným modelům rozpoznávat jména a odborné termíny. Přibližné opravy jsou v současnosti omezeny na slova obsahující písmena A–Z a číslice.",
-        "placeholder": "Přidat slovo",
-        "add": "Přidat",
-        "remove": "Odebrat {{word}}",
-        "duplicate": "\"{{word}}\" již existuje"
-      },
       "voiceActivityDetection": {
         "title": "Detekce hlasové aktivity",
         "description": "Odfiltruje ticho z nahrávek. Modely podporující streaming používají delší doběh VAD; vypnutí VAD nahrává surový zvuk."
@@ -399,6 +513,11 @@
         "title": "Odstranit výplňová slova",
         "description": "Odstraňuje běžná slova vyjadřující váhání z přepisů. Vypnutím je zachováte."
       },
+      "smartParagraphs": {
+        "title": "Chytré odstavce",
+        "description": "Rozdělí dlouhé diktáty na odstavce na koncích vět, oddělené prázdným řádkem. Seznamy, kód a existující zalomení řádků zůstanou zachovány. Běží na tomto počítači.",
+        "descriptionLimited": "Rozdělí dlouhé diktáty na odstavce na koncích vět, oddělené prázdným řádkem. Seznamy, kód a existující zalomení řádků zůstanou zachovány. Běží na tomto počítači. V tomto systému zůstávají čínské a japonské diktáty beze změny."
+      },
       "chineseScript": {
         "title": "Čínské písmo",
         "description": "Zapisuje přepisy v mandarínštině a kantonštině zjednodušenými nebo tradičními znaky. Ostatní jazyky zůstávají beze změny.",
@@ -407,6 +526,171 @@
           "simplified": "Zjednodušené",
           "traditional": "Tradiční"
         }
+      },
+      "returnToApp": {
+        "title": "Vrátit se do aplikace diktování",
+        "description": "Vložit do aplikace, ve které diktování začalo, i když mezitím přepnete jinam.",
+        "unavailableUnreadable": "V tomto systému není k dispozici: Handy zde nedokáže zjistit aplikaci v popředí. Text se na konci vloží do aplikace v popředí.",
+        "unavailablePlatform": "V tomto systému není k dispozici. Text se na konci vloží do aplikace v popředí.",
+        "details": "Handy si při zahájení diktování zapamatuje aplikaci v popředí a před vložením textu se do ní vrátí. Když je volba vypnutá, text se vloží do aplikace v popředí na konci diktování.",
+        "detailsLabel": "O návratu do aplikace diktování"
+      },
+      "noFieldBubble": {
+        "title": "Zobrazit bublinu, když není aktivní žádné textové pole",
+        "description": "Ponechá text v bublině místo vložení do prázdna."
+      },
+      "textFormatting": {
+        "smartSpacing": {
+          "label": "Chytré mezery",
+          "description": "Přidá potřebné mezery tam, kde se diktát stýká s textem kolem kurzoru, a nikdy nezdvojí existující mezery ani zalomení řádků. Žádná mezera před , . ) ] ani za ( [, ani v jazycích psaných bez mezer. Když je zapnuto, rozhoduje o mezeře za diktátem: „Přidat koncovou mezeru“ pak přidá mezeru jen na konci pole. Pokud pole nelze přečíst, přidá se jen jedna mezera na konec. Pokud text za kurzorem pokračuje ve větě, koncová tečka diktátu se odstraní.",
+          "descriptionLimited": "Přidá potřebné mezery tam, kde se diktát stýká s textem kolem kurzoru, a nikdy nezdvojí existující mezery ani zalomení řádků. Žádná mezera před , . ) ] ani za ( [, ani v jazycích psaných bez mezer. Když je zapnuto, rozhoduje o mezeře za diktátem: „Přidat koncovou mezeru“ pak přidá mezeru jen na konci pole. Pokud pole nelze přečíst, přidá se jen jedna mezera na konec. V tomto systému nelze přečíst text kolem kurzoru, proto se za každý diktát přidá jen jedna mezera."
+        },
+        "smartCapitalization": {
+          "label": "Chytrá velká písmena",
+          "description": "Přizpůsobí první písmeno každého diktátu textu před kurzorem: velké na začátku věty, malé při jejím pokračování. Zkratky, slova jako iPhone a vaše vlastní slova zůstávají beze změny. Pokud pole nelze přečíst, nic se nezmění."
+        }
+      },
+      "defaultInputs": {
+        "title": "Zapamatovaná pole",
+        "description": "Kam Handy vkládá do aplikace, když její aktivní prvek není textové pole. Zapamatujte si jedno z nabídky odznaku během diktování.",
+        "field": "Pole: {{label}}",
+        "terminal": "Terminál: {{workspace}}",
+        "forget": "Zapomenout",
+        "forgetLabel": "Zapomenout zapamatovaný vstup aplikace {{app}}",
+        "forgetAll": "Zapomenout vše",
+        "forgetAllLabel": "Zapomenout všechny zapamatované vstupy",
+        "empty": "Zatím žádné zapamatované pole. Použijte nabídku odznaku během diktování.",
+        "failed": "Zapamatovaný vstup nelze zapomenout."
+      }
+    },
+    "vocabulary": {
+      "group": "Slovník",
+      "title": "Slovník",
+      "description": "Jména a termíny, které má model rozpoznávat, pokud to podporuje. Náhrady naopak přepisují text až po rozpoznání.",
+      "placeholder": "Přidat termín",
+      "inputLabel": "Nový termín slovníku",
+      "add": "Přidat",
+      "addHint": "Napište termín, který chcete přidat.",
+      "busy": "Počkejte na dokončení aktuální změny.",
+      "paste": "Vložit seznam…",
+      "count": "Termíny: {{total}} z {{max}}",
+      "listLabel": "Termíny slovníku",
+      "remove": "Odebrat {{term}}",
+      "retry": "Zkusit znovu",
+      "loading": "Načítání slovníku…",
+      "listFailed": "Uložený slovník se nepodařilo načíst. Nic se nezměnilo; zkuste ho načíst znovu.",
+      "empty": {
+        "title": "Zatím žádné termíny",
+        "body": "Přidejte jména jako Claude Code nebo OpenClaw, po jednom nebo jako vložený seznam."
+      },
+      "flag": {
+        "empty": "Prázdný termín, neodesílá se. Odeberte ho.",
+        "too_long": "Delší než 100 znaků, neodesílá se. Odeberte ho a přidejte kratší verzi.",
+        "line_break": "Obsahuje zalomení řádku, neodesílá se. Odeberte ho a přidejte ho znovu.",
+        "forbidden_character": "Obsahuje < > nebo \", neodesílá se. Odeberte ho a přidejte ho bez těchto znaků.",
+        "duplicate": "Stejný jako dřívější termín, neodesílá se. Odeberte ho.",
+        "over_capacity": "Za limitem 5 000 termínů, neodesílá se, dokud se seznam nezkrátí.",
+        "over_budget": "Neodesílá se: nad limitem modelu."
+      },
+      "errors": {
+        "term_empty": "Zadejte termín.",
+        "term_too_long": "Termín může mít nejvýše 100 znaků.",
+        "term_line_break": "Termín se musí vejít na jeden řádek.",
+        "term_forbidden_character": "Odstraňte z termínu znaky < > nebo \".",
+        "term_duplicate": "Každý termín se může objevit jen jednou a tento už ve slovníku je.",
+        "limit": "Slovník pojme nejvýše 5 000 termínů. Odeberte termín, abyste mohli přidat jiný.",
+        "conflict": "Slovník se mezitím změnil a byl znovu načten. Zkuste to znovu.",
+        "notFound": "Tento termín už byl odebrán. Slovník byl znovu načten.",
+        "unknown": "Handy nemohl potvrdit změnu. Slovník byl znovu načten; před dalším pokusem ho zkontrolujte.",
+        "committed": "Slovník byl uložen, ale Handy ho nemohl hned použít. Seznam byl znovu načten.",
+        "saved": "Váš uložený slovník zůstal beze změny."
+      },
+      "status": {
+        "loading": "Zjišťování, co model podporuje…",
+        "selectedModel": "vybraný model",
+        "used": {
+          "title": "{{model}} ho používá při rozpoznávání",
+          "sent": "Odesílané termíny: {{sent}} z {{total}}.",
+          "sentOne": "Odesílané termíny: {{sent}} z 1."
+        },
+        "notSent": {
+          "over_budget": "Neodesílá se, nad limitem modelu: {{terms}}.",
+          "invalid": "Neodesílá se, neplatné: {{terms}}.",
+          "duplicate": "Neodesílá se, duplicity: {{terms}}.",
+          "over_capacity": "Neodesílá se, za hranicí 5 000 termínů: {{terms}}.",
+          "more": "a ještě {{hidden}}"
+        },
+        "noTermSent": {
+          "title": "{{model}} nedostává žádný termín",
+          "empty_vocabulary": "Slovník je prázdný. Přidejte termíny, aby se používaly při rozpoznávání.",
+          "invalid_terms_only": "Všechny uložené termíny jsou neplatné nebo duplicitní. Odeberte označené termíny a přidejte opravené.",
+          "over_budget": "První termín je nad limitem modelu, takže se neodesílá žádný termín. Odeberte ho, aby se odeslaly termíny za ním."
+        },
+        "notSupported": {
+          "title": "{{model}} nemůže slovník při rozpoznávání použít",
+          "body": "Místo toho se po rozpoznání použije přibližná oprava. Chcete-li posílat termíny do rozpoznávání, vyberte model Whisper."
+        },
+        "streaming": {
+          "title": "Nepoužívá se při živém přepisu",
+          "body": "{{model}} přepisuje živě, a neposílá tak žádný kontext pro rozpoznávání. Přibližná oprava se místo toho použije na výsledný text."
+        },
+        "unknown": {
+          "title": "Podpora není známa, dokud se model nenačte",
+          "model_not_loaded": "Handy zjistí, co {{model}} podporuje, když ho načte.",
+          "capability_query_unanswered": "{{model}} neodpověděl včas, například během diktování. Handy to později zkontroluje znovu."
+        },
+        "budgetUnverified": {
+          "title": "{{model}}: podporu slovníku nelze potvrdit",
+          "body": "Tento model deklaruje kontext pro rozpoznávání, ale tato verze pro něj nemá zdokumentovaný limit. Neodesílá se žádný termín; místo toho se použije přibližná oprava."
+        },
+        "failed": {
+          "title": "Stav slovníku se nepodařilo načíst",
+          "body": "Váš slovník je uložen. Zkuste to znovu a zjistěte, co model podporuje."
+        }
+      },
+      "pasteBox": {
+        "title": "Vložit termíny",
+        "description": "Jeden termín na řádek. Duplicity se přeskočí; neplatné řádky je nutné před přidáním opravit.",
+        "label": "Termíny k vložení, jeden na řádek",
+        "previewTitle": "Náhled",
+        "previewEmpty": "Vložte nebo napište jeden termín na řádek a uvidíte, co se přidá.",
+        "sameAs": "{{term}} — stejné jako {{original}}",
+        "alreadyListed": "{{term}} — už je v seznamu",
+        "summary": {
+          "add": "K přidání: {{n}}",
+          "duplicateOne": "1 duplicita",
+          "duplicateMany": "Duplicity: {{n}}",
+          "errorOne": "1 chyba",
+          "errorMany": "Chyby: {{n}}"
+        },
+        "kind": {
+          "add": "Přidat",
+          "duplicate": "Duplicita",
+          "error": "Chyba"
+        },
+        "line": {
+          "empty": "Řádek {{line}}: prázdný řádek, odeberte ho",
+          "too_long": "Řádek {{line}}: použijte nejvýše 100 znaků",
+          "line_break": "Řádek {{line}}: ponechte termín na jednom řádku",
+          "forbidden_character": "Řádek {{line}}: odstraňte znaky < > nebo \"",
+          "duplicate": "Řádek {{line}}: stejný jako dřívější termín",
+          "over_capacity": "Řádek {{line}}: nad limitem 5 000 termínů"
+        },
+        "note": {
+          "empty": "Váš slovník se nezmění, dokud termíny nepřidáte.",
+          "checking": "Kontrola řádků…",
+          "fixOne": "Opravte řádek {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
+          "fixMany": "Opravte řádky {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
+          "overCapacity": "Slovník pojme nejvýše 5 000 termínů. Zkraťte seznam, abyste ho mohli přidat. Váš slovník je beze změny.",
+          "nothingToAdd": "Všechny řádky už ve slovníku jsou.",
+          "ready": "Duplicity se přeskočí. Nic se neuloží, dokud termíny nepřidáte."
+        },
+        "cancel": "Zrušit",
+        "applyOne": "Přidat 1 termín",
+        "applyMany": "Přidat termíny ({{n}})",
+        "applyZero": "Přidat termíny",
+        "applying": "Přidávání…",
+        "applied": "Termíny byly přidány do slovníku."
       }
     },
     "postProcessing": {
@@ -441,26 +725,128 @@
           "refreshModels": "Obnovit modely"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vybraný prompt",
-          "description": "Vyberte šablonu pro zpřesnění přepisu nebo vytvořte novou. V textu promptu použijte ${output} pro vložení zachyceného přepisu."
+      "promptLibrary": {
+        "processing": {
+          "title": "Následné zpracování AI",
+          "enabledDescription": "Zpracovávat diktáty pomocí promptu. Vypnuto: žádný diktát se nezpracovává.",
+          "defaultTitle": "Výchozí prompt",
+          "defaultDescription": "Používá ho zkratka pro diktování s AI. Běžné diktování začíná posledním promptem zvoleným v indikátoru, nebo možností Žádný.",
+          "none": "Žádný",
+          "invalidOption": "Neplatný: před použitím ho upravte"
         },
-        "noPrompts": "Nejsou k dispozici žádné prompty",
-        "selectPrompt": "Vyberte prompt",
-        "createNew": "Vytvořit nový prompt",
-        "promptLabel": "Název promptu",
-        "promptLabelPlaceholder": "Zadejte název promptu",
-        "promptInstructions": "Instrukce promptu",
-        "promptInstructionsPlaceholder": "Napište instrukce, které se mají spustit po přepisu. Příklad: Zlepšete gramatiku a srozumitelnost následujícího textu: ${output}",
-        "promptTip": "Tip: Použijte <code>${output}</code> pro vložení přepsaného textu do promptu.",
-        "updatePrompt": "Aktualizovat prompt",
-        "deletePrompt": "Smazat prompt",
-        "createPrompt": "Vytvořit prompt",
-        "cancel": "Zrušit",
-        "selectToEdit": "Vyberte výše prompt, abyste zobrazili a upravili jeho podrobnosti.",
-        "createFirst": "Klikněte nahoře na 'Vytvořit nový prompt' a vytvořte svůj první prompt pro následné zpracování."
+        "list": {
+          "title": "Prompty",
+          "count": "{{count}} z {{limit}} promptů",
+          "full": "{{limit}} z {{limit}} promptů: smažte jeden, abyste mohli přidat další",
+          "new": "Nový prompt",
+          "empty": "Zatím žádné prompty. Vytvořte prompt pro zpracování diktátů.",
+          "loading": "Načítání promptů…",
+          "loadFailed": "Prompty se nepodařilo načíst.",
+          "retry": "Zkusit znovu",
+          "edit": "Upravit {{name}}",
+          "defaultProvider": "Výchozí poskytovatel",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Bez zkratky",
+          "notReady": "Nepřipraveno: {{reason}}",
+          "invalid": "Neplatný: {{reason}}",
+          "reloadFailed": "Prompty se nepodařilo obnovit. Zobrazené údaje nemusí být aktuální."
+        },
+        "issues": {
+          "name_empty": "chybí název",
+          "name_too_long": "příliš dlouhý název",
+          "name_duplicate": "duplicitní název",
+          "text_empty": "chybí text",
+          "text_too_long": "příliš dlouhý text",
+          "override_incomplete": "chybí poskytovatel nebo model",
+          "unknown_provider": "neznámý poskytovatel"
+        },
+        "reasons": {
+          "provider_error": "poskytovatel vrátil chybu",
+          "empty_result": "poskytovatel vrátil prázdný výsledek",
+          "timeout": "žádná odpověď do 30 sekund",
+          "provider_busy": "poskytovatel ještě zpracovává jiný požadavek",
+          "missing_endpoint": "chybí koncový bod",
+          "missing_model": "chybí model",
+          "missing_api_key": "chybí klíč API",
+          "provider_unavailable": "poskytovatel není na tomto zařízení dostupný",
+          "unknown_provider": "neznámý poskytovatel",
+          "invalid_prompt": "prompt je neplatný",
+          "prompt_missing": "prompt už neexistuje"
+        },
+        "editor": {
+          "editTitle": "Upravit prompt",
+          "newTitle": "Nový prompt",
+          "name": "Název",
+          "namePlaceholder": "Název promptu",
+          "text": "Prompt",
+          "textPlaceholder": "Napište pokyny, které se použijí na přepis. Příklad: Zkrať přepis na to podstatné. ${output}",
+          "textHint": "<code>${output}</code> se nahradí přepisem.",
+          "fieldErrors": {
+            "name_empty": "Zadejte název (1–60 znaků).",
+            "name_too_long": "Použijte nejvýše 60 znaků.",
+            "name_duplicate": "Jiný prompt má stejný název. Názvy musí být jedinečné.",
+            "text_empty": "Zadejte text promptu.",
+            "text_too_long": "Použijte nejvýše 8 000 znaků."
+          },
+          "provider": "Poskytovatel",
+          "defaultProviderOption": "Výchozí poskytovatel ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Zadejte název modelu",
+          "readyEndpoint": "Koncový bod {{endpoint}} · Připraveno",
+          "readyProvider": "{{provider}} · {{model}} · Připraveno",
+          "notReadyTitle": "{{provider}} není připraven: {{reason}}",
+          "notReadyBody": "Diktáty s tímto promptem přeskočí krok AI a ponechají původní text.",
+          "fix": {
+            "api_key": "Přidat klíč API",
+            "endpoint": "Nastavit koncový bod"
+          },
+          "shortcuts": "Zkratky (nejvýše {{limit}})",
+          "changedElsewhere": "Tento prompt byl změněn jinde. Načtěte ho znovu, abyste viděli změnu, nebo uložte a ponechte svou verzi.",
+          "reload": "Načíst znovu",
+          "deletedElsewhere": "Tento prompt byl jinde smazán a už ho nelze uložit.",
+          "shortcutsSavedImmediately": "Změny zkratek se ukládají okamžitě.",
+          "fixField": {
+            "api_key": "API klíč pro {{provider}}",
+            "endpoint": "Koncový bod {{provider}}",
+            "hint": "Uloží se po opuštění pole. Výchozí poskytovatel se nemění."
+          }
+        },
+        "actions": {
+          "note": "Změny platí od dalšího diktátu po uložení.",
+          "fixFields": "Pro uložení opravte zvýrazněná pole.",
+          "delete": "Smazat prompt",
+          "cancel": "Zrušit",
+          "save": "Uložit",
+          "saving": "Ukládání…",
+          "saved": "Prompt uložen."
+        },
+        "deleteDialog": {
+          "title": "Smazat „{{name}}“?",
+          "shortcuts": "Jeho zkratky budou odebrány: {{shortcuts}}.",
+          "default": "Je to výchozí prompt: výchozí hodnotou se stane Žádný.",
+          "body": "Tuto akci nelze vrátit.",
+          "cancel": "Zrušit",
+          "confirm": "Smazat",
+          "close": "Zavřít",
+          "deleted": "Prompt „{{name}}“ byl smazán.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ byl smazán. Odebrané zkratky: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Ukázkový text",
+          "samplePlaceholder": "Napište nebo vložte ukázkový přepis",
+          "run": "Spustit test",
+          "running": "Testování…",
+          "note": "Nic se nevloží a historie se nezmění.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test selhal: {{reason}}",
+          "failedHint": "Zkontrolujte nastavení poskytovatele a spusťte test znovu.",
+          "retry": "Spustit znovu",
+          "busy": "Jiný test stále běží. Zkuste to znovu, až skončí.",
+          "skipped": "Zadejte ukázkový text pro otestování promptu.",
+          "outdated": "Tento výsledek patří ke starší verzi promptu nebo vzorku. Spusťte test znovu."
+        },
+        "shortcutOwner": "prompt „{{name}}“"
       }
     },
     "history": {
@@ -476,6 +862,7 @@
       "deleteError": "Nepodařilo se smazat záznam. Zkuste to prosím znovu.",
       "retranscribe": "Přepsat znovu",
       "retranscribeError": "Opětovný přepis se nezdařil. Zkuste to prosím znovu.",
+      "noAudio": "Pro tuto položku nebyl uložen žádný zvukový záznam, nelze ji proto znovu přepsat.",
       "transcribing": "Přepisuji...",
       "transcriptionFailed": "Přepis selhal. Můžete zkusit přepis znovu pomocí ikony opakování."
     },
@@ -516,7 +903,8 @@
       "historyLimit": {
         "title": "Limit historie",
         "description": "Maximální počet záznamů historie k uchování",
-        "entries": "záznamů"
+        "entries": "záznamů",
+        "invalid": "Zadejte celé číslo od {{min}} do {{max}}."
       },
       "recordingRetention": {
         "title": "Automatické mazání nahrávek",
@@ -538,7 +926,8 @@
       },
       "postProcessingToggle": {
         "label": "Následné zpracování",
-        "description": "Povolit AI vylepšení textu po přepisu"
+        "description": "Povolit AI vylepšení textu po přepisu",
+        "shortcutRefused": "Následné zpracování je zapnuté, ale systém odmítl zkratku {{shortcut}}. Změňte ji v nastavení následného zpracování."
       },
       "muteWhileRecording": {
         "label": "Ztlumit při nahrávání",
@@ -551,7 +940,8 @@
       "keyboardImplementation": {
         "title": "Implementace klávesnice",
         "description": "Zvolte backend pro klávesové zkratky.",
-        "bindingsReset": "Klávesové zkratky byly nekompatibilní a byly obnoveny na výchozí hodnoty"
+        "bindingsReset": "Některé klávesové zkratky byly nekompatibilní a byly obnoveny na výchozí hodnotu nebo odebrány",
+        "conflictsKept": "Některé zkratky jsou nyní v konfliktu s jinou akcí. Byly zachovány a jsou označeny v nastavení zkratek."
       },
       "paths": {
         "appData": "Data aplikace:",
@@ -645,6 +1035,168 @@
         "label": "Zobrazovat novinky",
         "description": "Zobrazovat poznámky k vydání po aktualizacích Handy"
       }
+    },
+    "replacements": {
+      "group": "Nahrazení",
+      "title": "Pravidla nahrazení",
+      "description": "Přepište rozpoznaný text podle vlastního pravopisu. Na rozdíl od Slovníku se uplatní až po rozpoznání.",
+      "loading": "Načítání pravidel nahrazení…",
+      "loadFailed": "Pravidla nahrazení se nepodařilo načíst.",
+      "retry": "Zkusit znovu",
+      "views": {
+        "label": "Zobrazení pravidel",
+        "list": "Seznam",
+        "text": "Text"
+      },
+      "import": "Importovat…",
+      "export": {
+        "button": "Exportovat…",
+        "done": "Pravidla byla exportována do {{name}}.",
+        "notSynced": "Pravidla byla exportována do {{name}}, ale disk zápis zatím nepotvrdil.",
+        "symbolicLink": "{{name}} je odkaz: vyberte jiný soubor. Nic nebylo exportováno.",
+        "readOnly": "{{name}} je jen pro čtení: vyberte jiný soubor. Nic nebylo exportováno.",
+        "notWritten": "{{name}} se nepodařilo zapsat. Zůstal beze změny."
+      },
+      "add": {
+        "recognized": "Rozpoznaný text",
+        "replacement": "Náhrada",
+        "button": "Přidat pravidlo",
+        "needsText": "Pro přidání pravidla zadejte rozpoznaný text a náhradu."
+      },
+      "rule": {
+        "edit": "Upravit pravidlo {{recognized}}",
+        "done": "Dokončit úpravu pravidla {{recognized}}",
+        "delete": "Smazat pravidlo {{recognized}}",
+        "recognized": "Rozpoznaný text pravidla {{position}}",
+        "replacement": "Náhrada pravidla {{position}}"
+      },
+      "count": "Pravidla: {{count}} z {{max}} · bez ohledu na velikost písmen, celá slova",
+      "empty": {
+        "title": "Zatím žádná pravidla nahrazení",
+        "body": "Přidejte pravidlo nebo vložte řádky jako",
+        "paste": "Vložit pravidla jako text"
+      },
+      "draft": {
+        "note": "Neuložené změny. Diktování používá uložená pravidla, dokud změny neuložíte.",
+        "discard": "Zahodit",
+        "save": "Uložit",
+        "saving": "Ukládání…",
+        "saved": "Pravidla nahrazení byla uložena."
+      },
+      "commit": {
+        "invalid": "Některá pravidla jsou neplatná. Opravte zvýrazněné řádky a zkuste to znovu.",
+        "unchanged": "Uložená pravidla se nezměnila.",
+        "conflict": "Pravidla byla změněna jinde, například z příkazového řádku. Chcete-li pokračovat, načtěte je znovu.",
+        "reload": "Načíst znovu",
+        "reloadDiscards": "Opětovné načtení zobrazí uložená pravidla a zahodí vaše neuložené změny."
+      },
+      "bulk": {
+        "editor": "Pravidla jako text",
+        "hint": "Jedno pravidlo na řádek: recognized;replacement. Při vkládání z tabulky funguje i tabulátor. Řádky začínající # se ignorují.",
+        "cancel": "Zrušit",
+        "apply": "Použít",
+        "applying": "Používání…",
+        "applied": "Pravidla nahrazení byla použita.",
+        "fixLine": "Pro použití opravte řádek {{line}}. Uložená pravidla se nezměnila.",
+        "fixLines": "Pro použití opravte chybné řádky (počet: {{count}}). Uložená pravidla se nezměnila.",
+        "ready": "Použitím nahradíte uložená pravidla tímto náhledem.",
+        "noChanges": "Není co použít: text odpovídá uloženým pravidlům."
+      },
+      "preview": {
+        "title": "Náhled",
+        "updating": "Aktualizace náhledu…",
+        "errorOne": "1 chyba · Použít nelze",
+        "errorMany": "Chyby: {{count}} · Použít nelze",
+        "changes": "Přidat: {{adds}} · Aktualizovat: {{updates}} · Smazat: {{deletes}}",
+        "noChanges": "Žádné změny",
+        "omitted": "Nezobrazené řádky: {{count}}",
+        "duplicateOf": "Stejný rozpoznaný text jako na řádku {{lines}}",
+        "kinds": {
+          "add": "Přidání",
+          "update": "Aktualizace",
+          "delete": "Smazání",
+          "unchanged": "Beze změny",
+          "ignored": "Ignorováno",
+          "error": "Chyba"
+        },
+        "ignored": {
+          "header": "Řádek záhlaví",
+          "blank": "Prázdný řádek",
+          "comment": "Komentář"
+        }
+      },
+      "importDialog": {
+        "title": "Importovat pravidla",
+        "close": "Zavřít",
+        "fileOne": "{{name}} · 1 řádek · UTF-8",
+        "fileMany": "{{name}} · řádky: {{count}} · UTF-8",
+        "mode": "Režim",
+        "merge": "Sloučit: aktualizovat odpovídající pravidla, nová přidat na konec",
+        "replace": "Nahradit: soubor se stane celou sadou pravidel",
+        "previewing": "Čtení souboru…",
+        "updateOne": "1 aktualizace",
+        "updateMany": "Aktualizace: {{count}}",
+        "addOne": "1 přidání",
+        "addMany": "Přidání: {{count}}",
+        "deleteOne": "1 smazání",
+        "deleteMany": "Smazání: {{count}}",
+        "errorOne": "1 chyba",
+        "errorMany": "Chyby: {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (aktualizace, zachová pozici {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (přidáno na konec)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (odebráno)",
+        "noChanges": "Tento soubor odpovídá uloženým pravidlům: není co importovat.",
+        "firstError": "Řádek {{line}}: {{reason}}",
+        "cancel": "Zrušit",
+        "apply": "Použít import",
+        "applying": "Importování…",
+        "imported": "Pravidla byla importována."
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}} nelze importovat: nejde o text v UTF-8",
+        "encodingBody": "Z tohoto souboru nebylo nic importováno. Exportujte prostý text nebo CSV a importujte znovu.",
+        "tooLargeTitle": "{{name}} nelze importovat: je větší než 1 MB",
+        "tooLargeBody": "Nic nebylo importováno. Rozdělte soubor na menší soubory a importujte každý zvlášť.",
+        "unreadableTitle": "{{name}} nelze přečíst",
+        "unreadableBody": "Nic nebylo importováno. Zkontrolujte, zda soubor stále existuje a zda ho Handy může otevřít.",
+        "dismiss": "Zavřít"
+      },
+      "deleteDialog": {
+        "title": "Smazat toto pravidlo?",
+        "body": "{{recognized}} → {{replacement}} bude odebráno ze seznamu. Změnu použijete uložením.",
+        "cancel": "Zrušit",
+        "confirm": "Smazat"
+      },
+      "switchDialog": {
+        "title": "Uložte nebo zahoďte změny",
+        "body": "Seznam i text upravují stejná pravidla. Nejprve uložte nebo zahoďte neuložené změny.",
+        "cancel": "Zrušit",
+        "discard": "Zahodit",
+        "save": "Uložit"
+      },
+      "issues": {
+        "recognizedEmpty": "Zadejte rozpoznaný text.",
+        "recognizedTooLong": "Rozpoznaný text je omezen na 100 znaků.",
+        "recognizedForbidden": "Rozpoznaný text nesmí obsahovat zalomení řádku, tabulátor ani ;.",
+        "recognizedControl": "Rozpoznaný text obsahuje neviditelný řídicí znak.",
+        "recognizedComment": "Rozpoznaný text nesmí začínat znakem #.",
+        "duplicate": "Každý rozpoznaný text se smí objevit jen jednou; tento je již definován.",
+        "replacementEmpty": "Zadejte náhradu.",
+        "replacementTooLong": "Náhrada je omezena na 500 znaků.",
+        "replacementForbidden": "Náhrada nesmí obsahovat zalomení řádku ani tabulátor.",
+        "replacementControl": "Náhrada obsahuje neviditelný řídicí znak.",
+        "missingSeparator": "Chybí oddělovač: přidejte ; a potom náhradu",
+        "tooManyRules": "Sada pravidel může obsahovat nejvýše 1000 pravidel.",
+        "invalidSavedRules": "Uložená pravidla jsou neplatná. Před importem je načtěte znovu.",
+        "unicodeUnavailable": "Pravidla teď nelze zkontrolovat. Restartujte Handy a zkuste to znovu.",
+        "invalidRule": "Toto pravidlo je neplatné."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Neuložené změny",
+      "description": "Některá pravidla nahrazení nejsou uložená. Zůstaňte a uložte je, nebo je zahoďte a odejděte.",
+      "stay": "Zůstat",
+      "discard": "Zahodit a odejít"
     }
   },
   "footer": {
@@ -673,7 +1225,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy potřebuje oprávnění usnadnění přístupu, aby mohlo psát přepsaný text.",
-    "openSettings": "Otevřít Nastavení systému"
+    "openSettings": "Otevřít Nastavení systému",
+    "offTitle": "Oprávnění zpřístupnění je vypnuté",
+    "smartPasteOff": "Chytré vložení nemůže vkládat text. Vaše přepisy zůstávají uložené k obnovení."
   },
   "errors": {
     "loadDirectory": "Chyba při načítání adresáře: {{error}}",
@@ -686,12 +1240,41 @@
     },
     "noInputDeviceTitle": "Mikrofon nebyl nalezen",
     "noInputDevice": "Nebylo detekováno žádné zvukové vstupní zařízení. Připojte mikrofon nebo sluchátka a zkuste to znovu.",
+    "inputLostTitle": "Nahrávání přerušeno",
+    "inputLost": "Mikrofon byl odpojen. Zvuk nahraný do té chvíle se přepisuje.",
     "recordingFailed": "Nepodařilo se spustit nahrávání: {{error}}",
     "modelLoadFailed": "Nepodařilo se načíst model: {{model}}",
     "modelLoadFailedUnknown": "neznámý model",
     "pasteFailedTitle": "Vložení textu se nezdařilo",
     "pasteFailed": "Text nebylo možné vložit do aktivní aplikace.",
-    "transcriptionFailedTitle": "Přepis selhal"
+    "pasteFailedNotSaved": "Text se nepodařilo vložit ani uložit do historie.",
+    "transcriptionFailedTitle": "Přepis selhal",
+    "settings": {
+      "committedNotApplied": "Nastavení bylo uloženo, ale nepodařilo se ho okamžitě použít.",
+      "gpuDeviceRequired": "Než zvolíte akcelerátor GPU, vyberte zařízení GPU.",
+      "outOfRange": "Tato hodnota je mimo povolený rozsah.",
+      "validationFailed": "Tato hodnota není pro toto nastavení přípustná.",
+      "revisionConflict": "Nastavení bylo změněno jinde. Načtěte je znovu a zkuste to znovu.",
+      "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
+      "shortcutSessionBusy": "Probíhá diktování. Zkuste to znovu, až skončí.",
+      "persistenceFailed": "Nastavení nelze uložit: soubor nastavení nešlo zapsat. Nic se nezměnilo.",
+      "generic": "Nastavení se nepodařilo změnit.",
+      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží.",
+      "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici.",
+      "promptNameEmpty": "Zadejte název promptu.",
+      "promptNameTooLong": "Název promptu může mít nejvýše 60 znaků.",
+      "promptNameDuplicate": "Jiný prompt už má tento název. Názvy musí být jedinečné.",
+      "promptTextEmpty": "Zadejte text promptu.",
+      "promptTextTooLong": "Text promptu může mít nejvýše 8 000 znaků.",
+      "promptOverrideIncomplete": "Zvolte poskytovatele i model, nebo použijte výchozího poskytovatele.",
+      "promptUnknownProvider": "Tento poskytovatel není k dispozici.",
+      "promptNotUsable": "Tento prompt je neplatný. Před použitím ho upravte.",
+      "limitExceeded": "Bylo dosaženo maximálního počtu.",
+      "conflictTitle": "Nastavení bylo změněno jinde",
+      "conflictBody": "Příkazový řádek nebo jiné okno uložilo novější verzi. Načtěte ji znovu; vaše neuložená úprava bude zahozena.",
+      "reload": "Načíst znovu",
+      "reloadFailed": "Nastavení se nepodařilo znovu načíst. Zkuste to znovu."
+    }
   },
   "appLanguage": {
     "title": "Jazyk aplikace",
@@ -709,7 +1292,78 @@
   "overlay": {
     "transcribing": "Přepisuji...",
     "processing": "Zpracovávám...",
-    "loadingModel": "Načítání modelu..."
+    "loadingModel": "Načítání modelu...",
+    "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text.",
+    "destination": {
+      "label": "Cíl: {{name}}",
+      "pinnedLabel": "Cíl: {{name}}, připnuto",
+      "frontmostApp": "Aplikace v popředí",
+      "remove": "Odebrat cíl",
+      "unknownApp": "Cílová aplikace",
+      "choiceFailed": "Cíl se nepodařilo změnit.",
+      "menu": {
+        "title": "Cíl tohoto diktování",
+        "frontmostNow": "Nyní v popředí",
+        "otherApps": "Další aplikace",
+        "frontmostAtEnd": "Aplikace v popředí na konci",
+        "loading": "Načítání aplikací…",
+        "failed": "Seznam aplikací se nepodařilo načíst.",
+        "pin": "Připnout {{name}}",
+        "unpin": "Odepnout {{name}}",
+        "favorites": "Oblíbené",
+        "addFavorite": "Přidat {{name}} do oblíbených",
+        "removeFavorite": "Odebrat {{name}} z oblíbených",
+        "notOpen": "Neotevřeno",
+        "rememberInput": {
+          "field": "Zapamatovat toto pole pro {{app}}",
+          "fieldAgain": "Znovu zapamatovat toto pole pro {{app}}",
+          "terminal": "Zapamatovat tento terminál",
+          "terminalAgain": "Znovu zapamatovat tento terminál",
+          "saved": {
+            "field": "Pole zapamatováno pro {{app}}",
+            "terminal": "Terminál zapamatován pro {{app}}"
+          },
+          "refused": {
+            "notTextField": "Nejprve klikněte do textového pole aplikace",
+            "passwordField": "Pole pro hesla se nikdy nezapamatují",
+            "unrecognizable": "Toto pole nemá název, který by Handy později rozpoznal",
+            "terminalUnreadable": "Terminál nelze přečíst",
+            "full": "Můžete si zapamatovat až 20 vstupů.",
+            "stale": "Toto diktování skončilo",
+            "failed": "Pole nelze uložit"
+          }
+        }
+      },
+      "favoriteNotSaved": {
+        "full": "Můžete mít nejvýše 10 oblíbených.",
+        "failed": "Oblíbené se nepodařilo uložit."
+      },
+      "refused": {
+        "stale": "Cíl se mezitím změnil; seznam byl obnoven.",
+        "frozen": "Vkládání už začalo; cíl už nelze změnit.",
+        "unavailable": "Tato aplikace už není dostupná; seznam byl obnoven."
+      }
+    },
+    "prompt": {
+      "label": "Prompt tohoto diktování: {{name}}",
+      "hint": "Najeďte myší pro zobrazení možností",
+      "none": "Žádný (bez zpracování AI)",
+      "menuTitle": "Prompt tohoto diktování",
+      "note": "Platí jen pro toto diktování. Výchozí zůstává {{name}}.",
+      "noteRemembered": "Zůstane pro další běžná diktování, dokud nezvolíte Žádný.",
+      "loading": "Načítání promptů…",
+      "failed": "Prompty se nepodařilo načíst.",
+      "choiceFailed": "Prompt se nepodařilo změnit.",
+      "refused": {
+        "sessionEnded": "Nahrávání skončilo; prompt už nelze změnit.",
+        "processingOff": "Zpracování AI je pro toto diktování vypnuté.",
+        "promptMissing": "Tento prompt už neexistuje.",
+        "promptNotUsable": "Tento prompt obsahuje chyby; nejprve ho upravte v nastavení."
+      }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatický Enter pro toto diktování vypnut"
+    }
   },
   "whatsNew": {
     "title": "Novinky v Handy v{{version}}"
@@ -724,5 +1378,49 @@
     "learnMore": "Jak to vyřešit",
     "recorderBlocked": "Zkratky teď nelze nahrát — Secure Input v macOS blokuje události kláves. Nejprve vyřešte upozornění na Secure Input.",
     "dismiss": "Zavřít"
+  },
+  "smartPaste": {
+    "handOver": "Text byl vložen do schránky pro vzdálenou obrazovku"
+  },
+  "recoveryBubble": {
+    "label": "Přepis uchovaný aplikací Handy",
+    "previewLabel": "Přepis",
+    "reason": {
+      "appClosed": "{{app}} už není otevřená",
+      "appClosedUnnamed": "Aplikace už není otevřená",
+      "pinnedAppNotRunning": "{{app}} je připnutá, ale není otevřená",
+      "pinnedAppNotRunningUnnamed": "Připnutá aplikace není otevřená",
+      "activationFailed": "{{app}} se nepodařilo přenést do popředí",
+      "activationFailedUnnamed": "Aplikaci se nepodařilo přenést do popředí",
+      "insertionFailed": "Vložení se nezdařilo",
+      "noTextField": "Žádné textové pole není aktivní",
+      "defaultFieldNotFound": "Zapamatované pole aplikace {{app}} nebylo nalezeno",
+      "defaultFieldNotFoundUnnamed": "Zapamatované pole nebylo nalezeno",
+      "defaultTerminalGone": "Zapamatovaný terminál aplikace {{app}} už neexistuje",
+      "defaultTerminalGoneUnnamed": "Zapamatovaný terminál už neexistuje"
+    },
+    "explanation": {
+      "notInserted": "Handy nic nevložil a neodeslal žádný Enter.",
+      "mayHaveReached": "Část textu se možná dostala do aplikace.",
+      "nothingSent": "Do aplikace nebylo nic odesláno.",
+      "lateRead": "Aplikace přečetla schránku pozdě: text možná nakonec vložen byl. Zkontrolujte to, než budete kopírovat znovu.",
+      "historyKept": "Přepis zůstává uložený v Historii.",
+      "historyKeptFull": "Celý přepis zůstává uložený v Historii.",
+      "historyNotKept": "Přepis není v Historii.",
+      "openAppDrag": "Otevřete {{app}} a potom text přetáhněte nebo zkopírujte.",
+      "openAppCopy": "Otevřete {{app}} a potom text zkopírujte.",
+      "openUnnamedDrag": "Otevřete aplikaci a potom text přetáhněte nebo zkopírujte.",
+      "openUnnamedCopy": "Otevřete aplikaci a potom text zkopírujte.",
+      "focusFieldDrag": "Klikněte do textového pole a potom text přetáhněte nebo zkopírujte.",
+      "focusFieldCopy": "Klikněte do textového pole a potom text zkopírujte.",
+      "noFieldSetting": "Tuto kontrolu můžete vypnout v Nastavení, Pokročilé, Výstup."
+    },
+    "actions": {
+      "drag": "Přetáhnout do pole",
+      "copy": "Kopírovat",
+      "why": "Proč?",
+      "hideDetails": "Skrýt podrobnosti",
+      "close": "Zavřít"
+    }
   }
 }

@@ -1,0 +1,2 @@
+{"check":"keyboard_read_only","command_v_key_code":9,"current_source_id":"com.apple.keylayout.French","current_source_kind":"KeyboardLayout","decision":"TryAbcThenUs","key_posting":"pending release evidence: posting keys would type into the user's focused application","source_selection":"pending release evidence: ABC/US/Dvorak are not enabled here; enabling them changes system settings"}
+test result: ok. native keyboard read-only check passed

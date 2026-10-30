@@ -156,6 +156,52 @@ pub(crate) fn evaluate(state: &TxState, now: Instant) -> WaitDecision {
     WaitDecision::KeepWaiting
 }
 
+/// Signals of a reliable transfer for 009's Enter authority (`automatic_enter::rendezvous`).
+pub(crate) use crate::automatic_enter::rendezvous::ReceiptSink;
+
+/// Record a consumer read at `now`, then tell 009's authority (outside the state lock) when the
+/// read counts as the target's: at or after the injection start.
+pub(crate) fn record_read(
+    state: &std::sync::Mutex<TxState>,
+    receipts: Option<&std::sync::Arc<dyn ReceiptSink>>,
+    now: Instant,
+) {
+    let qualified = match state.lock() {
+        Ok(mut state) => {
+            state.record_receipt(now);
+            state.injected_at.is_some_and(|injected| now >= injected)
+        }
+        Err(_) => false,
+    };
+    if let (true, Some(receipts)) = (qualified, receipts) {
+        receipts.target_read(now);
+    }
+}
+
+/// Mark the injection start, send the chord and report both to 009's authority; the returned
+/// result is the actual chord result (the platform's outer `Ok` can coexist with a failure).
+/// Order matters: injection is marked *before* sending, because enigo holds the chord for about
+/// 100 ms and a fast target may legitimately read while it is still held.
+pub(crate) fn inject(
+    state: &std::sync::Mutex<TxState>,
+    enigo: &mut enigo::Enigo,
+    paste_method: &crate::settings::PasteMethod,
+    receipts: Option<&std::sync::Arc<dyn ReceiptSink>>,
+) -> Result<(), String> {
+    let injected_at = Instant::now();
+    if let Ok(mut state) = state.lock() {
+        state.injected_at = Some(injected_at);
+    }
+    if let Some(receipts) = receipts {
+        receipts.injection_started(injected_at);
+    }
+    let chord = send_chord(enigo, paste_method);
+    if let Some(receipts) = receipts {
+        receipts.chord_completed(chord.is_ok(), Instant::now());
+    }
+    chord
+}
+
 /// Modifier hold for the receipt-sequenced chord, kept at parity with the
 /// legacy path (100ms) for the beta: that hold was added in #165 because real
 /// users' systems dropped chords released too quickly, and the beta should
@@ -189,16 +235,17 @@ pub(crate) fn send_chord(
 /// been published when the platform transaction cannot start, in which case
 /// the caller should fall back to the legacy paste path. On `Ok`, publishing
 /// and chord injection have completed and the guarded restore (plus
-/// auto-submit) finishes asynchronously.
+/// auto-submit) finishes asynchronously. With `receipts` (009), `auto_submit`
+/// must be false: the signals go to the Enter authority instead.
 #[cfg(any(target_os = "macos", target_os = "windows"))]
 pub(crate) fn try_reliable_paste(
     text: &str,
     app_handle: &tauri::AppHandle,
     paste_method: &crate::settings::PasteMethod,
     enigo: &mut enigo::Enigo,
-    auto_submit: bool,
-    auto_submit_key: crate::settings::AutoSubmitKey,
+    auto_submit: (bool, crate::settings::AutoSubmitKey),
     clipboard_handling: crate::settings::ClipboardHandling,
+    receipts: Option<std::sync::Arc<dyn ReceiptSink>>,
 ) -> Result<(), String> {
     platform::run(
         text,
@@ -206,8 +253,8 @@ pub(crate) fn try_reliable_paste(
         paste_method,
         enigo,
         auto_submit,
-        auto_submit_key,
         clipboard_handling,
+        receipts,
     )
 }
 

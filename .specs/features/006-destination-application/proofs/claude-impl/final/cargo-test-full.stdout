@@ -1,0 +1,629 @@
+
+running 416 tests
+test actions::tests::live_overlay_uses_streaming_states_only_for_streaming_models ... ok
+test actions::tests::non_blank_transcription_is_kept ... ok
+test actions::tests::blank_transcription_is_detected ... ok
+test actions::tests::content_without_think_block_is_unchanged ... ok
+test actions::tests::leading_think_block_is_stripped ... ok
+test audio_toolkit::audio::recorder::tests::detects_coreaudio_config_error ... ok
+test audio_toolkit::audio::recorder::tests::detects_permission_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_access_is_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_no_input_device ... ok
+test audio_toolkit::audio::recorder::tests::detects_windows_error_code ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_other_errors_for_no_device ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_unrelated_errors ... ok
+test audio_toolkit::audio::recorder::tests::callback_partially_fills_ring_and_counts_dropped_audio ... ok
+test audio_toolkit::audio::recorder::tests::callback_writes_mono_samples ... ok
+test audio_toolkit::audio::recorder::tests::callback_forwards_boundary_block_then_stays_silent_until_resumed ... ok
+test audio_toolkit::audio::recorder::tests::callback_downmixes_or_selects_multichannel_input ... ok
+test audio_toolkit::audio::recorder::tests::bounded_drain_leaves_remaining_samples_for_the_next_command_cycle ... ok
+test audio_toolkit::audio::recorder::tests::ring_wraparound_preserves_both_read_slices_in_order ... ok
+test audio_toolkit::audio::recorder::tests::unopened_recorder_does_not_need_reopen ... ok
+test audio_toolkit::audio::recorder::tests::stream_error_requires_reopen ... ok
+test actions::tests::completed_operation_returns_its_output ... ok
+test audio_toolkit::audio::recorder::tests::idle_chunks_are_discarded_without_reaching_the_recording ... ok
+test audio_toolkit::audio::recorder::tests::shutdown_is_processed_without_audio_samples ... ok
+test audio_toolkit::audio::recorder::tests::resampler_frame_size_follows_the_vad_backend ... ok
+test audio_toolkit::audio::resampler::tests::reset_passthrough_mode_clears_pending ... ok
+test audio_toolkit::audio::recorder::tests::repeated_start_stop_cycles_resume_capture_without_leaking_samples ... ok
+test audio_toolkit::lang_id::tests::fully_unmappable_metadata_fails_closed ... ok
+test audio_toolkit::audio::resampler::tests::finish_does_not_leak_tail_into_next_session ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_in_buf_and_pending ... ok
+test audio_toolkit::lang_id::tests::normalizes_model_language_codes ... ok
+test audio_toolkit::lang_id::tests::detects_portuguese_sentence_containing_um ... ok
+test audio_toolkit::lang_id::tests::regional_allowlist_preserves_portuguese_detection ... ok
+test audio_toolkit::lang_id::tests::short_ambiguous_text_returns_none ... ok
+test audio_toolkit::lang_id::tests::unmappable_codes_are_dropped_not_fatal ... ok
+test audio_toolkit::lang_id::tests::parakeet_v3_language_list_still_detects ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_unaligned_tail ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_handles_unicode_punctuation ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_exact_match ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_fuzzy_match ... ok
+test audio_toolkit::lang_id::tests::missing_metadata_detects_unconstrained ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_preserves_case ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_matches_spoken_ampersand_word ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_matches_ampersand_word ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_three_words ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_prefers_longer_ngram ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_skips_cjk_fuzzy_matching ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_two_words ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_trailing_number_not_doubled ... ok
+test audio_toolkit::text::tests::test_empty_custom_words ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_preserves_ampersand_word ... ok
+test audio_toolkit::text::tests::test_extract_punctuation ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_with_spaces_in_custom ... ok
+test audio_toolkit::text::tests::test_extract_punctuation_uses_unicode_boundaries ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay_44100 ... ok
+test audio_toolkit::text::tests::test_filter_custom_filler_words_empty_disables ... ok
+test audio_toolkit::text::tests::test_filter_custom_words_apply_without_language_evidence ... ok
+test audio_toolkit::text::tests::test_filter_custom_filler_words_override ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_fft_overlap_buffers ... ok
+test actions::tests::pending_operation_stops_after_cancellation ... ok
+test audio_toolkit::text::tests::test_filter_filler_words_case_insensitive ... ok
+test audio_toolkit::text::tests::test_filter_combined ... ok
+test audio_toolkit::text::tests::test_filter_master_toggle_disables_custom_and_builtin_removal ... ok
+test audio_toolkit::text::tests::test_filter_filler_words ... ok
+test audio_toolkit::text::tests::test_filter_cleans_whitespace ... ok
+test audio_toolkit::text::tests::test_filter_english_removes_um ... ok
+test audio_toolkit::text::tests::test_filter_filler_words_with_punctuation ... ok
+test audio_toolkit::text::tests::test_filter_portuguese_preserves_um ... ok
+test audio_toolkit::text::tests::test_filter_preserves_millimetre_unit ... ok
+test audio_toolkit::text::tests::test_filter_detected_evidence_unlocks_gated_fillers ... ok
+test audio_toolkit::text::tests::test_filter_language_code_with_region ... ok
+test audio_toolkit::text::tests::test_filter_preserves_valid_text ... ok
+test audio_toolkit::text::tests::test_filter_stutter_longer_words ... ok
+test audio_toolkit::text::tests::test_filter_spanish_preserves_ha ... ok
+test audio_toolkit::text::tests::test_filter_stutter_collapse ... ok
+test audio_toolkit::text::tests::test_filter_german_gated_fillers_require_evidence ... ok
+test audio_toolkit::text::tests::test_preserve_case_pattern ... ok
+test audio_toolkit::text::tests::test_filter_stutter_short_words ... ok
+test audio_toolkit::text::tests::test_filter_stutter_mixed_case ... ok
+test audio_toolkit::text::tests::test_filter_stutter_preserves_two_repetitions ... ok
+test audio_toolkit::vad::earshot::tests::rejects_wrong_frame_size ... ok
+test audio_toolkit::vad::earshot::tests::rejects_non_finite_audio ... ok
+test audio_toolkit::vad::earshot::tests::validates_threshold ... ok
+test audio_toolkit::vad::earshot::tests::clamps_resampler_overshoot_without_changing_output ... ok
+test audio_toolkit::vad::smoothed::tests::tail_report_counts_withheld_onset_tail ... ok
+test audio_toolkit::vad::tests::duration_profiles_preserve_silero_timings ... ok
+test audio_toolkit::vad::earshot::tests::silence_is_not_voice ... ok
+test audio_toolkit::vad::smoothed::tests::tail_report_counts_only_trailing_run ... ok
+test audio_toolkit::vad::tests::duration_profiles_round_up_for_earshot_frames ... ok
+test autostart::macos::tests::launch_agent_path_matches_auto_launch_crate ... ok
+test autostart::macos::tests::sm_app_service_class_resolves ... ok
+test autostart::macos::tests::missing_launch_agent_is_a_no_op ... ok
+test autostart::macos::tests::removes_existing_launch_agent ... ok
+test audio_toolkit::text::tests::test_filter_trims ... ok
+test audio_toolkit::text::tests::test_filter_unknown_language_still_removes_universal_fillers ... ok
+test audio_toolkit::text::tests::test_filter_unknown_language_does_not_remove_um ... ok
+test catalog::tests::pure_diarization_models_are_not_downloadable ... ok
+test catalog::tests::scores_are_normalised_0_to_1 ... ok
+test catalog::tests::catalog_architectures_are_known_to_capability_probe ... ok
+test catalog::tests::catalog_parses_and_is_nonempty ... ok
+test catalog::tests::ids_are_unique ... ok
+test clipboard::tests::auto_submit_requires_setting_enabled ... ok
+test clipboard::tests::clipboard_is_restored_before_key_injection_error_is_returned ... ok
+test destination::delivery::tests::the_outcome_carries_the_actual_history_result_and_the_exact_method_kind ... ok
+test clipboard::tests::auto_submit_skips_none_paste_method ... ok
+test clipboard::tests::auto_submit_runs_for_active_paste_methods ... ok
+test destination::insertion::tests::cases::a_closed_destination_inserts_nothing_anywhere_and_is_reported_app_closed ... ok
+test destination::insertion::tests::cases::a_method_error_after_dispatch_is_an_insertion_failure_to_recover ... ok
+test destination::insertion::tests::cases::a_stale_or_cancelled_request_never_activates ... ok
+test destination::insertion::tests::cases::a_switch_during_recording_activates_the_captured_app_before_dispatch ... ok
+test destination::insertion::tests::cases::an_already_frontmost_destination_is_not_activated_but_still_rechecked ... ok
+test destination::insertion::tests::cases::an_insertion_delay_longer_than_the_deadline_is_preserved_with_a_fresh_guard ... ok
+test destination::insertion::tests::cases::cancellation_during_activation_stops_without_input ... ok
+test destination::insertion::tests::cases::destination_return_off_inserts_into_the_app_in_front_at_the_end ... ok
+test destination::insertion::tests::cases::handy_in_front_at_the_end_gives_a_context_without_target ... ok
+test destination::insertion::tests::cases::paste_method_none_activates_nothing_and_is_skipped ... ok
+test destination::delivery::tests::a_failed_destination_names_its_target_and_ids_are_unique ... ok
+test destination::insertion::tests::cases::a_recover_verdict_dispatches_nothing_and_no_enter_can_be_claimed ... ok
+test destination::insertion::tests::cases::focus_lost_during_the_insertion_delay_dispatches_nothing_and_never_reactivates ... ok
+test destination::insertion::tests::cases::the_deadline_accepts_an_observation_at_999_and_1000_ms_and_refuses_1001 ... ok
+test catalog::tests::every_catalog_model_has_mirror_fallbacks_with_hashes ... ok
+test destination::manager::tests::a_stale_choice_cannot_redirect_the_next_dictation ... ok
+test destination::manager::tests::choosing_comet_changes_only_this_dictation_and_a_closed_app_is_refused ... ok
+test destination::manager::tests::a_tentative_capture_changes_nothing_until_committed ... ok
+test destination::manager::tests::an_accepted_start_captures_the_frontmost_app_and_switches_do_not_change_it ... ok
+test destination::manager::tests::cancellation_invalidates_the_generation_and_late_callbacks ... ok
+test destination::manager::tests::handy_or_an_unreadable_foreground_capture_no_destination ... ok
+test destination::manager::tests::restart_and_pid_reuse_resolve_by_identity_and_fail_closed_when_ambiguous ... ok
+test destination::manager::tests::setting_off_or_platform_without_capability_reads_no_foreground ... ok
+test destination::manager::tests::the_cross_removes_the_destination_and_a_queued_click_after_freeze_is_refused ... ok
+test destination::manager::tests::concurrent_enter_claims_and_recover_are_serialized_by_the_session_lock ... ok
+test destination::manager::tests::the_menu_lists_frontmost_first_then_others_and_marks_the_current_one ... ok
+test destination::outcome::tests::every_007_kind_maps_to_its_status_reason_and_disposition ... ok
+test destination::outcome::tests::legacy_success_is_attempted_and_legacy_error_is_an_insertion_failure ... ok
+test destination::outcome::tests::the_wire_values_are_the_007_kind_names ... ok
+test destination::recovery::tests::a_later_dictation_supersedes_the_retained_transcript_and_old_references_expire ... ok
+test destination::session::tests::a_choice_needs_the_exact_dictation_and_version_and_bumps_the_version ... ok
+test destination::session::tests::backward_and_stale_disposition_changes_are_refused_unchanged ... ok
+test destination::session::tests::badge_is_visible_only_when_on_supported_and_shown ... ok
+test destination::recovery::tests::a_reason_is_suppressed_only_after_a_consumer_acknowledges_presenting_it ... ok
+test audio_toolkit::text::tests::test_filter_unknown_evidence_removes_universal_keeps_gated ... ok
+test destination::recovery::tests::without_consumers_an_outcome_is_still_delivered_and_never_twice ... ok
+test destination::session::tests::enter_is_claimed_once_on_insert_and_a_later_recover_does_not_revoke_it ... ok
+test destination::session::tests::choices_are_accepted_through_processing_and_refused_once_frozen ... ok
+test destination::session::tests::every_allowed_disposition_transition_is_accepted ... ok
+test destination::session::tests::removal_is_frontmost_at_end_and_repeating_it_or_the_same_app_is_a_no_op ... ok
+test engine_supervisor::supervisor::tests::cancel_during_finalize_is_cancelled ... ignored
+test engine_supervisor::supervisor::tests::cancel_during_hung_feed_is_cancelled ... ignored
+test engine_supervisor::supervisor::tests::cancel_kills_a_hung_run ... ignored
+test engine_supervisor::supervisor::tests::cancel_stops_a_run ... ignored
+test engine_supervisor::supervisor::tests::cpu_only_worker_lists_no_gpu ... ignored
+test engine_supervisor::supervisor::tests::cpu_setting_uses_cpu_only_worker_and_probe_leaves_it_running ... ignored
+test engine_supervisor::supervisor::tests::crash_mid_stream_falls_back_to_batch ... ignored
+test audio_toolkit::text::tests::test_filter_leading_filler_keeps_sentence_capital ... ok
+test engine_supervisor::supervisor::tests::gpu_backend_init_crash_uses_cpu_only_worker ... ignored
+test engine_supervisor::supervisor::tests::gpu_disallowed_host_never_registers_a_gpu_backend ... ignored
+test engine_supervisor::supervisor::tests::gpu_only_crash_recovers_on_cpu ... ignored
+test engine_supervisor::supervisor::tests::hung_finalize_is_killed_and_recovers ... ignored
+test engine_supervisor::protocol::tests::clean_eof_is_none ... ok
+test engine_supervisor::supervisor::tests::hung_worker_exits_when_stdin_closes ... ignored
+test engine_supervisor::supervisor::tests::one_worker_at_a_time ... ignored
+test engine_supervisor::supervisor::tests::pinned_device_fails_loudly ... ignored
+test engine_supervisor::supervisor::tests::queued_unload_never_affects_a_later_load ... ignored
+test engine_supervisor::supervisor::tests::unload_reads_unloaded_at_once ... ignored
+test engine_supervisor::supervisor::unit_tests::deadlines_scale_with_the_audio_above_a_floor ... ok
+test headless_guard_tests::preserves_normal_exit_codes ... ok
+test engine_supervisor::protocol::tests::device_key_matches_legacy_format ... ok
+test llm_client::tests::custom_provider_uses_top_level_reasoning_effort ... ok
+test engine_supervisor::protocol::tests::section_limit_is_inclusive_and_fits_the_length_prefix ... ok
+test llm_client::tests::deepseek_base_url_uses_thinking_disabled ... ok
+test llm_client::tests::default_reasoning_params_serialize_to_no_fields ... ok
+test llm_client::tests::error_source_chain_includes_all_nested_causes ... ok
+test engine_supervisor::protocol::tests::truncated_frame_is_an_error ... ok
+test engine_supervisor::protocol::tests::round_trips_message_with_pcm ... ok
+test llm_client::tests::openrouter_uses_nested_reasoning_object ... ok
+test llm_client::tests::invalid_log_urls_are_not_echoed ... ok
+test llm_client::tests::reasoning_params_is_empty_tracks_all_fields ... ok
+test llm_client::tests::rejection_memo_is_keyed_by_base_url_and_model ... ok
+test llm_client::tests::log_url_sanitization_removes_credentials_and_tokens ... ok
+test llm_client::tests::requests_explicitly_disable_streaming ... ok
+test managers::gguf_meta::tests::empty_buffer_is_truncated_not_panic ... ok
+test managers::gguf_meta::tests::rejects_non_gguf ... ok
+test managers::gguf_meta::tests::parses_basic_kv ... ok
+test headless_guard_tests::converts_worker_panics_to_runtime_failures ... ok
+test managers::gguf_meta::tests::reports_truncation_with_hint ... ok
+test managers::gguf_meta::tests::stops_after_wanted_keys_without_reading_later_large_arrays ... ok
+test managers::gguf_meta::tests::skips_unwanted_arrays_without_storing_them ... ok
+test managers::history::tests::get_latest_entry_returns_none_when_empty ... ok
+test managers::history::tests::get_latest_entry_returns_newest_entry ... ok
+test managers::history::tests::get_latest_completed_entry_skips_empty_entries ... ok
+test audio_toolkit::audio::resampler::tests::reset_between_recordings_no_crosstalk ... ok
+test chinese_script::tests::cantonese_uses_hong_kong_tables ... ok
+test helpers::clamshell::tests::test_clamshell_check ... ok
+test helpers::clamshell::tests::test_is_laptop ... ok
+test llm_client::tests::raw_error_url_is_not_reintroduced_without_a_source ... ok
+test llm_client::tests::decode_error_does_not_echo_response_values ... ok
+test managers::model::download::tests::http_416_short_of_expected_size_clears_partial ... ok
+test managers::model::download::tests::http_416_without_trust_signals_clears_partial ... ok
+test managers::model::download::tests::http_416_with_hash_finalizes_complete_partial ... ok
+test managers::model::download::tests::http_body_exceeding_expected_size_aborts_and_clears ... ok
+test managers::model::download::tests::http_416_with_wrong_hash_clears_partial ... ok
+test managers::model::download::tests::http_conflicting_content_length_rejected_before_writing ... ok
+test managers::model::download::tests::http_full_size_partial_verified_without_network ... ok
+test managers::model::download::tests::http_fresh_download_completes_and_verifies ... ok
+test managers::model::download::tests::http_oversized_partial_restarts_clean ... ok
+test managers::model::download::tests::http_resume_appends_with_valid_content_range ... ok
+test managers::model::download::tests::http_range_ignored_200_restarts_from_zero ... ok
+test managers::model::tests::test_canonicalize_supported_languages_collapses_chinese_scripts ... ok
+test managers::model::tests::test_catalog_quant_rendering ... ok
+test managers::model::download::tests::test_verify_sha256_fails_and_deletes_partial_on_mismatch ... ok
+test managers::model::download::tests::test_verify_sha256_fails_and_deletes_partial_when_file_missing ... ok
+test managers::model::download::tests::http_wrong_content_range_discards_partial ... ok
+test managers::model::download::tests::http_wrong_hash_after_download_clears_partial ... ok
+test managers::model::tests::test_discover_custom_models_nonexistent_dir ... ok
+test managers::model::tests::test_effective_language_falls_back_to_canonical_chinese ... ok
+test managers::model::tests::test_effective_language_prefers_exact_norwegian_code ... ok
+test managers::model::tests::test_effective_language_preserves_intent_across_model_code_variants ... ok
+test managers::model::tests::test_effective_language_resolves_bare_intent_to_concrete_locale ... ok
+test managers::model::download::tests::test_verify_sha256_passes_on_correct_hash ... ok
+test managers::model::download::tests::test_verify_sha256_skipped_when_none ... ok
+test managers::model_capabilities::tests::known_arch_is_compatible_and_reads_caps ... ok
+test managers::model_capabilities::tests::unknown_arch_is_maybe_incompatible ... ok
+test managers::model::tests::test_discover_custom_models_empty_dir ... ok
+test managers::model::tests::test_discover_catalog_alternate_quant_in_models_dir ... ok
+test managers::transcription::tests::auto_language_uses_single_language_model_as_evidence ... ok
+test managers::transcription::tests::emulated_x64_on_arm64_forces_every_transcribe_setting_to_cpu ... ok
+test managers::transcription::tests::auto_detected_chinese_text_is_converted ... ok
+test managers::transcription::tests::model_detected_language_upgrades_unknown_evidence_only ... ok
+test managers::model::tests::test_discover_hf_cache_models_filters_by_arch ... ok
+test managers::model::tests::test_discover_custom_transcribe_models ... ok
+test managers::transcription::tests::normal_hosts_preserve_every_transcribe_accelerator_setting ... ok
+test managers::transcription::tests::norwegian_alias_is_recorded_as_user_selected_evidence ... ok
+test managers::model::tests::test_hf_cached_path_falls_back_to_legacy_cache ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_requires_model_translation_support ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_skips_english_translation ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_translates_supported_non_english ... ok
+test managers::transcription::tests::translated_output_is_treated_as_english ... ok
+test managers::transcription::tests::optional_text_transform_falls_back_to_raw_text_after_panic ... ok
+test managers::transcription::tests::unapplied_transcribe_cpp_language_is_not_output_evidence ... ok
+test managers::model::tests::test_hf_cached_path_prefers_active_cache ... ok
+test managers::transcription::tests::unsupported_explicit_language_uses_model_fallback_as_evidence ... ok
+test overlay::tests::monitor_hit_test_uses_half_open_physical_bounds ... ok
+test paste_tx::tests::failed_injection_uses_short_timeout ... ok
+test paste_tx::tests::finishes_after_quiet_period_once_read ... ok
+test paste_tx::tests::finishes_on_timeout_without_receipt ... ok
+test paste_tx::tests::keeps_waiting_without_receipt_within_timeout ... ok
+test paste_tx::tests::ownership_loss_finishes_immediately ... ok
+test paste_tx::tests::pre_injection_receipt_does_not_count ... ok
+test paste_tx::tests::waits_through_quiet_period_after_recent_read ... ok
+test portable::tests::test_empty_file_does_not_enable_portable ... ok
+test portable::tests::test_hugging_face_home_is_inside_portable_data ... ok
+test managers::transcription::tests::ignored_user_language_is_not_output_evidence ... ok
+test portable::tests::test_legacy_empty_marker_without_data_dir_does_not_enable_portable ... ok
+test portable::tests::test_missing_file_does_not_enable_portable ... ok
+test managers::transcription::tests::auto_language_without_detection_skips_gated_filler_removal ... ok
+test portable::tests::test_valid_magic_string_enables_portable ... ok
+test portable::tests::test_magic_string_with_whitespace_enables_portable ... ok
+test settings::tests::debug_output_redacts_api_keys ... ok
+test settings::tests::chinese_script_migration_only_carries_over_legacy_intents ... ok
+test settings::tests::default_overlay_style_is_live_when_overlay_defaults_on ... ok
+test settings::tests::default_settings_disable_auto_submit ... ok
+test managers::transcription::tests::portuguese_transcription_does_not_use_english_ui_filler_words ... ok
+test portable::tests::test_wrong_content_does_not_enable_portable ... ok
+test settings::tests::empty_store_parses_with_defaults ... ok
+test settings::tests::gpu_device_migration_keeps_current_stable_selection ... ok
+test settings::tests::gpu_device_migration_maps_v1_automatic_gpu_to_auto ... ok
+test settings::tests::frozen_v0_9_store_parses_strictly_then_migrates_device_index ... ok
+test settings::tests::gpu_device_migration_maps_current_automatic_gpu_to_auto ... ok
+test settings::tests::gpu_device_migration_resets_legacy_positive_selection_to_auto ... ok
+test settings::tests::legacy_none_overlay_position_deserializes_to_bottom ... ok
+test settings::tests::secret_map_debug_redacts_values ... ok
+test settings::tests::overlay_migration_promotes_enabled_overlay_to_live ... ok
+test settings::tests::shortcut_activation_migration_maps_push_to_talk_false ... ok
+test settings::tests::shortcut_activation_defaults_to_hold_or_toggle_without_legacy_key ... ok
+test settings::tests::overlay_migration_keeps_disabled_overlay_off ... ok
+test settings::tests::shortcut_activation_migration_maps_push_to_talk_true ... ok
+test settings::tests::shortcut_activation_migration_respects_explicit_new_key ... ok
+test settings::tests::stored_binding_returns_the_requested_binding ... ok
+test settings::tests::unknown_stored_binding_returns_an_error ... ok
+test settings_service::atomic::tests::temp_is_discarded_only_for_failures_before_replacement ... ok
+test settings_service::cli::tests::only_the_settings_subcommand_position_selects_the_settings_contract ... ok
+test managers::transcription::tests::unknown_evidence_with_portuguese_text_preserves_um ... ok
+test settings_service::atomic::tests::exhausted_temporary_names_fail_closed_without_deleting ... ok
+test settings_service::domains::fixture_tests::input_is_utf8_text_within_the_frame_bound ... ok
+test settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification ... ok
+test settings_service::domains::fixture_tests::file_input_is_read_by_path_and_a_missing_file_is_a_usage_error ... ok
+test settings_service::domains::fixture_tests::live_only_operations_need_a_running_instance ... ok
+test managers::transcription::tests::unknown_evidence_with_confident_text_detection_removes_gated_fillers ... ok
+test settings_service::domains::fixture_tests::stdin::non_utf8_stdin_is_refused_with_its_offset_before_any_change ... ok
+test settings_service::domains::fixture_tests::stdin::stdin_child ... ignored, child process of the stdin tests below
+test managers::transcription::tests::non_chinese_output_is_never_converted ... ok
+test settings_service::domains::fixture_tests::stdin::terminal_stdin_is_a_usage_error_without_waiting ... ok
+test managers::model::download::tests::http_cancel_while_awaiting_headers ... ok
+test apple_intelligence::tests::test_availability ... ok
+test settings_service::domains::fixture_tests::export_prints_only_the_content_or_one_envelope_with_data_content ... ok
+test settings_service::domains::live_fixture_tests::a_live_dry_run_does_not_act ... ok
+test settings_service::domains::live_fixture_tests::a_live_read_answers_at_the_revision_read_before_planning_without_writing ... ok
+test settings_service::domains::live_fixture_tests::a_missing_manager_is_unavailable_and_writes_nothing ... ok
+test settings_service::effects::tests::a_debug_launch_keeps_trace_and_streaming_after_logging_changes ... ok
+test settings_service::effects::tests::every_declared_runtime_effect_is_applied_or_read_at_use ... ok
+test settings_service::effects::tests::every_live_effect_key_is_a_descriptor_key ... ok
+test settings_service::domains::live_fixture_tests::offline_a_live_operation_is_the_live_only_refusal_and_never_runs ... ok
+test settings_service::domains::live_fixture_tests::a_platform_refusal_is_decided_by_the_plan_before_liveness ... ok
+test settings_service::domains::fixture_tests::invalid_import_is_refused_whole_with_exit_two_dry_run_or_not ... ok
+test settings_service::ipc::server::tests::unix::a_removed_runtime_directory_is_published_again_and_close_stays_bounded ... ok
+test settings_service::domains::fixture_tests::valid_dry_run_previews_with_exit_zero_and_writes_nothing ... ok
+test settings_service::ipc::tests::a_request_for_another_store_or_a_malformed_frame_gets_a_fixed_refusal ... ok
+test settings_service::ipc::tests::an_oversized_request_is_refused_before_sending_with_limit_exceeded ... ok
+test settings_service::ipc::tests::frames_round_trip_and_oversized_lengths_are_refused_before_allocation ... ok
+test settings_service::domains::fixture_tests::merge_then_replace_import_commit_atomically_once_each ... ok
+test managers::model::download::tests::http_cancel_during_stalled_body_keeps_partial ... ok
+test settings_service::ipc::tests::the_client_refuses_an_unexpected_server_owner_before_sending_any_byte ... ok
+test settings_service::domains::fixture_tests::edit_and_delete_aliases_resolve_to_update_and_remove ... ok
+test settings_service::domains::fixture_tests::stdin::piped_stdin_feeds_the_domain_input ... ok
+test settings_service::ipc::server::tests::a_refused_peer_is_skipped_without_waiting ... ok
+test settings_service::domains::live_fixture_tests::a_live_write_commits_through_the_context_at_the_next_revision ... ok
+test settings_service::live::tests::gpu_without_device_edit_is_refused_by_the_shared_rule ... ok
+test settings_service::ipc::tests::silence_or_a_reply_to_another_request_is_an_unknown_outcome ... ok
+test settings_service::live::tests::linux_free_session_bus_never_bypasses_a_held_lease_or_a_bus_owner ... ok
+test settings_service::locator::tests::app_identifier_matches_the_tauri_bundle_identifier ... ok
+test settings_service::normalization::tests::salvage_drops_only_wrong_typed_fields ... ok
+test settings_service::live::tests::noop_edit_keeps_revision_and_reports_no_change ... ok
+test settings_service::normalization::tests::salvage_of_non_object_store_falls_back_to_defaults ... ok
+test settings_service::normalization::tests::salvage_of_poisoned_bindings_keeps_other_fields ... ok
+test settings_service::normalization::tests::salvage_preserves_valid_fields_when_one_value_is_invalid ... ok
+test settings_service::normalization::tests::salvage_tolerates_unknown_keys ... ok
+test settings_service::platform_capability::tests::a_supported_or_absent_requirement_passes ... ok
+test settings_service::platform_capability::tests::an_unsupported_requirement_is_a_validation_refusal_with_its_reason ... ok
+test settings_service::platform_capability::tests::the_build_supports_destination_exactly_on_macos_and_windows ... ok
+test settings_service::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test settings_service::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test settings_service::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test settings_service::platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test settings_service::raw_merge::tests::deleted_map_entry_is_removed_while_raw_only_entries_and_unknown_fields_survive ... ok
+test settings_service::raw_merge::tests::unchanged_fields_keep_their_raw_bytes ... ok
+test settings_service::render::tests::human_errors_print_the_detail_reason_and_items_on_stderr ... ok
+test settings_service::render::tests::json_mode_prints_exactly_one_envelope_line_and_errors_only_on_stderr ... ok
+test settings_service::render::tests::recovered_settings_warn_on_stderr_in_both_modes ... ok
+test settings_service::live::tests::refused_edit_changes_neither_disk_nor_published_snapshot ... ok
+test settings_service::route::tests::an_oversized_request_is_refused_before_any_route ... ok
+test settings_service::live::tests::linux_free_session_bus_and_free_lease_allow_the_offline_write ... ok
+test settings_service::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+test settings_service::live::tests::owned_edit_commits_once_publishes_and_reports_changed_keys ... ok
+test settings_service::live::tests::offline_authority_is_refused_by_an_owner_and_commits_without_one ... ok
+test clipboard::tests::external_script_does_not_wait_for_inherited_stdio ... ok
+test settings_service::live::tests::instance_keeps_its_lease_until_it_is_dropped ... ok
+test settings_service::sequence::tests::failed_effect_after_commit_is_committed_with_revision_field_and_event ... ok
+test settings_service::sequence::tests::live_effects_run_before_the_ui_event_and_both_before_the_result ... ok
+test settings_service::sequence::tests::parity::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal ... ok
+test settings_service::sequence::tests::parity::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect ... ok
+test settings_service::sequence::tests::refused_commit_compensates_the_prepared_native_change ... ok
+test settings_service::ui_value::tests::any_json_reaches_the_shared_validator ... ok
+test settings_service::ui_value::tests::bindings_keep_the_declared_type ... ok
+test shortcut::binding_change::tests::preparation_swaps_the_registration_and_compensation_restores_it ... ok
+test settings_service::sequence::tests::refused_preparation_leaves_disk_revision_native_and_ui_unchanged ... ok
+test shortcut::binding_change::tests::refused_binding_commit_restores_the_previous_registration ... ok
+test shortcut::binding_change::tests::refused_registration_or_validation_keeps_the_previous_shortcut ... ok
+test shortcut::tauri_impl::tests::accepts_the_default_shortcuts ... ok
+test shortcut::tauri_impl::tests::rejects_side_specific_modifiers_the_parser_cannot_register ... ok
+test shortcut::tests::compound_shortcut_keys_parse_on_both_backends ... ok
+test transcription_coordinator::tests::cancel_during_processing_drops_remembered_press ... ok
+test transcription_coordinator::tests::different_binding_does_not_replace_pending_press ... ok
+test transcription_coordinator::tests::drain_starts_the_pending_binding_not_a_later_one ... ok
+test transcription_coordinator::tests::external_edges_inside_debounce_window_are_not_dropped ... ok
+test transcription_coordinator::tests::failed_start_rolls_back_to_idle ... ok
+test transcription_coordinator::tests::genuine_release_after_grace_stops_recording_once ... ok
+test transcription_coordinator::tests::hold_modes_classify_busy_inputs_by_pending_state ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_is_one_long_hold ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_straddling_drain_measures_from_first_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_cancel_clears_locked_session ... ok
+test transcription_coordinator::tests::hold_or_toggle_completed_hold_during_processing_nets_noop ... ok
+test transcription_coordinator::tests::hold_or_toggle_drain_inside_busy_release_grace_still_classifies_tap ... ok
+test transcription_coordinator::tests::hold_or_toggle_locked_session_ignores_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_long_hold_stops_on_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_press_while_held_is_ignored ... ok
+test transcription_coordinator::tests::hold_or_toggle_remembered_press_measures_hold_from_real_key_down ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_during_processing_queues_locked_start ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_locks_recording_until_next_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_two_taps_during_processing_net_noop ... ok
+test transcription_coordinator::tests::keyboard_press_inside_debounce_window_is_still_dropped ... ok
+test transcription_coordinator::tests::press_during_processing_starts_after_drain ... ok
+test transcription_coordinator::tests::press_for_different_binding_than_pending_release_passes_through ... ok
+test transcription_coordinator::tests::press_matching_pending_release_cancels_without_recording_state ... ok
+test transcription_coordinator::tests::ptt_tap_inside_busy_window_nets_noop ... ok
+test transcription_coordinator::tests::push_to_talk_press_matching_pending_release_cancels_release ... ok
+test transcription_coordinator::tests::push_to_talk_release_while_recording_defers_release ... ok
+test transcription_coordinator::tests::push_to_talk_short_press_still_stops_on_release ... ok
+test transcription_coordinator::tests::second_toggle_press_during_processing_forgets_press ... ok
+test transcription_coordinator::tests::toggle_mode_ignores_release_and_stops_on_next_press ... ok
+test transcription_coordinator::tests::toggle_mode_press_and_release_pass_through ... ok
+test transcription_coordinator::tests::toggle_press_during_processing_remembers_start ... ok
+test transcription_coordinator::tests::toggle_press_stops_recording_started_as_hold ... ok
+test transcription_coordinator::tests::toggle_presses_alternate_remember_and_forget_while_busy ... ok
+test transcription_coordinator::tests::toggle_presses_during_processing_net_noop_after_drain ... ok
+test transcription_coordinator::tests::toggle_release_during_processing_is_ignored ... ok
+test transcription_coordinator::tests::x11_autorepeat_burst_does_not_toggle_recording ... ok
+test tray::tests::falls_back_to_raw_transcription ... ok
+test tray::tests::idle_and_busy_menus_differ ... ok
+test tray::tests::recording_and_transcribing_share_a_menu ... ok
+test tray::tests::tray_icon_resolution_failure_is_returned_instead_of_panicking ... ok
+test tray::tests::uses_post_processed_text_when_available ... ok
+test settings_service::sequence::tests::refused_prepared_edit_compensates_and_notifies_nothing ... ok
+test utils::tests::arm64_native_machine_is_the_only_match ... ok
+test tray_i18n::tests::resolves_locale_fallbacks ... ok
+test tray::tests::tray_icon_returns_err_when_file_does_not_exist ... ok
+test utils::tests::env_flag_enabled_false_for_falsy_or_unset ... ok
+test utils::tests::env_flag_enabled_true_for_truthy_values ... ok
+test settings_service::sequence::tests::unapplied_effect_is_retried_before_the_next_write_and_on_resubmission ... ok
+test settings_service::sequence::tests::unknown_outcome_that_landed_keeps_the_preparation_and_notifies_the_reread ... ok
+test settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::ipc::server::tests::a_failing_listener_backs_off_instead_of_spinning ... ok
+test settings_service::ipc::server::tests::unix::a_runtime_directory_with_changed_permissions_does_not_spin ... ok
+test settings_service::sequence::tests::concurrent_manager_repair_and_user_selection_lose_no_update ... ok
+test audio_toolkit::audio::recorder::tests::missing_callback_at_stop_marks_stream_for_rebuild_and_returns_samples ... ok
+test settings_service::ipc::server::tests::a_stuck_listener_never_blocks_close_beyond_its_bound ... ok
+
+test result: ok. 399 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 2.34s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test without_the_capability_cli_domain_and_ui_validation_refuse_identically ... ok
+test with_an_older_handy_running_the_set_is_unavailable_and_writes_nothing ... ok
+test an_invalid_value_is_a_canonical_type_refusal_before_the_platform_check ... ok
+test a_set_routed_to_the_running_instance_is_committed_by_it ... ok
+test output_get_reads_the_plain_value_with_the_platform_default ... ok
+test offline_set_commits_once_and_a_no_op_keeps_the_revision ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.83s
+
+
+running 2 tests
+test running_applications_with_windows_are_listed_once_each_without_this_process ... ignored, native: needs a logged-in macOS desktop session
+test the_frontmost_application_is_read_with_its_identity_within_the_capture_budget ... ignored, native: needs a logged-in macOS desktop session
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test offline::rejected_write_changes_nothing ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.73s
+
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.99s
+
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.53s
+
+
+running 33 tests
+test cli_console::detach_success_including_no_attached_console_is_accepted ... ok
+test cli_console::inherited_handles_and_redirections_never_attach_a_console ... ok
+test cli_console::only_missing_handles_are_opened_on_the_parent_console ... ok
+test cli_console::without_a_parent_console_nothing_is_reopened_and_the_error_is_reported ... ok
+test cli_console::detach_failure_retains_error_kind_and_safe_operation_context ... ok
+test platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test cli_console::historical_startup_and_recording_flags_remain_combinable ... ok
+test cli_console::settings_set_takes_a_negative_value_and_a_leading_json_flag ... ok
+test cli_console::settings_set_takes_an_expected_revision_and_a_trailing_json_flag ... ok
+test cli_console::historical_value_flags_keep_values_and_transcription_combinations ... ok
+test cli_console::historical_invocations_parse_without_a_subcommand ... ok
+test cli_console::historical_boolean_flags_keep_their_parser_values ... ok
+test unix::absent_probe_creates_nothing ... ok
+test cli_console::parsed_gui_detaches_console_and_headless_keeps_it ... ok
+test platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test windows::lease_backed_session_bus_absence_is_absence_and_errors_stay_refused ... ok
+test windows::pipe_identity_rejects_injection_and_isolates_user_and_store ... ok
+test platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer ... ok
+test unix::lock_and_file_refuse_hostile_aliases ... ok
+test windows::session_negative_alone_cannot_prove_other_sessions_absent ... ok
+test windows::uncertainty_does_not_authorize_offline_operation ... ok
+test windows::windows_missing_mutex_and_window_is_absence_and_probe_errors_stay_refused ... ok
+test unix::ambiguous_legacy_resources_fail_closed ... ok
+test unix::private_directory_refuses_permissions_alias_and_replacement ... ok
+test unix::occupied_probe_never_notifies_or_modifies_store ... ok
+test windows::successful_pipe_authentication_precedes_resource_transfer ... ok
+test unix::a_listening_socket_name_is_never_reclaimed ... ok
+test unix::close_retains_socket_and_releases_lock_by_lifetime ... ok
+test unix::stale_socket_name_is_reclaimed_only_with_lease_proof ... ok
+test platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+test unix::new_socket_authenticates_peer_and_refuses_replaced_path ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 43 tests
+test driver::repository_subprocess_fixture ... ignored, test-only subprocess entry point; executed by process/crash contracts with stdin barriers
+test locator::installed_resolution_appends_identifier_store_without_creating_it ... ok
+test locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused ... ok
+test locator::same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory ... ok
+test locator::portable_magic_and_legacy_markers_are_read_without_mutation ... ok
+test locator::unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startup ... ok
+test locator::symlink_loops_and_overlong_chains_are_refused ... ok
+test normalized_writes::startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_lease ... ok
+test normalized_writes::store_without_settings_object_reads_as_a_fresh_install ... ok
+test normalized_writes::chinese_script_write_on_legacy_language_intent_keeps_selected_language ... ok
+test ownership::foreign_lease_noop_on_absent_store_is_unavailable ... ok
+test ownership::passive_occupied_socket_refuses_without_connecting_or_deleting ... ok
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test normalized_writes::overlay_position_write_on_legacy_hidden_overlay_keeps_overlay_style ... ok
+test normalized_writes::gpu_device_write_on_schema_one_store_survives_the_next_read ... ok
+test faults::stable_lock_inode_survives_replacement_and_is_retained_after_release ... ok
+test faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute ... ok
+test normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing ... ok
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test normalized_writes::normalized_write_changes_only_the_mutated_visible_field ... ok
+test substitution::ancestor_symlink_into_another_users_directory_is_refused ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test substitution::parent_substituted_before_read_and_restored_before_replace_is_refused ... ok
+test substitution::store_and_locks_moved_into_a_substituted_parent_are_refused_by_parent_identity ... ok
+test substitution::store_file_symlink_is_refused_for_reads_and_writes ... ok
+test ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable ... ok
+test ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced ... ok
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+test transactions::refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock ... ok
+test ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test substitution::same_user_ancestor_symlink_resolves_to_its_canonical_directory ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test ownership::lease_holding_instance_commits_while_offline_writers_stay_refused ... ok
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+test normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared ... ok
+test faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty ... ok
+test processes::barrier_started_startup_and_writer_respect_real_lease_ownership ... ok
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... ok
+test processes::independent_raw_reader_observes_only_complete_old_or_new_generations ... ok
+test processes::overlapping_subprocess_writers_serialize_under_the_lock_and_preserve_disjoint_fields ... ok
+
+test result: ok. 42 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.16s
+
+
+running 25 tests
+test error_details::unsupported_platform_is_validation_failed_exit_two_with_reason_and_field ... ok
+test error_details::items_are_sorted_by_index_and_bounded_without_candidate_values ... ok
+test error_details::existing_errors_carry_neither_reason_nor_items ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scalars ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::all_52_scalar_ports_accept_the_same_typed_values ... ok
+test error_details::schema_closes_reason_and_items ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+
+running 7 tests
+test settings_service_is_installed_before_the_first_startup_reader ... ok
+test no_webview_capability_grants_the_store_plugin ... ok
+test frontend_never_opens_the_settings_store_directly ... ok
+test settings_file_name_is_only_spelled_by_the_service ... ok
+test only_the_settings_service_emits_settings_changed ... ok
+test store_plugin_is_gone_and_settings_path_is_only_resolved_by_the_service ... ok
+test no_backend_code_writes_settings_outside_the_service ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "アクセシビリティへのアクセス",
-        "description": "アプリに文字起こししたテキストを入力するために必要です。"
+        "description": "アプリに文字起こししたテキストを入力するために必要です。",
+        "openSettings": "システム設定を開く",
+        "retry": "再試行",
+        "alreadyCheckedHint": "Handy にすでにチェックが入っている場合は、削除してからもう一度追加してください。"
       },
       "grant": "権限を許可",
       "granted": "許可済み",
@@ -199,12 +202,51 @@
           "transcribe_with_post_process": {
             "name": "後処理のショートカット",
             "description": "文字起こしに常に AI 後処理を適用するキーボードショートカット。 (任意)"
+          },
+          "retarget_to_active_app": {
+            "name": "前面のアプリに送る",
+            "description": "音声入力中にこのキーだけを押すと、ピン留めしたアプリではなく最後に前面にあるアプリへ送ります。もう一度押すと元に戻ります。ピン留めは残ります。"
+          },
+          "skip_automatic_enter": {
+            "name": "Enter なしで挿入",
+            "description": "音声入力中にこのキーだけを押すと、自動 Enter なしでテキストを挿入します。もう一度押すと元に戻ります。"
           }
         },
         "errors": {
-          "restore": "元のショートカットを復元できませんでした",
-          "set": "ショートカットを設定できませんでした: {{error}}",
-          "reset": "ショートカットを元の値にリセットできませんでした"
+          "set": "ショートカットを設定できませんでした: {{error}}"
+        },
+        "list": {
+          "add": "ショートカットを追加",
+          "addLimit": "1つの操作につき最大{{limit}}個のショートカット",
+          "change": "クリックして新しい組み合わせを記録",
+          "remove": "このショートカットを削除",
+          "removeLast": "各操作には少なくとも1つのショートカットが必要です",
+          "reset": "デフォルトのショートカットに戻す",
+          "errors": {
+            "conflict": "{{action}}で使用中です（{{shortcut}}）",
+            "overlap": "{{action}}も起動してしまいます（{{shortcut}}）",
+            "invalid": "無効なショートカット: {{error}}",
+            "registration": "システムがこのショートカットを拒否しました: {{error}}",
+            "generic": "ショートカットを保存できませんでした",
+            "conflictsUnavailable": "ショートカットの競合を確認できませんでした"
+          },
+          "changeButton": "変更",
+          "discard": "このショートカットを破棄",
+          "discardDraft": "破棄",
+          "save": "保存",
+          "unsaved": "未保存",
+          "lastHint": "各操作には少なくとも1つのショートカットが残ります。代わりに変更またはリセットしてください。",
+          "limitHint": "ショートカット {{count}}/{{limit}} 個。追加するには1つ削除してください。",
+          "draftConflict": "{{shortcut}} はすでに {{action}} で使用されています。何も保存されていません。",
+          "draftOverlap": "{{shortcut}} は {{action}} も起動してしまいます。何も保存されていません。",
+          "legacyOverlap": "{{shortcut}} は {{action}} と重複しています",
+          "legacyDuplicate": "{{shortcut}} は {{action}} でも使用されています",
+          "legacyBody": "アップデート前と同じように動作し続けています。この警告を消すには変更してください。",
+          "systemRefused": "{{system}} が {{shortcut}} を拒否しました",
+          "systemRefusedGeneric": "システムがこのショートカットを拒否しました",
+          "systemRefusedBody": "別のアプリがこの組み合わせを登録している可能性があります。別の組み合わせを選ぶか、もう一度お試しください。",
+          "systemReason": "システムのメッセージ: {{error}}",
+          "retry": "再試行"
         }
       },
       "language": {
@@ -232,10 +274,66 @@
     "sound": {
       "title": "サウンド",
       "microphone": {
-        "title": "マイク",
-        "description": "使用するマイクデバイスを選択",
-        "placeholder": "マイクを選択…",
-        "loading": "読み込み中…"
+        "placeholder": "マイクを選択…"
+      },
+      "microphonePriority": {
+        "title": "マイクの優先順位",
+        "description": "Handy はこの順番で最初に使用可能なマイクで録音し、なければシステムのデフォルトを使います。使用できないマイクも順位は保持されます。",
+        "emptyTitle": "優先マイクがありません",
+        "emptyBody": "マイクを追加するまで、Handy はシステムのデフォルトマイクを使用します。",
+        "status": {
+          "available": "使用可能",
+          "unavailable": "使用不可",
+          "ambiguous": "曖昧",
+          "unknown": "不明"
+        },
+        "moveUp": "{{name}}を上へ移動",
+        "moveDown": "{{name}}を下へ移動",
+        "remove": "{{name}}を削除",
+        "addLabel": "マイクを追加",
+        "addPlaceholder": "マイクを追加…",
+        "noDevices": "追加できるマイクが検出されません",
+        "duplicateChoice": "{{name}}はすでにリストにあります。",
+        "refresh": "使用可否を更新",
+        "checked": "{{seconds}}秒前に確認",
+        "refreshFailed": "デバイスを確認できませんでした",
+        "retry": "再試行",
+        "inUse": {
+          "title": "現在使用中",
+          "description": "Handy が録音に使用しているマイク、または前回の録音で使用されたマイクです。第一候補と異なる場合があります。",
+          "notUsedYet": "起動後まだ使用されていません",
+          "systemDefault": "システムのデフォルトマイク",
+          "unnamed": "名前のないマイク",
+          "lastRecording": "前回の録音 · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "第一候補",
+          "fallback": "代替",
+          "fallbackUnavailable": "代替 · {{name}}は使用不可",
+          "fallbackAmbiguous": "代替 · {{name}}は曖昧",
+          "clamshell": "クラムシェルマイク",
+          "system_default": "システムのデフォルト"
+        },
+        "clamshell": {
+          "title": "クラムシェルマイク",
+          "description": "蓋を閉じているときに最初に試します。優先順位は変わりません。",
+          "none": "なし"
+        },
+        "draft": {
+          "discard": "破棄",
+          "save": "保存",
+          "saving": "保存中…",
+          "saved": "マイクの優先順位を保存しました"
+        },
+        "conflict": {
+          "title": "設定が別の場所で変更されました",
+          "body": "順番が別の場所で変更されました。再読み込みすると表示されます。編集内容は破棄されます。",
+          "reload": "再読み込み"
+        },
+        "errors": {
+          "duplicate": "各マイクは一度だけ指定できます。",
+          "empty": "マイク名は空にできません。"
+        }
       },
       "channel": {
         "title": "入力チャンネル",
@@ -264,7 +362,8 @@
         "output": "出力",
         "transcription": "文字起こし",
         "history": "履歴",
-        "experimental": "実験的"
+        "experimental": "実験的",
+        "textFormatting": "テキストの書式"
       },
       "experimentalToggle": {
         "label": "実験的な機能",
@@ -273,6 +372,10 @@
       "lazyStreamClose": {
         "label": "文字起こし間でマイクを有効にする",
         "description": "録音停止後マイクを30秒間有効なままにし、連続した文字起こしの遅延を軽減します。Bluetooth 音声品質に影響する場合があります。"
+      },
+      "pasteVerification": {
+        "label": "貼り付けを確認",
+        "description": "スマート貼り付けで、貼り付け後にアクティブなフィールドが変化したかを確認し、変化していなければもう一度だけ貼り付けます。それでも変化しない場合は、空のフィールドで Enter を押さずにテキストを復旧バブルに残します。テスト機能です。"
       },
       "acceleration": {
         "transcribe": {
@@ -323,13 +426,18 @@
         "description": "テキストの挿入方法を選択。「直接」はシステム入力でタイピングをシミュレート。「なし」は貼り付けをスキップし、履歴/クリップボードのみ更新。",
         "options": {
           "clipboard": "クリップボード ({{modifier}}+V)",
+          "smartPaste": "スマート貼り付け",
           "clipboardCtrlShiftV": "クリップボード (Ctrl+Shift+V)",
           "clipboardShiftInsert": "クリップボード (Shift+Insert)",
           "direct": "直接",
           "none": "なし",
-          "externalScript": "外部スクリプト"
+          "externalScript": "外部スクリプト",
+          "clipboardMac": "クリップボード (⌘V)",
+          "smartPasteDescription": "macOS の既定",
+          "noneDescription": "履歴とクリップボードのみ"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "スマート貼り付けはフィールドに直接書き込み、できない場合は貼り付けてからクリップボードを元に戻します。"
       },
       "typingTool": {
         "title": "タイピングツール",
@@ -357,6 +465,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "自動 Enter",
+        "description": "挿入に成功したときだけ、1 回送信します。",
+        "keyLabel": "押すキー",
+        "announced": "自動 Enter: {{value}}",
+        "note": "自動送信に代わる設定です。挿入に失敗した・確認できないとき、貼り付け方法が「なし」のとき、アプリがフォーカスを失ったときは Enter を送信しません。",
+        "options": {
+          "never": "しない",
+          "always": "常に",
+          "alwaysDescription": "挿入に成功するたび",
+          "pinOnly": "ピン留めモードのみ",
+          "pinOnlyDescription": "ピン留めしたアプリのみ"
+        }
+      },
       "translateToEnglish": {
         "label": "英語に翻訳",
         "description": "文字起こし中に他の言語から英語に自動的に翻訳。"
@@ -375,14 +497,6 @@
           "sec15": "15秒後 (デバッグ)"
         }
       },
-      "customWords": {
-        "title": "カスタム単語",
-        "description": "対応モデルが名前や専門用語を認識しやすくします。あいまい補正は現在、A～Zの英字と数字を使用する単語に限定されています。",
-        "placeholder": "単語を追加",
-        "add": "追加",
-        "remove": "{{word}}を削除",
-        "duplicate": "「{{word}}」は既に存在します"
-      },
       "voiceActivityDetection": {
         "title": "音声区間検出 (VAD)",
         "description": "録音から無音部分を除去します。ストリーミング対応モデルはより長い音声検出区間を使用します。VAD を無効にすると音声をそのまま録音します。"
@@ -399,6 +513,11 @@
         "title": "フィラー語を削除",
         "description": "文字起こしから一般的なフィラー語を削除します。残すにはオフにしてください。"
       },
+      "smartParagraphs": {
+        "title": "スマート段落",
+        "description": "長い音声入力を文の区切りで段落に分け、段落の間に空行を入れます。リスト、コード、既存の改行はそのまま残ります。このコンピューター上で処理されます。",
+        "descriptionLimited": "長い音声入力を文の区切りで段落に分け、段落の間に空行を入れます。リスト、コード、既存の改行はそのまま残ります。このコンピューター上で処理されます。このシステムでは、中国語と日本語の音声入力は変更されません。"
+      },
       "chineseScript": {
         "title": "中国語の表記",
         "description": "北京語と広東語の文字起こしを簡体字または繁体字で出力します。他の言語は変更されません。",
@@ -407,6 +526,171 @@
           "simplified": "簡体字",
           "traditional": "繁体字"
         }
+      },
+      "returnToApp": {
+        "title": "音声入力を始めたアプリに戻る",
+        "description": "途中で別のアプリに切り替えても、音声入力を始めたアプリに挿入します。",
+        "unavailableUnreadable": "このシステムでは利用できません: Handy はここで最前面のアプリを読み取れません。テキストは最後に最前面にあるアプリに入力されます。",
+        "unavailablePlatform": "このシステムでは利用できません。テキストは最後に最前面にあるアプリに入力されます。",
+        "details": "Handy は音声入力の開始時に最前面のアプリを記憶し、テキストを挿入する前にそのアプリに戻ります。オフの場合、テキストは音声入力の終了時に最前面にあるアプリに入力されます。",
+        "detailsLabel": "音声入力を始めたアプリに戻る機能について"
+      },
+      "noFieldBubble": {
+        "title": "テキストフィールドが選択されていないときにバブルを表示",
+        "description": "何もない場所に貼り付ける代わりに、テキストをバブルに保持します。"
+      },
+      "textFormatting": {
+        "smartSpacing": {
+          "label": "スマートスペース",
+          "description": "音声入力のテキストがカーソル周辺の文字とつながる位置に必要なスペースを入れ、既にあるスペースや改行を重複させません。, . ) ] の前と ( [ の後、およびスペースを使わない言語ではスペースを入れません。オンのときは入力後のスペースもこの機能が決め、「末尾にスペースを追加」はフィールドの末尾でのみ追加します。フィールドを読み取れない場合は末尾にスペースを1つだけ追加します。カーソルの後のテキストが文の続きである場合、ディクテーション末尾のピリオド（.）を削除します。",
+          "descriptionLimited": "音声入力のテキストがカーソル周辺の文字とつながる位置に必要なスペースを入れ、既にあるスペースや改行を重複させません。, . ) ] の前と ( [ の後、およびスペースを使わない言語ではスペースを入れません。オンのときは入力後のスペースもこの機能が決め、「末尾にスペースを追加」はフィールドの末尾でのみ追加します。フィールドを読み取れない場合は末尾にスペースを1つだけ追加します。 このシステムではカーソル周辺のテキストを読み取れないため、音声入力のたびに末尾へスペースを1つだけ追加します。"
+        },
+        "smartCapitalization": {
+          "label": "スマート大文字化",
+          "description": "各ディクテーションの最初の文字をカーソルの前のテキストに合わせます。文の先頭では大文字、文を続けるときは小文字にします。略語、iPhone のような語、カスタム単語はそのまま保持されます。フィールドを読み取れない場合は何も変更しません。"
+        }
+      },
+      "defaultInputs": {
+        "title": "記憶したフィールド",
+        "description": "アプリのアクティブな要素がテキストフィールドでないときに Handy が貼り付ける場所です。ディクテーション中にバッジメニューから記憶できます。",
+        "field": "フィールド: {{label}}",
+        "terminal": "ターミナル: {{workspace}}",
+        "forget": "削除",
+        "forgetLabel": "{{app}} の記憶した入力先を削除",
+        "forgetAll": "すべて削除",
+        "forgetAllLabel": "記憶したすべての入力先を削除",
+        "empty": "記憶したフィールドはまだありません。ディクテーション中にバッジメニューを使ってください。",
+        "failed": "記憶した入力先を削除できませんでした。"
+      }
+    },
+    "vocabulary": {
+      "group": "語彙",
+      "title": "語彙",
+      "description": "モデルが対応している場合に認識させたい名前や用語です。置換は、これとは別に認識後のテキストを書き換えます。",
+      "placeholder": "用語を追加",
+      "inputLabel": "新しい語彙の用語",
+      "add": "追加",
+      "addHint": "追加する用語を入力してください。",
+      "busy": "現在の変更が完了するまでお待ちください。",
+      "paste": "リストを貼り付け…",
+      "count": "{{total}} / {{max}} 件の用語",
+      "listLabel": "語彙の用語",
+      "remove": "{{term}}を削除",
+      "retry": "再試行",
+      "loading": "語彙を読み込んでいます…",
+      "listFailed": "保存された語彙を読み込めませんでした。何も変更されていません。再試行して読み込んでください。",
+      "empty": {
+        "title": "用語はまだありません",
+        "body": "Claude Code や OpenClaw などの名前を、1つずつ、またはリストを貼り付けて追加します。"
+      },
+      "flag": {
+        "empty": "空の用語のため送信されません。削除してください。",
+        "too_long": "100文字を超えているため送信されません。削除して、短い形で追加し直してください。",
+        "line_break": "改行を含むため送信されません。削除して、もう一度追加してください。",
+        "forbidden_character": "< > または \" を含むため送信されません。削除して、これらの文字を除いて追加してください。",
+        "duplicate": "前の用語と同じため送信されません。削除してください。",
+        "over_capacity": "5,000件の上限を超えているため、リストが短くなるまで送信されません。",
+        "over_budget": "送信されません：モデルの上限を超えています。"
+      },
+      "errors": {
+        "term_empty": "用語を入力してください。",
+        "term_too_long": "用語は100文字以内にしてください。",
+        "term_line_break": "用語は1行に収めてください。",
+        "term_forbidden_character": "用語から < > または \" の文字を削除してください。",
+        "term_duplicate": "各用語は1回しか登録できません。この用語はすでに語彙にあります。",
+        "limit": "語彙に登録できる用語は最大5,000件です。別の用語を追加するには、用語を1つ削除してください。",
+        "conflict": "その間に語彙が変更されたため、再読み込みしました。もう一度お試しください。",
+        "notFound": "この用語はすでに削除されています。語彙を再読み込みしました。",
+        "unknown": "Handy は変更を確認できませんでした。語彙を再読み込みしたので、内容を確認してから再試行してください。",
+        "committed": "語彙は保存されましたが、Handy はすぐに適用できませんでした。リストを再読み込みしました。",
+        "saved": "保存済みの語彙は変更されていません。"
+      },
+      "status": {
+        "loading": "モデルの対応状況を確認中…",
+        "selectedModel": "選択中のモデル",
+        "used": {
+          "title": "{{model}} が認識時に使用します",
+          "sent": "{{total}}件中{{sent}}件の用語が送信されます。",
+          "sentOne": "1件中{{sent}}件の用語が送信されます。"
+        },
+        "notSent": {
+          "over_budget": "未送信（モデルの上限超過）：{{terms}}。",
+          "invalid": "未送信（無効）：{{terms}}。",
+          "duplicate": "未送信（重複）：{{terms}}。",
+          "over_capacity": "未送信（5,000件超過）：{{terms}}。",
+          "more": "ほか{{hidden}}件"
+        },
+        "noTermSent": {
+          "title": "{{model}} に送信される用語はありません",
+          "empty_vocabulary": "語彙が空です。認識時に使用するには用語を追加してください。",
+          "invalid_terms_only": "保存されている用語はすべて無効か重複しています。マークされた用語を削除し、修正した用語を追加してください。",
+          "over_budget": "最初の用語がモデルの上限を超えているため、用語は送信されません。この用語を削除すると、後続の用語が送信されます。"
+        },
+        "notSupported": {
+          "title": "{{model}} は認識時に語彙を使用できません",
+          "body": "代わりに、認識後にあいまい補正が適用されます。認識エンジンに用語を送信するには、Whisper モデルを選択してください。"
+        },
+        "streaming": {
+          "title": "ライブストリーミングでは使用されません",
+          "body": "{{model}} はリアルタイムで文字起こしを行うため、認識コンテキストを送信しません。代わりに、最終テキストにあいまい補正が適用されます。"
+        },
+        "unknown": {
+          "title": "モデルが読み込まれるまで対応状況は不明です",
+          "model_not_loaded": "Handy は {{model}} を読み込む際に対応状況を確認します。",
+          "capability_query_unanswered": "{{model}} が時間内に応答しませんでした（音声入力中など）。Handy は後で再確認します。"
+        },
+        "budgetUnverified": {
+          "title": "{{model}} の語彙対応を確認できません",
+          "body": "このモデルは認識コンテキストに対応すると宣言していますが、このビルドにはその上限が文書化されていません。用語は送信されず、代わりにあいまい補正が適用されます。"
+        },
+        "failed": {
+          "title": "語彙の状態を読み取れませんでした",
+          "body": "語彙は保存されています。再試行してモデルの対応状況を確認してください。"
+        }
+      },
+      "pasteBox": {
+        "title": "用語を貼り付け",
+        "description": "1行に1つの用語を入力します。重複はスキップされます。無効な行は追加前に修正が必要です。",
+        "label": "貼り付ける用語（1行に1つ）",
+        "previewTitle": "プレビュー",
+        "previewEmpty": "1行に1つの用語を貼り付けるか入力すると、追加される内容が表示されます。",
+        "sameAs": "{{term}} — {{original}} と同じ",
+        "alreadyListed": "{{term}} — すでにリストにあります",
+        "summary": {
+          "add": "追加 {{n}}件",
+          "duplicateOne": "重複 1件",
+          "duplicateMany": "重複 {{n}}件",
+          "errorOne": "エラー 1件",
+          "errorMany": "エラー {{n}}件"
+        },
+        "kind": {
+          "add": "追加",
+          "duplicate": "重複",
+          "error": "エラー"
+        },
+        "line": {
+          "empty": "{{line}}行目：空行です。削除してください",
+          "too_long": "{{line}}行目：100文字以内にしてください",
+          "line_break": "{{line}}行目：用語を1行に収めてください",
+          "forbidden_character": "{{line}}行目：< > または \" の文字を削除してください",
+          "duplicate": "{{line}}行目：前の用語と同じです",
+          "over_capacity": "{{line}}行目：5,000件の上限を超えています"
+        },
+        "note": {
+          "empty": "用語を追加するまで、語彙は変更されません。",
+          "checking": "行を確認中…",
+          "fixOne": "用語を追加するには{{lines}}行目を修正してください。語彙は変更されていません。",
+          "fixMany": "用語を追加するには{{lines}}行目を修正してください。語彙は変更されていません。",
+          "overCapacity": "語彙に登録できる用語は最大5,000件です。追加するにはリストを短くしてください。語彙は変更されていません。",
+          "nothingToAdd": "すべての行がすでに語彙にあります。",
+          "ready": "重複はスキップされます。用語を追加するまで何も保存されません。"
+        },
+        "cancel": "キャンセル",
+        "applyOne": "1件の用語を追加",
+        "applyMany": "{{n}}件の用語を追加",
+        "applyZero": "用語を追加",
+        "applying": "追加中…",
+        "applied": "用語を語彙に追加しました。"
       }
     },
     "postProcessing": {
@@ -441,26 +725,128 @@
           "refreshModels": "モデルを更新"
         }
       },
-      "prompts": {
-        "title": "プロンプト",
-        "selectedPrompt": {
-          "title": "選択したプロンプト",
-          "description": "文字起こしを改善するテンプレートを選択するか、新しく作成します。プロンプトテキスト内で ${output} を使用して、キャプチャした文字起こしを参照します。"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 後処理",
+          "enabledDescription": "プロンプトで音声入力を処理します。オフ: どの音声入力も処理されません。",
+          "defaultTitle": "既定のプロンプト",
+          "defaultDescription": "AI 音声入力のショートカットで使われます。通常の音声入力は、インジケーターで最後に選んだプロンプト、または「なし」で始まります。",
+          "none": "なし",
+          "invalidOption": "無効: 使用する前に編集してください"
         },
-        "noPrompts": "プロンプトがありません",
-        "selectPrompt": "プロンプトを選択",
-        "createNew": "新しいプロンプトを作成",
-        "promptLabel": "プロンプト名",
-        "promptLabelPlaceholder": "プロンプト名を入力",
-        "promptInstructions": "プロンプトの指示",
-        "promptInstructionsPlaceholder": "文字起こし後に実行する指示を記述します。例: 以下のテキストの文法と明瞭さを改善してください: ${output}",
-        "promptTip": "ヒント: <code>${output}</code> を使用して、文字起こしテキストをプロンプトに挿入します。",
-        "updatePrompt": "プロンプトを更新",
-        "deletePrompt": "プロンプトを削除",
-        "createPrompt": "プロンプトを作成",
-        "cancel": "キャンセル",
-        "selectToEdit": "上からプロンプトを選択して、詳細を表示・編集します。",
-        "createFirst": "上の「新しいプロンプトを作成」をクリックして、最初の後処理プロンプトを作成してください。"
+        "list": {
+          "title": "プロンプト",
+          "count": "{{count}} / {{limit}} 件のプロンプト",
+          "full": "{{limit}} / {{limit}} 件: 追加するには 1 件削除してください",
+          "new": "新しいプロンプト",
+          "empty": "プロンプトはまだありません。音声入力を処理するには作成してください。",
+          "loading": "プロンプトを読み込み中…",
+          "loadFailed": "プロンプトを読み込めませんでした。",
+          "retry": "再試行",
+          "edit": "{{name}} を編集",
+          "defaultProvider": "既定のプロバイダー",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "ショートカットなし",
+          "notReady": "準備未完了: {{reason}}",
+          "invalid": "無効: {{reason}}",
+          "reloadFailed": "プロンプトを更新できませんでした。表示が古い可能性があります。"
+        },
+        "issues": {
+          "name_empty": "名前がありません",
+          "name_too_long": "名前が長すぎます",
+          "name_duplicate": "名前が重複しています",
+          "text_empty": "本文がありません",
+          "text_too_long": "本文が長すぎます",
+          "override_incomplete": "プロバイダーまたはモデルがありません",
+          "unknown_provider": "不明なプロバイダー"
+        },
+        "reasons": {
+          "provider_error": "プロバイダーがエラーを返しました",
+          "empty_result": "プロバイダーが空の結果を返しました",
+          "timeout": "30 秒以内に応答がありません",
+          "provider_busy": "プロバイダーは別のリクエストを処理中です",
+          "missing_endpoint": "エンドポイントがありません",
+          "missing_model": "モデルがありません",
+          "missing_api_key": "API キーがありません",
+          "provider_unavailable": "このデバイスではプロバイダーを利用できません",
+          "unknown_provider": "不明なプロバイダー",
+          "invalid_prompt": "プロンプトが無効です",
+          "prompt_missing": "プロンプトはもう存在しません"
+        },
+        "editor": {
+          "editTitle": "プロンプトを編集",
+          "newTitle": "新しいプロンプト",
+          "name": "名前",
+          "namePlaceholder": "プロンプト名",
+          "text": "プロンプト",
+          "textPlaceholder": "文字起こしに適用する指示を書いてください。例: 文字起こしを要点だけに短くしてください。${output}",
+          "textHint": "<code>${output}</code> は文字起こしに置き換えられます。",
+          "fieldErrors": {
+            "name_empty": "名前を入力してください (1〜60 文字)。",
+            "name_too_long": "60 文字以内にしてください。",
+            "name_duplicate": "同じ名前のプロンプトがあります。名前は一意にしてください。",
+            "text_empty": "プロンプトの本文を入力してください。",
+            "text_too_long": "8,000 文字以内にしてください。"
+          },
+          "provider": "プロバイダー",
+          "defaultProviderOption": "既定のプロバイダー ({{provider}})",
+          "model": "モデル",
+          "modelPlaceholder": "モデル名を入力",
+          "readyEndpoint": "エンドポイント {{endpoint}} · 準備完了",
+          "readyProvider": "{{provider}} · {{model}} · 準備完了",
+          "notReadyTitle": "{{provider}} は準備ができていません: {{reason}}",
+          "notReadyBody": "このプロンプトでの音声入力は AI の処理を省略し、元のテキストを保持します。",
+          "fix": {
+            "api_key": "API キーを追加",
+            "endpoint": "エンドポイントを設定"
+          },
+          "shortcuts": "ショートカット (最大 {{limit}} 件)",
+          "changedElsewhere": "このプロンプトは別の場所で変更されました。変更を見るには再読み込みし、自分の版を残すには保存してください。",
+          "reload": "再読み込み",
+          "deletedElsewhere": "このプロンプトは別の場所で削除されたため、保存できません。",
+          "shortcutsSavedImmediately": "ショートカットの変更はすぐに保存されます。",
+          "fixField": {
+            "api_key": "{{provider}} の API キー",
+            "endpoint": "{{provider}} のエンドポイント",
+            "hint": "フィールドを離れると保存されます。デフォルトのプロバイダーは変わりません。"
+          }
+        },
+        "actions": {
+          "note": "変更は保存後の次の音声入力から適用されます。",
+          "fixFields": "保存するには、強調表示された項目を修正してください。",
+          "delete": "プロンプトを削除",
+          "cancel": "キャンセル",
+          "save": "保存",
+          "saving": "保存中…",
+          "saved": "プロンプトを保存しました。"
+        },
+        "deleteDialog": {
+          "title": "「{{name}}」を削除しますか?",
+          "shortcuts": "このプロンプトのショートカットは削除されます: {{shortcuts}}。",
+          "default": "既定のプロンプトです。既定は「なし」になります。",
+          "body": "この操作は元に戻せません。",
+          "cancel": "キャンセル",
+          "confirm": "削除",
+          "close": "閉じる",
+          "deleted": "プロンプト「{{name}}」を削除しました。",
+          "deletedWithShortcuts": "プロンプト「{{name}}」を削除しました。削除したショートカット: {{shortcuts}}。"
+        },
+        "test": {
+          "title": "テスト",
+          "sampleLabel": "サンプルテキスト",
+          "samplePlaceholder": "サンプルの文字起こしを入力または貼り付け",
+          "run": "テストを実行",
+          "running": "テスト中…",
+          "note": "何も挿入されず、履歴も変更されません。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "テストに失敗しました: {{reason}}",
+          "failedHint": "プロバイダーの設定を確認してから、もう一度テストしてください。",
+          "retry": "もう一度実行",
+          "busy": "別のテストを実行中です。終了してからもう一度お試しください。",
+          "skipped": "プロンプトをテストするにはサンプルテキストを入力してください。",
+          "outdated": "この結果は以前のプロンプトまたはサンプルのものです。もう一度テストしてください。"
+        },
+        "shortcutOwner": "プロンプト「{{name}}」"
       }
     },
     "history": {
@@ -476,6 +862,7 @@
       "deleteError": "エントリーの削除に失敗しました。もう一度お試しください。",
       "retranscribe": "再文字起こし",
       "retranscribeError": "再文字起こしに失敗しました。もう一度お試しください。",
+      "noAudio": "このエントリには音声録音が保存されていないため、再文字起こしできません。",
       "transcribing": "文字起こし中…",
       "transcriptionFailed": "文字起こしに失敗しました。リトライアイコンを使用して再文字起こしできます。"
     },
@@ -516,7 +903,8 @@
       "historyLimit": {
         "title": "履歴上限",
         "description": "保持する履歴エントリーの最大数",
-        "entries": "件"
+        "entries": "件",
+        "invalid": "{{min}} から {{max}} までの整数を入力してください。"
       },
       "recordingRetention": {
         "title": "録音の自動削除",
@@ -538,7 +926,8 @@
       },
       "postProcessingToggle": {
         "label": "後処理",
-        "description": "文字起こし後の AI によるテキスト改善を有効化"
+        "description": "文字起こし後の AI によるテキスト改善を有効化",
+        "shortcutRefused": "後処理はオンですが、システムがショートカット {{shortcut}} を拒否しました。後処理の設定で変更してください。"
       },
       "muteWhileRecording": {
         "label": "録音中にミュート",
@@ -551,7 +940,8 @@
       "keyboardImplementation": {
         "title": "キーボード実装",
         "description": "キーボードショートカットのバックエンドを選択してください。",
-        "bindingsReset": "キーボードショートカットに互換性がなかったため、デフォルトにリセットされました"
+        "bindingsReset": "一部のキーボードショートカットに互換性がなかったため、デフォルトにリセットまたは削除されました",
+        "conflictsKept": "一部のショートカットが別のアクションと競合しています。ショートカットは保持され、ショートカット設定で示されています。"
       },
       "paths": {
         "appData": "アプリデータ:",
@@ -645,6 +1035,168 @@
         "label": "新機能を表示",
         "description": "Handy のアップデート後にリリースノートを表示"
       }
+    },
+    "replacements": {
+      "group": "置換",
+      "title": "置換ルール",
+      "description": "認識されたテキストを独自の表記に書き換えます。語彙とは異なり、認識の後に適用されます。",
+      "loading": "置換ルールを読み込んでいます…",
+      "loadFailed": "置換ルールを読み込めませんでした。",
+      "retry": "再試行",
+      "views": {
+        "label": "ルールの表示",
+        "list": "リスト",
+        "text": "テキスト"
+      },
+      "import": "インポート…",
+      "export": {
+        "button": "エクスポート…",
+        "done": "ルールを{{name}}にエクスポートしました。",
+        "notSynced": "ルールを{{name}}にエクスポートしましたが、ディスクへの書き込みはまだ確認されていません。",
+        "symbolicLink": "{{name}}はリンクです。別のファイルを選択してください。何もエクスポートされていません。",
+        "readOnly": "{{name}}は読み取り専用です。別のファイルを選択してください。何もエクスポートされていません。",
+        "notWritten": "{{name}}に書き込めませんでした。ファイルは変更されていません。"
+      },
+      "add": {
+        "recognized": "認識されたテキスト",
+        "replacement": "置換後のテキスト",
+        "button": "ルールを追加",
+        "needsText": "ルールを追加するには、認識されたテキストと置換後のテキストを入力してください。"
+      },
+      "rule": {
+        "edit": "ルール{{recognized}}を編集",
+        "done": "ルール{{recognized}}の編集を完了",
+        "delete": "ルール{{recognized}}を削除",
+        "recognized": "ルール{{position}}の認識されたテキスト",
+        "replacement": "ルール{{position}}の置換後のテキスト"
+      },
+      "count": "ルール {{count}} / {{max}} 件 · 大文字と小文字を区別せず、単語全体で一致",
+      "empty": {
+        "title": "置換ルールはまだありません",
+        "body": "ルールを追加するか、次のような行を貼り付けてください",
+        "paste": "ルールをテキストとして貼り付け"
+      },
+      "draft": {
+        "note": "未保存の変更があります。保存するまで、音声入力には保存済みのルールが使われます。",
+        "discard": "破棄",
+        "save": "保存",
+        "saving": "保存中…",
+        "saved": "置換ルールを保存しました。"
+      },
+      "commit": {
+        "invalid": "無効なルールがあります。強調表示された行を修正してから、もう一度お試しください。",
+        "unchanged": "保存済みのルールは変更されていません。",
+        "conflict": "ルールが別の場所(コマンドラインなど)で変更されました。続けるには再読み込みしてください。",
+        "reload": "再読み込み",
+        "reloadDiscards": "再読み込みすると保存済みのルールが表示され、保存していない変更は破棄されます。"
+      },
+      "bulk": {
+        "editor": "テキスト形式のルール",
+        "hint": "1行に1ルール: recognized;replacement。スプレッドシートからの貼り付けにはタブも使えます。# で始まる行は無視されます。",
+        "cancel": "キャンセル",
+        "apply": "適用",
+        "applying": "適用中…",
+        "applied": "置換ルールを適用しました。",
+        "fixLine": "適用するには{{line}}行目を修正してください。保存済みのルールは変更されていません。",
+        "fixLines": "適用するにはエラーのある{{count}}行を修正してください。保存済みのルールは変更されていません。",
+        "ready": "適用すると、保存済みのルールがこのプレビューの内容に置き換わります。",
+        "noChanges": "適用する内容はありません。テキストは保存済みのルールと一致しています。"
+      },
+      "preview": {
+        "title": "プレビュー",
+        "updating": "プレビューを更新中…",
+        "errorOne": "エラー1件 · 適用できません",
+        "errorMany": "エラー{{count}}件 · 適用できません",
+        "changes": "追加 {{adds}} · 更新 {{updates}} · 削除 {{deletes}}",
+        "noChanges": "変更なし",
+        "omitted": "表示されていない行: {{count}}",
+        "duplicateOf": "{{lines}}行目と同じ認識テキストです",
+        "kinds": {
+          "add": "追加",
+          "update": "更新",
+          "delete": "削除",
+          "unchanged": "変更なし",
+          "ignored": "無視",
+          "error": "エラー"
+        },
+        "ignored": {
+          "header": "ヘッダー行",
+          "blank": "空行",
+          "comment": "コメント"
+        }
+      },
+      "importDialog": {
+        "title": "ルールをインポート",
+        "close": "閉じる",
+        "fileOne": "{{name}} · 1行 · UTF-8",
+        "fileMany": "{{name}} · {{count}}行 · UTF-8",
+        "mode": "モード",
+        "merge": "マージ: 一致するルールを更新し、新しいルールを末尾に追加",
+        "replace": "置き換え: ファイルの内容がルール全体になります",
+        "previewing": "ファイルを読み込んでいます…",
+        "updateOne": "更新1件",
+        "updateMany": "更新{{count}}件",
+        "addOne": "追加1件",
+        "addMany": "追加{{count}}件",
+        "deleteOne": "削除1件",
+        "deleteMany": "削除{{count}}件",
+        "errorOne": "エラー1件",
+        "errorMany": "エラー{{count}}件",
+        "exampleUpdate": "{{recognized}} → {{replacement}}(更新、位置{{position}}を維持)",
+        "exampleAdd": "{{recognized}} → {{replacement}}(末尾に追加)",
+        "exampleDelete": "{{recognized}} → {{replacement}}(削除)",
+        "noChanges": "このファイルは保存済みのルールと一致しています。インポートする内容はありません。",
+        "firstError": "{{line}}行目: {{reason}}",
+        "cancel": "キャンセル",
+        "apply": "インポートを適用",
+        "applying": "インポート中…",
+        "imported": "ルールをインポートしました。"
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}}をインポートできません: UTF-8テキストではありません",
+        "encodingBody": "このファイルからは何もインポートされていません。プレーンテキストまたはCSVでエクスポートしてから、もう一度インポートしてください。",
+        "tooLargeTitle": "{{name}}をインポートできません: 1 MBを超えています",
+        "tooLargeBody": "何もインポートされていません。ファイルを小さなファイルに分割してから、それぞれをインポートしてください。",
+        "unreadableTitle": "{{name}}を読み込めません",
+        "unreadableBody": "何もインポートされていません。ファイルがまだ存在し、Handyで開けることを確認してください。",
+        "dismiss": "閉じる"
+      },
+      "deleteDialog": {
+        "title": "このルールを削除しますか?",
+        "body": "{{recognized}} → {{replacement}} がリストから削除されます。変更を反映するには保存してください。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "switchDialog": {
+        "title": "変更を保存または破棄",
+        "body": "リストとテキストは同じルールを編集します。先に未保存の変更を保存または破棄してください。",
+        "cancel": "キャンセル",
+        "discard": "破棄",
+        "save": "保存"
+      },
+      "issues": {
+        "recognizedEmpty": "認識されたテキストを入力してください。",
+        "recognizedTooLong": "認識されたテキストは100文字以内にしてください。",
+        "recognizedForbidden": "認識されたテキストに改行、タブ、; は使用できません。",
+        "recognizedControl": "認識されたテキストに不可視の制御文字が含まれています。",
+        "recognizedComment": "認識されたテキストを # で始めることはできません。",
+        "duplicate": "同じ認識テキストは1回しか使用できません。このテキストは既に定義されています。",
+        "replacementEmpty": "置換後のテキストを入力してください。",
+        "replacementTooLong": "置換後のテキストは500文字以内にしてください。",
+        "replacementForbidden": "置換後のテキストに改行やタブは使用できません。",
+        "replacementControl": "置換後のテキストに不可視の制御文字が含まれています。",
+        "missingSeparator": "区切り文字がありません: ; に続けて置換後のテキストを追加してください",
+        "tooManyRules": "1つのルールセットに含められるルールは最大1,000件です。",
+        "invalidSavedRules": "保存済みのルールが無効です。インポートする前に再読み込みしてください。",
+        "unicodeUnavailable": "現在ルールを確認できません。Handyを再起動してから、もう一度お試しください。",
+        "invalidRule": "このルールは無効です。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未保存の変更",
+      "description": "保存されていない置換ルールがあります。このまま留まって保存するか、破棄して移動してください。",
+      "stay": "留まる",
+      "discard": "破棄して移動"
     }
   },
   "footer": {
@@ -673,7 +1225,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy が文字起こしテキストを入力するには、アクセシビリティ権限が必要です。",
-    "openSettings": "システム設定を開く"
+    "openSettings": "システム設定を開く",
+    "offTitle": "アクセシビリティ権限がオフです",
+    "smartPasteOff": "スマート貼り付けで挿入も貼り付けもできません。文字起こしは復元用に保持されます。"
   },
   "errors": {
     "loadDirectory": "ディレクトリの読み込みエラー: {{error}}",
@@ -686,12 +1240,41 @@
     },
     "noInputDeviceTitle": "マイクが見つかりません",
     "noInputDevice": "オーディオ入力デバイスが検出されませんでした。マイクまたはヘッドセットを接続してから再試行してください。",
+    "inputLostTitle": "録音が中断されました",
+    "inputLost": "マイクが切断されました。それまでに録音された音声を文字起こししています。",
     "recordingFailed": "録音の開始に失敗しました: {{error}}",
     "modelLoadFailed": "モデルの読み込みに失敗しました: {{model}}",
     "modelLoadFailedUnknown": "不明なモデル",
     "pasteFailedTitle": "テキストの貼り付けに失敗しました",
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
-    "transcriptionFailedTitle": "文字起こしに失敗しました"
+    "pasteFailedNotSaved": "テキストを貼り付けることも、履歴に保存することもできませんでした。",
+    "transcriptionFailedTitle": "文字起こしに失敗しました",
+    "settings": {
+      "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",
+      "gpuDeviceRequired": "GPU アクセラレータを選択する前に GPU デバイスを選択してください。",
+      "outOfRange": "この値は許可された範囲外です。",
+      "validationFailed": "この値はこの設定では使用できません。",
+      "revisionConflict": "設定が別の場所で変更されました。再読み込みしてもう一度お試しください。",
+      "unavailable": "この設定は現在変更できません。後でもう一度お試しください。",
+      "shortcutSessionBusy": "音声入力中です。終了してからもう一度お試しください。",
+      "persistenceFailed": "設定を保存できませんでした: 設定ファイルに書き込めませんでした。何も変更されていません。",
+      "generic": "設定を変更できませんでした。",
+      "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。",
+      "unsupportedPlatform": "この設定はこのシステムでは利用できません。",
+      "promptNameEmpty": "プロンプトの名前を入力してください。",
+      "promptNameTooLong": "プロンプト名は60文字以内にしてください。",
+      "promptNameDuplicate": "同じ名前のプロンプトがすでにあります。名前は重複できません。",
+      "promptTextEmpty": "プロンプトの本文を入力してください。",
+      "promptTextTooLong": "プロンプトの本文は8,000文字以内にしてください。",
+      "promptOverrideIncomplete": "プロバイダーとモデルの両方を選ぶか、既定のプロバイダーを使ってください。",
+      "promptUnknownProvider": "このプロバイダーは利用できません。",
+      "promptNotUsable": "このプロンプトは無効です。使用する前に編集してください。",
+      "limitExceeded": "上限数に達しました。",
+      "conflictTitle": "設定が別の場所で変更されました",
+      "conflictBody": "コマンドラインまたは別のウィンドウが新しいバージョンを保存しました。再読み込みして確認してください。保存していない変更は破棄されます。",
+      "reload": "再読み込み",
+      "reloadFailed": "設定を再読み込みできませんでした。もう一度お試しください。"
+    }
   },
   "appLanguage": {
     "title": "アプリの言語",
@@ -709,7 +1292,78 @@
   "overlay": {
     "transcribing": "文字起こし中…",
     "processing": "処理中…",
-    "loadingModel": "モデルを読み込み中…"
+    "loadingModel": "モデルを読み込み中…",
+    "fallbackNotice": "AI 処理に失敗しました。元のテキストを使用しました。",
+    "destination": {
+      "label": "挿入先: {{name}}",
+      "pinnedLabel": "挿入先: {{name}}（ピン留め）",
+      "frontmostApp": "最前面のアプリ",
+      "remove": "挿入先を解除",
+      "unknownApp": "挿入先のアプリ",
+      "choiceFailed": "挿入先を変更できませんでした。",
+      "menu": {
+        "title": "この音声入力の挿入先",
+        "frontmostNow": "現在最前面",
+        "otherApps": "その他のアプリ",
+        "frontmostAtEnd": "終了時に最前面のアプリ",
+        "loading": "アプリを読み込み中…",
+        "failed": "アプリの一覧を読み込めませんでした。",
+        "pin": "{{name}} をピン留め",
+        "unpin": "{{name}} のピン留めを解除",
+        "favorites": "お気に入り",
+        "addFavorite": "{{name}} をお気に入りに追加",
+        "removeFavorite": "{{name}} をお気に入りから削除",
+        "notOpen": "未起動",
+        "rememberInput": {
+          "field": "{{app}} のこのフィールドを記憶",
+          "fieldAgain": "{{app}} のこのフィールドを再度記憶",
+          "terminal": "このターミナルを記憶",
+          "terminalAgain": "このターミナルを再度記憶",
+          "saved": {
+            "field": "{{app}} のフィールドを記憶しました",
+            "terminal": "{{app}} のターミナルを記憶しました"
+          },
+          "refused": {
+            "notTextField": "先にアプリのテキストフィールドをクリックしてください",
+            "passwordField": "パスワードフィールドは記憶されません",
+            "unrecognizable": "このフィールドには Handy が後で認識できる名前がありません",
+            "terminalUnreadable": "ターミナルを読み取れませんでした",
+            "full": "記憶できる入力先は最大 20 件です。",
+            "stale": "このディクテーションは終了しました",
+            "failed": "フィールドを保存できませんでした"
+          }
+        }
+      },
+      "favoriteNotSaved": {
+        "full": "お気に入りは最大 10 個までです。",
+        "failed": "お気に入りを保存できませんでした。"
+      },
+      "refused": {
+        "stale": "その間に挿入先が変わりました。一覧を更新しました。",
+        "frozen": "挿入が始まったため、挿入先は変更できません。",
+        "unavailable": "このアプリは利用できなくなりました。一覧を更新しました。"
+      }
+    },
+    "prompt": {
+      "label": "この音声入力のプロンプト: {{name}}",
+      "hint": "ポインタを合わせるとオプションを表示",
+      "none": "なし (AI 処理なし)",
+      "menuTitle": "この音声入力のプロンプト",
+      "note": "この音声入力にのみ適用されます。デフォルトは {{name}} のままです。",
+      "noteRemembered": "「なし」を選ぶまで、次回以降の通常の音声入力でも使われます。",
+      "loading": "プロンプトを読み込み中…",
+      "failed": "プロンプトを読み込めませんでした。",
+      "choiceFailed": "プロンプトを変更できませんでした。",
+      "refused": {
+        "sessionEnded": "録音が終了したため、プロンプトは変更できません。",
+        "processingOff": "この音声入力では AI 処理がオフです。",
+        "promptMissing": "このプロンプトはもう存在しません。",
+        "promptNotUsable": "このプロンプトには問題があります。先に設定で編集してください。"
+      }
+    },
+    "dictationKeys": {
+      "enterSkipped": "この音声入力の自動 Enter はオフ"
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} の新機能"
@@ -724,5 +1378,49 @@
     "learnMore": "解決方法",
     "recorderBlocked": "現在ショートカットを記録できません。macOS の Secure Input がキーイベントをブロックしています。先に Secure Input の警告を解消してください。",
     "dismiss": "閉じる"
+  },
+  "smartPaste": {
+    "handOver": "リモート画面用にテキストをクリップボードに置きました"
+  },
+  "recoveryBubble": {
+    "label": "Handy が保持した文字起こし",
+    "previewLabel": "文字起こし",
+    "reason": {
+      "appClosed": "{{app}} は開いていません",
+      "appClosedUnnamed": "アプリは開いていません",
+      "pinnedAppNotRunning": "{{app}} はピン留めされていますが開いていません",
+      "pinnedAppNotRunningUnnamed": "ピン留めしたアプリは開いていません",
+      "activationFailed": "{{app}} を前面に出せませんでした",
+      "activationFailedUnnamed": "アプリを前面に出せませんでした",
+      "insertionFailed": "挿入に失敗しました",
+      "noTextField": "テキストフィールドが選択されていません",
+      "defaultFieldNotFound": "{{app}} の記憶したフィールドが見つかりません",
+      "defaultFieldNotFoundUnnamed": "記憶したフィールドが見つかりません",
+      "defaultTerminalGone": "{{app}} の記憶したターミナルはもう存在しません",
+      "defaultTerminalGoneUnnamed": "記憶したターミナルはもう存在しません"
+    },
+    "explanation": {
+      "notInserted": "Handy は何も挿入せず、Enter も送信していません。",
+      "mayHaveReached": "テキストの一部がアプリに届いた可能性があります。",
+      "nothingSent": "アプリには何も送信されていません。",
+      "lateRead": "アプリがクリップボードを遅れて読み取りました。テキストは結局貼り付けられた可能性があります。もう一度コピーする前に確認してください。",
+      "historyKept": "文字起こしは履歴に保存されています。",
+      "historyKeptFull": "文字起こしの全文は履歴に保存されています。",
+      "historyNotKept": "文字起こしは履歴にありません。",
+      "openAppDrag": "{{app}} を開いてから、テキストをドラッグまたはコピーしてください。",
+      "openAppCopy": "{{app}} を開いてから、テキストをコピーしてください。",
+      "openUnnamedDrag": "アプリを開いてから、テキストをドラッグまたはコピーしてください。",
+      "openUnnamedCopy": "アプリを開いてから、テキストをコピーしてください。",
+      "focusFieldDrag": "テキストフィールドをクリックしてから、テキストをドラッグまたはコピーしてください。",
+      "focusFieldCopy": "テキストフィールドをクリックしてから、テキストをコピーしてください。",
+      "noFieldSetting": "このチェックは「設定」>「詳細」>「出力」でオフにできます。"
+    },
+    "actions": {
+      "drag": "フィールドにドラッグ",
+      "copy": "コピー",
+      "why": "理由",
+      "hideDetails": "詳細を隠す",
+      "close": "閉じる"
+    }
   }
 }

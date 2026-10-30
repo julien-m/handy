@@ -1,0 +1,47 @@
+macOS Version 26.5.2 (Build 25F84)
+AXIsProcessTrusted (inherited from the hosting app): true
+user-like window click switch: true
+diag isActive: false; initial front: com.anthropic.claudefordesktop; TextEdit launched by diag: false
+
+[3/3] activate(options: []) main thread
+    returned true -> front in 11 ms [AX after: 66ms:pid30326]
+    returned true -> front in 10 ms [AX after: 29ms:pid30326]
+    returned true -> front in 11 ms [AX after: 32ms:pid30326]
+
+[3/3] activate(options: []) background thread
+    returned true -> front in 11 ms [AX after: 54ms:pid30326]
+    returned true -> front in 11 ms [AX after: 26ms:pid30326]
+    returned true -> front in 10 ms [AX after: 21ms:pid30326]
+
+[3/3] activate(options: .activateIgnoringOtherApps) main (deprecated)
+    returned true -> front in 11 ms [AX after: 16ms:pid30326]
+    returned true -> front in 10 ms [AX after: 50ms:pid30326]
+    returned true -> front in 11 ms [AX after: 17ms:pid30326]
+
+[3/3] activate(from: current, options: []) main (macOS 14 API)
+    returned true -> front in 11 ms [AX after: 10ms:pid30326]
+    returned true -> front in 10 ms [AX after: 28ms:pid30326]
+    returned true -> front in 10 ms [AX after: 5ms:err-25212 36ms:pid30326]
+
+[3/3] NSApp.yieldActivation(to:) + activate() main
+    returned true -> front in 10 ms [AX after: 15ms:pid30326]
+    returned true -> front in 10 ms [AX after: 33ms:pid30326]
+    returned true -> front in 10 ms [AX after: 60ms:pid30326]
+
+[3/3] AX kAXFrontmostAttribute=true main thread
+    AXError 0 -> front in 12 ms [AX after: 21ms:pid30326]
+    AXError 0 -> front in 11 ms [AX after: 51ms:pid30326]
+    AXError 0 -> front in 10 ms [AX after: 27ms:pid30326]
+
+[3/3] AX kAXFrontmostAttribute=true background thread
+    AXError 0 -> front in 10 ms [AX after: 23ms:pid30326]
+    AXError 0 -> front in 10 ms [AX after: 7ms:pid30326]
+    AXError 0 -> front in 10 ms [AX after: 25ms:pid30326]
+
+[0/3] AXRaise first window only
+    AXError 0 -> NOT front after 1 s, front=com.openai.codex [AX after: 11ms:pid88551]
+    AXError 0 -> NOT front after 1 s, front=com.openai.codex [AX after: 0ms:pid88551]
+    AXError 0 -> NOT front after 1 s, front=com.openai.codex [AX after: 0ms:pid88551]
+
+target pid: 30326
+restored front: com.anthropic.claudefordesktop

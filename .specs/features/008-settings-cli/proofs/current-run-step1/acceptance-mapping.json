@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "feature": "008-settings-cli",
+  "reviewer_model": "gpt-6.1-sol",
+  "review_max_chars": 120000,
+  "review_receipt_path": ".specs/features/008-settings-cli/proofs/current-run-step1/acceptance-review.json",
+  "bindings": [
+    {
+      "requirement_id": "008-settings-cli:AC-005",
+      "test_id": "handy/test/settings_platform::unix::occupied_probe_never_notifies_or_modifies_store",
+      "expected": "Passive inspection leaves isolated store bytes and revision unchanged.",
+      "assertion_path": "src-tauri/tests/settings_platform.rs",
+      "start_line": 58,
+      "end_line": 58,
+      "source_sha256": "0ecd891f88595efa1192532d2d6ad5511f244c80ce4910cd5742d1dea4d811b9",
+      "justification": "Step 1 partial AC-005 older-owner no-write invariant only; this primitive test does not invoke the settings CLI or assert unavailable exit 5."
+    },
+    {
+      "requirement_id": "008-settings-cli:AC-005",
+      "test_id": "handy/test/settings_platform::session_negative_cannot_prove_other_sessions_absent",
+      "expected": "Negative current-session ownership is Uncertain, not Absent.",
+      "assertion_path": "src-tauri/tests/settings_platform.rs",
+      "start_line": 355,
+      "end_line": 358,
+      "source_sha256": "0ecd891f88595efa1192532d2d6ad5511f244c80ce4910cd5742d1dea4d811b9",
+      "justification": "Step 1 partial AC-005 fail-closed ownership scope only; no offline mutation or live routing is executed."
+    }
+  ]
+}

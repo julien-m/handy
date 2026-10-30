@@ -1,0 +1,33 @@
+{
+  "tool": "external audit / cc-hub Codex bridge",
+  "status": "documented; reduced-input official retry running",
+  "first_surface_message": "Codex is not authenticated. Run: codex login / Audit: Codex failed (exit 3)",
+  "actual_cause": "Error: turn/start: turn/start failed: Input exceeds the maximum length of 1048576 characters. (code -32602), data: {\"input_error_code\":\"input_too_large\",\"max_chars\":1048576,\"actual_chars\":1131358}",
+  "authentication": "Root independently observed codex login status exit0 Logged in using ChatGPT. No login, authentication or global configuration modified.",
+  "diagnostic": "Root-authorized temporary process-local PATH wrapper preserved real Codex argv/stdin/stdout/exit and teed stderr; no git/audit output filtering.",
+  "mitigation": "Root committed only officially-reviewed plan refinement/docs/receipt e3bc314fd931ced04a1a03f811ff919eb76966f6. Remaining full HEAD diff 108195 bytes; official audit Python entrypoint relaunched without wrapper.",
+  "upstream_fixed": false,
+  "certification_runner_failure": false,
+  "proofs": [
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step3/audit.stderr",
+      "sha256": "a1e659ae4210b15ae45c1e41465dbbdad6fbb2314e0530155f1b43960628e562"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step3/audit.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step3/audit-retry.stderr",
+      "sha256": "a1e659ae4210b15ae45c1e41465dbbdad6fbb2314e0530155f1b43960628e562"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step3/audit-retry.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step3/audit-retry.raw-codex.stderr",
+      "sha256": "b008587bc90006e904dcd58e1d92bec0e9bf4ecafeb462b4356c726bdf7e4260"
+    }
+  ]
+}

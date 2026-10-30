@@ -1,0 +1,340 @@
+{
+  "task_id": "F1",
+  "worker_outcome": "BLOCKED",
+  "packet": {
+    "path": "/Users/julienm/projects/handy/.specs/.orchestration/handy-nine-features-01a1220e/acceptance-packet-v2.json",
+    "version": 2,
+    "verified_canonical_payload_sha256": "89aba3a4214785a1788be07ad810f2c1306a378e25e5d31ef9c134dd52fda2d8",
+    "superseded_v1_verified_sha256": "7d660dfc19eb2e5fda35fefe4b3413a99e3991d137c6f6ae6c7209f75b8eb35f"
+  },
+  "model": {
+    "value": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "source": "Explicit human authorization userMessage 01a1220e-ae0b-7870-bc59-4a55714685cc observed directly by Manager; delegated F1 brief"
+  },
+  "ownership": "F1 reserved feature001; current goal controls; official UI prerequisites narrowly approved in packetv2. No app/global-tool/dependency/Git mutations. Unrelated parent edits preserved. .gitignore original prefix preserved and only managed block appended.",
+  "feature_path": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority",
+  "changed_or_created_owned_files": [
+    "/Users/julienm/projects/handy/.gitignore",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/.reserved",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/.reviews/spec.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/clarification-inventory.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/clarification-wave1.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/pencil-capability-probe-final-raw.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/pencil-capability-probe-raw.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/preparatory-plan.md",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/progression-plan-wave1.txt",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/proof-semantic-stages.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/proof-writer-stages.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-batch-001-wave0.raw.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-batch-001-wave1.raw.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-prepared-wave1.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-prepared.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave0-receipt.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave0.bundle.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave1-ingest-output.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave1.bundle.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/screens/capability-probe/o5QKT.png",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/semantic-progression-commands.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/structural-wave1.txt",
+    "/Users/julienm/projects/handy/penflow/design-read.json",
+    "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+    "/Users/julienm/projects/handy/penflow/flow-ui-contract/flows/microphone-priority.md",
+    "/Users/julienm/projects/handy/penflow/flow-ui-contract/generated-docs.json",
+    "/Users/julienm/projects/handy/penflow/flow-ui-contract/screens/microphone-settings.md",
+    "/Users/julienm/projects/handy/penflow/semantic-ui-tree.json",
+    "/Users/julienm/projects/handy/penflow/theme.css",
+    "/Users/julienm/projects/handy/penflow/ui.pen",
+    "/Users/julienm/projects/handy/.penflow-tmp/receipts/export-flow-docs-ad438242d8fd456faa50821c540d292c.json",
+    "/Users/julienm/projects/handy/.penflow-tmp/receipts/export-semantic-tree-5edbe23f8567460697350abeabda8255.json",
+    "/Users/julienm/projects/handy/.penflow-tmp/receipts/pencil-sync-1489bad8952c4f9f8d49d13522dfb127.json",
+    "/Users/julienm/projects/handy/.penflow-tmp/receipts/pencil-sync-fc246d35c711421080eaeabacb33a37d.json",
+    "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+    "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+    "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/worker-receipt.json"
+  ],
+  "spec": {
+    "status": "Draft",
+    "sha256": "3bacb7343919e8a9ee8984380efdb5c3d7a64813c0084e3f5505bbfb71aac074",
+    "stories": 4,
+    "ac": 8,
+    "fr": 8,
+    "success_criteria": 3,
+    "fr_ac_mapping_complete": true,
+    "structural_score": "100/100"
+  },
+  "plan": {
+    "path": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/preparatory-plan.md",
+    "kind": "preparatory, not official spec-plan",
+    "covers": "all 8FR,8AC,3SC; concrete symbols; F8 transaction foundation first; migration/recoverability; CLI/UI contracts; lifecycle/fallback; concurrency/errors; Constitution Check; sequence/state/ER; all app tests PLANNED",
+    "official_plan_path": null,
+    "status_planned": false
+  },
+  "semantic": {
+    "review_receipt": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/.reviews/spec.json",
+    "complete": true,
+    "ready": true,
+    "errors": [],
+    "context_hash": "9913c0c62bd62d19fe6991bac86ad513f5f7fcff7a2c053eb4bed530c62ebb53",
+    "actual_raw_sha256": "802622831da2e9a8dfc951a792e8b259df8689ffbfb35c4ed49676faa5476e64",
+    "clarify_path": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/clarification-wave1.json",
+    "inventory": [],
+    "blocking": false,
+    "progression_plan": "READY exit0",
+    "warning": "Documentary UI completion remains outstanding. No current plan review or implementation readiness claimed."
+  },
+  "goal": {
+    "hash": "5cd4c9d168ae16ba53679bc91541e163fd13905cc476aa382a61102e4ecfda97",
+    "contract_path": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+    "state_path": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+    "cli_status": "active",
+    "native_goal_status": "blocked",
+    "native_thread_id": "01a1221a-03de-78c3-98d0-76bb404d63a3",
+    "complete": 18,
+    "required": 47,
+    "pending": 29,
+    "archive_path": null,
+    "archive_run_status": "pending; no successful archive produced",
+    "pending_tasks": [
+      {
+        "task_id": "task.019.run_llm_spec_review_unless_no_review_retry_on_bl",
+        "ordinal": 19,
+        "description": "Run LLM spec review unless --no-review; retry on blocking findings"
+      },
+      {
+        "task_id": "task.020.run_direct_clarify_gate_step_5_9_retain_all_vagu",
+        "ordinal": 20,
+        "description": "Run direct Clarify gate (Step 5.9): retain all vague/ambiguous spec items, present <=5 questions at a time, block unresolved critical items, write accepted decisions in ## Clarifications, preserve AC/FR/SC numbering, then re-validate"
+      },
+      {
+        "task_id": "task.021.annotate_surfaces_field_if_specs_surfaces_yaml_h",
+        "ordinal": 21,
+        "description": "Annotate `Surfaces:` field if .specs/surfaces.yaml has multiple Playwright surfaces"
+      },
+      {
+        "task_id": "task.022.run_quality_gate_checks_before_presenting_spec",
+        "ordinal": 22,
+        "description": "Run quality gate checks before presenting spec"
+      },
+      {
+        "task_id": "task.023.present_spec_summary_and_offer_next_actions",
+        "ordinal": 23,
+        "description": "Present spec summary and offer next actions"
+      },
+      {
+        "task_id": "task.024.rename_seed_md_to_seed_absorbed_md_if_seed_was_l",
+        "ordinal": 24,
+        "description": "Rename seed.md to seed.absorbed.md if seed was loaded"
+      },
+      {
+        "task_id": "task.025.add_feature_row_to_specs_readme_md_features_tabl",
+        "ordinal": 25,
+        "description": "Add feature row to .specs/README.md Features table under lock"
+      },
+      {
+        "task_id": "task.026.add_initial_entry_to_feature_changelog_md_under",
+        "ordinal": 26,
+        "description": "Add initial entry to feature changelog.md under lock"
+      },
+      {
+        "task_id": "task.027.add_summary_entry_to_global_specs_changelog_md_u",
+        "ordinal": 27,
+        "description": "Add summary entry to global .specs/changelog.md under lock"
+      },
+      {
+        "task_id": "finalize.registry",
+        "ordinal": 28,
+        "description": "Finalize registry via `livespec finalize apply` + `livespec finalize verify` and prove finalize.registry with the receipt path; append `--build-manifest <runner_build_manifest>` for UI Implemented certification as defined by the C51 stage contract, omit it for non-UI and nonterminal preparation"
+      },
+      {
+        "task_id": "task.029.match_and_check_roadmap_items_add_deferred_or_ad",
+        "ordinal": 29,
+        "description": "Match and check roadmap items; add deferred or ad-hoc items as needed"
+      },
+      {
+        "task_id": "task.030.propose_preflight_manifest_additions_if_spec_has",
+        "ordinal": 30,
+        "description": "Propose preflight manifest additions if spec has Infrastructure Requirements"
+      },
+      {
+        "task_id": "dod.031.feature_directory_nnn_feature_name_exists",
+        "ordinal": 31,
+        "description": "Feature directory `NNN-feature-name/` exists"
+      },
+      {
+        "task_id": "dod.032.spec_md_exists_and_contains_required_sections",
+        "ordinal": 32,
+        "description": "`spec.md` exists and contains required sections"
+      },
+      {
+        "task_id": "dod.033.every_acceptance_scenario_uses_proper_gherkin_sy",
+        "ordinal": 33,
+        "description": "Every acceptance scenario uses proper Gherkin syntax (```gherkin blocks)"
+      },
+      {
+        "task_id": "dod.034.every_user_story_has_a_mermaid_flowchart",
+        "ordinal": 34,
+        "description": "Every user story has a Mermaid flowchart"
+      },
+      {
+        "task_id": "dod.035.every_fr_maps_to_1_ac",
+        "ordinal": 35,
+        "description": "Every FR maps to >= 1 AC"
+      },
+      {
+        "task_id": "dod.036.spec_md_includes_either_explicit_values_or_assum",
+        "ordinal": 36,
+        "description": "`spec.md` includes either explicit values or `[ASSUMED]` markers for missing context"
+      },
+      {
+        "task_id": "dod.037.specs_readme_md_features_table_contains_the_new",
+        "ordinal": 37,
+        "description": "`.specs/README.md` Features table contains the new feature row with Status: Draft"
+      },
+      {
+        "task_id": "dod.038.feature_changelog_md_has_an_initial_entry",
+        "ordinal": 38,
+        "description": "Feature `changelog.md` has an initial entry"
+      },
+      {
+        "task_id": "dod.039.global_specs_changelog_md_has_a_summary_entry",
+        "ordinal": 39,
+        "description": "Global `.specs/changelog.md` has a summary entry"
+      },
+      {
+        "task_id": "dod.040.if_feature_has_ui_and_design_tool_configured_moc",
+        "ordinal": 40,
+        "description": "If feature has UI and design tool configured: mockups generated and validated"
+      },
+      {
+        "task_id": "dod.041.if_feature_has_ui_screens_section_in_spec_md_wit",
+        "ordinal": 41,
+        "description": "If feature has UI: `## Screens` section in spec.md with PNG references"
+      },
+      {
+        "task_id": "dod.042.if_specs_roadmap_md_exists_matching_item_checked",
+        "ordinal": 42,
+        "description": "If `.specs/roadmap.md` exists: matching item checked OR ad-hoc feature added as checked item in MVP"
+      },
+      {
+        "task_id": "dod.043.if_split_performed_deferred_items_added_to_roadm",
+        "ordinal": 43,
+        "description": "If split performed: deferred items added to roadmap.md Deferred section"
+      },
+      {
+        "task_id": "dod.044.if_specs_roadmap_md_exists_emerging_dependencies",
+        "ordinal": 44,
+        "description": "If `.specs/roadmap.md` exists: emerging dependencies detected and proposed (or none found)"
+      },
+      {
+        "task_id": "dod.045.if_specs_roadmap_md_exists_absorption_detection",
+        "ordinal": 45,
+        "description": "If `.specs/roadmap.md` exists: absorption detection run (or no overlap found)"
+      },
+      {
+        "task_id": "dod.046.next_action_is_proposed_spec_plan_feature",
+        "ordinal": 46,
+        "description": "Next action is proposed (`/spec-plan [feature]`)"
+      },
+      {
+        "task_id": "archive.run",
+        "ordinal": 47,
+        "description": "Archive the run via `livespec goal archive` and prove archive.run with the artifact path"
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "gate": "goal task19 semantic review proof",
+      "action": "livespec goal prove task.019 with current actual .reviews/spec.json",
+      "actual_exit": 1,
+      "actual_output": "REJECTED_NEEDS_ACTION missing_evidence=[review_receipt_incomplete_or_stale]",
+      "cause": "evidence_policy.py passes immutable feature microphone-priority; review_files.py reads literal .specs/features/microphone-priority/spec.md, absent. Actual numbered folder001 review verifies true. No alias, fake receipt, contract mutation or rerender used."
+    },
+    {
+      "gate": "UI quality step6 / task22 and command DoD",
+      "cause": "Current MCP-only .pen restriction conflicts with canonical source filesystem readers and C46 distinct byte snapshots. No supported native Save/raw snapshot capture API closes C46. Current execute raw response is wrapped text, not JSON admitted by C51 native layout decoder. Native Get/bounds/export work; global tooling bridge repair outside scope."
+    }
+  ],
+  "end_doctor": {
+    "status": "NOT RUN",
+    "argv": [
+      "/Users/julienm/projects/penflow/.venv/bin/penflow",
+      "doctor",
+      "--project",
+      "/Users/julienm/projects/handy",
+      "--check",
+      "--json"
+    ],
+    "reason": "Current doctor_files.py imports parse_pen/validate_pen_context and validates canonical ui.pen via filesystem JSON reader (lines211-244). Parent explicitly allows enddoctor only if no .pen filesystem read; incompatible current restriction. No new fix or source-reader workaround."
+  },
+  "application_tests": "PLANNED; none executed, native Handy not run",
+  "source_guard": "334 sources unchanged, exit0 changes[]",
+  "execution_logs": {
+    "writer_proofs": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/proof-writer-stages.json",
+    "semantic_proof_rejection": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/proof-semantic-stages.json",
+    "semantic_progression": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/semantic-progression-commands.json",
+    "review_wave0_failed_receipt": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave0-receipt.json",
+    "review_wave1_ingest_output": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/review-wave1-ingest-output.json"
+  },
+  "final_commands": [
+    {
+      "argv": [
+        "livespec",
+        "goal",
+        "status",
+        "--state",
+        "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json"
+      ],
+      "cwd": "/Users/julienm/projects/handy",
+      "timeout_seconds": 90,
+      "exit_code": 0,
+      "stdout": "goal_hash:5cd4c9d168ae16ba53679bc91541e163fd13905cc476aa382a61102e4ecfda97 | status:active | complete:18/47 | pending:29\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "/Users/julienm/projects/handy/.specs/.orchestration/handy-nine-features-01a1220e/verify-preparation-scope.py"
+      ],
+      "cwd": "/Users/julienm/projects/handy",
+      "timeout_seconds": 90,
+      "exit_code": 0,
+      "stdout": "{\"sources\": 334, \"unchanged\": true, \"changes\": []}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "livespec",
+        "validate",
+        "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/spec.md",
+        "--format",
+        "compact"
+      ],
+      "cwd": "/Users/julienm/projects/handy",
+      "timeout_seconds": 90,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "OK      .specs/features/001-microphone-priority/spec.md Score: 100/100\n"
+    }
+  ],
+  "visual_probe": {
+    "path": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/screens/capability-probe/o5QKT.png",
+    "preview": "http://127.0.0.1:4175/i/0926fc45a903",
+    "scope": "Native capability probe only, not full UI mockup or certification",
+    "raw_native": "/Users/julienm/projects/handy/.specs/features/001-microphone-priority/pencil-capability-probe-final-raw.json"
+  },
+  "remaining": "Trusted feature-scope consumer repair and compatible native bridge; complete UI forward inputs, exact semantic IDs, validated full screens/versionedPNG registry; quality/sync/finalize/roadmap/afterhook/archive closure; later official spec-plan and independent plan review/Analyze before code. Keep reservation and CLI goal controls intact; native goal blocked after three consecutive verified blocker turns; no fabricated completion.",
+  "blocked_audit": {
+    "consecutive_goal_turns": 3,
+    "last_prove_exit_code": 1,
+    "last_prove_status": "REJECTED_NEEDS_ACTION",
+    "missing_evidence": [
+      "review_receipt_incomplete_or_stale"
+    ],
+    "current_source_confirmed": "evidence_policy.py:156 passes immutable feature; review_files.py:119 constructs literal feature_dir",
+    "native_update_goal_result": "blocked; objective preserved",
+    "cli_goal_state": "active18/47; no manual edits"
+  }
+}

@@ -1,0 +1,48 @@
+UI delivery review, correction round 2 (2026-10-14), branch feature/ui-001-microphones on top of HEAD 59992c7b.
+Every command of proofs/claude-ui-sync/summary.txt rerun on the corrected tree, plus the dropdown aria test of proofs/claude-ui.
+cwd: worktree root; logs: <name>.stdout/.stderr/.exit in this folder.
+port 1420 free before Playwright (lsof -iTCP:1420 -sTCP:LISTEN found no listener)
+exit=0  bunx --no-install tsc --noEmit
+exit=0  bun run lint
+exit=0  bun run format:check
+exit=0  bun run check:translations
+exit=0  bun run build
+exit=0  bun run test:microphone-priority
+exit=0  bun run test:microphone-priority-ui   (now = playwright test tests/microphone-priority --reporter=line: 3 spec files)
+exit=0  bun run test:indicator
+exit=0  bun run test:vocabulary
+exit=0  bun run test:shortcut-states
+exit=0  bun run test:output-settings
+exit=0  bun run test:settings-store
+exit=0  bun run test:settings-errors
+exit=0  bun run test:shortcut-list
+exit=0  bun run test:keyboard
+exit=0  bun test src/components/ui/dropdown-aria.test.tsx
+exit=0  livespec conventions verify --feature repo --json > /dev/null   (verdict=PASS new_count=0 blockers=0 receipt=.specs/conventions/runs/20261014T150914Z/receipt.json; raw output not committed)
+cargo fmt/clippy/test: not run — no Rust file changed in this round.
+
+Feature tests (bun run test:microphone-priority): 88 pass, 0 fail across 6 files. New in status-polling.test.ts: async
+  visibility (only the newest answer decides), a fake Tauri window with a page that stays visible (hidden window: no read and
+  no further window query; hide then blur; refocus from the tray: a read at once; focus changes of a visible window: no extra
+  read; isVisible() failing: the page decides, one warning; stop releases the focus listener; unsubscribe before the listener
+  is ready; failed focus subscription reported). save-priority.test.ts: unknown outcome confirmed when the sent order is
+  committed, kept as Retry otherwise. priority-views.test.tsx: Add disabled and named by the failure after a failed listing,
+  enabled before the first listing.
+Browser tests (bun run test:microphone-priority-ui): 23 passed in headless Chromium against the fake Tauri IPC of tests/harness/
+  (not a native window proof):
+  - tests/microphone-priority.spec.ts (13): focus after Save busy/Retry/success, Remove, keyboard move, Discard, Reload, Reload
+    inactive during a Save; new: unknown outcome that committed (success, title focused), unknown outcome that did not (Retry
+    keeps focus), same order saved elsewhere with Save focused (title focused), same order saved elsewhere with focus on a row
+    (left alone); loading guard; failed listing (Unknown, Add disabled and named "Couldn't check devices", re-enabled by Refresh).
+    Every focus assertion polls (expect.poll).
+  - tests/microphone-priority-polling.spec.ts (3, Playwright clock): page visibility; new: window hidden while the page stays
+    visible (no read, no further window query) then shown and focused from the tray (a read at once, then every 5 s); new:
+    isVisible() failing (the page visibility decides).
+  - tests/microphone-priority-drag.spec.ts (7): window blur, page hidden, lost capture, pointercancel, plain drop; new: the
+    dragged row removed elsewhere (audit scenario, release over Studio's handle moves nothing); new: a Save started during a
+    drag cancels it.
+Red run (red-head-59992c7b.out): the same 3 spec files against the src/ of HEAD 59992c7b (files restored from git, then the fix
+  put back): 6 failed (the 6 new behaviours: removed row, write during drag, hidden window, unknown outcome committed, same order
+  saved elsewhere with Save focused, Add after a failed listing), 17 passed.
+Not verified natively: the polling pause in a real window. macOS with Julien; Windows and Linux are pending release evidence
+  (get_microphone_status calls stop after closing to the tray and resume when reopened from the tray).

@@ -1,0 +1,21 @@
+{
+  "kind": "spec",
+  "rounds": [
+    {
+      "context_hash": "25476774287efd35047f6d42e00990ed7d9e2be3632d2bab3f63f50019967f34",
+      "ready": true
+    },
+    {
+      "context_hash": "07505792f9333e59f87c7f69d0a87474f406fef5d4611705d7ff4efb3a57096f",
+      "ready": false
+    },
+    {
+      "context_hash": "d856302a5b650bf5aade1d2c5b7a2d1ce0c8a9592a808969fa8bfa7d5fd774f0",
+      "ready": true
+    },
+    {
+      "context_hash": "56b79ca64ba840f96b3a9a4bc82c3ee2ce6075698e1b8c448e009df38703133b",
+      "ready": true
+    }
+  ]
+}

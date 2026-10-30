@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "recovery-bubble",
+  "description": "Recovery bubble window (010): its events and the locale fallback of the language sync only; its commands are app commands checked by window label.",
+  "windows": ["recovery_bubble"],
+  "permissions": ["core:event:default", "os:allow-locale"]
+}

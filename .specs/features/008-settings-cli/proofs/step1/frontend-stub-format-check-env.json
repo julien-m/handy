@@ -1,0 +1,17 @@
+{
+  "command": [
+    "bun",
+    "run",
+    "format:check"
+  ],
+  "environment": {
+    "HANDY_FORCE_AI_STUB": "1"
+  },
+  "retry_hypothesis": "Previous format capture did not establish the required inherited bridge stub environment.",
+  "retry_evidence": "This command explicitly injects HANDY_FORCE_AI_STUB=1 in subprocess environment.",
+  "exit_code": 0,
+  "duration_seconds": 1.67,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-check-env.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-check-env.err",
+  "retry_result": "PASS"
+}
