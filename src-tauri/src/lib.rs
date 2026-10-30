@@ -43,6 +43,7 @@ pub mod smart_spacing;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
+mod unknown_token;
 mod utils;
 pub mod word_replacements;
 

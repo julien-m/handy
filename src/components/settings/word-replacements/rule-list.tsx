@@ -18,6 +18,10 @@ import {
 } from "./rules-model";
 import { RuleRow } from "./rule-row";
 import { DeleteRuleDialog } from "./delete-rule-dialog";
+import { BOUNDED_LIST_ROWS, useRevealAppended } from "../../ui/bounded-list";
+
+/** A rule row: `py-2` around a `min-h-8` line, plus its divider. */
+const LIST_MAX_HEIGHT = `calc(${BOUNDED_LIST_ROWS} * (3rem + 1px) + 2px)`;
 
 interface RuleListProps {
   /** Focuses the add form's recognized field (or the empty state's Add rule). */
@@ -28,11 +32,15 @@ export const RuleList: React.FC<RuleListProps> = ({ onFocusAddForm }) => {
   const { t } = useTranslation();
   const draft = useReplacementEditor((state) => state.draft);
   const deletion = useRuleDeletion(draft, onFocusAddForm);
+  const list = useRef<HTMLUListElement>(null);
+  useRevealAppended(list, draft.length);
   return (
     <>
       <ul
+        ref={list}
         hidden={draft.length === 0}
-        className="border border-mid-gray/20 rounded-lg divide-y divide-mid-gray/20"
+        className="border border-mid-gray/20 rounded-lg divide-y divide-mid-gray/20 overflow-y-auto"
+        style={{ maxHeight: LIST_MAX_HEIGHT }}
         aria-label={t("settings.replacements.title")}
         data-testid={`${SCREEN_IDS.list}-list`}
       >

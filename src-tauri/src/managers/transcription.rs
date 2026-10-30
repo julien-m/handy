@@ -1761,9 +1761,10 @@ fn transcribe_cpp_run_plan(
     }
 }
 
-/// Native final-text stages shared by both final transcription paths: language evidence, Chinese
-/// script, word replacements, approximate correction outside replaced spans, filler removal and
-/// normalization (a panic keeps the text unchanged).
+/// Native final-text stages shared by both final transcription paths: quotes written as the
+/// model's unknown token, language evidence, Chinese script, word replacements, approximate
+/// correction outside replaced spans, filler removal and normalization (a panic keeps the text
+/// unchanged).
 pub(crate) fn post_process_transcription_text(
     raw: String,
     settings: &AppSettings,
@@ -1774,6 +1775,8 @@ pub(crate) fn post_process_transcription_text(
 ) -> String {
     let converts_script = settings.chinese_script != ChineseScript::AsTranscribed;
     fail_open_text_transform(raw, |raw| {
+        // Quotes the model wrote as its unknown token (Canary), before any stage reads the text.
+        let raw = crate::unknown_token::restore_quotes(&raw);
         // Last-resort language evidence: confidence-gated detection from the
         // transcribed text itself, constrained to the model's languages. Only
         // consulted when it can change the outcome (built-in gated fillers or

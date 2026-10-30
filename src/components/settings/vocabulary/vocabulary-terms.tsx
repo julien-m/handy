@@ -19,6 +19,10 @@ import {
   type RemovalTarget,
   type VocabularyScreen,
 } from "./vocabulary-model";
+import { BOUNDED_LIST_ROWS, useRevealAppended } from "../../ui/bounded-list";
+
+/** Rows of chips (`py-1` text-sm with a border, `gap-2` between rows) plus the `p-1` that keeps focus rings visible. */
+const LIST_MAX_HEIGHT = `calc(${BOUNDED_LIST_ROWS} * (1.75rem + 2px) + ${BOUNDED_LIST_ROWS - 1} * 0.5rem + 0.5rem)`;
 
 interface TermChipProps {
   occurrence: Occurrence;
@@ -141,9 +145,13 @@ interface TermListBodyProps extends TermListProps {
 const TermList: React.FC<TermListBodyProps> = (props) => {
   const { terms, screen, overBudget, busy, removeButtons } = props;
   const { t } = useTranslation();
+  const list = useRef<HTMLUListElement>(null);
+  useRevealAppended(list, terms.length);
   return (
     <ul
-      className="flex flex-wrap gap-2"
+      ref={list}
+      className="flex flex-wrap gap-2 p-1 overflow-y-auto"
+      style={{ maxHeight: LIST_MAX_HEIGHT }}
       data-testid={`${screen}-list`}
       aria-label={t("settings.vocabulary.listLabel")}
     >

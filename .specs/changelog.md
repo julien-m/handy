@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-30 — [Features 002, 003] Fix: the rule and term lists keep about five rows and scroll inside (decision `bounded_lists`); Canary's `<unk>` written for « » is restored before the final-text stages (AC-007, decision `unknown_token_quotes`; native proof pending)
+
 ## 2026-10-30 — [Feature 014] Fix: 1/1 gap closed: « Send to the App in Front » pressed with nothing pinned shows the transient notice « No pinned app » on the recording indicator (4 s, 26 locales) and logs it at debug level; a frontmost route the key did not set with a pin stays silent (AC-007, decision `no_pin_notice`; native proof pending)
 ## 2026-10-29 — [Feature 017] N30: with smart spacing on and the text after the selection read, a dictation's single final period (Canary) is dropped when the text after starts with `, . ; : ! ? ) ] }`, a closing quote or a lower-case letter; abbreviations, `…`, `?`, `!`, `。`, a capital, a line break, the field end, an unknown side, a non-text focus and 013's terminal keep it (AC-017, FR-006; native proof pending)
 ## 2026-10-29 — [Feature 017] Fix: a dictation typed by 013's addressing tool into a terminal (background cmux workspace included) gets no spacing adjustment, not even the fallback space; on Windows and Linux the option's description names the fallback final space (AC-015, AC-016)
