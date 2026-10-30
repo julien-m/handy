@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatyczny Enter wyłączony dla tego dyktowania"
+      "enterSkipped": "Automatyczny Enter wyłączony dla tego dyktowania",
+      "noPin": "Brak przypiętej aplikacji"
     }
   },
   "whatsNew": {

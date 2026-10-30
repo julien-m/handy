@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatische Eingabetaste für dieses Diktat aus"
+      "enterSkipped": "Automatische Eingabetaste für dieses Diktat aus",
+      "noPin": "Keine angeheftete App"
     }
   },
   "whatsNew": {

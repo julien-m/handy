@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatische Enter uit voor dit dictaat"
+      "enterSkipped": "Automatische Enter uit voor dit dictaat",
+      "noPin": "Geen vastgezette app"
     }
   },
   "secureInput": {

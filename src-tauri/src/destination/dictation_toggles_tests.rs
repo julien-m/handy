@@ -35,6 +35,13 @@ fn pinned_dictation(
     assert_eq!(started.source, DestinationSource::Pinned);
     Ok((manager, started))
 }
+/// The snapshot of a press that changed the route.
+fn changed(outcome: RetargetOutcome) -> Result<DestinationSnapshot, Box<dyn std::error::Error>> {
+    match outcome {
+        RetargetOutcome::Changed(snapshot) => Ok(snapshot),
+        other => Err(format!("no change: {other:?}").into()),
+    }
+}
 fn ids(snapshot: &DestinationSnapshot) -> (DictationId, u64) {
     (snapshot.dictation_id, snapshot.destination_generation)
 }
@@ -44,15 +51,11 @@ fn ids(snapshot: &DestinationSnapshot) -> (DictationId, u64) {
 fn a_press_reroutes_a_pinned_dictation_and_a_second_press_restores_the_pin() -> TestResult {
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     assert_eq!(rerouted.source, DestinationSource::FrontmostAtEnd);
     assert_eq!(rerouted.selection_version, started.selection_version + 1);
     assert_eq!(rerouted.pin, started.pin, "the badge still offers Unpin");
-    let restored = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let restored = changed(manager.toggle_active_app(id, generation)?)?;
     assert_eq!(restored.source, DestinationSource::Pinned);
     assert_eq!(restored.selection, started.selection);
     Ok(())
@@ -76,12 +79,16 @@ fn the_pin_is_intact_and_routes_the_next_dictation() -> TestResult {
     Ok(())
 }
 
+// @spec AC-007: No pin is told apart from a silent no-op — .specs/features/014-in-dictation-keys/spec.md#ac-007
 #[test]
 fn without_a_pin_or_on_a_frontmost_route_the_key_changes_nothing() -> TestResult {
     let (_, manager) = setup();
     let started = manager.commit_start(manager.capture(true));
     let (id, generation) = ids(&started);
-    assert_eq!(manager.toggle_active_app(id, generation)?, None);
+    assert_eq!(
+        manager.toggle_active_app(id, generation)?,
+        RetargetOutcome::NoPin
+    );
     assert_eq!(manager.snapshot(), Some(started));
 
     let (manager, started) = pinned_dictation()?;
@@ -94,8 +101,8 @@ fn without_a_pin_or_on_a_frontmost_route_the_key_changes_nothing() -> TestResult
     )?;
     assert_eq!(
         manager.toggle_active_app(id, generation)?,
-        None,
-        "the cross set it"
+        RetargetOutcome::Unchanged,
+        "the cross set it, with a pin"
     );
     Ok(())
 }
@@ -108,15 +115,13 @@ fn after_an_unpin_or_a_badge_choice_the_second_press_restores_nothing() -> TestR
     manager.unpin();
     assert_eq!(
         manager.toggle_active_app(id, generation)?,
-        None,
+        RetargetOutcome::NoPin,
         "nothing pinned"
     );
 
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     let menu = manager.menu(id, rerouted.selection_version)?;
     let token = menu
         .entries
@@ -129,8 +134,8 @@ fn after_an_unpin_or_a_badge_choice_the_second_press_restores_nothing() -> TestR
     manager.choose(id, chosen.selection_version, cross)?;
     assert_eq!(
         manager.toggle_active_app(id, generation)?,
-        None,
-        "the cross set it"
+        RetargetOutcome::Unchanged,
+        "the cross set it, with a pin"
     );
     Ok(())
 }
@@ -188,9 +193,7 @@ fn the_skip_shows_in_the_snapshot_and_keeps_the_route_and_version() -> TestResul
     assert!(skipped.enter_skipped);
     assert_eq!(skipped.selection_version, started.selection_version);
     assert_eq!(skipped.source, started.source);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     assert!(rerouted.enter_skipped, "both keys combine");
     let next = manager.commit_start(manager.capture(true));
     assert!(

@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Entrée automatique désactivée pour cette dictée"
+      "enterSkipped": "Entrée automatique désactivée pour cette dictée",
+      "noPin": "Aucune application épinglée"
     }
   },
   "whatsNew": {

@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Bu dikte için otomatik Enter kapalı"
+      "enterSkipped": "Bu dikte için otomatik Enter kapalı",
+      "noPin": "Sabitlenmiş uygulama yok"
     }
   },
   "whatsNew": {

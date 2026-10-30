@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter التلقائي متوقف لهذا الإملاء"
+      "enterSkipped": "Enter التلقائي متوقف لهذا الإملاء",
+      "noPin": "لا يوجد تطبيق مثبّت"
     }
   },
   "whatsNew": {

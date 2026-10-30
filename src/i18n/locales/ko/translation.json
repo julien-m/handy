@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "이 받아쓰기의 자동 Enter 꺼짐"
+      "enterSkipped": "이 받아쓰기의 자동 Enter 꺼짐",
+      "noPin": "고정된 앱 없음"
     }
   },
   "whatsNew": {

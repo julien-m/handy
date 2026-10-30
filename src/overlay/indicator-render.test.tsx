@@ -19,6 +19,7 @@ import {
   aiFailureNotice,
   handOverNotice,
   inputLostNotice,
+  noPinNotice,
   pasteFailedNotice,
 } from "./notice-model";
 
@@ -369,6 +370,22 @@ describe("paste-failed notice (010, native session N17)", () => {
     expect(html).toContain(
       "Text could not be pasted into the active application.",
     );
+    expect(html).not.toContain("recording-indicator-pill");
+  });
+});
+
+// @spec AC-007: No-pin notice on the indicator — .specs/features/014-in-dictation-keys/spec.md#ac-007
+describe("no-pin notice (014 AC-007)", () => {
+  test("during the dictation it shows next to the pill with its test ID and text", () => {
+    const html = render({ notices: [noPinNotice(0)] });
+    expect(html).toContain('data-testid="recording-indicator-no-pin-notice"');
+    expect(html).toContain('role="alert"');
+    expect(html).toContain("No pinned app");
+    expect(html).toContain('data-testid="recording-indicator-pill"');
+  });
+  test("shown alone, it names its own screen", () => {
+    const html = render({ notices: [noPinNotice(0)], showIndicator: false });
+    expect(html).toContain('data-testid="recording-indicator-no-pin-screen"');
     expect(html).not.toContain("recording-indicator-pill");
   });
 });

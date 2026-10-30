@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat"
+      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat",
+      "noPin": "Cap aplicació fixada"
     }
   },
   "secureInput": {

@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "यो डिक्टेसनका लागि स्वचालित Enter बन्द"
+      "enterSkipped": "यो डिक्टेसनका लागि स्वचालित Enter बन्द",
+      "noPin": "कुनै पिन गरिएको एप छैन"
     }
   },
   "secureInput": {

@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter אוטומטי כבוי להכתבה זו"
+      "enterSkipped": "Enter אוטומטי כבוי להכתבה זו",
+      "noPin": "אין אפליקציה מוצמדת"
     }
   },
   "whatsNew": {

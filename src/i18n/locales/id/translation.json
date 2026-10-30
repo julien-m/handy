@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter otomatis mati untuk dikte ini"
+      "enterSkipped": "Enter otomatis mati untuk dikte ini",
+      "noPin": "Tidak ada aplikasi yang disematkan"
     }
   },
   "secureInput": {

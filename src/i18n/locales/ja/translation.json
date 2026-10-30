@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "この音声入力の自動 Enter はオフ"
+      "enterSkipped": "この音声入力の自動 Enter はオフ",
+      "noPin": "ピン留めしたアプリはありません"
     }
   },
   "whatsNew": {

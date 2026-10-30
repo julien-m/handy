@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatic Enter off for this dictation"
+      "enterSkipped": "Automatic Enter off for this dictation",
+      "noPin": "No pinned app"
     }
   },
   "secureInput": {

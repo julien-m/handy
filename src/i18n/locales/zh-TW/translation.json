@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "本次聽寫已關閉自動 Enter"
+      "enterSkipped": "本次聽寫已關閉自動 Enter",
+      "noPin": "沒有釘選的 App"
     }
   },
   "whatsNew": {

@@ -369,7 +369,7 @@
   color: var(--color-warning);
 }
 
-/* ---- Notices (AI failure, hand-over, input lost) ---- */
+/* ---- Notices (AI failure, hand-over, input lost, failed insertion, no pin) ---- */
 .snotice {
   width: var(--ov-notice-w);
   box-sizing: border-box;
@@ -388,7 +388,8 @@
   flex: none;
   color: var(--color-warning);
 }
-.snotice.hand_over .snotice-icon {
+.snotice.hand_over .snotice-icon,
+.snotice.no_pin .snotice-icon {
   color: var(--s-muted);
 }
 .snotice-text {

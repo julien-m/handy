@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Đã tắt Enter tự động cho lần đọc này"
+      "enterSkipped": "Đã tắt Enter tự động cho lần đọc này",
+      "noPin": "Không có ứng dụng nào được ghim"
     }
   },
   "whatsNew": {

@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter automático desativado para este ditado"
+      "enterSkipped": "Enter automático desativado para este ditado",
+      "noPin": "Nenhum aplicativo fixado"
     }
   },
   "whatsNew": {

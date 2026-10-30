@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Invio automatico disattivato per questa dettatura"
+      "enterSkipped": "Invio automatico disattivato per questa dettatura",
+      "noPin": "Nessuna app fissata"
     }
   },
   "whatsNew": {

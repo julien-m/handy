@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "本次听写已关闭自动回车"
+      "enterSkipped": "本次听写已关闭自动回车",
+      "noPin": "没有固定的应用"
     }
   },
   "whatsNew": {

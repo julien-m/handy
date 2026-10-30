@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatisk Retur av för det här diktatet"
+      "enterSkipped": "Automatisk Retur av för det här diktatet",
+      "noPin": "Ingen fäst app"
     }
   },
   "whatsNew": {

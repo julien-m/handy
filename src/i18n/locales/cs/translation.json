@@ -1362,7 +1362,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatický Enter pro toto diktování vypnut"
+      "enterSkipped": "Automatický Enter pro toto diktování vypnut",
+      "noPin": "Žádná připnutá aplikace"
     }
   },
   "whatsNew": {

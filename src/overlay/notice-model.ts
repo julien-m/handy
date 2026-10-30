@@ -1,6 +1,7 @@
 // Pure rules of the transient notices on the recording indicator: the AI failure of 005
 // (AC-005), the Screen Sharing hand-over of 007 (AC-012), the recording cut short by a lost
-// microphone of 001 (FR-004) and the failed insertion (`paste-error`, native session N17). Each
+// microphone of 001 (FR-004), the failed insertion (`paste-error`, native session N17) and the
+// « Send to the app in front » key pressed with nothing pinned (014 AC-007). Each
 // stays at least four seconds; none ever claims that an insertion succeeded. The destination
 // reason of 006 is presented by 010's recovery bubble instead; `paste-error` is emitted only when
 // no bubble shows the failure, so a failure is reported once.
@@ -14,6 +15,7 @@ export type NoticeKind =
   | "ai_failed"
   | "hand_over"
   | "input_lost"
+  | "no_pin"
   | "paste_failed";
 
 /** Recording error event of the backend (`managers::audio_priority`, `actions`). */
@@ -22,6 +24,9 @@ export const RECORDING_ERROR_EVENT = "recording-error";
 export const PASTE_ERROR_EVENT = "paste-error";
 /** Payload of `paste-error`: whether the transcript is in history (`null` from the legacy paths). */
 export type PasteErrorPayload = { history_saved: boolean } | null;
+
+/** « Send to the app in front » pressed with nothing pinned (`dictation_keys::watcher`, 014). */
+export const NO_PIN_EVENT = "dictation-key-no-pin";
 
 /** `error_type` of the `recording-error` event of a recording cut short by a lost microphone. */
 export const INPUT_LOST_ERROR = "input_lost";
@@ -66,6 +71,16 @@ export const inputLostNotice = (now: number): OverlayNotice => ({
   appName: null,
   until: now + NOTICE_MIN_MS,
   testId: "recording-indicator-input-lost-notice",
+});
+
+// @spec AC-007: No-pin notice on the indicator — .specs/features/014-in-dictation-keys/spec.md#ac-007
+/** Notice of « Send to the app in front » pressed with nothing pinned (014): the key works. */
+export const noPinNotice = (now: number): OverlayNotice => ({
+  kind: "no_pin",
+  key: "overlay.dictationKeys.noPin",
+  appName: null,
+  until: now + NOTICE_MIN_MS,
+  testId: "recording-indicator-no-pin-notice",
 });
 
 // @spec FR-002: The bubble replaces paste-error, never both — .specs/features/010-recovery-bubble/spec.md#fr-002

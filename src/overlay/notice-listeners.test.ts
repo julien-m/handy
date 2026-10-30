@@ -48,6 +48,7 @@ const { subscribeNoneNotices } = await import(
 );
 const { showRecordingErrorToast } = await import("@/lib/recording-error-toast");
 const {
+  NO_PIN_EVENT,
   noticeFallsBackToToast,
   PASTE_ERROR_EVENT,
   pasteFailedNotice,
@@ -160,5 +161,16 @@ describe("paste-error listeners (010 FR-002, native session N17)", () => {
     expect(pasteFailedNotice({ history_saved: false }, 0).key).toBe(
       "errors.pasteFailedNotSaved",
     );
+  });
+});
+
+describe("no-pin listener (014 AC-007)", () => {
+  test("the key pressed without a pin is one indicator notice and no toast", () => {
+    const notices = wire("minimal");
+    for (const handler of handlers.get(NO_PIN_EVENT) ?? []) {
+      handler({ payload: null });
+    }
+    expect(notices).toEqual(["no_pin"]);
+    expect(toasts).toEqual([]);
   });
 });

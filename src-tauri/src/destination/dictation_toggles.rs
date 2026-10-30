@@ -16,6 +16,20 @@ pub struct Retarget {
     pub version: u64,
 }
 
+// @spec AC-007: No-pin notice on the indicator — .specs/features/014-in-dictation-keys/spec.md#ac-007
+/// What a press of « Send to the app in front » did to an open dictation.
+#[derive(Clone, Debug, PartialEq)]
+pub enum RetargetOutcome {
+    /// The route changed (re-routed or restored); the badge must be told.
+    Changed(DestinationSnapshot),
+    /// Nothing is pinned, so there is nothing to step away from: the indicator says so
+    /// (decision `no_pin_notice`).
+    NoPin,
+    /// An app is pinned but the route is already « Frontmost app at the end », set by the badge
+    /// cross or a pin change rather than by this key: silent, as before.
+    Unchanged,
+}
+
 /// Per-dictation state of the two keys, reset at each dictation start.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct KeyToggles {
@@ -31,8 +45,9 @@ impl DestinationManager {
     /// « Send to the app in front » for the dictation `dictation_id`/`generation`. With a pin,
     /// a route other than the frontmost app at the end becomes that route (new selection
     /// version), remembering the previous one; a second press while it still applies (same
-    /// selection version, still pinned) restores the previous route. Without a pin, or on a
-    /// frontmost-at-the-end route this key did not set, nothing changes (`Ok(None)`).
+    /// selection version, still pinned) restores the previous route. Without a pin nothing
+    /// changes and the result is `NoPin`; on a frontmost-at-the-end route this key did not set,
+    /// nothing changes either (`Unchanged`).
     ///
     /// # Errors
     /// `Stale` for another dictation, `Frozen` once insertion has begun.
@@ -40,19 +55,24 @@ impl DestinationManager {
         &self,
         dictation_id: DictationId,
         generation: u64,
-    ) -> Result<Option<DestinationSnapshot>, SelectionRefusal> {
+    ) -> Result<RetargetOutcome, SelectionRefusal> {
         let mut state = self.lock();
         let pinned = state.pin.is_some();
         let session = open_session(&mut state, dictation_id, generation)?;
         let version = session.selection_version;
         let Some(next) = next_route(session, pinned) else {
-            return Ok(None);
+            // Business rule (014 AC-001, AC-007): only a missing pin is reported to the user.
+            return Ok(if pinned {
+                RetargetOutcome::Unchanged
+            } else {
+                RetargetOutcome::NoPin
+            });
         };
         session.choose(dictation_id, version, next)?;
         let snapshot = DestinationSnapshot::from(&*session);
         // 011 AC-003: leaving the application releases the input remembered at the start.
         super::field_lifetime::reconcile_field(&mut state);
-        Ok(Some(snapshot))
+        Ok(RetargetOutcome::Changed(snapshot))
     }
 
     // @spec FR-004: Skip Automatic Enter for this dictation — .specs/features/014-in-dictation-keys/spec.md#fr-004

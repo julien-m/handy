@@ -1365,7 +1365,8 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatisk Enter slået fra for denne diktering"
+      "enterSkipped": "Automatisk Enter slået fra for denne diktering",
+      "noPin": "Ingen fastgjort app"
     }
   },
   "secureInput": {

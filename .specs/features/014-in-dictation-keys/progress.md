@@ -13,3 +13,4 @@ Run of 2026-10-29 (Claude Code, `/spec-feature` in autonomous mode, model claude
 | 7 | Done | settings list, overlay mark, `bindings.ts`, 26 locales | `bun run test:shortcut-states`, `test:indicator`, `lint`, `tsc`, `check:translations` | Pass | 2026-10-29 |
 | 8 | Done | review fixes (6 findings), docs, registry | full check (see `implementation.md`) | Pass | 2026-10-29 |
 | 9 | Pending (Julien) | — | Native protocol in `implementation.md` | Not run | 2026-10-29 |
+| 10 | Done | `destination/dictation_toggles.rs`, `dictation_keys/watcher.rs`, `src/overlay/{notice-model,use-overlay-notices,overlay-notices,indicator-screen}.ts*`, 26 locales | `cargo test --features destination-return,smart-paste-dispatch --lib -- dictation_keys destination committed_bindings_match_the_registry`, `--test in_dictation_keys`, `bun run test:indicator`, `lint`, `format:check`, `check:translations` | Pass (spec-fix 2026-10-30: AC-007 no-pin notice) | 2026-10-30 |
