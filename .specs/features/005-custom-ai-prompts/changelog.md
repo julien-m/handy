@@ -171,3 +171,16 @@
 - **Why:** native session N23: with Apple Intelligence and "Improve Transcriptions" as default, every plain dictation (Right Cmd, `transcribe`) started on "None" because `session::starting_choice` mapped `Trigger::Plain` to None by rule (AC-003); the indicator choice was per-dictation only. The plain choice is now kept in `plain_dictation_prompt_id` (settings service, written at the stop). The AI step now logs `AI processing <provider> finished in <ms>ms (<outcome>)` at debug level. In the prompt editor the shared `Select` (react-select) was 40px with a separator and a 20px chevron next to the 30.75px `Dropdown`; it now takes the dropdown's box.
 - **Tests:** `cargo test --lib` (memory_tests, timing line), `bun run test:indicator`, `bun run test:prompt-settings`, `playwright test tests/prompt-provider-row.spec.ts` (RED before: 10px height gap; GREEN after)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-30 — [Bugfix]: Rescue focus from Save before a disabled active button silently blurs
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/ui/focus-return.ts, tests/focus-rescue-choice.spec.ts, tests/test_prompt_editor_focus.py
+- **AC impacted:** implementation
+- **Author:** livespec bugfix record
+- **Base revision:** HEAD
+- **Regression tests:** tests/test_prompt_editor_focus.py::test_save_returns_focus_without_focusout
+- **RED receipt:** `.specs/.execution/28218ffaa9764c05987b6b1b49ff36ea/receipt.json`
+- **GREEN receipt:** `.specs/.execution/47095910171c415c99a1a0533d79ebb8/receipt.json`
+<!-- bugfix:47095910171c415c99a1a0533d79ebb8 -->
