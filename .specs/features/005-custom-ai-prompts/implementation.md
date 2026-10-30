@@ -79,3 +79,18 @@ Decisions of Julien of 2026-10-17 (inventory 005-09, 005-11 and D1 for 005-12). 
 
 - **N5 (keyboard focus, checked in 005).** The list already gives the focus back to the button of the closed editor; [the editor](../../../src/components/settings/post-processing/prompt-editor.tsx) now uses `useFocusRescue` of [focus-return](../../../src/components/ui/focus-return.ts) with its group title as the stable point, for a focus lost while the editor stays open. The prompt shortcuts ([editor](../../../src/components/settings/shortcut-list-editor.tsx)) add a capture at once, without the draft of 004, so N8 does not apply to them.
 - **N5, review correction (2026-10-28).** The editor root took an inline ref callback, so React detached and attached the focus rescue on every render and it forgot that the focus was in the editor: after Save, the title never took the focus back in WebKit. The ref is now a stable `useCallback` in [the editor](../../../src/components/settings/post-processing/prompt-editor.tsx), and `useFocusRescue` ([focus-return](../../../src/components/ui/focus-return.ts)) keeps what it knew when the same root is attached again and rescues a focus lost in between. Tests: [prompt-editor-focus.spec.ts](../../../tests/prompt-editor-focus.spec.ts) (harness [prompt-editor](../../../tests/harness/prompt-editor.tsx)) and [focus-rescue.spec.ts](../../../tests/focus-rescue.spec.ts), each also with `?webkitFocus` (no focusout on removal, as in WebKit), which fails on the previous code.
+
+## Bugfix Receipts
+
+| Date | Requirement | Regression tests | RED receipt | GREEN receipt |
+|---|---|---|---|---|
+| 2026-10-30 | implementation | `tests/test_prompt_editor_focus.py::test_save_returns_focus_without_focusout` | `.specs/.execution/28218ffaa9764c05987b6b1b49ff36ea/receipt.json` | `.specs/.execution/47095910171c415c99a1a0533d79ebb8/receipt.json` |
+
+### Save focus regression — 2026-10-30
+
+The runner receipt paths above are local evidence retained in the isolated Guardian checkout, not files published in this pull request.
+
+- The DOM observer can run while Save is disabled but still active. The rescue now treats that disabled active control as lost focus, before the browser silently moves it to the page. Deliberate focus outside the editor and on the page is retained.
+- Run [the direct browser regression](../../../tests/test_prompt_editor_focus.py) with the trusted LiveSpec Python/pytest installation, installed Chrome and project-local `playwright==1.64.1` (`python3 -m pip install --no-cache-dir --target .venv.local/browser playwright==1.64.1`). Set `PYTHONPATH="$PWD/.venv.local/browser"`, `TMPDIR` to a project-local temporary folder and `PYTHONDONTWRITEBYTECODE=1`; the capture command is `python3 -m pytest tests/test_prompt_editor_focus.py -q -o markers=acceptance`.
+- Check [the deliberate-focus regressions](../../../tests/focus-rescue-choice.spec.ts) and [the existing Save regression](../../../tests/prompt-editor-focus.spec.ts) with Playwright. The full browser suite passed 75/75 using installed Chrome; build, lint, translations, model language coverage and all 15 frontend unit scripts passed.
+- These are browser harness observations with fake Tauri IPC and suppressed `focusout`. Native Tauri/WebKit acceptance remains pending; no feature status or requirement changed.

@@ -80,7 +80,10 @@ const watchSection = (
   memory.hadFocus =
     (isSameRoot && memory.hadFocus) || root.contains(document.activeElement);
   const rescue = () => {
-    if (memory.hadFocus && isFocusLost())
+    // A disabled button can remain active until after MutationObserver delivery.
+    // Rescue it now: WebKit may clear it later without emitting focusout.
+    const active = document.activeElement;
+    if (memory.hadFocus && (isFocusLost() || active?.matches(":disabled")))
       focusFirstAvailable([fallback.current]);
   };
   const onFocusIn = () => {
