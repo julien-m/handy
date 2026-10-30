@@ -205,7 +205,7 @@
           },
           "retarget_to_active_app": {
             "name": "Enviar a la app en primer plano",
-            "description": "Durante un dictado, pulsa solo esta tecla para enviarlo a la app en primer plano al final en lugar de la app fijada. Púlsala de nuevo para deshacer. La fijación se mantiene."
+            "description": "Durante un dictado, pulsa solo esta tecla para enviarlo a la app en primer plano al final en lugar de la app fijada o la app donde empezó. Púlsala de nuevo para deshacer. La fijación se mantiene."
           },
           "skip_automatic_enter": {
             "name": "Insertar sin Intro",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Intro automático desactivado para este dictado",
-      "noPin": "Ninguna aplicación fijada"
+      "enterSkipped": "Intro automático desactivado para este dictado"
     }
   },
   "whatsNew": {

@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Send til appen i forgrunden",
-            "description": "Tryk kun på denne tast under en diktering for at sende den til appen i forgrunden til sidst i stedet for den fastgjorte app. Tryk igen for at fortryde. Fastgørelsen bevares."
+            "description": "Tryk kun på denne tast under en diktering for at sende den til appen i forgrunden til sidst i stedet for den fastgjorte app eller appen, hvor den startede. Tryk igen for at fortryde. Fastgørelsen bevares."
           },
           "skip_automatic_enter": {
             "name": "Indsæt uden Enter",
@@ -1365,8 +1365,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatisk Enter slået fra for denne diktering",
-      "noPin": "Ingen fastgjort app"
+      "enterSkipped": "Automatisk Enter slået fra for denne diktering"
     }
   },
   "secureInput": {

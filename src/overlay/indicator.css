@@ -388,8 +388,7 @@
   flex: none;
   color: var(--color-warning);
 }
-.snotice.hand_over .snotice-icon,
-.snotice.no_pin .snotice-icon {
+.snotice.hand_over .snotice-icon {
   color: var(--s-muted);
 }
 .snotice-text {

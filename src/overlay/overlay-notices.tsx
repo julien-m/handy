@@ -18,7 +18,7 @@ export const OverlayNotices: React.FC<{ notices: OverlayNotice[] }> = ({
           role="alert"
           data-testid={notice.testId}
         >
-          {notice.kind === "hand_over" || notice.kind === "no_pin" ? (
+          {notice.kind === "hand_over" ? (
             <Info className="snotice-icon" aria-hidden="true" />
           ) : (
             <AlertTriangle className="snotice-icon" aria-hidden="true" />

@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Envia a l'app en primer pla",
-            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada. Torneu-la a prémer per desfer. La fixació es manté."
+            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada o de l'app on ha començat. Torneu-la a prémer per desfer. La fixació es manté."
           },
           "skip_automatic_enter": {
             "name": "Insereix sense Retorn",
@@ -1365,8 +1365,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat",
-      "noPin": "Cap aplicació fixada"
+      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat"
     }
   },
   "secureInput": {

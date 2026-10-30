@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "앞에 있는 앱으로 보내기",
-            "description": "받아쓰기 중에 이 키만 누르면 고정된 앱 대신 마지막에 앞에 있는 앱으로 보냅니다. 다시 누르면 취소됩니다. 고정은 유지됩니다."
+            "description": "받아쓰기 중에 이 키만 누르면 고정된 앱이나 받아쓰기를 시작한 앱 대신 마지막에 앞에 있는 앱으로 보냅니다. 다시 누르면 취소됩니다. 고정은 유지됩니다."
           },
           "skip_automatic_enter": {
             "name": "Enter 없이 삽입",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "이 받아쓰기의 자동 Enter 꺼짐",
-      "noPin": "고정된 앱 없음"
+      "enterSkipped": "이 받아쓰기의 자동 Enter 꺼짐"
     }
   },
   "whatsNew": {

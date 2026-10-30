@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-30 — [Features 014, 007] Fix: « Send to the App in Front » also re-routes a dictation without a pin (AC-007, decision `reroute_without_pin`, no-pin notice removed); paste verification waits up to 1 s so Google AI mode in Chrome no longer shows a false bubble (AC-019, decision `verify_window_1s`; native proofs pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-30 — [Features 002, 003] Fix: the rule and term lists keep about five rows and scroll inside (decision `bounded_lists`); Canary's `<unk>` written for « » is restored before the final-text stages (AC-007, decision `unknown_token_quotes`; native proof pending)
 
 ## 2026-10-30 — [Feature 014] Fix: 1/1 gap closed: « Send to the App in Front » pressed with nothing pinned shows the transient notice « No pinned app » on the recording indicator (4 s, 26 locales) and logs it at debug level; a frontmost route the key did not set with a pin stays silent (AC-007, decision `no_pin_notice`; native proof pending)

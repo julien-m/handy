@@ -205,7 +205,7 @@
           },
           "retarget_to_active_app": {
             "name": "Odeslat do aplikace v popředí",
-            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté. Dalším stiskem to vrátíte. Připnutí zůstává."
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté nebo té, ve které diktování začalo. Dalším stiskem to vrátíte. Připnutí zůstává."
           },
           "skip_automatic_enter": {
             "name": "Vložit bez Enteru",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatický Enter pro toto diktování vypnut",
-      "noPin": "Žádná připnutá aplikace"
+      "enterSkipped": "Automatický Enter pro toto diktování vypnut"
     }
   },
   "whatsNew": {

@@ -205,7 +205,7 @@
           },
           "retarget_to_active_app": {
             "name": "Gửi tới ứng dụng phía trước",
-            "description": "Khi đang đọc chính tả, chỉ nhấn phím này để gửi tới ứng dụng phía trước lúc kết thúc thay vì ứng dụng đã ghim. Nhấn lại để hủy. Ứng dụng đã ghim vẫn giữ."
+            "description": "Khi đang đọc chính tả, chỉ nhấn phím này để gửi tới ứng dụng phía trước lúc kết thúc thay vì ứng dụng đã ghim hoặc ứng dụng nơi bắt đầu. Nhấn lại để hủy. Ứng dụng đã ghim vẫn giữ."
           },
           "skip_automatic_enter": {
             "name": "Chèn không có Enter",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Đã tắt Enter tự động cho lần đọc này",
-      "noPin": "Không có ứng dụng nào được ghim"
+      "enterSkipped": "Đã tắt Enter tự động cho lần đọc này"
     }
   },
   "whatsNew": {

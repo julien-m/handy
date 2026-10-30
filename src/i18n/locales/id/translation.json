@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Kirim ke aplikasi di depan",
-            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan. Tekan lagi untuk membatalkan. Sematan tetap."
+            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan atau aplikasi tempat dikte dimulai. Tekan lagi untuk membatalkan. Sematan tetap."
           },
           "skip_automatic_enter": {
             "name": "Sisipkan tanpa Enter",
@@ -1365,8 +1365,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter otomatis mati untuk dikte ini",
-      "noPin": "Tidak ada aplikasi yang disematkan"
+      "enterSkipped": "Enter otomatis mati untuk dikte ini"
     }
   },
   "secureInput": {

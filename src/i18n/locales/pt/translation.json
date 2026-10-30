@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Enviar para o app em primeiro plano",
-            "description": "Durante um ditado, pressione só esta tecla para enviá-lo ao app em primeiro plano no final em vez do app fixado. Pressione de novo para desfazer. O app fixado continua."
+            "description": "Durante um ditado, pressione só esta tecla para enviá-lo ao app em primeiro plano no final em vez do app fixado ou do app onde começou. Pressione de novo para desfazer. O app fixado continua."
           },
           "skip_automatic_enter": {
             "name": "Inserir sem Enter",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Enter automático desativado para este ditado",
-      "noPin": "Nenhum aplicativo fixado"
+      "enterSkipped": "Enter automático desativado para este ditado"
     }
   },
   "whatsNew": {

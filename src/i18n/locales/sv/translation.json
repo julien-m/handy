@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Skicka till appen i förgrunden",
-            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen. Tryck igen för att ångra. Fästet finns kvar."
+            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen eller appen där det började. Tryck igen för att ångra. Fästet finns kvar."
           },
           "skip_automatic_enter": {
             "name": "Infoga utan Retur",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatisk Retur av för det här diktatet",
-      "noPin": "Ingen fäst app"
+      "enterSkipped": "Automatisk Retur av för det här diktatet"
     }
   },
   "whatsNew": {

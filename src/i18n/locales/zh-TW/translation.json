@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "傳送到前景應用程式",
-            "description": "聽寫時單獨按下此鍵，結束時將文字傳送到前景應用程式，而不是已釘選的應用程式。再按一次復原。釘選保持不變。"
+            "description": "聽寫時單獨按下此鍵，結束時將文字傳送到前景應用程式，而不是已釘選的應用程式或開始聽寫時的應用程式。再按一次復原。釘選保持不變。"
           },
           "skip_automatic_enter": {
             "name": "插入但不按 Enter",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "本次聽寫已關閉自動 Enter",
-      "noPin": "沒有釘選的 App"
+      "enterSkipped": "本次聽寫已關閉自動 Enter"
     }
   },
   "whatsNew": {

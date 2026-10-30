@@ -19,3 +19,13 @@
 - **Remaining:** native proof of the notice (coordinator, signed build); Penflow mockup of the notice
 - **Author:** spec-fix (Claude Code, claude-opus-5-5)
 - Pressing « Send to the App in Front » with nothing pinned did nothing visible, so the key looked broken. `toggle_active_app` now returns `RetargetOutcome` (`Changed`, `NoPin`, `Unchanged`) instead of `Option`, so the observer tells « no pin » apart from a frontmost route the key did not set with a pin; only `NoPin` logs at debug level and emits `dictation-key-no-pin`, which the indicator shows as the « No pinned app » notice (4 s, replaced by a newer one).
+
+## 2026-10-30 — [Bugfix]: Send to the App in Front works without a pin (AC-007)
+
+- **Type:** Bug Fix
+- **Spec modified:** Yes (AC-001, AC-007 rewritten, FR-003, Story 1 scenario « Without a pin » and flowchart, decision `reroute_without_pin` replacing `no_pin_notice`, Screens, edge case after an unpin)
+- **Code modified:** `src-tauri/src/destination/{dictation_toggles.rs,dictation_toggles_tests.rs}`, `src-tauri/src/dictation_keys/watcher.rs`, `src/overlay/{notice-model.ts,use-overlay-notices.ts,overlay-notices.tsx,indicator-screen.ts,indicator.css}` and their tests (`src/overlay/no-pin-notice.test.ts` removed), `package.json`, 26 locales (key description; `overlay.dictationKeys.noPin` removed)
+- **Gaps closed:** AC-007 (decision `reroute_without_pin`, Julien, 2026-10-30)
+- **Remaining:** native proof (dictation started in Claude without a pin, Option left in Cmux)
+- **Author:** spec-fix (Claude Code, claude-opus-5-5)
+- Julien started a dictation in Claude without a pin, pressed Option left in Cmux, saw « No pinned app » and the text went to Claude. The app where the dictation started holds it as a pin does, so the key now re-routes any route other than the frontmost app at the end; `toggle_active_app` returns `Option<DestinationSnapshot>` again and the no-pin notice is removed.

@@ -7,7 +7,6 @@
 use super::tap::{is_configured_key, KeyInput, ModifierState, Tap, TapDetector};
 use super::{parse_key, RETARGET_ACTION, SKIP_ENTER_ACTION};
 use crate::destination::context::DictationId;
-use crate::destination::dictation_toggles::RetargetOutcome;
 use crate::destination::manager::DestinationManager;
 use crate::destination::snapshot::DestinationSnapshot;
 use handy_keys::{KeyEvent, KeyboardListener, Modifiers};
@@ -15,7 +14,7 @@ use log::{debug, warn};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
-use tauri::{AppHandle, Emitter};
+use tauri::AppHandle;
 
 /// Count of Handy shortcut events (any action), read by the tap detector.
 static SHORTCUT_EVENTS: AtomicU64 = AtomicU64::new(0);
@@ -24,11 +23,6 @@ const POLL: Duration = Duration::from_millis(10);
 /// Wait before confirming a lone press: the backend thread drains its shortcut events every
 /// 10 ms, so a shortcut that hid its keys from this observer (Option+Space) is counted by then.
 const SHORTCUT_SETTLE: Duration = Duration::from_millis(30);
-
-// @spec AC-007: No-pin notice on the indicator — .specs/features/014-in-dictation-keys/spec.md#ac-007
-/// UI event: « Send to the app in front » was pressed with nothing pinned; the recording
-/// indicator shows « No pinned app » (`src/overlay/notice-model.ts`).
-pub const NO_PIN_EVENT: &str = "dictation-key-no-pin";
 
 /// A shortcut of Handy fired (called by the shared shortcut handler).
 pub fn note_shortcut_event() {
@@ -148,22 +142,14 @@ impl Observer {
         }
     }
 
-    /// « Send to the app in front »: the new route, if it changed. Without a pin the indicator
-    /// says so (decision `no_pin_notice`); every other no-op stays silent (`Stale`, `Frozen`,
-    /// a frontmost route this key did not set).
+    /// « Send to the app in front »: the new route, if it changed. Every no-op stays silent
+    /// (`Stale`, `Frozen`, a frontmost route this key did not set).
     fn retarget(&self) -> Option<DestinationSnapshot> {
         let (id, generation) = self.dictation;
-        match self.manager.toggle_active_app(id, generation) {
-            Ok(RetargetOutcome::Changed(snapshot)) => Some(snapshot),
-            Ok(RetargetOutcome::NoPin) => {
-                debug!("In-dictation key of dictation {}: no pinned app", id.0);
-                if let Err(error) = self.app.emit(NO_PIN_EVENT, ()) {
-                    warn!("Could not show the no-pin notice: {error}");
-                }
-                None
-            }
-            Ok(RetargetOutcome::Unchanged) | Err(_) => None,
-        }
+        self.manager
+            .toggle_active_app(id, generation)
+            .ok()
+            .flatten()
     }
 }
 

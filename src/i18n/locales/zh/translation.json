@@ -205,7 +205,7 @@
           },
           "retarget_to_active_app": {
             "name": "发送到前台应用",
-            "description": "听写时单独按下此键，结束时将文本发送到前台应用，而不是已固定的应用。再按一次撤销。固定保持不变。"
+            "description": "听写时单独按下此键，结束时将文本发送到前台应用，而不是已固定的应用或开始听写时的应用。再按一次撤销。固定保持不变。"
           },
           "skip_automatic_enter": {
             "name": "插入但不按回车",
@@ -1362,8 +1362,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "本次听写已关闭自动回车",
-      "noPin": "没有固定的应用"
+      "enterSkipped": "本次听写已关闭自动回车"
     }
   },
   "whatsNew": {

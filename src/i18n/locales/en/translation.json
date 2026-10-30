@@ -185,7 +185,7 @@
           },
           "retarget_to_active_app": {
             "name": "Send to the App in Front",
-            "description": "During a dictation, press this key alone to send it to the app in front at the end instead of the pinned app. Press again to undo. The pin stays."
+            "description": "During a dictation, press this key alone to send it to the app in front at the end instead of the pinned app or the app where it started. Press again to undo. The pin stays."
           },
           "skip_automatic_enter": {
             "name": "Insert without Enter",
@@ -1365,8 +1365,7 @@
       }
     },
     "dictationKeys": {
-      "enterSkipped": "Automatic Enter off for this dictation",
-      "noPin": "No pinned app"
+      "enterSkipped": "Automatic Enter off for this dictation"
     }
   },
   "secureInput": {
