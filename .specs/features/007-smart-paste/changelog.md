@@ -252,3 +252,14 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** verification unit tests (web-text scope, retry gate, bounded ancestry walk), smart_paste integration tests `verification_web.rs` (not web text, failed search, limits, setting off, late paste)
 - **Remaining:** native proof in cmux, Claude Desktop and the Google page (`.specs/native-proofs-checklist.md`); native AppKit fields are no longer verified after Cmd+V (accepted, decision N28)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-30 — [Bugfix]: Paste verification waits up to 1 s (Google AI mode in Chrome)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-019 scenarios, flowchart and criterion, decision `verify_window_1s`, edge case)
+- **Code modified:** src-tauri/src/smart_paste/verification.rs (`VERIFY_WINDOW` 300 ms → 1 s), README.md
+- **AC impacted:** AC-019, FR-012
+- **Why:** in a Google AI mode conversation the follow-up field showed the paste 200 ms to 1 s after Cmd+V, so a 300 ms window gave a false « field unchanged », the recovery bubble, and sometimes a second paste. Polling still stops at the first change.
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1400 passed)
+- **Remaining:** native proof in a Google AI mode conversation
+- **Author:** Claude Code (claude-opus-5-5)

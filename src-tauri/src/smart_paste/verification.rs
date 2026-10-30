@@ -29,10 +29,13 @@ use super::outcome::PasteOutcomeKind;
 // @spec FR-012: Paste verification decisions — .specs/features/007-smart-paste/spec.md#fr-012
 
 /// How long the field is polled after the read (and again after the retry).
-/// N11 measured a 4/6 success rate with a 250 ms paste delay and 5/6 at 1 s:
-/// 300 ms lets a slow page apply the paste without delaying Enter noticeably.
-pub const VERIFY_WINDOW: Duration = Duration::from_millis(300);
-/// Pause between two reads of the field: fifteen reads per window at most,
+/// N11 measured a 4/6 success rate with a 250 ms paste delay and 5/6 at 1 s.
+/// A Google AI mode conversation in Chrome shows the paste 200 ms to 1 s after
+/// it (decision `verify_window_1s`), so 300 ms raised false failures and a
+/// second paste. Polling stops at the first change, so a quick page waits no
+/// longer.
+pub const VERIFY_WINDOW: Duration = Duration::from_millis(1000);
+/// Pause between two reads of the field: fifty reads per window at most,
 /// enough to see a page update without flooding it with AX requests.
 pub const VERIFY_POLL_INTERVAL: Duration = Duration::from_millis(20);
 
