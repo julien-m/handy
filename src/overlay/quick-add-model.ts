@@ -2,14 +2,11 @@
  * Pure rules of the Quick Add window (018): which tab opens, when Add may dispatch, and the
  * translated reasons of a refused addition (the 002 and 003 keys, never new wording).
  */
-import type { SettingsCommandError } from "@/bindings";
+import type { QuickAddKind, SettingsCommandError } from "@/bindings";
 import { itemKey } from "@/components/settings/word-replacements/rules-model";
 import { commitFailure } from "@/components/settings/word-replacements/preview-model";
 import { commitErrorKey } from "@/components/settings/vocabulary/vocabulary-model";
 import { SETTINGS_ERROR_KEYS } from "@/stores/settings-errors";
-
-/** What the window adds: its tab (`quick_add::QuickAddKind`). */
-export type QuickAddKind = "replacement" | "vocabulary";
 
 /** Test-id prefix of the window (`spec.md` screen `quick-add`). */
 export const QUICK_ADD_SCREEN = "quick-add";
@@ -23,6 +20,10 @@ export interface QuickAddValues {
   written: string;
   term: string;
 }
+
+// @spec AC-007: The confirmation goes away by itself — .specs/features/018-quick-add-from-tray/spec.md#ac-007
+/** How long the confirmation of a saved addition stays shown. */
+export const ADDED_NOTICE_MS = 4000;
 
 export const EMPTY_VALUES: QuickAddValues = {
   heard: "",

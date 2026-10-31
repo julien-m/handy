@@ -1442,6 +1442,7 @@
       "hint": "Hilft Handy, Namen und seltene Wörter zu erkennen.",
       "added": "Zum Vokabular hinzugefügt: „{{term}}“"
     },
+    "openList": "Liste anzeigen",
     "add": "Hinzufügen",
     "close": "Schließen"
   }

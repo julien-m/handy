@@ -101,6 +101,15 @@ Feature: Single Quick Add window
     Then the same window comes to the front on "Vocabulary" with its field focused
 ```
 
+```gherkin
+Feature: Show the list in the settings
+  Scenario: From the Vocabulary tab
+    Given the Quick Add window is open on "Vocabulary"
+    When the user clicks "Show the list"
+    Then the settings window comes to the front on Advanced, scrolled to the vocabulary list
+    And the Quick Add window is closed
+```
+
 ```mermaid
 flowchart LR
     A["Menu entry"] --> B{"quick_add window exists?"}
@@ -129,10 +138,13 @@ A refused replacement (empty field, forbidden character, duplicate heard text, m
 Adding a vocabulary term commits `VocabularyEdit::Add` through the settings service; a refusal (invalid term, duplicate, limit) saves nothing and shows the translated 003 refusal; the typed text stays.
 
 ### AC-007
-After a successful addition the window shows a confirmation naming what was added, clears the fields and focuses the first field; Escape or the close button closes the window.
+After a successful addition the window shows a confirmation naming what was added, clears the fields and focuses the first field; the confirmation goes away by itself after 4 s (a refusal stays until the text changes). Escape, Close or the window's close button really closes the window (it is not hidden like the settings window), so reopening it starts empty, without the previous confirmation.
 
 ### AC-008
 Add stays unavailable while a required field is empty or a commit is in flight; Enter in any field submits.
+
+### AC-009
+"Show the list" in the Quick Add window shows the settings window, goes to the Advanced section (asking first when a section holds unsaved edits) and scrolls to the list of the current tab (Vocabulary or Replacements); the Quick Add window closes so it does not cover the settings.
 
 ## Functional Requirements
 
@@ -151,6 +163,9 @@ Command `quick_add_vocabulary_term(term)`: one `write_change` commit at the curr
 ### FR-005
 The window follows the app theme and language like the recovery window; its capability grants only its events, the locale read and closing itself.
 
+### FR-006
+Command `open_settings_list(kind)`: shows the main window and emits `settings-reveal` with the kind to it; the settings window navigates to `advanced` and scrolls the element marked `data-settings-anchor=<kind>` into view.
+
 ## Key Entities
 
 - **QuickAddKind:** `replacement` | `vocabulary`; the tab shown.
@@ -160,6 +175,7 @@ The window follows the app theme and language like the recovery window; its capa
 
 - **Commit revision:** a quick addition commits at the current revision (no expected revision). An addition is an append checked under the service lock, so it cannot overwrite a concurrent change; an open settings editor with unsaved edits gets its usual revision conflict.
 - **Window stays open after success:** the user may add several items in a row; Escape closes.
+- **Show the list (Julien, 2026-10-31):** a button of the Quick Add window opens the settings directly on the matching list, to view, edit or delete rules and terms without navigating and scrolling.
 - **No prefill:** the window opens empty (no clipboard or last-transcript prefill) to never expose dictated text unexpectedly.
 
 ## Screens

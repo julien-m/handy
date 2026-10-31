@@ -755,6 +755,7 @@ macro_rules! handy_commands {
             commands::vocabulary::get_vocabulary_status,
             commands::quick_add::quick_add_replacement,
             commands::quick_add::quick_add_vocabulary_term,
+            commands::quick_add::open_settings_list,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
@@ -1201,6 +1202,10 @@ pub fn run(cli_args: CliArgs) {
             Ok(())
         })
         .on_window_event(|window, event| match event {
+            // The Quick Add window (018) really closes: it keeps no state, and hiding it must not
+            // drop the dock icon while the settings window is open.
+            tauri::WindowEvent::CloseRequested { .. }
+                if window.label() == quick_add::QUICK_ADD_WINDOW => {}
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 api.prevent_close();
                 let _res = window.hide();

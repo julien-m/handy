@@ -1,5 +1,9 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-31 — alphabetical lists / Show the list
+
+- Decision `alphabetical_display` (Julien): the rule list is shown in alphabetical order of the recognized text; display only, saved and export order unchanged; the order holds still while a row is edited (AC-001).
+
 ## 2026-10-30 — [Bugfix]: Bounded rule list and `<unk>` quotes restored (Julien)
 
 - **Type:** Bugfix (request of Julien, 2026-10-30, after importing 154 rules)

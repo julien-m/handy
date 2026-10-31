@@ -2,7 +2,8 @@
 //! replacement rule (002) or one vocabulary term (003) without the settings window. There is a
 //! single window; reopening it on the other kind switches its tab instead of creating a second.
 use crate::main_window_placement::center_on_primary_monitor;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use specta::Type;
 use tauri::{AppHandle, Emitter, Manager, WebviewUrl, WebviewWindowBuilder};
 
 /// Label of the Quick Add window.
@@ -11,11 +12,13 @@ pub const QUICK_ADD_WINDOW: &str = "quick_add";
 const QUICK_ADD_PAGE: &str = "src/overlay/quick-add.html";
 /// Event switching an open window to another kind.
 pub const QUICK_ADD_KIND_EVENT: &str = "quick-add-kind";
+/// Event asking the settings window to show the list of one kind (Advanced section).
+pub const SETTINGS_REVEAL_EVENT: &str = "settings-reveal";
 /// Logical size of the window.
 const SIZE: (f64, f64) = (440.0, 300.0);
 
 /// What the window adds: its tab.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum QuickAddKind {
     Replacement,
@@ -70,6 +73,16 @@ pub fn open(app: &AppHandle, kind: QuickAddKind) {
             bring_forward(&window);
         }
         Err(error) => log::error!("Quick Add: failed to create the window: {error}"),
+    }
+}
+
+// @spec FR-006: Show the list in the settings — .specs/features/018-quick-add-from-tray/spec.md#fr-006
+// @spec AC-009: Settings opened on the list — .specs/features/018-quick-add-from-tray/spec.md#ac-009
+/// Show the settings window and ask it to scroll to the list of `kind` in the Advanced section.
+pub fn reveal_in_settings(app: &AppHandle, kind: QuickAddKind) {
+    crate::show_main_window(app);
+    if let Err(error) = app.emit_to("main", SETTINGS_REVEAL_EVENT, kind) {
+        log::error!("Quick Add: failed to reveal the {kind:?} list in the settings: {error}");
     }
 }
 

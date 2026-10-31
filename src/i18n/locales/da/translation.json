@@ -1442,6 +1442,7 @@
       "hint": "Hjælper Handy med at genkende navne og usædvanlige ord.",
       "added": "Føjet til ordforrådet: “{{term}}”"
     },
+    "openList": "Vis listen",
     "add": "Tilføj",
     "close": "Luk"
   }

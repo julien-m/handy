@@ -1442,6 +1442,7 @@
       "hint": "Hjälper Handy att känna igen namn och ovanliga ord.",
       "added": "Tillagt i ordförrådet: ”{{term}}”"
     },
+    "openList": "Visa listan",
     "add": "Lägg till",
     "close": "Stäng"
   }

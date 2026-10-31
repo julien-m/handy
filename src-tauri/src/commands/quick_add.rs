@@ -3,6 +3,7 @@
 //! settings editors (002, 003) and `handy settings`. A quick addition commits at the current
 //! revision: an append is checked under the service lock, so it never overwrites a concurrent
 //! change.
+use crate::quick_add::{reveal_in_settings, QuickAddKind};
 use crate::recognition_vocabulary::edits::VocabularyEdit;
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -89,6 +90,13 @@ pub async fn quick_add_vocabulary_term(
         Ok(added(commit.after.custom_words.len()))
     })
     .await
+}
+
+#[tauri::command]
+#[specta::specta]
+/// Open the settings window on the list of `kind` (Advanced section), from the Quick Add window.
+pub fn open_settings_list(app: AppHandle, kind: QuickAddKind) {
+    reveal_in_settings(&app, kind);
 }
 
 #[cfg(test)]

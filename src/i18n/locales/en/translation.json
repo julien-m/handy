@@ -1442,6 +1442,7 @@
       "hint": "Helps Handy recognize names and uncommon words.",
       "added": "Added to the vocabulary: “{{term}}”"
     },
+    "openList": "Show the list",
     "add": "Add",
     "close": "Close"
   }

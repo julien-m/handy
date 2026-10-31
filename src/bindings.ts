@@ -604,6 +604,12 @@ async quickAddVocabularyTerm(term: string) : Promise<Result<QuickAdded, Settings
 }
 },
 /**
+ * Open the settings window on the list of `kind` (Advanced section), from the Quick Add window.
+ */
+async openSettingsList(kind: QuickAddKind) : Promise<void> {
+    await TAURI_INVOKE("open_settings_list", { kind });
+},
+/**
  * Temporarily unregister all bindings while the user is recording a
  * shortcut in the UI. This avoids firing actions while keys are recorded.
  */
@@ -2698,6 +2704,10 @@ export type PromptTestStatus = "success" | "failed" |
  * The sample is empty: nothing to process.
  */
 "skipped"
+/**
+ * What the window adds: its tab.
+ */
+export type QuickAddKind = "replacement" | "vocabulary"
 /**
  * A saved quick addition: how many items its list now holds.
  */

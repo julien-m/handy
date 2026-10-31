@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-31 — [Features 002, 003, 018] Rule and term lists shown in alphabetical order (display only, saved order unchanged; decision `alphabetical_display`); « Show the list » in the Quick Add window opens the settings on Advanced, scrolled to the matching list (AC-009); the Quick Add window really closes and its confirmation goes away after 4 s (AC-007; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-31 — [Feature 018] Quick Add from the tray: « Add a Replacement… » and « Add to Vocabulary… » open a small Quick Add window that commits one rule or one term through the settings service with the 002/003 validation, without the settings window (26 locales; automated evidence; native proof pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

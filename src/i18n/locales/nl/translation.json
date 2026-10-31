@@ -1442,6 +1442,7 @@
       "hint": "Helpt Handy namen en ongebruikelijke woorden te herkennen.",
       "added": "Toegevoegd aan de woordenlijst: “{{term}}”"
     },
+    "openList": "Lijst tonen",
     "add": "Toevoegen",
     "close": "Sluiten"
   }

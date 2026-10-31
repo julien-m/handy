@@ -1442,6 +1442,7 @@
       "hint": "Aiuta Handy a riconoscere nomi e parole rare.",
       "added": "Aggiunto al vocabolario: «{{term}}»"
     },
+    "openList": "Mostra l'elenco",
     "add": "Aggiungi",
     "close": "Chiudi"
   }

@@ -220,7 +220,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** The settings UI lists rules in their saved order with recognized and replacement text, and supports add, edit and delete (delete asks for confirmation). Add, edit and delete change a draft; Save persists the complete rule set once; a restart shows the same rules in the same order. The list view and the bulk text view edit the same draft: switching view with unsaved changes asks the user to save or discard them first. The rule list keeps a fixed height of about five rows and scrolls vertically inside, so the settings page does not grow with the rules; a rule just added is scrolled into view.
+**Criterion:** The settings UI lists rules in alphabetical order of their recognized text (case and accents ignored, numbers by value, display only: the saved order, the export order and the tie order of AC-007 are unchanged; the order holds still while a row is edited; decision `alphabetical_display`, Julien, 2026-10-31) with recognized and replacement text, and supports add, edit and delete (delete asks for confirmation). Add, edit and delete change a draft; Save persists the complete rule set once; a restart shows the same rules. The list view and the bulk text view edit the same draft: switching view with unsaved changes asks the user to save or discard them first. The rule list keeps a fixed height of about five rows and scrolls vertically inside, so the settings page does not grow with the rules; a rule just added is scrolled into view at its sorted position.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002

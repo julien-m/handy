@@ -183,7 +183,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** The settings UI shows the vocabulary as an ordered list with add, remove and a paste box (one term per line) with preview. A term is valid when its trimmed text has 1–100 characters, no line break and none of the characters `<`, `>`, `"`. Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms. The term list keeps a fixed height of about five rows of terms and scrolls vertically inside (decision `002-word-replacements:AC-001` / `bounded_lists`, Julien, 2026-10-30).
+**Criterion:** The settings UI shows the vocabulary in alphabetical order (case and accents ignored, numbers by value; display only: the saved order, which decides the terms sent within the model budget, is unchanged; decision `alphabetical_display`, Julien, 2026-10-31) with add, remove and a paste box (one term per line) with preview. A term is valid when its trimmed text has 1–100 characters, no line break and none of the characters `<`, `>`, `"`. Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms. The term list keeps a fixed height of about five rows of terms and scrolls vertically inside (decision `002-word-replacements:AC-001` / `bounded_lists`, Julien, 2026-10-30).
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002

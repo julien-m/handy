@@ -1442,6 +1442,7 @@
       "hint": "Handy'nin adları ve nadir sözcükleri tanımasına yardımcı olur.",
       "added": "Sözcük dağarcığına eklendi: “{{term}}”"
     },
+    "openList": "Listeyi göster",
     "add": "Ekle",
     "close": "Kapat"
   }

@@ -1442,6 +1442,7 @@
       "hint": "Pomaga Handy rozpoznawać nazwy i rzadkie słowa.",
       "added": "Dodano do słownika: „{{term}}”"
     },
+    "openList": "Pokaż listę",
     "add": "Dodaj",
     "close": "Zamknij"
   }

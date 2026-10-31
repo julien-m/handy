@@ -1442,6 +1442,7 @@
       "hint": "Ajuda o Handy a reconhecer nomes e palavras incomuns.",
       "added": "Adicionado ao vocabulário: “{{term}}”"
     },
+    "openList": "Ver a lista",
     "add": "Adicionar",
     "close": "Fechar"
   }

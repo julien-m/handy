@@ -2,23 +2,24 @@
  * Quick Add window (018): two tabs, Replacement (heard → written, 002) and Vocabulary (one term,
  * 003). Enter submits, Escape closes; after a saved addition the window confirms it, clears the
  * fields and stays open for another one. Refusals show the 002/003 reasons and keep the text.
+ * "Show the list" opens the settings on the list of the current tab and closes the window.
  */
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { commands } from "@/bindings";
+import { commands, type QuickAddKind } from "@/bindings";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
+  ADDED_NOTICE_MS,
   EMPTY_VALUES,
   QUICK_ADD_KIND_EVENT,
   QUICK_ADD_SCREEN,
   canSubmit,
   quickAddFailure,
   type QuickAddFailure,
-  type QuickAddKind,
   type QuickAddValues,
 } from "./quick-add-model";
 
@@ -39,8 +40,12 @@ export const QuickAddWindow: React.FC<{ initialKind: QuickAddKind }> = ({
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
   const firstField = useRef<HTMLInputElement>(null);
-  useKindEvent(setKind);
+  useKindEvent((next) => {
+    setKind(next);
+    setNotice(null);
+  });
   useEscapeCloses();
+  useNoticeTimeout(notice, setNotice);
   useEffect(() => {
     firstField.current?.focus();
   }, [kind]);
@@ -116,6 +121,14 @@ export const QuickAddWindow: React.FC<{ initialKind: QuickAddKind }> = ({
       <NoticeLine notice={notice} />
       <div className="flex justify-end gap-2 mt-auto">
         <Button
+          variant="ghost"
+          className="me-auto"
+          onClick={() => void showList(kind)}
+          data-testid={`${QUICK_ADD_SCREEN}-open-list`}
+        >
+          {t("quickAdd.openList")}
+        </Button>
+        <Button
           variant="secondary"
           onClick={() => void getCurrentWindow().close()}
           data-testid={`${QUICK_ADD_SCREEN}-close`}
@@ -174,16 +187,42 @@ const addition = async (
   }
 };
 
+// @spec AC-009: Settings opened on the list — .specs/features/018-quick-add-from-tray/spec.md#ac-009
+/** Open the settings on the list of `kind`, then close the window so it does not cover them. */
+const showList = async (kind: QuickAddKind): Promise<void> => {
+  try {
+    await commands.openSettingsList(kind);
+    await getCurrentWindow().close();
+  } catch (error) {
+    console.error("Quick Add: failed to open the list:", error);
+  }
+};
+
 /** Switch the tab when the tray reopens the window on another kind. */
-const useKindEvent = (setKind: (kind: QuickAddKind) => void): void => {
+const useKindEvent = (onKind: (kind: QuickAddKind) => void): void => {
+  const handler = useRef(onKind);
+  handler.current = onKind;
   useEffect(() => {
     const unlisten = listen<QuickAddKind>(QUICK_ADD_KIND_EVENT, (event) =>
-      setKind(event.payload),
+      handler.current(event.payload),
     );
     return () => {
       void unlisten.then((stop) => stop());
     };
-  }, [setKind]);
+  }, []);
+};
+
+/** The confirmation of a saved addition goes away after `ADDED_NOTICE_MS`; a refusal stays
+ * until the text changes. */
+const useNoticeTimeout = (
+  notice: Notice | null,
+  setNotice: (notice: Notice | null) => void,
+): void => {
+  useEffect(() => {
+    if (notice?.kind !== "added") return;
+    const timer = window.setTimeout(() => setNotice(null), ADDED_NOTICE_MS);
+    return () => window.clearTimeout(timer);
+  }, [notice, setNotice]);
 };
 
 /** Escape closes the window. */

@@ -1442,6 +1442,7 @@
       "hint": "Ajuda Handy a reconèixer noms i paraules poc habituals.",
       "added": "Afegit al vocabulari: «{{term}}»"
     },
+    "openList": "Mostra la llista",
     "add": "Afegeix",
     "close": "Tanca"
   }

@@ -9,5 +9,7 @@
 | FR-005 | `src/overlay/quick-add-main.tsx`, `src-tauri/capabilities/quick-add.json` |
 | AC-005, AC-006, AC-008 | `src/overlay/quick-add-model.ts` |
 | AC-007 | `src/overlay/quick-add-window.tsx` |
+| FR-006, AC-009 | `src-tauri/src/quick_add.rs` (`reveal_in_settings`), `src-tauri/src/commands/quick_add.rs` (`open_settings_list`), `src/components/settings/settings-reveal.ts`, `src/overlay/quick-add-window.tsx` (Show the list) |
+| 002/003 `alphabetical_display` | `src/lib/utils/alphabetical.ts`, `src/components/settings/word-replacements/rule-list.tsx`, `src/components/settings/vocabulary/vocabulary-terms.tsx`, `src/components/ui/bounded-list.ts` |
 
 Tests: `src-tauri/src/quick_add.rs` (tests), `src-tauri/src/commands/quick_add.rs` (tests), `src/overlay/quick-add-model.test.ts` (`bun run test:quick-add`).

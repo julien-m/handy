@@ -237,7 +237,7 @@ handy settings replacements export rules.txt                       # or `-` (def
 
 ### Quick Add from the tray
 
-The tray menu has **Add a Replacement…** and **Add to Vocabulary…**. Each opens a small Quick Add window on the matching tab, without the settings window: type the heard text and the text to write instead (or one vocabulary term) and press Enter. The addition goes through the same validation as **Settings > Advanced** and `handy settings`; a refusal shows its reason and saves nothing. The window stays open for another addition; Escape closes it.
+The tray menu has **Add a Replacement…** and **Add to Vocabulary…**. Each opens a small Quick Add window on the matching tab, without the settings window: type the heard text and the text to write instead (or one vocabulary term) and press Enter. The addition goes through the same validation as **Settings > Advanced** and `handy settings`; a refusal shows its reason and saves nothing. The window stays open for another addition; Escape closes it. **Show the list** opens the settings directly on that list (Advanced section) to view, edit or delete entries. Both lists are shown in alphabetical order; the saved order (export order, and the vocabulary terms sent first when the model budget is short) is unchanged.
 
 ## Known Issues & Current Limitations
 

@@ -1,5 +1,9 @@
 # Changelog - 003-recognition-vocabulary
 
+## 2026-10-31 — alphabetical lists / Show the list
+
+- Decision `alphabetical_display` (Julien): the term list is shown in alphabetical order; display only, the saved order that decides the terms sent within the model budget is unchanged (AC-001).
+
 ## 2026-10-30 — [Bugfix]: Bounded term list (Julien)
 
 - **Type:** Bugfix (request of Julien, 2026-10-30, after importing 82 terms)
