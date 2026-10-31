@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-31 — [Features 007, 010] Fix: paste verification no longer pastes twice into the Codex composer (only text roles are verified, N31); a recovery window whose page died no longer crashes Handy, and panics are written to `handy.log` (N32)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-30 — [Features 014, 007] Fix: « Send to the App in Front » also re-routes a dictation without a pin (AC-007, decision `reroute_without_pin`, no-pin notice removed); paste verification waits up to 1 s so Google AI mode in Chrome no longer shows a false bubble (AC-019, decision `verify_window_1s`; native proofs pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

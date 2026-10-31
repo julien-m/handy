@@ -293,3 +293,14 @@
 - Julien: Escape removes the bubble, but the bubble is seen going back to its origin and the small dialog shows again then disappears. Two causes: the session always asked AppKit to slide the drag image back on a cancellation (`setAnimatesToStartingPositionsOnCancelOrFail(true)`), and hiding made the panel opaque (`set_dragging(false)`, alpha 1) before ordering it out. The Escape monitors now turn the slide back off on the session as soon as they see Escape; hiding orders the panel out first and only then makes it opaque for the next bubble (`HIDE_STEPS`). A release without Escape keeps the slide back and the bubble's return.
 - Limit: an Escape seen only in the event that ends the session (consumed by the drag's tracking loop) arrives after the slide back; the bubble no longer flashes on that path but the slide back stays. The native proof records which path was seen.
 - Native proof pending with Julien: checklist item "Échap sans retour animé ni flash de la bulle (N26)" in `.specs/native-proofs-checklist.md`.
+
+## 2026-10-31 — [Bugfix]: A dead recovery page no longer crashes Handy (N32)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (decision N32, edge case; no AC or FR text change)
+- **Code modified:** src-tauri/src/recovery/{surface.rs,platform/mod.rs,platform/macos.rs}, src-tauri/src/panic_log.rs, src-tauri/src/lib.rs
+- **AC impacted:** FR-002
+- **Why:** under memory pressure macOS ended the recovery window's web content process; the bubble never rendered, the 10 s hang limit destroyed the window and Handy aborted on the main thread with no message. The panel is now unregistered before its window is destroyed, every main-thread task of the recovery surface catches and logs a panic, and every panic is written to `handy.log`.
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test recovery_native` (7 passed); the crash itself is not reproducible automatically
+- **Remaining:** if it happens again, `handy.log` now names the panic
+- **Author:** Claude Code (claude-opus-5-5)

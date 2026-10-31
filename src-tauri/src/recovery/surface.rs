@@ -31,10 +31,18 @@ impl TauriSurface {
     pub fn new(app: AppHandle) -> Self {
         Self { app }
     }
-    /// Run `work` on the main thread; `unscheduled` runs here when that is impossible.
+    /// Run `work` on the main thread; `unscheduled` runs here when that is impossible. A panic
+    /// in `work` is caught and logged: on the main thread it would abort Handy, since the event
+    /// loop cannot unwind (finding N32, a recovery window whose page had died).
     fn on_main(&self, work: impl FnOnce(&AppHandle) + Send + 'static, unscheduled: impl FnOnce()) {
         let handle = self.app.clone();
-        if let Err(error) = self.app.run_on_main_thread(move || work(&handle)) {
+        let guarded = move || {
+            let run = std::panic::AssertUnwindSafe(|| work(&handle));
+            if std::panic::catch_unwind(run).is_err() {
+                log::error!("Recovery surface: main-thread work panicked; Handy keeps running");
+            }
+        };
+        if let Err(error) = self.app.run_on_main_thread(guarded) {
             log::error!("Recovery surface: main thread unavailable ({error})");
             unscheduled();
         }
@@ -139,6 +147,7 @@ impl RecoverySurfacePort for TauriSurface {
         let app = self.app.clone();
         let work = move |app: &AppHandle| {
             if let Some(window) = window(app) {
+                platform::forget_panel(app);
                 if let Err(error) = window.destroy() {
                     log::error!("Recovery window could not be destroyed: {error}");
                 }

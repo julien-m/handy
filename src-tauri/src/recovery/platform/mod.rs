@@ -43,6 +43,16 @@ pub fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
     return linux::create_window(app);
 }
 
+/// A hung window is about to be destroyed: forget its native panel so that no later lookup
+/// (hide, drag, show) drives a panel whose window is gone (finding N32). The next bubble
+/// creates a new window and registers its own panel.
+pub fn forget_panel(app: &AppHandle) {
+    #[cfg(target_os = "macos")]
+    macos::forget_panel(app);
+    #[cfg(not(target_os = "macos"))]
+    let _ = app;
+}
+
 /// Show the window in front without activating Handy or taking keyboard focus.
 ///
 /// # Errors

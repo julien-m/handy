@@ -24,6 +24,7 @@ pub use managers::history_store;
 mod memory;
 pub mod microphones;
 mod overlay;
+mod panic_log;
 mod paste_tx;
 pub mod portable;
 pub mod prompts;
@@ -1022,6 +1023,7 @@ pub fn run(cli_args: CliArgs) {
         .manage(cli_args.clone())
         .manage(word_replacements::published::PublishedReplacements::default())
         .setup(move |app| {
+            panic_log::install();
             #[cfg(target_os = "windows")]
             log::info!(
                 "Vulkan layer policy: VK_LOADER_LAYERS_DISABLE={:?}, HANDY_KEEP_VULKAN_IMPLICIT_LAYERS={}",
