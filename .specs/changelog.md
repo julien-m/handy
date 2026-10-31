@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-31 — [Feature 007] Fix: a field too busy to answer the read-back (Codex) gets one more 300 ms read, so an ignored direct write falls back to the clipboard paste instead of the recovery bubble (N33)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-31 — [Features 007, 010] Fix: paste verification no longer pastes twice into the Codex composer (only text roles are verified, N31); a recovery window whose page died no longer crashes Handy, and panics are written to `handy.log` (N32)
 - **Author:** Claude Code (claude-opus-5-5)
 

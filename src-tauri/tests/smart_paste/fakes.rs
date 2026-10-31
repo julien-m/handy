@@ -38,6 +38,10 @@ pub struct FieldState {
     /// Reads after the write that time out once each before reads succeed
     /// again, as a busy application would.
     pub transient_read_errors: usize,
+    /// Reads after the write are answered only at this instant, as an
+    /// application too busy to answer during the read-back window (N33): a
+    /// read whose timeout ends earlier fails.
+    pub reads_fail_until: Option<Instant>,
     /// Role of the element (N31): a text area by default.
     pub role: Result<String, AxError>,
     /// Answer of the web-area search (N28): web text by default.
@@ -70,6 +74,7 @@ impl ScriptedField {
             value_error: None,
             fail_reads_after_write: false,
             transient_read_errors: 0,
+            reads_fail_until: None,
             role: Ok("AXTextArea".to_owned()),
             web_area: Ok(true),
             ancestry_searches: Vec::new(),
@@ -135,6 +140,17 @@ impl AxField for ScriptedField {
         }
         if state.fail_reads_after_write && state.writes > 0 {
             return Err(AxError::Timeout);
+        }
+        if let Some(until) = state.reads_fail_until.filter(|_| state.writes > 0) {
+            let now = self.clock.now();
+            if now < until {
+                // The answer arrives at `until`: in time only for a long enough timeout.
+                if now + timeout < until {
+                    return Err(AxError::Timeout);
+                }
+                self.clock.advance(until - now);
+                apply_due_write(&mut state, until);
+            }
         }
         if state.transient_read_errors > 0 && state.writes > 0 {
             state.transient_read_errors -= 1;

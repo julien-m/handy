@@ -274,3 +274,14 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test smart_paste` (130 passed)
 - **Remaining:** native proof in Codex and in a Google AI mode conversation
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Bugfix]: A busy field gets one more read before the bubble (N33)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-017 and AC-018 criteria, decision N33)
+- **Code modified:** src-tauri/src/smart_paste/direct.rs, tests/smart_paste/{direct.rs,fakes.rs}
+- **AC impacted:** AC-017, AC-018, FR-011
+- **Why:** in Codex the direct write is ignored and, under memory pressure, no read of the 150 ms window was answered; the outcome was "uncertain" and the bubble opened instead of the clipboard paste. One more read with a 300 ms timeout now decides; only a field still unreadable is "uncertain".
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test smart_paste` (132 passed)
+- **Remaining:** native proof in Codex
+- **Author:** Claude Code (claude-opus-5-5)
