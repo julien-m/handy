@@ -7,7 +7,9 @@
     "model": "Modelo",
     "quit": "Salir",
     "cancel": "Cancelar",
-    "secureInputWarning": "⚠ Atajos bloqueados por Secure Input"
+    "secureInputWarning": "⚠ Atajos bloqueados por Secure Input",
+    "addReplacement": "Añadir un reemplazo…",
+    "addVocabulary": "Añadir al vocabulario…"
   },
   "sidebar": {
     "general": "General",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Ocultar detalles",
       "close": "Cerrar"
     }
+  },
+  "quickAdd": {
+    "title": "Añadir rápido",
+    "tabs": {
+      "replacement": "Reemplazo",
+      "vocabulary": "Vocabulario"
+    },
+    "replacement": {
+      "heard": "Texto oído",
+      "written": "Escribir en su lugar",
+      "hint": "Cuando Handy oye el primer texto, escribe el segundo.",
+      "added": "Añadido: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Término",
+      "hint": "Ayuda a Handy a reconocer nombres y palabras poco comunes.",
+      "added": "Añadido al vocabulario: «{{term}}»"
+    },
+    "add": "Añadir",
+    "close": "Cerrar"
   }
 }

@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Çıkış",
     "cancel": "İptal",
-    "secureInputWarning": "⚠ Kısayollar Secure Input tarafından engelleniyor"
+    "secureInputWarning": "⚠ Kısayollar Secure Input tarafından engelleniyor",
+    "addReplacement": "Değiştirme ekle…",
+    "addVocabulary": "Sözcük dağarcığına ekle…"
   },
   "sidebar": {
     "general": "Genel",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Ayrıntıları gizle",
       "close": "Kapat"
     }
+  },
+  "quickAdd": {
+    "title": "Hızlı ekle",
+    "tabs": {
+      "replacement": "Değiştirme",
+      "vocabulary": "Sözcük dağarcığı"
+    },
+    "replacement": {
+      "heard": "Duyulan metin",
+      "written": "Bunun yerine yaz",
+      "hint": "Handy ilk metni duyduğunda ikincisini yazar.",
+      "added": "Eklendi: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Terim",
+      "hint": "Handy'nin adları ve nadir sözcükleri tanımasına yardımcı olur.",
+      "added": "Sözcük dağarcığına eklendi: “{{term}}”"
+    },
+    "add": "Ekle",
+    "close": "Kapat"
   }
 }

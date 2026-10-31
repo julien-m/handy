@@ -1,0 +1,11 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "quick-add",
+  "description": "Quick Add window (018): its events, the locale fallback of the language sync, and closing itself; its commands are app commands.",
+  "windows": ["quick_add"],
+  "permissions": [
+    "core:event:default",
+    "core:window:allow-close",
+    "os:allow-locale"
+  ]
+}

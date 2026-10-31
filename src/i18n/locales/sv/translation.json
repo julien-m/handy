@@ -7,7 +7,9 @@
     "model": "Modell",
     "quit": "Avsluta",
     "cancel": "Avbryt",
-    "secureInputWarning": "⚠ Kortkommandon blockeras av Secure Input"
+    "secureInputWarning": "⚠ Kortkommandon blockeras av Secure Input",
+    "addReplacement": "Lägg till en ersättning…",
+    "addVocabulary": "Lägg till i ordförrådet…"
   },
   "sidebar": {
     "general": "Allmänt",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Dölj detaljer",
       "close": "Stäng"
     }
+  },
+  "quickAdd": {
+    "title": "Snabbtillägg",
+    "tabs": {
+      "replacement": "Ersättning",
+      "vocabulary": "Ordförråd"
+    },
+    "replacement": {
+      "heard": "Hörd text",
+      "written": "Skriv i stället",
+      "hint": "När Handy hör den första texten skriver den den andra.",
+      "added": "Tillagt: ”{{heard}}” → ”{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Term",
+      "hint": "Hjälper Handy att känna igen namn och ovanliga ord.",
+      "added": "Tillagt i ordförrådet: ”{{term}}”"
+    },
+    "add": "Lägg till",
+    "close": "Stäng"
   }
 }

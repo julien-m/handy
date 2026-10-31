@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-31 — [Feature 018] Quick Add from the tray: « Add a Replacement… » and « Add to Vocabulary… » open a small Quick Add window that commits one rule or one term through the settings service with the 002/003 validation, without the settings window (26 locales; automated evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-31 — [Feature 007] Fix: a field too busy to answer the read-back (Codex) gets one more 300 ms read, so an ignored direct write falls back to the clipboard paste instead of the recovery bubble (N33)
 - **Author:** Claude Code (claude-opus-5-5)
 

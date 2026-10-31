@@ -574,6 +574,36 @@ async getVocabularyStatus() : Promise<Result<VocabularyStatusReport, SettingsCom
 }
 },
 /**
+ * Append the rule `recognized` → `replacement` after the saved rules.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `validation_failed` with the 002 reasons of the
+ * refused fields (`invalid_items`), and every refusal of the settings service.
+ */
+async quickAddReplacement(recognized: string, replacement: string) : Promise<Result<QuickAdded, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("quick_add_replacement", { recognized, replacement }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Append `term` to the recognition vocabulary.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: the 003 refusals (invalid or duplicate term, list
+ * limit) and every refusal of the settings service.
+ */
+async quickAddVocabularyTerm(term: string) : Promise<Result<QuickAdded, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("quick_add_vocabulary_term", { term }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Temporarily unregister all bindings while the user is recording a
  * shortcut in the UI. This avoids firing actions while keys are recorded.
  */
@@ -2668,6 +2698,10 @@ export type PromptTestStatus = "success" | "failed" |
  * The sample is empty: nothing to process.
  */
 "skipped"
+/**
+ * A saved quick addition: how many items its list now holds.
+ */
+export type QuickAdded = { count: number }
 /**
  * Public readiness of a prompt: which provider and model it uses and what is missing.
  */

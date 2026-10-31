@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Quit",
     "cancel": "Cancel",
-    "secureInputWarning": "⚠ Shortcuts blocked by Secure Input"
+    "secureInputWarning": "⚠ Shortcuts blocked by Secure Input",
+    "addReplacement": "Add a Replacement…",
+    "addVocabulary": "Add to Vocabulary…"
   },
   "sidebar": {
     "general": "General",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Hide details",
       "close": "Close"
     }
+  },
+  "quickAdd": {
+    "title": "Quick Add",
+    "tabs": {
+      "replacement": "Replacement",
+      "vocabulary": "Vocabulary"
+    },
+    "replacement": {
+      "heard": "Heard text",
+      "written": "Write instead",
+      "hint": "When Handy hears the first text, it writes the second.",
+      "added": "Added: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Term",
+      "hint": "Helps Handy recognize names and uncommon words.",
+      "added": "Added to the vocabulary: “{{term}}”"
+    },
+    "add": "Add",
+    "close": "Close"
   }
 }

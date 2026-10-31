@@ -7,7 +7,9 @@
     "model": "Модел",
     "quit": "Изход",
     "cancel": "Отказ",
-    "secureInputWarning": "⚠ Бързите клавиши са блокирани от Secure Input"
+    "secureInputWarning": "⚠ Бързите клавиши са блокирани от Secure Input",
+    "addReplacement": "Добави замяна…",
+    "addVocabulary": "Добави към речника…"
   },
   "sidebar": {
     "general": "Общи",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Скриване на подробностите",
       "close": "Затваряне"
     }
+  },
+  "quickAdd": {
+    "title": "Бързо добавяне",
+    "tabs": {
+      "replacement": "Замяна",
+      "vocabulary": "Речник"
+    },
+    "replacement": {
+      "heard": "Чут текст",
+      "written": "Пиши вместо това",
+      "hint": "Когато Handy чуе първия текст, пише втория.",
+      "added": "Добавено: „{{heard}}“ → „{{written}}“"
+    },
+    "vocabulary": {
+      "term": "Термин",
+      "hint": "Помага на Handy да разпознава имена и редки думи.",
+      "added": "Добавено към речника: „{{term}}“"
+    },
+    "add": "Добави",
+    "close": "Затвори"
   }
 }

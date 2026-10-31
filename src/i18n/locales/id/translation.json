@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Keluar",
     "cancel": "Batal",
-    "secureInputWarning": "⚠ Pintasan diblokir oleh Secure Input"
+    "secureInputWarning": "⚠ Pintasan diblokir oleh Secure Input",
+    "addReplacement": "Tambah penggantian…",
+    "addVocabulary": "Tambah ke kosakata…"
   },
   "sidebar": {
     "general": "Umum",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Sembunyikan detail",
       "close": "Tutup"
     }
+  },
+  "quickAdd": {
+    "title": "Tambah cepat",
+    "tabs": {
+      "replacement": "Penggantian",
+      "vocabulary": "Kosakata"
+    },
+    "replacement": {
+      "heard": "Teks yang didengar",
+      "written": "Tulis sebagai gantinya",
+      "hint": "Saat Handy mendengar teks pertama, ia menulis teks kedua.",
+      "added": "Ditambahkan: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Istilah",
+      "hint": "Membantu Handy mengenali nama dan kata yang jarang.",
+      "added": "Ditambahkan ke kosakata: “{{term}}”"
+    },
+    "add": "Tambah",
+    "close": "Tutup"
   }
 }

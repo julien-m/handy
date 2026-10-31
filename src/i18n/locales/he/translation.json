@@ -7,7 +7,9 @@
     "model": "מודל",
     "quit": "יציאה",
     "cancel": "ביטול",
-    "secureInputWarning": "⚠ קיצורי המקשים חסומים על ידי Secure Input"
+    "secureInputWarning": "⚠ קיצורי המקשים חסומים על ידי Secure Input",
+    "addReplacement": "הוספת החלפה…",
+    "addVocabulary": "הוספה לאוצר המילים…"
   },
   "sidebar": {
     "general": "כללי",
@@ -1422,5 +1424,25 @@
       "hideDetails": "הסתרת פרטים",
       "close": "סגירה"
     }
+  },
+  "quickAdd": {
+    "title": "הוספה מהירה",
+    "tabs": {
+      "replacement": "החלפה",
+      "vocabulary": "אוצר מילים"
+    },
+    "replacement": {
+      "heard": "טקסט שנשמע",
+      "written": "לכתוב במקום",
+      "hint": "כש-Handy שומע את הטקסט הראשון, הוא כותב את השני.",
+      "added": "נוסף: „{{heard}}” ← „{{written}}”"
+    },
+    "vocabulary": {
+      "term": "מונח",
+      "hint": "עוזר ל-Handy לזהות שמות ומילים נדירות.",
+      "added": "נוסף לאוצר המילים: „{{term}}”"
+    },
+    "add": "הוספה",
+    "close": "סגירה"
   }
 }

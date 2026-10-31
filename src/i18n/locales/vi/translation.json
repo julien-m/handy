@@ -7,7 +7,9 @@
     "model": "Mô hình",
     "quit": "Thoát",
     "cancel": "Hủy",
-    "secureInputWarning": "⚠ Phím tắt bị Secure Input chặn"
+    "secureInputWarning": "⚠ Phím tắt bị Secure Input chặn",
+    "addReplacement": "Thêm quy tắc thay thế…",
+    "addVocabulary": "Thêm vào từ vựng…"
   },
   "sidebar": {
     "general": "Chung",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Ẩn chi tiết",
       "close": "Đóng"
     }
+  },
+  "quickAdd": {
+    "title": "Thêm nhanh",
+    "tabs": {
+      "replacement": "Thay thế",
+      "vocabulary": "Từ vựng"
+    },
+    "replacement": {
+      "heard": "Văn bản nghe được",
+      "written": "Viết thay bằng",
+      "hint": "Khi Handy nghe văn bản thứ nhất, nó viết văn bản thứ hai.",
+      "added": "Đã thêm: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Thuật ngữ",
+      "hint": "Giúp Handy nhận ra tên riêng và từ hiếm.",
+      "added": "Đã thêm vào từ vựng: “{{term}}”"
+    },
+    "add": "Thêm",
+    "close": "Đóng"
   }
 }

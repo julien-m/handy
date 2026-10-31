@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Ukončit",
     "cancel": "Zrušit",
-    "secureInputWarning": "⚠ Zkratky blokuje Secure Input"
+    "secureInputWarning": "⚠ Zkratky blokuje Secure Input",
+    "addReplacement": "Přidat náhradu…",
+    "addVocabulary": "Přidat do slovníku…"
   },
   "sidebar": {
     "general": "Obecné",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Skrýt podrobnosti",
       "close": "Zavřít"
     }
+  },
+  "quickAdd": {
+    "title": "Rychlé přidání",
+    "tabs": {
+      "replacement": "Náhrada",
+      "vocabulary": "Slovník"
+    },
+    "replacement": {
+      "heard": "Slyšený text",
+      "written": "Napsat místo toho",
+      "hint": "Když Handy uslyší první text, napíše druhý.",
+      "added": "Přidáno: „{{heard}}“ → „{{written}}“"
+    },
+    "vocabulary": {
+      "term": "Výraz",
+      "hint": "Pomáhá Handy rozpoznávat jména a neobvyklá slova.",
+      "added": "Přidáno do slovníku: „{{term}}“"
+    },
+    "add": "Přidat",
+    "close": "Zavřít"
   }
 }

@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Afslut",
     "cancel": "Annuller",
-    "secureInputWarning": "⚠ Genveje blokeret af Secure Input"
+    "secureInputWarning": "⚠ Genveje blokeret af Secure Input",
+    "addReplacement": "Tilføj en erstatning…",
+    "addVocabulary": "Føj til ordforråd…"
   },
   "sidebar": {
     "general": "Generelt",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Skjul detaljer",
       "close": "Luk"
     }
+  },
+  "quickAdd": {
+    "title": "Hurtig tilføjelse",
+    "tabs": {
+      "replacement": "Erstatning",
+      "vocabulary": "Ordforråd"
+    },
+    "replacement": {
+      "heard": "Hørt tekst",
+      "written": "Skriv i stedet",
+      "hint": "Når Handy hører den første tekst, skriver den den anden.",
+      "added": "Tilføjet: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Udtryk",
+      "hint": "Hjælper Handy med at genkende navne og usædvanlige ord.",
+      "added": "Føjet til ordforrådet: “{{term}}”"
+    },
+    "add": "Tilføj",
+    "close": "Luk"
   }
 }

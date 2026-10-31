@@ -7,7 +7,9 @@
     "model": "النموذج",
     "quit": "إنهاء",
     "cancel": "إلغاء",
-    "secureInputWarning": "⚠ الاختصارات محجوبة بواسطة Secure Input"
+    "secureInputWarning": "⚠ الاختصارات محجوبة بواسطة Secure Input",
+    "addReplacement": "إضافة استبدال…",
+    "addVocabulary": "إضافة إلى المفردات…"
   },
   "sidebar": {
     "general": "عام",
@@ -1422,5 +1424,25 @@
       "hideDetails": "إخفاء التفاصيل",
       "close": "إغلاق"
     }
+  },
+  "quickAdd": {
+    "title": "إضافة سريعة",
+    "tabs": {
+      "replacement": "استبدال",
+      "vocabulary": "المفردات"
+    },
+    "replacement": {
+      "heard": "النص المسموع",
+      "written": "اكتب بدلاً من ذلك",
+      "hint": "عندما يسمع Handy النص الأول، يكتب النص الثاني.",
+      "added": "تمت الإضافة: «{{heard}}» ← «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "مصطلح",
+      "hint": "يساعد Handy على التعرف على الأسماء والكلمات النادرة.",
+      "added": "تمت الإضافة إلى المفردات: «{{term}}»"
+    },
+    "add": "إضافة",
+    "close": "إغلاق"
   }
 }

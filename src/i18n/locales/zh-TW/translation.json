@@ -7,7 +7,9 @@
     "model": "模型",
     "quit": "結束",
     "cancel": "取消",
-    "secureInputWarning": "⚠ 快捷鍵被 Secure Input 阻擋"
+    "secureInputWarning": "⚠ 快捷鍵被 Secure Input 阻擋",
+    "addReplacement": "新增替換…",
+    "addVocabulary": "新增至詞彙表…"
   },
   "sidebar": {
     "general": "一般",
@@ -1422,5 +1424,25 @@
       "hideDetails": "隱藏詳細資訊",
       "close": "關閉"
     }
+  },
+  "quickAdd": {
+    "title": "快速新增",
+    "tabs": {
+      "replacement": "替換",
+      "vocabulary": "詞彙表"
+    },
+    "replacement": {
+      "heard": "聽到的文字",
+      "written": "改寫為",
+      "hint": "當 Handy 聽到第一段文字時，會寫出第二段。",
+      "added": "已新增：「{{heard}}」→「{{written}}」"
+    },
+    "vocabulary": {
+      "term": "詞語",
+      "hint": "協助 Handy 辨識名稱與罕見字詞。",
+      "added": "已新增至詞彙表：「{{term}}」"
+    },
+    "add": "新增",
+    "close": "關閉"
   }
 }

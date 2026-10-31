@@ -7,7 +7,9 @@
     "model": "Модель",
     "quit": "Выход",
     "cancel": "Отмена",
-    "secureInputWarning": "⚠ Сочетания клавиш заблокированы Secure Input"
+    "secureInputWarning": "⚠ Сочетания клавиш заблокированы Secure Input",
+    "addReplacement": "Добавить замену…",
+    "addVocabulary": "Добавить в словарь…"
   },
   "sidebar": {
     "general": "Общие",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Скрыть подробности",
       "close": "Закрыть"
     }
+  },
+  "quickAdd": {
+    "title": "Быстрое добавление",
+    "tabs": {
+      "replacement": "Замена",
+      "vocabulary": "Словарь"
+    },
+    "replacement": {
+      "heard": "Услышанный текст",
+      "written": "Писать вместо этого",
+      "hint": "Когда Handy слышит первый текст, он пишет второй.",
+      "added": "Добавлено: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Термин",
+      "hint": "Помогает Handy распознавать имена и редкие слова.",
+      "added": "Добавлено в словарь: «{{term}}»"
+    },
+    "add": "Добавить",
+    "close": "Закрыть"
   }
 }

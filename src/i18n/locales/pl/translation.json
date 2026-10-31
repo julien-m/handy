@@ -7,7 +7,9 @@
     "model": "Model",
     "quit": "Zamknij",
     "cancel": "Anuluj",
-    "secureInputWarning": "⚠ Skróty zablokowane przez Secure Input"
+    "secureInputWarning": "⚠ Skróty zablokowane przez Secure Input",
+    "addReplacement": "Dodaj zamianę…",
+    "addVocabulary": "Dodaj do słownika…"
   },
   "sidebar": {
     "general": "Ogólne",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Ukryj szczegóły",
       "close": "Zamknij"
     }
+  },
+  "quickAdd": {
+    "title": "Szybkie dodawanie",
+    "tabs": {
+      "replacement": "Zamiana",
+      "vocabulary": "Słownik"
+    },
+    "replacement": {
+      "heard": "Usłyszany tekst",
+      "written": "Pisz zamiast tego",
+      "hint": "Gdy Handy usłyszy pierwszy tekst, wpisze drugi.",
+      "added": "Dodano: „{{heard}}” → „{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Termin",
+      "hint": "Pomaga Handy rozpoznawać nazwy i rzadkie słowa.",
+      "added": "Dodano do słownika: „{{term}}”"
+    },
+    "add": "Dodaj",
+    "close": "Zamknij"
   }
 }

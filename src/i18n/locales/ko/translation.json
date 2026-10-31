@@ -7,7 +7,9 @@
     "model": "모델",
     "quit": "종료",
     "cancel": "취소",
-    "secureInputWarning": "⚠ Secure Input으로 단축키가 차단됨"
+    "secureInputWarning": "⚠ Secure Input으로 단축키가 차단됨",
+    "addReplacement": "치환 규칙 추가…",
+    "addVocabulary": "어휘에 추가…"
   },
   "sidebar": {
     "general": "일반",
@@ -1422,5 +1424,25 @@
       "hideDetails": "세부 정보 숨기기",
       "close": "닫기"
     }
+  },
+  "quickAdd": {
+    "title": "빠른 추가",
+    "tabs": {
+      "replacement": "치환",
+      "vocabulary": "어휘"
+    },
+    "replacement": {
+      "heard": "들린 텍스트",
+      "written": "대신 쓸 텍스트",
+      "hint": "Handy가 첫 번째 텍스트를 들으면 두 번째 텍스트를 씁니다.",
+      "added": "추가됨: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "용어",
+      "hint": "Handy가 이름과 드문 단어를 인식하도록 돕습니다.",
+      "added": "어휘에 추가됨: “{{term}}”"
+    },
+    "add": "추가",
+    "close": "닫기"
   }
 }

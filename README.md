@@ -235,6 +235,10 @@ handy settings replacements export rules.txt                       # or `-` (def
 - **Kept as is.** A text that already contains a line break (dictated, or written by your AI prompt), a list item (`-`, `*`, `•`, `1.`), a code block (` ``` ` or an indented line) is never rearranged, and no break is placed inside an open quotation.
 - **Platforms.** macOS uses Apple's NaturalLanguage framework (sentences, words, language). Windows and Linux use Unicode text segmentation (UAX #29) and leave text written mostly in Chinese or Japanese characters unchanged, as the setting's description says there.
 
+### Quick Add from the tray
+
+The tray menu has **Add a Replacement…** and **Add to Vocabulary…**. Each opens a small Quick Add window on the matching tab, without the settings window: type the heard text and the text to write instead (or one vocabulary term) and press Enter. The addition goes through the same validation as **Settings > Advanced** and `handy settings`; a refusal shows its reason and saves nothing. The window stays open for another addition; Escape closes it.
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:

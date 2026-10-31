@@ -7,7 +7,9 @@
     "model": "मॉडल",
     "quit": "बाहर निकलें",
     "cancel": "रद्द करें",
-    "secureInputWarning": "⚠ Secure Input ने शॉर्टकट ब्लॉक किए हैं"
+    "secureInputWarning": "⚠ Secure Input ने शॉर्टकट ब्लॉक किए हैं",
+    "addReplacement": "प्रतिस्थापन जोड़ें…",
+    "addVocabulary": "शब्दावली में जोड़ें…"
   },
   "sidebar": {
     "general": "सामान्य",
@@ -1422,5 +1424,25 @@
       "hideDetails": "विवरण छिपाएँ",
       "close": "बंद करें"
     }
+  },
+  "quickAdd": {
+    "title": "त्वरित जोड़",
+    "tabs": {
+      "replacement": "प्रतिस्थापन",
+      "vocabulary": "शब्दावली"
+    },
+    "replacement": {
+      "heard": "सुना गया पाठ",
+      "written": "इसके बजाय लिखें",
+      "hint": "जब Handy पहला पाठ सुनता है, तो वह दूसरा लिखता है।",
+      "added": "जोड़ा गया: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "शब्द",
+      "hint": "Handy को नाम और असामान्य शब्द पहचानने में मदद करता है।",
+      "added": "शब्दावली में जोड़ा गया: “{{term}}”"
+    },
+    "add": "जोड़ें",
+    "close": "बंद करें"
   }
 }

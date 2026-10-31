@@ -7,7 +7,9 @@
     "model": "Модель",
     "quit": "Вийти",
     "cancel": "Скасувати",
-    "secureInputWarning": "⚠ Комбінації клавіш заблоковано Secure Input"
+    "secureInputWarning": "⚠ Комбінації клавіш заблоковано Secure Input",
+    "addReplacement": "Додати заміну…",
+    "addVocabulary": "Додати до словника…"
   },
   "sidebar": {
     "general": "Загальні",
@@ -1422,5 +1424,25 @@
       "hideDetails": "Сховати деталі",
       "close": "Закрити"
     }
+  },
+  "quickAdd": {
+    "title": "Швидке додавання",
+    "tabs": {
+      "replacement": "Заміна",
+      "vocabulary": "Словник"
+    },
+    "replacement": {
+      "heard": "Почутий текст",
+      "written": "Писати замість цього",
+      "hint": "Коли Handy чує перший текст, він пише другий.",
+      "added": "Додано: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Термін",
+      "hint": "Допомагає Handy розпізнавати імена та рідкісні слова.",
+      "added": "Додано до словника: «{{term}}»"
+    },
+    "add": "Додати",
+    "close": "Закрити"
   }
 }

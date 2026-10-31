@@ -24,7 +24,7 @@ use crate::managers::history::{HistoryEntry, HistoryManager};
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::TranscriptionManager;
 use crate::settings;
-use crate::tray_i18n::get_tray_translations;
+use crate::tray_i18n::{get_tray_translations, TrayStrings};
 use log::{debug, error, info, trace, warn};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -509,6 +509,7 @@ fn build_menu(app: &AppHandle, inputs: &MenuInputs) -> tauri::Result<(Menu<tauri
         true,
         None::<&str>,
     )?;
+    let (add_replacement_i, add_vocabulary_i) = quick_add_items(app, &strings)?;
     let quit_i = MenuItem::with_id(app, "quit", &strings.quit, true, quit_accelerator)?;
     let separator = || PredefinedMenuItem::separator(app);
 
@@ -522,6 +523,8 @@ fn build_menu(app: &AppHandle, inputs: &MenuInputs) -> tauri::Result<(Menu<tauri
                 &cancel_i,
                 &separator()?,
                 &copy_last_transcript_i,
+                &add_replacement_i,
+                &add_vocabulary_i,
                 &separator()?,
                 &settings_i,
                 &check_updates_i,
@@ -560,6 +563,8 @@ fn build_menu(app: &AppHandle, inputs: &MenuInputs) -> tauri::Result<(Menu<tauri
                 &version_i,
                 &separator()?,
                 &copy_last_transcript_i,
+                &add_replacement_i,
+                &add_vocabulary_i,
                 &separator()?,
                 &model_submenu,
                 &unload_model_i,
@@ -592,6 +597,20 @@ fn build_menu(app: &AppHandle, inputs: &MenuInputs) -> tauri::Result<(Menu<tauri
     }
 
     Ok((menu, tooltip))
+}
+
+// @spec FR-001: Quick Add tray items — .specs/features/018-quick-add-from-tray/spec.md#fr-001
+// @spec AC-001: After Copy Last Transcript, idle and busy — .specs/features/018-quick-add-from-tray/spec.md#ac-001
+/// The two Quick Add items (018), placed after "Copy Last Transcript" in both menus.
+fn quick_add_items(
+    app: &AppHandle,
+    strings: &TrayStrings,
+) -> tauri::Result<(MenuItem<tauri::Wry>, MenuItem<tauri::Wry>)> {
+    let item = |id: &str, label: &str| MenuItem::with_id(app, id, label, true, None::<&str>);
+    Ok((
+        item("quick_add_replacement", &strings.add_replacement)?,
+        item("quick_add_vocabulary", &strings.add_vocabulary)?,
+    ))
 }
 
 fn last_transcript_text(entry: &HistoryEntry) -> &str {

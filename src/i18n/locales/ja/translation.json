@@ -7,7 +7,9 @@
     "model": "モデル",
     "quit": "終了",
     "cancel": "キャンセル",
-    "secureInputWarning": "⚠ Secure Input でショートカットがブロック中"
+    "secureInputWarning": "⚠ Secure Input でショートカットがブロック中",
+    "addReplacement": "置換を追加…",
+    "addVocabulary": "語彙に追加…"
   },
   "sidebar": {
     "general": "一般",
@@ -1422,5 +1424,25 @@
       "hideDetails": "詳細を隠す",
       "close": "閉じる"
     }
+  },
+  "quickAdd": {
+    "title": "クイック追加",
+    "tabs": {
+      "replacement": "置換",
+      "vocabulary": "語彙"
+    },
+    "replacement": {
+      "heard": "認識されたテキスト",
+      "written": "代わりに書く",
+      "hint": "Handy が最初のテキストを聞き取ると、2 番目のテキストを書きます。",
+      "added": "追加しました:「{{heard}}」→「{{written}}」"
+    },
+    "vocabulary": {
+      "term": "用語",
+      "hint": "名前や珍しい単語を Handy が認識しやすくなります。",
+      "added": "語彙に追加しました:「{{term}}」"
+    },
+    "add": "追加",
+    "close": "閉じる"
   }
 }

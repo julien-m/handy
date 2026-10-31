@@ -28,6 +28,7 @@ mod panic_log;
 mod paste_tx;
 pub mod portable;
 pub mod prompts;
+mod quick_add;
 pub mod recognition_vocabulary;
 pub mod recovery;
 mod secure_input;
@@ -363,6 +364,9 @@ fn initialize_core_logic(app_handle: &AppHandle) {
             }
             "copy_last_transcript" => {
                 tray::copy_last_transcript(app);
+            }
+            id if quick_add::QuickAddKind::from_menu_id(id).is_some() => {
+                quick_add::open_from_menu(app, id);
             }
             "unload_model" => {
                 let transcription_manager = app.state::<Arc<TranscriptionManager>>();
@@ -749,6 +753,8 @@ macro_rules! handy_commands {
             commands::vocabulary::add_vocabulary_term,
             commands::vocabulary::remove_vocabulary_occurrence,
             commands::vocabulary::get_vocabulary_status,
+            commands::quick_add::quick_add_replacement,
+            commands::quick_add::quick_add_vocabulary_term,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
