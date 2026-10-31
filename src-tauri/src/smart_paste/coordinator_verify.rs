@@ -1,7 +1,7 @@
 //! Experimental paste verification of the coordinator (AC-019): the native
 //! side of [`super::verification`]. The focused field is read right before
 //! the first Cmd+V, then polled after the read; one more Cmd+V is posted
-//! only for web text (N28), while this transaction still owns the clipboard
+//! only for a web text field (N28, N31), while this transaction still owns the clipboard
 //! (no rewrite), the destination is current and a last read right before it
 //! still shows the field unchanged. Field values are compared, never logged.
 
@@ -13,20 +13,21 @@ use crate::smart_paste::ax_port::AxField;
 use crate::smart_paste::direct::{MAX_FIELD_UTF16_UNITS, PER_CALL_TIMEOUT};
 use crate::smart_paste::keyboard::{KeyboardError, LAYOUT_RESTORE_DELAY, LAYOUT_SETTLE_DELAY};
 use crate::smart_paste::verification::{
-    gate_retry, next_step, web_text_scope, FieldObservation, RetryGate, RetryPermit,
-    UnreadableReason, VerifyFailure, VerifyStage, VerifyStep, VerifyVerdict, VerifyWindow,
-    VERIFY_WINDOW, WEB_ANCESTRY_LIMITS,
+    gate_retry, next_step, text_field_scope, web_text_scope, FieldObservation, RetryGate,
+    RetryPermit, UnreadableReason, VerifyFailure, VerifyStage, VerifyStep, VerifyVerdict,
+    VerifyWindow, MAX_ROLE_UTF16_UNITS, VERIFY_WINDOW, WEB_ANCESTRY_LIMITS,
 };
 
 // @spec FR-012: Paste verification and single retry — .specs/features/007-smart-paste/spec.md#fr-012
 
-/// Longest time a verification adds to an insertion: the probe reads, the
+/// Longest time a verification adds to an insertion: the probe reads (role
+/// included), the
 /// web-area search (which may overrun its budget by one request), two
 /// windows (each may overrun by one read), the last read before the retry,
 /// and the repeated chord with its layout switch and restoration. Counted in
 /// the actor's shutdown allowance.
 pub fn verification_allowance() -> Duration {
-    let probe = PER_CALL_TIMEOUT * 4;
+    let probe = PER_CALL_TIMEOUT * 5;
     let ancestry = WEB_ANCESTRY_LIMITS.budget + WEB_ANCESTRY_LIMITS.per_call;
     let windows = (VERIFY_WINDOW + PER_CALL_TIMEOUT) * 2;
     let last_read = PER_CALL_TIMEOUT;
@@ -59,7 +60,7 @@ impl FieldProbe {
 impl SmartPasteCoordinator {
     /// Reads the focused field before the first Cmd+V when verification is
     /// on (with it off, nothing is probed and the error is ignored).
-    /// Business rule (AC-019, N28): only a non-secure web-text field of the
+    /// Business rule (AC-019, N28, N31): only a non-secure text field in web text of the
     /// destination process with a readable value is verified; anything else
     /// keeps the current behavior, with the reason logged.
     pub(super) fn probe_field(
@@ -79,6 +80,7 @@ impl SmartPasteCoordinator {
         if !is_destination_field || is_secure {
             return Err(no_field);
         }
+        text_field_scope(field.role(PER_CALL_TIMEOUT, MAX_ROLE_UTF16_UNITS))?;
         web_text_scope(field.is_in_web_area(WEB_ANCESTRY_LIMITS))?;
         let before = field
             .value_utf16(PER_CALL_TIMEOUT, MAX_FIELD_UTF16_UNITS)

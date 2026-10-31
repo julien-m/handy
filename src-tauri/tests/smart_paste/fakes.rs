@@ -38,6 +38,8 @@ pub struct FieldState {
     /// Reads after the write that time out once each before reads succeed
     /// again, as a busy application would.
     pub transient_read_errors: usize,
+    /// Role of the element (N31): a text area by default.
+    pub role: Result<String, AxError>,
     /// Answer of the web-area search (N28): web text by default.
     pub web_area: Result<bool, AxError>,
     /// Limits of every web-area search received.
@@ -68,6 +70,7 @@ impl ScriptedField {
             value_error: None,
             fail_reads_after_write: false,
             transient_read_errors: 0,
+            role: Ok("AXTextArea".to_owned()),
             web_area: Ok(true),
             ancestry_searches: Vec::new(),
             call_cost: Duration::ZERO,
@@ -115,6 +118,10 @@ fn apply_due_write(state: &mut FieldState, now: Instant) {
 impl AxField for ScriptedField {
     fn pid(&mut self) -> Result<i32, AxError> {
         Ok(self.begin_call(None).pid)
+    }
+
+    fn role(&mut self, timeout: Duration, _max_units: usize) -> Result<String, AxError> {
+        self.begin_call(Some(timeout)).role.clone()
     }
 
     fn is_secure(&mut self, timeout: Duration) -> Result<bool, AxError> {

@@ -263,3 +263,14 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1400 passed)
 - **Remaining:** native proof in a Google AI mode conversation
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Bugfix]: Paste verification skips web elements without a text role (N31)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-019 scenario, criterion and reasons, FR-012, key entity, decision N31, edge case, test strategy)
+- **Code modified:** src-tauri/src/smart_paste/{verification.rs,coordinator_verify.rs,ax_port.rs,macos_ax.rs}, src-tauri/src/recovery/classifier.rs (`TEXT_ROLES` shared), tests, README.md
+- **AC impacted:** AC-019, FR-012
+- **Why:** a dictation into the Codex composer (Electron) was pasted twice, then raised the recovery bubble: its focused element is a rich editor's group whose value does not follow the paste (`verify dictation 7: Failed in 2244ms`, `UnchangedAfterRetry`). Only an element with one of 010's text roles is verified now; any other is `Unreadable(NotTextField)`, one Cmd+V.
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test smart_paste` (130 passed)
+- **Remaining:** native proof in Codex and in a Google AI mode conversation
+- **Author:** Claude Code (claude-opus-5-5)

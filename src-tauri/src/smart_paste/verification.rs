@@ -17,6 +17,12 @@
 //! "unreadable" and keeps the current behavior. Right before the retry the
 //! value is read once more, so a late paste is never sent twice.
 //!
+//! Finding N31: the Codex composer (Electron) is web text, but its focused
+//! element is not a text field (`AXGroup` of a rich editor) and its value did
+//! not follow the paste, so the retry pasted the transcript twice. Only an
+//! element with one of 010's text roles is verified; any other role is
+//! "unreadable".
+//!
 //! This module only decides; the coordinator performs every native effect.
 //! Field values are compared, never logged.
 
@@ -25,6 +31,7 @@ use std::time::{Duration, Instant};
 use super::ax_port::AncestryLimits;
 use super::direct::PER_CALL_TIMEOUT;
 use super::outcome::PasteOutcomeKind;
+use crate::recovery::classifier::TEXT_ROLES;
 
 // @spec FR-012: Paste verification decisions — .specs/features/007-smart-paste/spec.md#fr-012
 
@@ -58,6 +65,9 @@ pub enum UnreadableReason {
     /// The element is not web text: its value is not known to follow a
     /// paste (terminals, N28), so an unchanged value proves nothing.
     NotWebText,
+    /// The element is not a text field (a rich editor's group, N31), or its
+    /// role could not be read: its value is not known to follow a paste.
+    NotTextField,
     /// A read of the value failed during the verification.
     ReadFailed,
 }
@@ -69,6 +79,18 @@ pub fn web_text_scope<E>(web_ancestry: Result<bool, E>) -> Result<(), Unreadable
     match web_ancestry {
         Ok(true) => Ok(()),
         Ok(false) | Err(_) => Err(UnreadableReason::NotWebText),
+    }
+}
+
+/// Longest role read: every text role is shorter, a longer one is not text.
+pub const MAX_ROLE_UTF16_UNITS: usize = 64;
+
+/// Business rule (N31): only an element with one of 010's text roles is
+/// verified. A failed role read is no proof that the element is a field.
+pub fn text_field_scope<E>(role: Result<String, E>) -> Result<(), UnreadableReason> {
+    match role {
+        Ok(role) if TEXT_ROLES.contains(&role.as_str()) => Ok(()),
+        Ok(_) | Err(_) => Err(UnreadableReason::NotTextField),
     }
 }
 
