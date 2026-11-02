@@ -3,6 +3,8 @@
     "settings": "Indstillinger...",
     "checkUpdates": "Tjek for opdateringer...",
     "copyLastTranscript": "Kopiér seneste transskription",
+    "recentTranscripts": "Seneste transskriptioner",
+    "noRecentTranscripts": "Ingen transskriptioner endnu",
     "unloadModel": "Frigør model",
     "model": "Model",
     "quit": "Afslut",

@@ -3,6 +3,8 @@
     "settings": "Pengaturan...",
     "checkUpdates": "Periksa Pembaruan...",
     "copyLastTranscript": "Salin Transkripsi Terakhir",
+    "recentTranscripts": "Transkripsi Terbaru",
+    "noRecentTranscripts": "Belum ada transkripsi",
     "unloadModel": "Keluarkan Model dari Memori",
     "model": "Model",
     "quit": "Keluar",

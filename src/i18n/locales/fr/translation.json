@@ -3,6 +3,8 @@
     "settings": "Paramètres...",
     "checkUpdates": "Rechercher des mises à jour...",
     "copyLastTranscript": "Copier la dernière transcription",
+    "recentTranscripts": "Transcriptions récentes",
+    "noRecentTranscripts": "Aucune transcription pour l’instant",
     "unloadModel": "Décharger le modèle",
     "model": "Modèle",
     "quit": "Quitter",

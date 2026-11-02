@@ -3,6 +3,8 @@
     "settings": "Cài đặt...",
     "checkUpdates": "Kiểm tra cập nhật...",
     "copyLastTranscript": "Sao chép bản chép lời mới nhất",
+    "recentTranscripts": "Bản chép lời gần đây",
+    "noRecentTranscripts": "Chưa có bản chép lời",
     "unloadModel": "Dỡ mô hình",
     "model": "Mô hình",
     "quit": "Thoát",

@@ -3,6 +3,8 @@
     "settings": "Nastavení...",
     "checkUpdates": "Zkontrolovat aktualizace...",
     "copyLastTranscript": "Zkopírovat poslední přepis",
+    "recentTranscripts": "Nedávné přepisy",
+    "noRecentTranscripts": "Zatím žádné přepisy",
     "unloadModel": "Uvolnit model",
     "model": "Model",
     "quit": "Ukončit",

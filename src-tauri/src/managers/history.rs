@@ -80,6 +80,7 @@ impl HistoryManager {
         if let Err(e) = added.emit(&self.app_handle) {
             error!("Failed to emit history-updated event: {}", e);
         }
+        crate::tray::update_tray_menu(&self.app_handle);
         Ok(entry)
     }
 
@@ -97,6 +98,7 @@ impl HistoryManager {
         {
             error!("Failed to emit history-updated event: {}", e);
         }
+        crate::tray::update_tray_menu(&self.app_handle);
         Ok(entry)
     }
 
@@ -315,6 +317,30 @@ impl HistoryManager {
         Ok(entry)
     }
 
+    // @spec FR-001: Recent completed entries — .specs/features/019-tray-recent-transcripts/spec.md#fr-001
+    /// The `limit` newest entries with non-empty transcription text, newest first.
+    pub fn recent_completed_entries(&self, limit: usize) -> Result<Vec<HistoryEntry>> {
+        let conn = self.get_connection()?;
+        Self::recent_completed_entries_with_conn(&conn, limit)
+    }
+
+    fn recent_completed_entries_with_conn(
+        conn: &Connection,
+        limit: usize,
+    ) -> Result<Vec<HistoryEntry>> {
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {ENTRY_COLUMNS}
+             FROM transcription_history
+             WHERE transcription_text != ''
+             ORDER BY timestamp DESC, id DESC
+             LIMIT ?1"
+        ))?;
+        let entries = stmt
+            .query_map([limit as i64], HistoryStore::map_entry)?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(entries)
+    }
+
     pub async fn toggle_saved_status(&self, id: i64) -> Result<()> {
         let conn = self.get_connection()?;
 
@@ -352,6 +378,11 @@ impl HistoryManager {
     }
 
     pub async fn get_entry_by_id(&self, id: i64) -> Result<Option<HistoryEntry>> {
+        self.entry_by_id(id)
+    }
+
+    /// Synchronous form of [`Self::get_entry_by_id`], for the tray menu handler.
+    pub fn entry_by_id(&self, id: i64) -> Result<Option<HistoryEntry>> {
         let conn = self.get_connection()?;
         let mut stmt = conn.prepare(&format!(
             "SELECT {ENTRY_COLUMNS}
@@ -388,6 +419,7 @@ impl HistoryManager {
         if let Err(e) = (HistoryUpdatePayload::Deleted { id }).emit(&self.app_handle) {
             error!("Failed to emit history-updated event: {}", e);
         }
+        crate::tray::update_tray_menu(&self.app_handle);
 
         Ok(())
     }
@@ -488,6 +520,26 @@ mod tests {
 
         assert_eq!(entry.timestamp, 100);
         assert_eq!(entry.transcription_text, "completed");
+    }
+
+    // @spec AC-002: Newest completed transcripts first — .specs/features/019-tray-recent-transcripts/spec.md#ac-002
+    #[test]
+    fn recent_completed_entries_are_newest_first_and_skip_empty_ones() -> Result<()> {
+        let conn = setup_conn();
+        for (timestamp, text) in [(100, "one"), (200, ""), (300, "three"), (400, "four")] {
+            insert_entry(&conn, timestamp, text, None);
+        }
+
+        let entries = HistoryManager::recent_completed_entries_with_conn(&conn, 2)?;
+        let texts: Vec<&str> = entries
+            .iter()
+            .map(|entry| entry.transcription_text.as_str())
+            .collect();
+        assert_eq!(texts, ["four", "three"]);
+
+        let all = HistoryManager::recent_completed_entries_with_conn(&conn, 10)?;
+        assert_eq!(all.len(), 3);
+        Ok(())
     }
 
     // @spec AC-005: Text-only rows are read like any other — .specs/features/006-destination-application/spec.md#ac-005

@@ -3,6 +3,8 @@
     "settings": "הגדרות...",
     "checkUpdates": "בדוק עדכונים...",
     "copyLastTranscript": "העתק את התמלול האחרון",
+    "recentTranscripts": "תמלולים אחרונים",
+    "noRecentTranscripts": "אין עדיין תמלולים",
     "unloadModel": "פרוק מודל",
     "model": "מודל",
     "quit": "יציאה",

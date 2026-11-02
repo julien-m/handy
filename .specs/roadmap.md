@@ -31,6 +31,8 @@
 ## Post-MVP
 
 <!-- roadmap:postmvp:start -->
+- [ ] **Quick Add from the tray** (018) — Julien's request of 2026-10-31: tray items open a small window that adds one replacement rule or one vocabulary term through the settings service; « Show the list » opens the settings on the matching list. Depends on 002, 003 and 008. Native proof pending. → [018-quick-add-from-tray](features/018-quick-add-from-tray/spec.md)
+- [ ] **Recent transcripts in the tray** (019) — Julien's request of 2026-11-02: a tray submenu lists the 5 newest transcripts; a click copies the full text. Depends on the history and 018. Native proof pending. → [019-tray-recent-transcripts](features/019-tray-recent-transcripts/spec.md)
 <!-- roadmap:postmvp:end -->
 
 ## Future

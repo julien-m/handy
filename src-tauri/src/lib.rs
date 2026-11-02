@@ -365,6 +365,11 @@ fn initialize_core_logic(app_handle: &AppHandle) {
             "copy_last_transcript" => {
                 tray::copy_last_transcript(app);
             }
+            id if tray::recent_transcript_id(id).is_some() => {
+                if let Some(entry_id) = tray::recent_transcript_id(id) {
+                    tray::copy_recent_transcript(app, entry_id);
+                }
+            }
             id if quick_add::QuickAddKind::from_menu_id(id).is_some() => {
                 quick_add::open_from_menu(app, id);
             }

@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-11-02 — [Feature 019] Recent transcripts in the tray: a « Recent Transcripts » submenu lists the 5 newest transcripts with their time; a click copies the full text (26 locales; automated evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-31 — [Features 002, 003, 018] Rule and term lists shown in alphabetical order (display only, saved order unchanged; decision `alphabetical_display`); « Show the list » in the Quick Add window opens the settings on Advanced, scrolled to the matching list (AC-009); the Quick Add window really closes and its confirmation goes away after 4 s (AC-007; native proof pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

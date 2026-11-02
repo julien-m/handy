@@ -3,6 +3,8 @@
     "settings": "الإعدادات...",
     "checkUpdates": "التحقق من وجود تحديثات...",
     "copyLastTranscript": "نسخ آخر نص تم تفريغه",
+    "recentTranscripts": "النصوص الأخيرة",
+    "noRecentTranscripts": "لا توجد نصوص بعد",
     "unloadModel": "تفريغ النموذج",
     "model": "النموذج",
     "quit": "إنهاء",

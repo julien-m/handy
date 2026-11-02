@@ -239,6 +239,10 @@ handy settings replacements export rules.txt                       # or `-` (def
 
 The tray menu has **Add a Replacement…** and **Add to Vocabulary…**. Each opens a small Quick Add window on the matching tab, without the settings window: type the heard text and the text to write instead (or one vocabulary term) and press Enter. The addition goes through the same validation as **Settings > Advanced** and `handy settings`; a refusal shows its reason and saves nothing. The window stays open for another addition; Escape closes it. **Show the list** opens the settings directly on that list (Advanced section) to view, edit or delete entries. Both lists are shown in alphabetical order; the saved order (export order, and the vocabulary terms sent first when the model budget is short) is unchanged.
 
+### Recent transcripts in the tray
+
+The tray menu has a **Recent Transcripts** submenu with the 5 newest transcripts (time and the start of the text). Click one to copy its full text (the post-processed text when there is one), then paste it wherever you need, for example when an automatic paste went to the wrong place.
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:

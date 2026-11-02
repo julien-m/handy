@@ -3,6 +3,8 @@
     "settings": "Настройки...",
     "checkUpdates": "Проверить обновления...",
     "copyLastTranscript": "Скопировать последнюю транскрипцию",
+    "recentTranscripts": "Последние транскрипции",
+    "noRecentTranscripts": "Транскрипций пока нет",
     "unloadModel": "Выгрузить модель",
     "model": "Модель",
     "quit": "Выход",
