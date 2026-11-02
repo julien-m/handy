@@ -149,6 +149,8 @@ impl HistoryManager {
             }
         }
 
+        // @spec AC-005: Retention cleanup updates the tray — .specs/features/019-tray-recent-transcripts/spec.md#ac-005
+        crate::tray::update_tray_menu(&self.app_handle);
         Ok(deleted_count)
     }
 

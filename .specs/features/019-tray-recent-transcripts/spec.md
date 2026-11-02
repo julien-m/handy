@@ -70,7 +70,7 @@ Each item reads `HH:MM — text` in local time, the text on one line (whitespace
 Clicking an item copies the full text of that entry to the clipboard (the post-processed text when there is one, as "Copy Last Transcript"); an entry deleted meanwhile copies nothing and refreshes the menu.
 
 ### AC-005
-A new, retried or deleted history entry updates the submenu without restarting Handy.
+A new, retried or deleted history entry, including entries removed by the retention cleanup (history limit or retention period), updates the submenu without restarting Handy.
 
 ## Functional Requirements
 
@@ -81,7 +81,7 @@ A new, retried or deleted history entry updates the submenu without restarting H
 Tray submenu id `recent_transcripts`; items `recent_transcript:<history id>`; labels from the `tray` translations (`recentTranscripts`, `noRecentTranscripts`). The labels are part of the menu inputs, so a changed list rebuilds the menu through the single tray applier.
 
 ### FR-003
-`HistoryManager` asks the tray to sync after saving, retrying or deleting an entry.
+`HistoryManager` asks the tray to sync after saving, retrying or deleting an entry, and after the retention cleanup removes entries.
 
 ## Clarifications
 
