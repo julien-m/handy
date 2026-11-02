@@ -3,6 +3,8 @@ import type { SettingsCommandError } from "@/bindings";
 import {
   EMPTY_VALUES,
   canSubmit,
+  clearedAfterAdd,
+  isSubmitKey,
   parseKind,
   quickAddFailure,
 } from "./quick-add-model";
@@ -70,5 +72,32 @@ describe("Quick Add model (018)", () => {
     });
     expect(quickAddFailure("replacement", committed).unchangedKey).toBeNull();
     expect(quickAddFailure("vocabulary", null).unchangedKey).toBeNull();
+  });
+
+  test("a saved addition clears only its tab, and not text typed since (AC-007)", () => {
+    const submitted = {
+      heard: "cloud code",
+      written: "Claude Code",
+      term: "Kube",
+    };
+    expect(clearedAfterAdd("vocabulary", submitted, submitted)).toEqual({
+      ...submitted,
+      term: "",
+    });
+    expect(clearedAfterAdd("replacement", submitted, submitted)).toEqual({
+      ...submitted,
+      heard: "",
+      written: "",
+    });
+    const edited = { ...submitted, term: "Kubernetes" };
+    expect(clearedAfterAdd("vocabulary", submitted, edited)).toEqual(edited);
+  });
+
+  test("Enter does not submit while an input method composes", () => {
+    const enter = { key: "Enter", isComposing: false, keyCode: 13 };
+    expect(isSubmitKey(enter)).toBe(true);
+    expect(isSubmitKey({ ...enter, isComposing: true })).toBe(false);
+    expect(isSubmitKey({ ...enter, keyCode: 229 })).toBe(false);
+    expect(isSubmitKey({ ...enter, key: "a" })).toBe(false);
   });
 });

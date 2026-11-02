@@ -138,10 +138,10 @@ A refused replacement (empty field, forbidden character, duplicate heard text, m
 Adding a vocabulary term commits `VocabularyEdit::Add` through the settings service; a refusal (invalid term, duplicate, limit) saves nothing and shows the translated 003 refusal; the typed text stays.
 
 ### AC-007
-After a successful addition the window shows a confirmation naming what was added, clears the fields and focuses the first field; the confirmation goes away by itself after 4 s (a refusal stays until the text changes). Escape, Close or the window's close button really closes the window (it is not hidden like the settings window), so reopening it starts empty, without the previous confirmation.
+After a successful addition the window shows a confirmation naming what was added, clears the fields of the added tab (the other tab and any text typed since the submission are kept) and focuses the first field; the confirmation goes away by itself after 4 s (a refusal stays until the text changes). Escape, Close or the window's close button really closes the window (it is not hidden like the settings window), so reopening it starts empty, without the previous confirmation.
 
 ### AC-008
-Add stays unavailable while a required field is empty or a commit is in flight; Enter in any field submits.
+Add stays unavailable while a required field is empty or a commit is in flight; Enter in any field submits, except the Enter that confirms an input-method composition.
 
 ### AC-009
 "Show the list" in the Quick Add window shows the settings window, goes to the Advanced section (asking first when a section holds unsaved edits) and scrolls to the list of the current tab (Vocabulary or Replacements); the Quick Add window closes so it does not cover the settings.

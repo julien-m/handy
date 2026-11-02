@@ -18,6 +18,8 @@ import {
   QUICK_ADD_KIND_EVENT,
   QUICK_ADD_SCREEN,
   canSubmit,
+  clearedAfterAdd,
+  isSubmitKey,
   quickAddFailure,
   type QuickAddFailure,
   type QuickAddValues,
@@ -57,14 +59,17 @@ export const QuickAddWindow: React.FC<{ initialKind: QuickAddKind }> = ({
   const submit = async () => {
     if (!canSubmit(kind, values, busy)) return;
     setBusy(true);
-    const outcome = await addition(kind, values, t);
+    const submitted = values;
+    const outcome = await addition(kind, submitted, t);
     setBusy(false);
     setNotice(outcome);
-    if (outcome.kind === "added") setValues(EMPTY_VALUES);
+    if (outcome.kind === "added") {
+      setValues((current) => clearedAfterAdd(kind, submitted, current));
+    }
     firstField.current?.focus();
   };
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key !== "Enter") return;
+    if (!isSubmitKey(event.nativeEvent)) return;
     event.preventDefault();
     void submit();
   };

@@ -60,6 +60,47 @@ export const canSubmit = (
   return values.heard.trim() !== "" && values.written.trim() !== "";
 };
 
+/** Fields of each tab. */
+const KIND_FIELDS: Record<QuickAddKind, ReadonlyArray<keyof QuickAddValues>> = {
+  replacement: ["heard", "written"],
+  vocabulary: ["term"],
+};
+
+// @spec AC-007: Only the added text is cleared — .specs/features/018-quick-add-from-tray/spec.md#ac-007
+/**
+ * Text left after a saved addition: the fields of the added tab are emptied only while they
+ * still hold the submitted text; the other tab and anything typed since are kept.
+ * @param kind tab that committed
+ * @param submitted text sent with the addition
+ * @param current text in the window when the addition was saved
+ * @returns the text to show
+ */
+export const clearedAfterAdd = (
+  kind: QuickAddKind,
+  submitted: QuickAddValues,
+  current: QuickAddValues,
+): QuickAddValues => {
+  const fields = KIND_FIELDS[kind];
+  if (fields.some((field) => current[field] !== submitted[field]))
+    return current;
+  const cleared = { ...current };
+  for (const field of fields) cleared[field] = "";
+  return cleared;
+};
+
+/**
+ * Whether an Enter key press submits: not while an input method composes (Enter then
+ * confirms the candidate; WebKit reports the confirming press with key code 229).
+ * @param event the key press
+ * @returns true when Enter should submit
+ */
+export const isSubmitKey = (event: {
+  key: string;
+  isComposing: boolean;
+  keyCode: number;
+}): boolean =>
+  event.key === "Enter" && !event.isComposing && event.keyCode !== 229;
+
 /** A refused or failed addition, as the window shows it. */
 export interface QuickAddFailure {
   /** Translation keys, one per distinct reason. */
