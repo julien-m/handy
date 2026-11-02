@@ -19,6 +19,7 @@ import {
   QUICK_ADD_SCREEN,
   canSubmit,
   clearedAfterAdd,
+  isCloseKey,
   isSubmitKey,
   quickAddFailure,
   type QuickAddFailure,
@@ -230,11 +231,11 @@ const useNoticeTimeout = (
   }, [notice, setNotice]);
 };
 
-/** Escape closes the window. */
+/** Escape closes the window, except the Escape that cancels an input method composition. */
 const useEscapeCloses = (): void => {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") void getCurrentWindow().close();
+      if (isCloseKey(event)) void getCurrentWindow().close();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

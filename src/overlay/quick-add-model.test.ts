@@ -4,6 +4,7 @@ import {
   EMPTY_VALUES,
   canSubmit,
   clearedAfterAdd,
+  isCloseKey,
   isSubmitKey,
   parseKind,
   quickAddFailure,
@@ -99,5 +100,13 @@ describe("Quick Add model (018)", () => {
     expect(isSubmitKey({ ...enter, isComposing: true })).toBe(false);
     expect(isSubmitKey({ ...enter, keyCode: 229 })).toBe(false);
     expect(isSubmitKey({ ...enter, key: "a" })).toBe(false);
+  });
+
+  test("Escape does not close while an input method composes", () => {
+    const escape = { key: "Escape", isComposing: false, keyCode: 27 };
+    expect(isCloseKey(escape)).toBe(true);
+    expect(isCloseKey({ ...escape, isComposing: true })).toBe(false);
+    expect(isCloseKey({ ...escape, keyCode: 229 })).toBe(false);
+    expect(isCloseKey({ ...escape, key: "Enter" })).toBe(false);
   });
 });

@@ -3,7 +3,7 @@
 ## 2026-11-02 — review of PR #4
 
 - A saved addition clears only the fields of its tab, and keeps text typed during the commit (AC-007).
-- The Enter that confirms an input-method candidate (Chinese, Japanese) no longer submits (AC-008).
+- The Enter that confirms an input-method candidate (Chinese, Japanese) no longer submits (AC-008), and the Escape that cancels a composition no longer closes the window (AC-007).
 
 ## 2026-10-31 — alphabetical lists / Show the list
 

@@ -88,18 +88,35 @@ export const clearedAfterAdd = (
   return cleared;
 };
 
-/**
- * Whether an Enter key press submits: not while an input method composes (Enter then
- * confirms the candidate; WebKit reports the confirming press with key code 229).
- * @param event the key press
- * @returns true when Enter should submit
- */
-export const isSubmitKey = (event: {
+/** A key press, as the window reads it. */
+interface KeyPress {
   key: string;
   isComposing: boolean;
   keyCode: number;
-}): boolean =>
-  event.key === "Enter" && !event.isComposing && event.keyCode !== 229;
+}
+
+/** Whether the press belongs to an input method composition (WebKit reports the press that
+ * ends one with key code 229). */
+const composing = (event: KeyPress): boolean =>
+  event.isComposing || event.keyCode === 229;
+
+/**
+ * Whether an Enter key press submits: not while an input method composes (Enter then
+ * confirms the candidate).
+ * @param event the key press
+ * @returns true when Enter should submit
+ */
+export const isSubmitKey = (event: KeyPress): boolean =>
+  event.key === "Enter" && !composing(event);
+
+/**
+ * Whether an Escape key press closes the window: not while an input method composes (Escape
+ * then cancels the candidate).
+ * @param event the key press
+ * @returns true when Escape should close
+ */
+export const isCloseKey = (event: KeyPress): boolean =>
+  event.key === "Escape" && !composing(event);
 
 /** A refused or failed addition, as the window shows it. */
 export interface QuickAddFailure {
