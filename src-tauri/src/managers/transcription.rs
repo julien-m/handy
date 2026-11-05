@@ -156,7 +156,14 @@ impl StreamRouter {
 
     /// Route frames to `handle` from now on, dropping any previous worker.
     fn open_prefetch(&self, handle: prefetch::PrefetchHandle) {
-        *self.prefetch.lock().unwrap_or_else(PoisonError::into_inner) = Some(handle);
+        let previous = self
+            .prefetch
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .replace(handle);
+        if let Some(previous) = previous {
+            previous.cancel();
+        }
         self.prefetch_open.store(true, Ordering::Relaxed);
     }
 
@@ -1149,8 +1156,10 @@ impl TranscriptionManager {
         }
         self.stream_active.store(false, Ordering::Release);
         // A cancelled or empty dictation drops its pieces; the worker ends
-        // after the piece it is running.
-        drop(self.router.take_prefetch());
+        // after the piece it is running and submits no other one.
+        if let Some(handle) = self.router.take_prefetch() {
+            handle.cancel();
+        }
     }
 
     // @spec FR-001: Pieces are transcribed while the user speaks — .specs/features/022-transcribe-while-recording/spec.md#fr-001

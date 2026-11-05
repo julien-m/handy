@@ -11,7 +11,8 @@ use super::chunks::{self, PieceText};
 use crate::engine_supervisor::EngineError;
 use log::{debug, info};
 use std::ops::Range;
-use std::sync::mpsc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{mpsc, Arc};
 use std::thread::{self, JoinHandle};
 use std::time::Instant;
 use transcribe_cpp::RunOptions;
@@ -63,6 +64,8 @@ impl Prefetched {
 pub(super) struct PrefetchHandle {
     frames: mpsc::Sender<Vec<f32>>,
     worker: JoinHandle<Prefetched>,
+    /// Set when the dictation is abandoned: the worker runs no further piece.
+    cancelled: Arc<AtomicBool>,
 }
 
 impl PrefetchHandle {
@@ -82,6 +85,19 @@ impl PrefetchHandle {
         );
         prefetched
     }
+
+    /// Abandon the dictation: the worker stops after the piece it is running
+    /// and never submits another one to the engine.
+    pub(super) fn cancel(self) {
+        self.cancelled.store(true, Ordering::Release);
+    }
+
+    /// [`Self::cancel`], keeping the thread so a test can wait for it.
+    #[cfg(test)]
+    fn cancel_for_test(self) -> JoinHandle<Prefetched> {
+        self.cancelled.store(true, Ordering::Release);
+        self.worker
+    }
 }
 
 // @spec FR-001: Pieces are transcribed while the user speaks — .specs/features/022-transcribe-while-recording/spec.md#fr-001
@@ -94,6 +110,8 @@ where
     R: FnMut(&[f32], &RunOptions) -> Result<PieceText, EngineError>,
 {
     let (frames, received) = mpsc::channel::<Vec<f32>>();
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let stop = Arc::clone(&cancelled);
     let worker = thread::spawn(move || {
         let setup = setup();
         let mut prefetched = Prefetched {
@@ -111,6 +129,9 @@ where
         while let Ok(frame) = received.recv() {
             prefetched.audio.extend_from_slice(&frame);
             while let Some(end) = chunks::next_cut(&prefetched.audio, start) {
+                if stop.load(Ordering::Acquire) {
+                    return prefetched;
+                }
                 let started = Instant::now();
                 let result = run(&prefetched.audio[start..end], &options);
                 let secs = (end - start) as f64 / SAMPLE_RATE as f64;
@@ -122,6 +143,8 @@ where
                         );
                         prefetched.pieces.push((start..end, piece));
                     }
+                    // A cancelled engine call ends the work for this dictation.
+                    Err(EngineError::Cancelled) => return prefetched,
                     Err(e) => {
                         debug!("A {secs:.1}s piece transcribed during the recording failed: {e}")
                     }
@@ -132,7 +155,11 @@ where
         prefetched.options = Some(options);
         prefetched
     });
-    PrefetchHandle { frames, worker }
+    PrefetchHandle {
+        frames,
+        worker,
+        cancelled,
+    }
 }
 
 #[cfg(test)]
@@ -216,6 +243,52 @@ mod tests {
 
         assert_eq!(for_other.map(|p| p.len()), Some(0));
         assert_eq!(for_changed.map(|p| p.len()), Some(0));
+    }
+
+    #[test]
+    fn a_cancelled_worker_runs_no_further_piece() {
+        let runs = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        let counted = Arc::clone(&runs);
+        let (started_tx, started_rx) = mpsc::channel();
+        let (release_tx, release_rx) = mpsc::channel::<()>();
+        let handle = spawn(move || {
+            Some((options(), move |_: &[f32], _: &RunOptions| {
+                counted.fetch_add(1, Ordering::SeqCst);
+                let _ = started_tx.send(());
+                let _ = release_rx.recv();
+                Ok(PieceText {
+                    text: String::new(),
+                    language: None,
+                })
+            }))
+        });
+        let audio = tone(3 * chunks::MAX_CHUNK_SECS + 5);
+        for frame in audio.chunks(SECOND / 50) {
+            handle.feed(frame);
+        }
+        let _ = started_rx.recv();
+        let worker = handle.cancel_for_test();
+        drop(release_tx);
+        let _ = worker.join();
+        assert_eq!(runs.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn a_cancelled_engine_call_ends_the_worker() {
+        let runs = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        let counted = Arc::clone(&runs);
+        let handle = spawn(move || {
+            Some((options(), move |_: &[f32], _: &RunOptions| {
+                counted.fetch_add(1, Ordering::SeqCst);
+                Err(EngineError::Cancelled)
+            }))
+        });
+        let audio = tone(3 * chunks::MAX_CHUNK_SECS + 5);
+        for frame in audio.chunks(SECOND / 50) {
+            handle.feed(frame);
+        }
+        drop(handle.finish());
+        assert_eq!(runs.load(Ordering::SeqCst), 1);
     }
 
     #[test]
