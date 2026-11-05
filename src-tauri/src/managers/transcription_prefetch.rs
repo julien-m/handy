@@ -20,31 +20,44 @@ use transcribe_cpp::RunOptions;
 /// PCM sample rate of every dictation (16 kHz mono).
 const SAMPLE_RATE: usize = 16_000;
 
+/// What a piece's text depends on besides its audio.
+#[derive(Clone, Debug, PartialEq)]
+pub(super) struct RunKey {
+    /// Id of the model the pieces were transcribed with.
+    pub(super) model: String,
+    /// Options of the runs.
+    pub(super) options: RunOptions,
+}
+
 /// What the worker transcribed during one recording.
 pub(super) struct Prefetched {
     /// Every frame the worker received, in order.
     audio: Vec<f32>,
-    /// Options of its runs; `None` when no transcribe-cpp model was loaded.
-    options: Option<RunOptions>,
+    /// Model and options of its runs; `None` when no transcribe-cpp model was loaded.
+    key: Option<RunKey>,
     /// Successful pieces with their exact range in `audio`.
     pieces: Vec<(Range<usize>, PieceText)>,
+    /// The dictation was cancelled while the worker ran a piece.
+    cancelled: bool,
 }
 
 impl Prefetched {
+    /// Whether the user cancelled the dictation while a piece was running:
+    /// the stop must then submit no further work.
+    pub(super) fn cancelled(&self) -> bool {
+        self.cancelled
+    }
+
     // @spec FR-003: Reuse only for the same audio and options — .specs/features/022-transcribe-while-recording/spec.md#fr-003
-    /// The pieces to reuse for `audio` transcribed with `options`: all of them
-    /// when the worker saw a prefix of exactly this audio with the same
-    /// options, none otherwise.
-    pub(super) fn pieces_for(
-        self,
-        audio: &[f32],
-        options: &RunOptions,
-    ) -> Vec<(Range<usize>, PieceText)> {
+    /// The pieces to reuse for `audio` transcribed as `key` says: all of them
+    /// when the worker saw a prefix of exactly this audio with the same model
+    /// and options, none otherwise.
+    pub(super) fn pieces_for(self, audio: &[f32], key: &RunKey) -> Vec<(Range<usize>, PieceText)> {
         let same_audio = audio.get(..self.audio.len()) == Some(self.audio.as_slice());
-        if self.options.as_ref() != Some(options) || !same_audio {
+        if self.key.as_ref() != Some(key) || !same_audio {
             if !self.pieces.is_empty() {
                 info!(
-                    "Discarding {} pieces transcribed during the recording: the audio or the options changed",
+                    "Discarding {} pieces transcribed during the recording: the audio, the model or the options changed",
                     self.pieces.len()
                 );
             }
@@ -102,11 +115,11 @@ impl PrefetchHandle {
 
 // @spec FR-001: Pieces are transcribed while the user speaks — .specs/features/022-transcribe-while-recording/spec.md#fr-001
 /// Start a worker. `setup` runs on the worker thread (it may wait for the
-/// model to load) and gives the run options with the function that runs one
-/// piece, or `None` when nothing can be transcribed ahead.
+/// model to load) and gives the model and run options with the function that
+/// runs one piece, or `None` when nothing can be transcribed ahead.
 pub(super) fn spawn<S, R>(setup: S) -> PrefetchHandle
 where
-    S: FnOnce() -> Option<(RunOptions, R)> + Send + 'static,
+    S: FnOnce() -> Option<(RunKey, R)> + Send + 'static,
     R: FnMut(&[f32], &RunOptions) -> Result<PieceText, EngineError>,
 {
     let (frames, received) = mpsc::channel::<Vec<f32>>();
@@ -116,10 +129,11 @@ where
         let setup = setup();
         let mut prefetched = Prefetched {
             audio: Vec::new(),
-            options: None,
+            key: None,
             pieces: Vec::new(),
+            cancelled: false,
         };
-        let Some((options, mut run)) = setup else {
+        let Some((key, mut run)) = setup else {
             while let Ok(frame) = received.recv() {
                 prefetched.audio.extend_from_slice(&frame);
             }
@@ -129,30 +143,16 @@ where
         while let Ok(frame) = received.recv() {
             prefetched.audio.extend_from_slice(&frame);
             while let Some(end) = chunks::next_cut(&prefetched.audio, start) {
-                if stop.load(Ordering::Acquire) {
+                if stop.load(Ordering::Acquire)
+                    || !run_piece(&mut prefetched, start..end, &key, &mut run)
+                {
+                    prefetched.cancelled = true;
                     return prefetched;
-                }
-                let started = Instant::now();
-                let result = run(&prefetched.audio[start..end], &options);
-                let secs = (end - start) as f64 / SAMPLE_RATE as f64;
-                match result {
-                    Ok(piece) => {
-                        debug!(
-                            "Piece of {secs:.1}s transcribed during the recording in {:?}",
-                            started.elapsed()
-                        );
-                        prefetched.pieces.push((start..end, piece));
-                    }
-                    // A cancelled engine call ends the work for this dictation.
-                    Err(EngineError::Cancelled) => return prefetched,
-                    Err(e) => {
-                        debug!("A {secs:.1}s piece transcribed during the recording failed: {e}")
-                    }
                 }
                 start = end;
             }
         }
-        prefetched.options = Some(options);
+        prefetched.key = Some(key);
         prefetched
     });
     PrefetchHandle {
@@ -162,13 +162,38 @@ where
     }
 }
 
+/// Transcribe `range` of the recording into `prefetched`. Returns `false`
+/// when the engine call was cancelled, which ends the work for this dictation.
+fn run_piece<R>(prefetched: &mut Prefetched, range: Range<usize>, key: &RunKey, run: &mut R) -> bool
+where
+    R: FnMut(&[f32], &RunOptions) -> Result<PieceText, EngineError>,
+{
+    let started = Instant::now();
+    let secs = range.len() as f64 / SAMPLE_RATE as f64;
+    match run(&prefetched.audio[range.clone()], &key.options) {
+        Ok(piece) => {
+            debug!(
+                "Piece of {secs:.1}s transcribed during the recording in {:?}",
+                started.elapsed()
+            );
+            prefetched.pieces.push((range, piece));
+            true
+        }
+        Err(EngineError::Cancelled) => false,
+        Err(e) => {
+            debug!("A {secs:.1}s piece transcribed during the recording failed: {e}");
+            true
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     const SECOND: usize = 16_000;
 
-    type PieceRun = fn(&[f32], &RunOptions) -> Result<PieceText, EngineError>;
+    type NoRun = fn(&[f32], &RunOptions) -> Result<PieceText, EngineError>;
 
     fn tone(secs: usize) -> Vec<f32> {
         (0..secs * SECOND)
@@ -176,10 +201,13 @@ mod tests {
             .collect()
     }
 
-    fn options() -> RunOptions {
-        RunOptions {
-            language: Some("fr".to_string()),
-            ..Default::default()
+    fn key() -> RunKey {
+        RunKey {
+            model: "canary".to_string(),
+            options: RunOptions {
+                language: Some("fr".to_string()),
+                ..Default::default()
+            },
         }
     }
 
@@ -187,7 +215,7 @@ mod tests {
     fn record(audio: &[f32]) -> Option<Prefetched> {
         let handle = spawn(|| {
             let mut offset = 0;
-            Some((options(), move |piece: &[f32], _: &RunOptions| {
+            Some((key(), move |piece: &[f32], _: &RunOptions| {
                 let text = format!("{offset}+{}", piece.len());
                 offset += piece.len();
                 Ok(PieceText {
@@ -206,7 +234,7 @@ mod tests {
     fn full_pieces_are_transcribed_with_the_final_cuts() -> Result<(), EngineError> {
         let audio = tone(3 * chunks::MAX_CHUNK_SECS + 5);
         let pieces = record(&audio)
-            .map(|done| done.pieces_for(&audio, &options()))
+            .map(|done| done.pieces_for(&audio, &key()))
             .unwrap_or_default();
         let ranges = chunks::chunk_ranges(&audio);
 
@@ -233,16 +261,18 @@ mod tests {
         let audio = tone(2 * chunks::MAX_CHUNK_SECS + 5);
         let mut other = audio.clone();
         other[0] = 1.0;
-        let changed = RunOptions {
-            language: Some("en".to_string()),
-            ..Default::default()
-        };
+        let mut changed = key();
+        changed.options.language = Some("en".to_string());
+        let mut other_model = key();
+        other_model.model = "whisper".to_string();
 
-        let for_other = record(&audio).map(|done| done.pieces_for(&other, &options()));
+        let for_other = record(&audio).map(|done| done.pieces_for(&other, &key()));
         let for_changed = record(&audio).map(|done| done.pieces_for(&audio, &changed));
+        let for_model = record(&audio).map(|done| done.pieces_for(&audio, &other_model));
 
         assert_eq!(for_other.map(|p| p.len()), Some(0));
         assert_eq!(for_changed.map(|p| p.len()), Some(0));
+        assert_eq!(for_model.map(|p| p.len()), Some(0));
     }
 
     #[test]
@@ -252,7 +282,7 @@ mod tests {
         let (started_tx, started_rx) = mpsc::channel();
         let (release_tx, release_rx) = mpsc::channel::<()>();
         let handle = spawn(move || {
-            Some((options(), move |_: &[f32], _: &RunOptions| {
+            Some((key(), move |_: &[f32], _: &RunOptions| {
                 counted.fetch_add(1, Ordering::SeqCst);
                 let _ = started_tx.send(());
                 let _ = release_rx.recv();
@@ -278,7 +308,7 @@ mod tests {
         let runs = Arc::new(std::sync::atomic::AtomicUsize::new(0));
         let counted = Arc::clone(&runs);
         let handle = spawn(move || {
-            Some((options(), move |_: &[f32], _: &RunOptions| {
+            Some((key(), move |_: &[f32], _: &RunOptions| {
                 counted.fetch_add(1, Ordering::SeqCst);
                 Err(EngineError::Cancelled)
             }))
@@ -287,20 +317,19 @@ mod tests {
         for frame in audio.chunks(SECOND / 50) {
             handle.feed(frame);
         }
-        drop(handle.finish());
+        let cancelled = handle.finish().map(|done| done.cancelled());
         assert_eq!(runs.load(Ordering::SeqCst), 1);
+        assert_eq!(cancelled, Some(true));
     }
 
     #[test]
     fn without_a_model_nothing_is_transcribed_ahead() {
         let audio = tone(2 * chunks::MAX_CHUNK_SECS + 5);
-        let handle = spawn(|| -> Option<(RunOptions, PieceRun)> { None });
+        let handle = spawn(|| -> Option<(RunKey, NoRun)> { None });
         for frame in audio.chunks(SECOND / 50) {
             handle.feed(frame);
         }
-        let pieces = handle
-            .finish()
-            .map(|done| done.pieces_for(&audio, &options()));
+        let pieces = handle.finish().map(|done| done.pieces_for(&audio, &key()));
         assert_eq!(pieces.map(|p| p.len()), Some(0));
     }
 }

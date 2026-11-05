@@ -1183,8 +1183,12 @@ impl TranscriptionManager {
             }
             let info = manager.engine.loaded()?;
             let settings = get_settings(&manager.app_handle);
-            let (validated_language, _) = manager.validated_language(&settings);
+            let (validated_language, model) = manager.validated_language(&settings);
             let plan = manager.cpp_run(&info, &settings, &validated_language);
+            let key = prefetch::RunKey {
+                model,
+                options: plan.options,
+            };
             let run = move |piece: &[f32], options: &RunOptions| {
                 manager.touch_activity();
                 manager
@@ -1192,7 +1196,7 @@ impl TranscriptionManager {
                     .transcribe(piece.to_vec(), options.clone())
                     .map(piece_text)
             };
-            Some((plan.options, run))
+            Some((key, run))
         });
         self.router.open_prefetch(handle);
     }
@@ -1236,6 +1240,14 @@ impl TranscriptionManager {
             .router
             .take_prefetch()
             .and_then(prefetch::PrefetchHandle::finish);
+        // Cancelled while a piece was running: the dictation is abandoned and
+        // nothing more goes to the engine.
+        if prefetched
+            .as_ref()
+            .is_some_and(prefetch::Prefetched::cancelled)
+        {
+            return Err(EngineError::Cancelled.into());
+        }
         self.transcribe_with(audio, replacements, prefetched)
     }
 
@@ -1475,8 +1487,12 @@ impl TranscriptionManager {
         } = self.cpp_run(&info, settings, validated_language);
         let options_elapsed = options_started.elapsed();
         let CppInput { audio, prefetched } = input;
+        let key = prefetch::RunKey {
+            model: active_model.to_string(),
+            options: run_options.clone(),
+        };
         let ready = prefetched
-            .map(|done| done.pieces_for(&audio, &run_options))
+            .map(|done| done.pieces_for(&audio, &key))
             .unwrap_or_default();
 
         // @spec FR-001: Long dictations are transcribed piece by piece — .specs/features/020-long-dictation-chunks/spec.md#fr-001

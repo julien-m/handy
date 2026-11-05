@@ -38,7 +38,7 @@ Feature: Transcription while recording
 
   Scenario: Something changed
     Given pieces were transcribed during the recording
-    When the recording or the run options at the stop differ from what those pieces used
+    When the recording, the model or the run options at the stop differ from what those pieces used
     Then they are discarded and the whole recording is transcribed at the stop
 ```
 
@@ -52,8 +52,8 @@ sequenceDiagram
     P->>E: full piece 1 (while recording)
     P->>E: full piece 2 (while recording)
     S->>P: finish: wait for the piece in progress
-    P-->>S: audio seen, options, pieces
-    S->>S: same audio prefix and options?
+    P-->>S: audio seen, model, options, pieces
+    S->>S: same audio prefix, model and options?
     S->>E: remaining piece(s) only
 ```
 
@@ -63,7 +63,7 @@ sequenceDiagram
 During a dictation with a transcribe-cpp model that does not stream, each full piece (the cuts of 020) is transcribed while the user keeps speaking.
 
 ### AC-002
-At the stop, pieces transcribed during the recording are reused when the recording begins with exactly the audio they came from and the run options are the same; only the other pieces are transcribed.
+At the stop, pieces transcribed during the recording are reused when the recording begins with exactly the audio they came from and the model and run options are the same; only the other pieces are transcribed.
 
 ### AC-003
 A cancelled or empty dictation discards its pieces; a failed or stopped-early piece is transcribed again at the stop through the 020 path.
@@ -89,7 +89,7 @@ macOS does not put Handy to sleep (App Nap) while it waits on a dictation: the w
 `TranscriptionManager::transcribe_dictation` finishes the worker and passes its pieces to `transcribe_in_chunks`; `transcribe` passes none.
 
 ### FR-003
-`Prefetched::pieces_for` returns the pieces only for the same audio prefix and equal `RunOptions` (built once by `cpp_run`).
+`Prefetched::pieces_for` returns the pieces only for the same audio prefix and an equal `RunKey`: the model id and the `RunOptions` built once by `cpp_run`. A dictation cancelled while the worker runs a piece (`Prefetched::cancelled`) submits no further work at the stop.
 
 ### FR-004
 `handy -f <wav> --live` replays the recording at recording pace through this path and times the wait after its end.
