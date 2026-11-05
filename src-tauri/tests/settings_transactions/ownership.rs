@@ -59,6 +59,10 @@ fn native_owner_appearing_after_temp_sync_refuses_before_replace(
 #[test]
 fn startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced(
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // The lease is released and taken again below (see `FORK_GUARD`).
+    let _forks = super::FORK_GUARD
+        .read()
+        .map_err(|_| "fork guard poisoned")?;
     let directory = tempfile::tempdir()?;
     let path = directory.path().join("settings_store.json");
     let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));

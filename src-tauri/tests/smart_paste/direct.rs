@@ -6,7 +6,7 @@ use handy_app_lib::smart_paste::ax_port::{AxError, Utf16Range};
 use handy_app_lib::smart_paste::clock::{Clock, ManualClock};
 use handy_app_lib::smart_paste::direct::{
     attempt_direct_insertion, DirectAttempt, GuardVerdict, SkipReason, UncertainReason,
-    PER_CALL_TIMEOUT, TOTAL_DIRECT_BUDGET,
+    LAST_READ_TIMEOUT, PER_CALL_TIMEOUT, TOTAL_DIRECT_BUDGET,
 };
 
 use super::fakes::{elapsed_since, utf16, FakeAx, ScriptedField, WriteBehavior};
@@ -150,6 +150,32 @@ fn unreadable_value_after_the_write_is_uncertain() {
         attempt(&clock, &field, "hello"),
         DirectAttempt::Uncertain(UncertainReason::ReadbackUnavailable)
     ));
+}
+
+/// N33: an application too busy to answer during the whole window.
+#[test]
+fn a_field_unreadable_during_the_window_but_unchanged_after_falls_back() {
+    let clock = ManualClock::new();
+    let field = field(&clock, "x");
+    field.state().behavior = WriteBehavior::Ignore;
+    field.state().reads_fail_until = Some(clock.now() + TOTAL_DIRECT_BUDGET + PER_CALL_TIMEOUT);
+    assert!(matches!(
+        attempt(&clock, &field, "hello"),
+        DirectAttempt::Unchanged(_)
+    ));
+    assert_eq!(field.state().timeouts.last(), Some(&LAST_READ_TIMEOUT));
+}
+
+#[test]
+fn a_write_applied_while_the_field_was_unreadable_is_verified() {
+    let clock = ManualClock::new();
+    let field = field(&clock, "x");
+    field.state().reads_fail_until = Some(clock.now() + TOTAL_DIRECT_BUDGET + PER_CALL_TIMEOUT);
+    assert!(matches!(
+        attempt(&clock, &field, "hello"),
+        DirectAttempt::Verified
+    ));
+    assert_eq!(field.state().writes, 1);
 }
 
 #[test]

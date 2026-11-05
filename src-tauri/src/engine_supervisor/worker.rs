@@ -85,7 +85,7 @@ pub fn run() -> i32 {
     let mut session: Option<(Session, LoadedInfo)> = None;
 
     while let Ok(Incoming { request, pcm }) = requests.recv() {
-        let finished_run = matches!(request, Request::Run { .. });
+        let finished_run = matches!(request, Request::Run { .. } | Request::RunBatch { .. });
         let response = match request {
             Request::Hello { list_devices } => match &init_error {
                 Some(message) => Response::Error(message.clone()),
@@ -120,9 +120,15 @@ pub fn run() -> i32 {
                     inject_fault("run", info.on_gpu);
                     match session.run(&pcm, &options) {
                         Ok(transcript) => Response::Transcript(transcript),
-                        Err(e) => Response::Error(e.to_string()),
+                        Err(e) => Response::from_run_error(e),
                     }
                 }
+                None => not_loaded(),
+            },
+            Request::RunBatch { options, lens } => match session.as_mut() {
+                Some((session, _)) => super::batch::batch_response(&pcm, &lens, |pieces| {
+                    session.run_batch(pieces, &options)
+                }),
                 None => not_loaded(),
             },
             Request::StreamBegin { run, stream } => match session.as_mut() {

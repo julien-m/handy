@@ -3,11 +3,15 @@
     "settings": "Impostazioni...",
     "checkUpdates": "Verifica aggiornamenti...",
     "copyLastTranscript": "Copia l'ultima trascrizione",
+    "recentTranscripts": "Trascrizioni recenti",
+    "noRecentTranscripts": "Ancora nessuna trascrizione",
     "unloadModel": "Rilascia modello",
     "model": "Modello",
     "quit": "Esci",
     "cancel": "Annulla",
-    "secureInputWarning": "⚠ Scorciatoie bloccate da Secure Input"
+    "secureInputWarning": "⚠ Scorciatoie bloccate da Secure Input",
+    "addReplacement": "Aggiungi una sostituzione…",
+    "addVocabulary": "Aggiungi al vocabolario…"
   },
   "sidebar": {
     "general": "Generale",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "Invia all'app in primo piano",
-            "description": "Durante una dettatura, premi solo questo tasto per inviarla all'app in primo piano alla fine invece che all'app fissata. Premi di nuovo per annullare. L'app fissata resta."
+            "description": "Durante una dettatura, premi solo questo tasto per inviarla all'app in primo piano alla fine invece che all'app fissata o all'app in cui è iniziata. Premi di nuovo per annullare. L'app fissata resta."
           },
           "skip_automatic_enter": {
             "name": "Inserisci senza Invio",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Nascondi dettagli",
       "close": "Chiudi"
     }
+  },
+  "quickAdd": {
+    "title": "Aggiunta rapida",
+    "tabs": {
+      "replacement": "Sostituzione",
+      "vocabulary": "Vocabolario"
+    },
+    "replacement": {
+      "heard": "Testo sentito",
+      "written": "Scrivi invece",
+      "hint": "Quando Handy sente il primo testo, scrive il secondo.",
+      "added": "Aggiunto: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Termine",
+      "hint": "Aiuta Handy a riconoscere nomi e parole rare.",
+      "added": "Aggiunto al vocabolario: «{{term}}»"
+    },
+    "openList": "Mostra l'elenco",
+    "add": "Aggiungi",
+    "close": "Chiudi"
   }
 }

@@ -3,11 +3,15 @@
     "settings": "Instellingen...",
     "checkUpdates": "Controleren op updates...",
     "copyLastTranscript": "Laatste transcriptie kopiëren",
+    "recentTranscripts": "Recente transcripties",
+    "noRecentTranscripts": "Nog geen transcripties",
     "unloadModel": "Model ontladen",
     "model": "Model",
     "quit": "Afsluiten",
     "cancel": "Annuleren",
-    "secureInputWarning": "⚠ Sneltoetsen geblokkeerd door Secure Input"
+    "secureInputWarning": "⚠ Sneltoetsen geblokkeerd door Secure Input",
+    "addReplacement": "Vervanging toevoegen…",
+    "addVocabulary": "Aan woordenlijst toevoegen…"
   },
   "sidebar": {
     "general": "Algemeen",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Naar app op voorgrond sturen",
-            "description": "Druk tijdens een dictaat alleen op deze toets om het naar de app op de voorgrond aan het einde te sturen in plaats van de vastgezette app. Druk opnieuw om dit ongedaan te maken. De vastgezette app blijft."
+            "description": "Druk tijdens een dictaat alleen op deze toets om het naar de app op de voorgrond aan het einde te sturen in plaats van de vastgezette app of de app waarin het begon. Druk opnieuw om dit ongedaan te maken. De vastgezette app blijft."
           },
           "skip_automatic_enter": {
             "name": "Invoegen zonder Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Details verbergen",
       "close": "Sluiten"
     }
+  },
+  "quickAdd": {
+    "title": "Snel toevoegen",
+    "tabs": {
+      "replacement": "Vervanging",
+      "vocabulary": "Woordenlijst"
+    },
+    "replacement": {
+      "heard": "Gehoorde tekst",
+      "written": "In plaats daarvan schrijven",
+      "hint": "Als Handy de eerste tekst hoort, schrijft het de tweede.",
+      "added": "Toegevoegd: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Term",
+      "hint": "Helpt Handy namen en ongebruikelijke woorden te herkennen.",
+      "added": "Toegevoegd aan de woordenlijst: “{{term}}”"
+    },
+    "openList": "Lijst tonen",
+    "add": "Toevoegen",
+    "close": "Sluiten"
   }
 }

@@ -3,11 +3,15 @@
     "settings": "设置...",
     "checkUpdates": "检查更新...",
     "copyLastTranscript": "复制最新转录",
+    "recentTranscripts": "最近的转录",
+    "noRecentTranscripts": "暂无转录",
     "unloadModel": "卸载模型",
     "model": "模型",
     "quit": "退出",
     "cancel": "取消",
-    "secureInputWarning": "⚠ 快捷键被 Secure Input 阻止"
+    "secureInputWarning": "⚠ 快捷键被 Secure Input 阻止",
+    "addReplacement": "添加替换…",
+    "addVocabulary": "添加到词汇表…"
   },
   "sidebar": {
     "general": "通用",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "发送到前台应用",
-            "description": "听写时单独按下此键，结束时将文本发送到前台应用，而不是已固定的应用。再按一次撤销。固定保持不变。"
+            "description": "听写时单独按下此键，结束时将文本发送到前台应用，而不是已固定的应用或开始听写时的应用。再按一次撤销。固定保持不变。"
           },
           "skip_automatic_enter": {
             "name": "插入但不按回车",
@@ -1422,5 +1426,26 @@
       "hideDetails": "隐藏详情",
       "close": "关闭"
     }
+  },
+  "quickAdd": {
+    "title": "快速添加",
+    "tabs": {
+      "replacement": "替换",
+      "vocabulary": "词汇表"
+    },
+    "replacement": {
+      "heard": "听到的文本",
+      "written": "改写为",
+      "hint": "当 Handy 听到第一个文本时，会写出第二个。",
+      "added": "已添加：“{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "词语",
+      "hint": "帮助 Handy 识别名称和生僻词。",
+      "added": "已添加到词汇表：“{{term}}”"
+    },
+    "openList": "查看列表",
+    "add": "添加",
+    "close": "关闭"
   }
 }

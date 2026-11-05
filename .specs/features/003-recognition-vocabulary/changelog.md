@@ -1,5 +1,17 @@
 # Changelog - 003-recognition-vocabulary
 
+## 2026-10-31 — alphabetical lists / Show the list
+
+- Decision `alphabetical_display` (Julien): the term list is shown in alphabetical order; display only, the saved order that decides the terms sent within the model budget is unchanged (AC-001).
+
+## 2026-10-30 — [Bugfix]: Bounded term list (Julien)
+
+- **Type:** Bugfix (request of Julien, 2026-10-30, after importing 82 terms)
+- **Spec modified:** Yes (AC-001: fixed height of about five rows with an inner vertical scroll, decision `002-word-replacements:AC-001` / `bounded_lists`)
+- **Code modified:** src/components/settings/vocabulary/vocabulary-terms.tsx; src/components/ui/bounded-list.ts (new, shared with 002)
+- **AC impacted:** AC-001 (presentation)
+- **Author:** Claude Code (spec-fix)
+
 ## 2026-10-12 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update

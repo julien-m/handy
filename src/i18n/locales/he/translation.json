@@ -3,11 +3,15 @@
     "settings": "הגדרות...",
     "checkUpdates": "בדוק עדכונים...",
     "copyLastTranscript": "העתק את התמלול האחרון",
+    "recentTranscripts": "תמלולים אחרונים",
+    "noRecentTranscripts": "אין עדיין תמלולים",
     "unloadModel": "פרוק מודל",
     "model": "מודל",
     "quit": "יציאה",
     "cancel": "ביטול",
-    "secureInputWarning": "⚠ קיצורי המקשים חסומים על ידי Secure Input"
+    "secureInputWarning": "⚠ קיצורי המקשים חסומים על ידי Secure Input",
+    "addReplacement": "הוספת החלפה…",
+    "addVocabulary": "הוספה לאוצר המילים…"
   },
   "sidebar": {
     "general": "כללי",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "שליחה לאפליקציה שבחזית",
-            "description": "במהלך הכתבה, לחצו על המקש הזה לבדו כדי לשלוח אותה לאפליקציה שבחזית בסוף במקום לאפליקציה המוצמדת. לחצו שוב לביטול. ההצמדה נשארת."
+            "description": "במהלך הכתבה, לחצו על המקש הזה לבדו כדי לשלוח אותה לאפליקציה שבחזית בסוף במקום לאפליקציה המוצמדת או לאפליקציה שבה התחילה. לחצו שוב לביטול. ההצמדה נשארת."
           },
           "skip_automatic_enter": {
             "name": "הוספה ללא Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "הסתרת פרטים",
       "close": "סגירה"
     }
+  },
+  "quickAdd": {
+    "title": "הוספה מהירה",
+    "tabs": {
+      "replacement": "החלפה",
+      "vocabulary": "אוצר מילים"
+    },
+    "replacement": {
+      "heard": "טקסט שנשמע",
+      "written": "לכתוב במקום",
+      "hint": "כש-Handy שומע את הטקסט הראשון, הוא כותב את השני.",
+      "added": "נוסף: „{{heard}}” ← „{{written}}”"
+    },
+    "vocabulary": {
+      "term": "מונח",
+      "hint": "עוזר ל-Handy לזהות שמות ומילים נדירות.",
+      "added": "נוסף לאוצר המילים: „{{term}}”"
+    },
+    "openList": "הצגת הרשימה",
+    "add": "הוספה",
+    "close": "סגירה"
   }
 }

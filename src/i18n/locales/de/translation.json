@@ -3,11 +3,15 @@
     "settings": "Einstellungen...",
     "checkUpdates": "Nach Updates suchen...",
     "copyLastTranscript": "Letzte Transkription kopieren",
+    "recentTranscripts": "Letzte Transkriptionen",
+    "noRecentTranscripts": "Noch keine Transkriptionen",
     "unloadModel": "Modell entladen",
     "model": "Modell",
     "quit": "Beenden",
     "cancel": "Abbrechen",
-    "secureInputWarning": "⚠ Tastenkürzel durch Secure Input blockiert"
+    "secureInputWarning": "⚠ Tastenkürzel durch Secure Input blockiert",
+    "addReplacement": "Ersetzung hinzufügen…",
+    "addVocabulary": "Zum Vokabular hinzufügen…"
   },
   "sidebar": {
     "general": "Allgemein",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "An App im Vordergrund senden",
-            "description": "Drücke diese Taste während eines Diktats allein, um es an die App im Vordergrund am Ende statt an die angeheftete App zu senden. Erneut drücken macht es rückgängig. Die Anheftung bleibt."
+            "description": "Drücke diese Taste während eines Diktats allein, um es an die App im Vordergrund am Ende statt an die angeheftete App oder die App, in der es begann, zu senden. Erneut drücken macht es rückgängig. Die Anheftung bleibt."
           },
           "skip_automatic_enter": {
             "name": "Ohne Eingabetaste einfügen",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Details ausblenden",
       "close": "Schließen"
     }
+  },
+  "quickAdd": {
+    "title": "Schnell hinzufügen",
+    "tabs": {
+      "replacement": "Ersetzung",
+      "vocabulary": "Vokabular"
+    },
+    "replacement": {
+      "heard": "Gehörter Text",
+      "written": "Stattdessen schreiben",
+      "hint": "Wenn Handy den ersten Text hört, schreibt es den zweiten.",
+      "added": "Hinzugefügt: „{{heard}}“ → „{{written}}“"
+    },
+    "vocabulary": {
+      "term": "Begriff",
+      "hint": "Hilft Handy, Namen und seltene Wörter zu erkennen.",
+      "added": "Zum Vokabular hinzugefügt: „{{term}}“"
+    },
+    "openList": "Liste anzeigen",
+    "add": "Hinzufügen",
+    "close": "Schließen"
   }
 }

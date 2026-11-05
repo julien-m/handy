@@ -59,6 +59,12 @@ pub struct CliArgs {
     #[arg(long, value_name = "N")]
     pub repeat: Option<usize>,
 
+    /// Replay the --transcribe-file WAV at recording pace through the
+    /// dictation path, so long dictations are transcribed while they play,
+    /// and time only the wait after the end of the recording.
+    #[arg(long)]
+    pub live: bool,
+
     /// Emit --transcribe-file results as JSON.
     #[arg(long)]
     pub json: bool,

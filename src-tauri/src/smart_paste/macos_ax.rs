@@ -170,6 +170,14 @@ impl AxField for MacAxField {
         Ok(pid)
     }
 
+    fn role(&mut self, timeout: Duration, max_units: usize) -> Result<String, AxError> {
+        let role = string_utf16(
+            &copy_attribute(&self.element, "AXRole", timeout)?,
+            max_units,
+        )?;
+        Ok(String::from_utf16_lossy(&role))
+    }
+
     fn is_secure(&mut self, timeout: Duration) -> Result<bool, AxError> {
         // AppKit exposes password fields as role AXTextField with subrole
         // AXSecureTextField; some toolkits use the role itself.

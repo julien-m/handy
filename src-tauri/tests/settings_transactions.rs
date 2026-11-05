@@ -1,4 +1,10 @@
 //! Real filesystem and process contracts for atomic settings storage.
+
+/// A child started by `driver` holds a copy of every descriptor open in this test binary between
+/// its fork and its exec, a lease of another test included. A test that releases a lease and
+/// takes it again at once holds this guard for reading; `Driver::start` spawns under the write
+/// lock, so no half-started child keeps a released lease busy.
+static FORK_GUARD: std::sync::RwLock<()> = std::sync::RwLock::new(());
 #[path = "settings_transactions/driver.rs"]
 mod driver;
 #[path = "settings_transactions/faults.rs"]

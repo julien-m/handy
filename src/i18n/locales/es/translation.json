@@ -3,11 +3,15 @@
     "settings": "Configuración...",
     "checkUpdates": "Buscar actualizaciones...",
     "copyLastTranscript": "Copiar la última transcripción",
+    "recentTranscripts": "Transcripciones recientes",
+    "noRecentTranscripts": "Aún no hay transcripciones",
     "unloadModel": "Descargar modelo",
     "model": "Modelo",
     "quit": "Salir",
     "cancel": "Cancelar",
-    "secureInputWarning": "⚠ Atajos bloqueados por Secure Input"
+    "secureInputWarning": "⚠ Atajos bloqueados por Secure Input",
+    "addReplacement": "Añadir un reemplazo…",
+    "addVocabulary": "Añadir al vocabulario…"
   },
   "sidebar": {
     "general": "General",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "Enviar a la app en primer plano",
-            "description": "Durante un dictado, pulsa solo esta tecla para enviarlo a la app en primer plano al final en lugar de la app fijada. Púlsala de nuevo para deshacer. La fijación se mantiene."
+            "description": "Durante un dictado, pulsa solo esta tecla para enviarlo a la app en primer plano al final en lugar de la app fijada o la app donde empezó. Púlsala de nuevo para deshacer. La fijación se mantiene."
           },
           "skip_automatic_enter": {
             "name": "Insertar sin Intro",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Ocultar detalles",
       "close": "Cerrar"
     }
+  },
+  "quickAdd": {
+    "title": "Añadir rápido",
+    "tabs": {
+      "replacement": "Reemplazo",
+      "vocabulary": "Vocabulario"
+    },
+    "replacement": {
+      "heard": "Texto oído",
+      "written": "Escribir en su lugar",
+      "hint": "Cuando Handy oye el primer texto, escribe el segundo.",
+      "added": "Añadido: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Término",
+      "hint": "Ayuda a Handy a reconocer nombres y palabras poco comunes.",
+      "added": "Añadido al vocabulario: «{{term}}»"
+    },
+    "openList": "Ver la lista",
+    "add": "Añadir",
+    "close": "Cerrar"
   }
 }

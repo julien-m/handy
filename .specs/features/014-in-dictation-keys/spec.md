@@ -4,7 +4,7 @@ title: Keys During a Dictation
 priority: P2
 status: In Progress
 created: 2026-10-29
-updated: 2026-10-29
+updated: 2026-10-30
 ---
 
 # Feature Spec: Keys During a Dictation — Send to the App in Front, Insert without Enter
@@ -50,8 +50,16 @@ Feature: Send the dictation in progress to the app in front
     Then its destination is Claude
   Scenario: Without a pin
     Given nothing is pinned
-    When the user presses Option left alone during a dictation
-    Then nothing changes
+    And a dictation started in Claude shows the badge "Claude"
+    When the user brings Codex to the front and presses Option left alone before insertion begins
+    Then this dictation's destination becomes "Frontmost app at the end"
+    And the text goes to Codex
+    And a second press restores "Claude"
+  Scenario: Already frontmost with a pin
+    Given Claude is pinned
+    And the badge cross set this dictation's destination to "Frontmost app at the end"
+    When the user presses Option left alone before insertion begins
+    Then nothing changes and no notice is shown
   Scenario: After insertion began
     Given insertion of the dictation has begun
     When the user presses Option left alone
@@ -62,13 +70,11 @@ Feature: Send the dictation in progress to the app in front
 flowchart TD
   A[Option left pressed alone during a dictation] --> B{Insertion begun?}
   B -- Yes --> Z[No effect]
-  B -- No --> C{An app is pinned?}
-  C -- No --> Z
-  C -- Yes --> D{Route set by this key and unchanged since?}
+  B -- No --> D{Route set by this key and unchanged since?}
   D -- Yes --> E[Restore the previous route]
   D -- No --> F{Route already frontmost at the end?}
   F -- Yes --> Z
-  F -- No --> G[Route: frontmost at the end; pin kept]
+  F -- No --> G[Route: frontmost at the end; pin kept if any]
 ```
 
 ### Story 2 — Insert without the automatic Enter, once `P1`
@@ -181,7 +187,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** While a dictation accepts destination choices (recording and processing, before 006's insertion freeze) and an application is pinned, a lone press of the « Send to the App in Front » key sets this dictation's selection to « Frontmost app at the end » through the badge's versioned choice path (new `selection_version`); the badge shows « Frontmost app » without the pin mark and still offers Unpin; the pin (application, version) is unchanged and routes the next dictations. A second lone press restores the previous route when nothing moved it since (no badge choice, pin or unpin) and the app is still pinned. Without a pin, on a frontmost-at-the-end route the key did not set, after the freeze, or for a finished or cancelled dictation, the key has no effect.
+**Criterion:** While a dictation accepts destination choices (recording and processing, before 006's insertion freeze), a lone press of the « Send to the App in Front » key sets this dictation's selection to « Frontmost app at the end » through the badge's versioned choice path (new `selection_version`); the badge shows « Frontmost app » without the pin mark and, with a pin, still offers Unpin; the pin (application, version), if any, is unchanged and routes the next dictations. A second lone press restores the previous route when nothing moved it since (no badge choice, pin or unpin). On a frontmost-at-the-end route the key did not set, after the freeze, or for a finished or cancelled dictation, the key does not change the route and nothing is shown.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002
@@ -209,6 +215,11 @@ flowchart TD
 **Criterion:** A key used during a dictation conflicts only with a modifier-only shortcut or key that the same press would also fire (same modifier, a shared side); combinations holding that modifier never conflict (Option left and Option+Space coexist, Control left and Ctrl+C too). Pressing Option+Space (a dictation shortcut) during a dictation never re-routes it, and a lone press of Option left never triggers Option+Space nor changes its push-to-talk end; the auto-repeat of a held key (Space of a push-to-talk Option+Space) does not cancel a lone press of another key.
 **Priority:** P1 | **Story:** Story 3
 
+### AC-007
+
+**Criterion:** Without a pin, a lone press of « Send to the App in Front » on a dictation that accepts choices re-routes it like AC-001: the route captured at the start (the app in front when the recording started) or chosen from the badge becomes « Frontmost app at the end », and a second press restores it while nothing moved the route since. The key never pins. No « No pinned app » notice exists; the settings description of the key says it replaces the pinned app or the app where the dictation started.
+**Priority:** P2 | **Story:** Story 1
+
 ## Functional Requirements
 
 ### FR-001
@@ -223,8 +234,8 @@ flowchart TD
 
 ### FR-003
 
-**Requirement:** Re-route or restore the dictation's route in the destination manager under its lock, through the versioned choice path, refusing after the freeze and never changing the pin.
-**AC References:** AC-001, AC-002
+**Requirement:** Re-route or restore the dictation's route in the destination manager under its lock, through the versioned choice path, with or without a pin, refusing after the freeze and never changing the pin; a press that changes nothing is silent.
+**AC References:** AC-001, AC-002, AC-007
 
 ### FR-004
 
@@ -262,6 +273,8 @@ flowchart TD
 - Decision `014-in-dictation-keys:AC-005` / `one_key_or_none` (agent): each action holds one key or none, so the CLI can change it (`remove`, then `add`) and a user can turn it off; Reset restores the default.
 - Decision `014-in-dictation-keys:AC-005` / `gate` (agent): the settings rows are shown in builds with Automatic Enter (the `destination-return` rollout gate, where the destination session exists); the observer only runs for a dictation with a destination session. The bindings exist in every build (CLI `list` shows them).
 - Decision `014-in-dictation-keys:AC-006` / `option_space_coexistence` (Julien, final): Option+Space is a combination, never a lone press. If HandyKeys hides Space from the observer (it owns Option+Space), the shortcut event counted by Handy cancels the press; the observer confirms a lone press 30 ms after its release so the backend (10 ms drain) has counted it. The observer never blocks Option, so Option+Space detection and its push-to-talk end are unchanged.
+- Decision `014-in-dictation-keys:AC-007` / `reroute_without_pin` (Julien, 2026-10-30; replaces `no_pin_notice`): a dictation started in Claude without a pin, then Option left pressed in Cmux, showed « No pinned app » and the text went to Claude. For Julien the app where the dictation started holds it as a pin does, so the key must step away from it too. The key now re-routes any route other than the frontmost app at the end, pinned or not, and a second press restores it while the selection version is the one the key set; the « No pinned app » notice, its event `dictation-key-no-pin` and its 26 translations are removed.
+- Superseded decision `014-in-dictation-keys:AC-007` / `no_pin_notice` (Julien, 2026-10-30, replaced the same day by `reroute_without_pin`): pressing « Send to the App in Front » with nothing pinned did nothing visible, so the key looked broken. In that case only, the indicator shows the transient notice « No pinned app » (existing notice system, 4 s minimum, a newer one replaces it) and the press is logged at debug level. The manager returns a result that tells « no pin » apart from « frontmost route this key did not set, with a pin », which stays silent with `Stale` and `Frozen`. With the overlay style none no indicator is shown, so there is no notice and no toast: the key acts only during a dictation, whose badge is not visible either.
 - Known limits (agent): a modifier pressed with a scroll or a trackpad gesture (Control+scroll zoom) is seen as a lone press, because the listener does not report those; while Secure Input is on, lone presses are ignored (key presses do not reach the observer); a lone press released less than 30 ms before the insertion freeze is refused as frozen.
 
 ## QE Analysis
@@ -285,7 +298,7 @@ flowchart TD
 
 - Push-to-talk on a lone modifier (Command right): the modifier held since before the observer started does not hide a lone press of Option left.
 - The pinned app is not running: the re-routed dictation goes to the app in front at the end, so 009's `pinned_app_not_running` does not apply to it.
-- The user unpins after re-routing: the route stays « Frontmost app at the end »; a second press does nothing.
+- The user unpins after re-routing: 009's unpin returns the route to the one captured at the start (new selection version), so the next press is a first press and re-routes again (AC-007).
 - Keyboard implementation switch: the keys are not repaired or re-registered (they are not registered).
 - Linux: no destination support; the session still exists in builds with the gate, so Insert without Enter works if the listener can read the keyboard; failure is logged and the dictation is unchanged.
 

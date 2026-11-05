@@ -10,8 +10,9 @@ use std::time::{Duration, Instant};
 /// Whole AX budget of one classification.
 pub const CLASSIFY_BUDGET: Duration = Duration::from_millis(50);
 
-/// Roles of a field that takes text when one of its edit attributes is settable.
-const TEXT_ROLES: [&str; 4] = ["AXTextField", "AXTextArea", "AXComboBox", "AXSearchField"];
+/// Roles of a field that takes text when one of its edit attributes is settable. Shared with
+/// 007's paste verification, which trusts only the value of these roles.
+pub const TEXT_ROLES: [&str; 4] = ["AXTextField", "AXTextArea", "AXComboBox", "AXSearchField"];
 /// Roles that never take typed text in the destination's own process: controls and lists only
 /// (initial list, calibrated by the native matrix of Step 1). Containers that Chromium and
 /// Electron report while a web or custom field has the focus (`AXWebArea`, `AXWindow`,

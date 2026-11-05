@@ -1,0 +1,112 @@
+import { describe, expect, test } from "bun:test";
+import type { SettingsCommandError } from "@/bindings";
+import {
+  EMPTY_VALUES,
+  canSubmit,
+  clearedAfterAdd,
+  isCloseKey,
+  isSubmitKey,
+  parseKind,
+  quickAddFailure,
+} from "./quick-add-model";
+
+const refusal = (fields: Partial<SettingsCommandError>): SettingsCommandError =>
+  ({
+    code: "validation_failed",
+    message: "",
+    outcome: null,
+    items: [],
+    ...fields,
+  }) as unknown as SettingsCommandError;
+
+describe("Quick Add model (018)", () => {
+  test("the page query selects the tab, a rule by default", () => {
+    expect(parseKind("?kind=vocabulary")).toBe("vocabulary");
+    expect(parseKind("?kind=replacement")).toBe("replacement");
+    expect(parseKind("")).toBe("replacement");
+  });
+
+  test("Add needs every field of the tab and no commit in flight (AC-008)", () => {
+    const rule = {
+      ...EMPTY_VALUES,
+      heard: "cloud code",
+      written: "Claude Code",
+    };
+    expect(canSubmit("replacement", rule, false)).toBe(true);
+    expect(canSubmit("replacement", { ...rule, written: "  " }, false)).toBe(
+      false,
+    );
+    expect(canSubmit("replacement", rule, true)).toBe(false);
+    expect(canSubmit("vocabulary", rule, false)).toBe(false);
+    expect(
+      canSubmit("vocabulary", { ...EMPTY_VALUES, term: "Kubernetes" }, false),
+    ).toBe(true);
+  });
+
+  test("a refused rule shows each distinct 002 reason once and says nothing was saved (AC-005)", () => {
+    const failure = quickAddFailure(
+      "replacement",
+      refusal({
+        items: [
+          { index: 3, code: "duplicate_recognized", message: "" },
+          { index: 3, code: "duplicate_recognized", message: "" },
+        ],
+      }),
+    );
+    expect(failure.keys).toEqual(["settings.replacements.issues.duplicate"]);
+    expect(failure.unchangedKey).toBe("settings.replacements.commit.unchanged");
+  });
+
+  test("a refused term shows the 003 reason (AC-006)", () => {
+    const failure = quickAddFailure(
+      "vocabulary",
+      refusal({ items: [{ index: 0, code: "term_duplicate", message: "" }] }),
+    );
+    expect(failure.keys).toEqual(["settings.vocabulary.errors.term_duplicate"]);
+    expect(failure.unchangedKey).toBe("settings.vocabulary.errors.saved");
+  });
+
+  test("an uncertain outcome never claims nothing was saved", () => {
+    const committed = refusal({
+      code: "persistence_failed",
+      outcome: "committed",
+    });
+    expect(quickAddFailure("replacement", committed).unchangedKey).toBeNull();
+    expect(quickAddFailure("vocabulary", null).unchangedKey).toBeNull();
+  });
+
+  test("a saved addition clears only its tab, and not text typed since (AC-007)", () => {
+    const submitted = {
+      heard: "cloud code",
+      written: "Claude Code",
+      term: "Kube",
+    };
+    expect(clearedAfterAdd("vocabulary", submitted, submitted)).toEqual({
+      ...submitted,
+      term: "",
+    });
+    expect(clearedAfterAdd("replacement", submitted, submitted)).toEqual({
+      ...submitted,
+      heard: "",
+      written: "",
+    });
+    const edited = { ...submitted, term: "Kubernetes" };
+    expect(clearedAfterAdd("vocabulary", submitted, edited)).toEqual(edited);
+  });
+
+  test("Enter does not submit while an input method composes", () => {
+    const enter = { key: "Enter", isComposing: false, keyCode: 13 };
+    expect(isSubmitKey(enter)).toBe(true);
+    expect(isSubmitKey({ ...enter, isComposing: true })).toBe(false);
+    expect(isSubmitKey({ ...enter, keyCode: 229 })).toBe(false);
+    expect(isSubmitKey({ ...enter, key: "a" })).toBe(false);
+  });
+
+  test("Escape does not close while an input method composes", () => {
+    const escape = { key: "Escape", isComposing: false, keyCode: 27 };
+    expect(isCloseKey(escape)).toBe(true);
+    expect(isCloseKey({ ...escape, isComposing: true })).toBe(false);
+    expect(isCloseKey({ ...escape, keyCode: 229 })).toBe(false);
+    expect(isCloseKey({ ...escape, key: "Enter" })).toBe(false);
+  });
+});

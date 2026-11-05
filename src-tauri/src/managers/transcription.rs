@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{mpsc, Arc, Condvar, Mutex, MutexGuard};
+use std::sync::{mpsc, Arc, Condvar, Mutex, MutexGuard, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime};
 use tauri::{AppHandle, Emitter, Manager};
@@ -39,6 +39,10 @@ use transcribe_rs::{
     SpeechModel, TranscribeOptions,
 };
 
+#[path = "transcription_chunks.rs"]
+mod chunks;
+#[path = "transcription_prefetch.rs"]
+mod prefetch;
 #[path = "transcription_vocabulary.rs"]
 mod vocabulary;
 
@@ -133,6 +137,11 @@ pub struct StreamRouter {
     /// True while a stream is pending or active (channel is open). The audio
     /// callback checks this first to avoid the mutex lock when no stream runs.
     open: Arc<AtomicBool>,
+    /// Worker transcribing the pieces of a long dictation while it is recorded
+    /// (feature 022), for models that do not stream.
+    prefetch: Mutex<Option<prefetch::PrefetchHandle>>,
+    /// True while `prefetch` holds a worker; checked first like `open`.
+    prefetch_open: AtomicBool,
 }
 
 impl StreamRouter {
@@ -140,7 +149,31 @@ impl StreamRouter {
         Self {
             tx: Mutex::new(None),
             open: Arc::new(AtomicBool::new(false)),
+            prefetch: Mutex::new(None),
+            prefetch_open: AtomicBool::new(false),
         }
+    }
+
+    /// Route frames to `handle` from now on, dropping any previous worker.
+    fn open_prefetch(&self, handle: prefetch::PrefetchHandle) {
+        let previous = self
+            .prefetch
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .replace(handle);
+        if let Some(previous) = previous {
+            previous.cancel();
+        }
+        self.prefetch_open.store(true, Ordering::Relaxed);
+    }
+
+    /// Stop routing frames to the prefetch worker and hand it back.
+    fn take_prefetch(&self) -> Option<prefetch::PrefetchHandle> {
+        self.prefetch_open.store(false, Ordering::Relaxed);
+        self.prefetch
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .take()
     }
 
     /// Open a fresh command channel for a new streaming session, returning the
@@ -170,6 +203,16 @@ impl StreamRouter {
     /// Forward a 16 kHz frame to the active streaming worker. Cheap no-op (a
     /// single relaxed atomic load) when no stream is pending.
     pub fn feed(&self, frame: &[f32]) {
+        if self.prefetch_open.load(Ordering::Relaxed) {
+            if let Some(handle) = self
+                .prefetch
+                .lock()
+                .unwrap_or_else(PoisonError::into_inner)
+                .as_ref()
+            {
+                handle.feed(frame);
+            }
+        }
         if !self.open.load(Ordering::Relaxed) {
             return;
         }
@@ -1112,6 +1155,50 @@ impl TranscriptionManager {
             let _ = tx.send(StreamCmd::Cancel);
         }
         self.stream_active.store(false, Ordering::Release);
+        // A cancelled or empty dictation drops its pieces; the worker ends
+        // after the piece it is running and submits no other one.
+        if let Some(handle) = self.router.take_prefetch() {
+            handle.cancel();
+        }
+    }
+
+    // @spec FR-001: Pieces are transcribed while the user speaks — .specs/features/022-transcribe-while-recording/spec.md#fr-001
+    /// Start transcribing the pieces of the dictation being recorded, for a
+    /// model that does not stream. The worker waits for a model load in
+    /// progress and does nothing unless a transcribe-cpp model is loaded.
+    pub fn start_prefetch(&self) {
+        let manager = self.clone();
+        let handle = prefetch::spawn(move || {
+            {
+                let mut is_loading = manager
+                    .is_loading
+                    .lock()
+                    .unwrap_or_else(PoisonError::into_inner);
+                while *is_loading {
+                    is_loading = manager
+                        .loading_condvar
+                        .wait(is_loading)
+                        .unwrap_or_else(PoisonError::into_inner);
+                }
+            }
+            let info = manager.engine.loaded()?;
+            let settings = get_settings(&manager.app_handle);
+            let (validated_language, model) = manager.validated_language(&settings);
+            let plan = manager.cpp_run(&info, &settings, &validated_language);
+            let key = prefetch::RunKey {
+                model,
+                options: plan.options,
+            };
+            let run = move |piece: &[f32], options: &RunOptions| {
+                manager.touch_activity();
+                manager
+                    .engine
+                    .transcribe(piece.to_vec(), options.clone())
+                    .map(piece_text)
+            };
+            Some((key, run))
+        });
+        self.router.open_prefetch(handle);
     }
 
     /// Stop the transcription in progress (a batch run or stream finalize),
@@ -1137,6 +1224,38 @@ impl TranscriptionManager {
         &self,
         audio: Vec<f32>,
         replacements: &CompiledReplacements,
+    ) -> Result<String> {
+        self.transcribe_with(audio, replacements, None)
+    }
+
+    // @spec FR-002: The stop reuses the pieces of its recording — .specs/features/022-transcribe-while-recording/spec.md#fr-002
+    /// Transcribe the dictation just recorded, reusing the pieces its prefetch
+    /// worker transcribed while it was recorded.
+    pub fn transcribe_dictation(
+        &self,
+        audio: Vec<f32>,
+        replacements: &CompiledReplacements,
+    ) -> Result<String> {
+        let prefetched = self
+            .router
+            .take_prefetch()
+            .and_then(prefetch::PrefetchHandle::finish);
+        // Cancelled while a piece was running: the dictation is abandoned and
+        // nothing more goes to the engine.
+        if prefetched
+            .as_ref()
+            .is_some_and(prefetch::Prefetched::cancelled)
+        {
+            return Err(EngineError::Cancelled.into());
+        }
+        self.transcribe_with(audio, replacements, prefetched)
+    }
+
+    fn transcribe_with(
+        &self,
+        audio: Vec<f32>,
+        replacements: &CompiledReplacements,
+        prefetched: Option<prefetch::Prefetched>,
     ) -> Result<String> {
         #[cfg(debug_assertions)]
         if std::env::var("HANDY_FORCE_TRANSCRIPTION_FAILURE").is_ok() {
@@ -1181,26 +1300,19 @@ impl TranscriptionManager {
         // from settings.selected_model when a caller loaded a specific model —
         // e.g. the --transcribe-file path's --model), not the persisted
         // selection.
-        let active_model = self
-            .get_current_model()
-            .unwrap_or_else(|| settings.selected_model.clone());
-        // Resolve the persisted language *intent* into the language this model
-        // will actually use. The coercion is capability-aware (a must-pick model
-        // never receives "auto") and computed fresh here — it is never written
-        // back to settings, so the intent survives switching models and back.
-        let validated_language =
-            effective_language_for_model(&settings, self.model_manager.as_ref(), &active_model);
-        if validated_language != settings.selected_language {
-            debug!(
-                "Language intent '{}' resolved to '{}' for model '{}'",
-                settings.selected_language, validated_language, active_model
-            );
-        }
+        let (validated_language, active_model) = self.validated_language(&settings);
 
         // Perform transcription with the appropriate engine.
         let run = match self.engine.loaded() {
             Some(info) => {
-                self.transcribe_cpp(info, audio, &settings, &validated_language, &active_model)?
+                let piece_input = CppInput { audio, prefetched };
+                self.transcribe_cpp(
+                    info,
+                    piece_input,
+                    &settings,
+                    &validated_language,
+                    &active_model,
+                )?
             }
             None => self.transcribe_onnx(&audio, &settings, &validated_language, &active_model)?,
         };
@@ -1218,6 +1330,7 @@ impl TranscriptionManager {
 
         // Approximate correction applies to a non-empty vocabulary unless at least one term
         // reached the engine as recognition context (feature 003, AC-005).
+        let post_started = Instant::now();
         let filtered_result = post_process_transcription_text(
             run.text,
             &settings,
@@ -1227,6 +1340,7 @@ impl TranscriptionManager {
             &run.languages,
         );
 
+        debug!("Stop timing: post-processing {:?}", post_started.elapsed());
         let et = std::time::Instant::now();
         let translation_note = if settings.translate_to_english {
             " (translated)"
@@ -1260,27 +1374,48 @@ impl TranscriptionManager {
         Ok(final_result)
     }
 
+    /// The language this model will use for the persisted language intent,
+    /// with the id of the model actually loaded.
+    fn validated_language(&self, settings: &AppSettings) -> (String, String) {
+        let active_model = self
+            .get_current_model()
+            .unwrap_or_else(|| settings.selected_model.clone());
+        // Resolve the persisted language *intent* into the language this model
+        // will actually use. The coercion is capability-aware (a must-pick model
+        // never receives "auto") and computed fresh here — it is never written
+        // back to settings, so the intent survives switching models and back.
+        let validated_language =
+            effective_language_for_model(settings, self.model_manager.as_ref(), &active_model);
+        if validated_language != settings.selected_language {
+            debug!(
+                "Language intent '{}' resolved to '{}' for model '{}'",
+                settings.selected_language, validated_language, active_model
+            );
+        }
+        (validated_language, active_model)
+    }
+
     /// transcribe-cpp: the model runs in the engine's worker process, which
     /// recovers from crashes and hangs itself. The loaded model's live
     /// capabilities (cheap GGUF-metadata reads) are the source of truth, not
     /// the ModelManager copy. The whisper run extension is kind-tagged, so
     /// non-whisper archs (parakeet, voxtral, …) reject it with INVALID_ARG;
     /// attach it — and translate — only where supported.
-    fn transcribe_cpp(
+    /// Run options of a transcribe-cpp model for the current settings, shared
+    /// by the stop and the pieces transcribed during the recording.
+    fn cpp_run(
         &self,
-        info: LoadedInfo,
-        audio: Vec<f32>,
+        info: &LoadedInfo,
         settings: &AppSettings,
         validated_language: &str,
-        active_model: &str,
-    ) -> Result<RunOutcome> {
+    ) -> CppRun {
         // Whether the model advertises Feature::InitialPrompt. Informational
         // (logged below); the recognition context requires the feature AND the
         // accepted whisper-kind extension (non-whisper archs can advertise the
         // feature while rejecting the extension), decided by the worker.
         let model_takes_initial_prompt = info.supports_initial_prompt;
         let model_supports_translate = info.capabilities.supports_translate;
-        let languages = info.capabilities.languages;
+        let languages = info.capabilities.languages.clone();
         debug!(
             "transcribe-cpp model '{}' on '{}': initial_prompt={}, translate={}, languages={:?}",
             settings.selected_model,
@@ -1325,7 +1460,54 @@ impl TranscriptionManager {
             run_options.family.is_some()
         );
 
-        let transcript = match self.engine.transcribe(audio, run_options) {
+        CppRun {
+            options: run_options,
+            languages,
+            applied_language_hint,
+            output_was_translated,
+            context_applied,
+        }
+    }
+
+    fn transcribe_cpp(
+        &self,
+        info: LoadedInfo,
+        input: CppInput,
+        settings: &AppSettings,
+        validated_language: &str,
+        active_model: &str,
+    ) -> Result<RunOutcome> {
+        let options_started = Instant::now();
+        let CppRun {
+            options: run_options,
+            languages,
+            applied_language_hint,
+            output_was_translated,
+            context_applied,
+        } = self.cpp_run(&info, settings, validated_language);
+        let options_elapsed = options_started.elapsed();
+        let CppInput { audio, prefetched } = input;
+        let key = prefetch::RunKey {
+            model: active_model.to_string(),
+            options: run_options.clone(),
+        };
+        let ready = prefetched
+            .map(|done| done.pieces_for(&audio, &key))
+            .unwrap_or_default();
+
+        // @spec FR-001: Long dictations are transcribed piece by piece — .specs/features/020-long-dictation-chunks/spec.md#fr-001
+        let mut engine = CppPieces {
+            engine: &self.engine,
+            options: &run_options,
+        };
+        let pieces_started = Instant::now();
+        let result = chunks::transcribe_in_chunks(&audio, ready, &mut engine);
+        debug!(
+            "Stop timing: run options {:?}, pieces {:?}",
+            options_elapsed,
+            pieces_started.elapsed()
+        );
+        let transcript = match result {
             Ok(transcript) => transcript,
             Err(EngineError::Cancelled) => return Err(EngineError::Cancelled.into()),
             Err(e) => {
@@ -1512,6 +1694,60 @@ impl TranscriptionManager {
             context_applied: false,
         })
     }
+}
+
+/// The loaded transcribe-cpp model running the pieces of one recording.
+struct CppPieces<'a> {
+    engine: &'a EngineSupervisor,
+    options: &'a RunOptions,
+}
+
+impl chunks::PieceEngine for CppPieces<'_> {
+    fn run(&mut self, piece: &[f32]) -> Result<chunks::PieceText, EngineError> {
+        self.engine
+            .transcribe(piece.to_vec(), self.options.clone())
+            .map(piece_text)
+    }
+
+    fn run_many(
+        &mut self,
+        pieces: &[&[f32]],
+    ) -> Result<Vec<Result<chunks::PieceText, EngineError>>, EngineError> {
+        let results = self.engine.transcribe_batch(pieces, self.options.clone())?;
+        Ok(results
+            .into_iter()
+            .map(|result| result.map(piece_text))
+            .collect())
+    }
+}
+
+fn piece_text(transcript: transcribe_cpp::Transcript) -> chunks::PieceText {
+    let timings = &transcript.timings;
+    debug!(
+        "Piece run: mel {:.0} ms, encode {:.0} ms, decode {:.0} ms",
+        timings.mel_ms, timings.encode_ms, timings.decode_ms
+    );
+    chunks::PieceText {
+        text: transcript.text,
+        language: transcript.language,
+    }
+}
+
+/// The audio of a transcribe-cpp run and the pieces transcribed during its
+/// recording, if any.
+struct CppInput {
+    audio: Vec<f32>,
+    prefetched: Option<prefetch::Prefetched>,
+}
+
+/// Run options of a transcribe-cpp model and what post-processing needs to
+/// know about them.
+struct CppRun {
+    options: RunOptions,
+    languages: Vec<String>,
+    applied_language_hint: Option<String>,
+    output_was_translated: bool,
+    context_applied: bool,
 }
 
 /// What a batch transcription produced, plus what post-processing needs to
@@ -1761,9 +1997,10 @@ fn transcribe_cpp_run_plan(
     }
 }
 
-/// Native final-text stages shared by both final transcription paths: language evidence, Chinese
-/// script, word replacements, approximate correction outside replaced spans, filler removal and
-/// normalization (a panic keeps the text unchanged).
+/// Native final-text stages shared by both final transcription paths: quotes written as the
+/// model's unknown token, language evidence, Chinese script, word replacements, approximate
+/// correction outside replaced spans, filler removal and normalization (a panic keeps the text
+/// unchanged).
 pub(crate) fn post_process_transcription_text(
     raw: String,
     settings: &AppSettings,
@@ -1774,6 +2011,8 @@ pub(crate) fn post_process_transcription_text(
 ) -> String {
     let converts_script = settings.chinese_script != ChineseScript::AsTranscribed;
     fail_open_text_transform(raw, |raw| {
+        // Quotes the model wrote as its unknown token (Canary), before any stage reads the text.
+        let raw = crate::unknown_token::restore_quotes(&raw);
         // Last-resort language evidence: confidence-gated detection from the
         // transcribed text itself, constrained to the model's languages. Only
         // consulted when it can change the outcome (built-in gated fillers or

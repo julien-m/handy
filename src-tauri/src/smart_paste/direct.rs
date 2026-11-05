@@ -7,6 +7,12 @@
 //! back to the clipboard paste; any other change is "uncertain" and never
 //! falls back, so the text is never inserted twice. Every call is bounded by
 //! a per-call messaging timeout and the whole attempt by a total budget.
+//!
+//! Finding N33: a busy application (Codex under memory pressure) answered no
+//! read of the window, so a write it had ignored was reported "uncertain" and
+//! the recovery bubble opened instead of the paste. When the window ends on
+//! read errors only, the value is read once more with a longer timeout before
+//! deciding; only a field still unreadable then is "uncertain".
 
 use std::fmt;
 use std::time::{Duration, Instant};
@@ -31,6 +37,9 @@ pub const READBACK_POLL_INTERVAL: Duration = Duration::from_millis(10);
 /// A read is only started when at least this much of the window remains, so
 /// that a near-zero messaging timeout never turns into a false "uncertain".
 pub const MIN_READ_TIMEOUT: Duration = Duration::from_millis(5);
+/// Timeout of the last read taken when the window ended on read errors
+/// (N33). Only that case may exceed [`TOTAL_DIRECT_BUDGET`], by this much.
+pub const LAST_READ_TIMEOUT: Duration = Duration::from_millis(300);
 /// Technical memory/time guard on field values (reviewed plan), not a
 /// product limit: larger fields skip direct insertion.
 pub const MAX_FIELD_UTF16_UNITS: usize = 1_000_000;
@@ -273,7 +282,27 @@ fn read_back(clock: &dyn Clock, mut prepared: Prepared, window_end: Instant) -> 
             expected: prepared.expected,
         }),
         Observed::Changed => DirectAttempt::Uncertain(UncertainReason::ChangedUnexpectedly),
-        Observed::Unreadable => DirectAttempt::Uncertain(UncertainReason::ReadbackUnavailable),
+        Observed::Unreadable => last_read(prepared),
+    }
+}
+
+/// Business rule (N33): a window that ended on read errors proves nothing
+/// about the write. One more read, with [`LAST_READ_TIMEOUT`], decides as the
+/// window would have; still unreadable, the write may have applied, so the
+/// outcome stays "uncertain" and nothing is pasted.
+fn last_read(mut prepared: Prepared) -> DirectAttempt {
+    match prepared
+        .field
+        .value_utf16(LAST_READ_TIMEOUT, MAX_FIELD_UTF16_UNITS)
+    {
+        Ok(value) if value == prepared.expected => DirectAttempt::Verified,
+        Ok(value) if value == prepared.before => DirectAttempt::Unchanged(FallbackGuard {
+            field: prepared.field,
+            before: prepared.before,
+            expected: prepared.expected,
+        }),
+        Ok(_) => DirectAttempt::Uncertain(UncertainReason::ChangedUnexpectedly),
+        Err(_) => DirectAttempt::Uncertain(UncertainReason::ReadbackUnavailable),
     }
 }
 

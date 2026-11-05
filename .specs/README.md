@@ -51,6 +51,11 @@
 | 016 | Smart Paragraphs | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/016-smart-paragraphs/spec.md) |
 | 015 | Smart Capitalization | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/015-smart-capitalization/spec.md) |
 | 017 | Smart Spacing | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/017-smart-spacing/spec.md) |
+| 018 | Quick Add from the Tray | In Progress | 2026-10-31 | 2026-10-31 | [spec](features/018-quick-add-from-tray/spec.md) |
+| 019 | Recent Transcripts in the Tray | In Progress | 2026-11-02 | 2026-11-02 | [spec](features/019-tray-recent-transcripts/spec.md) |
+| 020 | Long Dictations Transcribed in Pieces | In Progress | 2026-11-03 | 2026-11-03 | [spec](features/020-long-dictation-chunks/spec.md) |
+| 021 | Long Transcripts Scroll in the History | In Progress | 2026-11-03 | 2026-11-03 | [spec](features/021-history-transcript-height/spec.md) |
+| 022 | Long Dictations Transcribed While Recorded | In Progress | 2026-11-03 | 2026-11-05 | [spec](features/022-transcribe-while-recording/spec.md) |
 <!-- readme:features:end -->
 
 

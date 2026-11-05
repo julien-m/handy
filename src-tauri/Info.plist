@@ -4,5 +4,9 @@
 <dict>
   <key>NSMicrophoneUsageDescription</key>
   <string>Request microphone access to transcribe audio locally</string>
+  <!-- Feature 022: Handy lives in the menu bar without a visible window, so App Nap
+       would throttle it while it waits on a dictation (2 s instead of 0.7 s at the stop). -->
+  <key>NSAppSleepDisabled</key>
+  <true/>
 </dict>
 </plist>

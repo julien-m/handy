@@ -24,9 +24,11 @@ pub use managers::history_store;
 mod memory;
 pub mod microphones;
 mod overlay;
+mod panic_log;
 mod paste_tx;
 pub mod portable;
 pub mod prompts;
+mod quick_add;
 pub mod recognition_vocabulary;
 pub mod recovery;
 mod secure_input;
@@ -43,6 +45,7 @@ pub mod smart_spacing;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
+mod unknown_token;
 mod utils;
 pub mod word_replacements;
 
@@ -362,6 +365,14 @@ fn initialize_core_logic(app_handle: &AppHandle) {
             "copy_last_transcript" => {
                 tray::copy_last_transcript(app);
             }
+            id if tray::recent_transcript_id(id).is_some() => {
+                if let Some(entry_id) = tray::recent_transcript_id(id) {
+                    tray::copy_recent_transcript(app, entry_id);
+                }
+            }
+            id if quick_add::QuickAddKind::from_menu_id(id).is_some() => {
+                quick_add::open_from_menu(app, id);
+            }
             "unload_model" => {
                 let transcription_manager = app.state::<Arc<TranscriptionManager>>();
                 if !transcription_manager.is_model_loaded() {
@@ -637,8 +648,18 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
                 return 1;
             }
         }
-        let t = Instant::now();
-        match tm.transcribe(samples.clone(), &replacements) {
+        // @spec SC-001: Wait after the end of a replayed dictation — .specs/features/022-transcribe-while-recording/spec.md#sc-001
+        let result = if args.live {
+            replay_at_recording_pace(&tm, &samples);
+            let t = Instant::now();
+            let result = tm.transcribe_dictation(samples.clone(), &replacements);
+            (t, result)
+        } else {
+            let t = Instant::now();
+            (t, tm.transcribe(samples.clone(), &replacements))
+        };
+        let (t, result) = result;
+        match result {
             Ok(out) => text = out,
             Err(e) => {
                 eprintln!("error: transcribe failed: {}", e);
@@ -666,6 +687,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
                 "transcribe_ms": times_ms,
                 "best_ms": best_ms,
                 "rtf": rtf,
+                "live": args.live,
                 "text": text,
             })
         );
@@ -683,6 +705,23 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
         println!("text: {}", text);
     }
     0
+}
+
+/// Feed `samples` to the dictation route in 20 ms frames at recording pace,
+/// as the recorder does during a dictation (`--live`).
+fn replay_at_recording_pace(tm: &TranscriptionManager, samples: &[f32]) {
+    use std::time::{Duration, Instant};
+    const FRAME: usize = 320;
+    tm.start_prefetch();
+    let router = tm.stream_router();
+    let started = Instant::now();
+    for (i, frame) in samples.chunks(FRAME).enumerate() {
+        let due = started + Duration::from_millis(i as u64 * 20);
+        if let Some(wait) = due.checked_duration_since(Instant::now()) {
+            std::thread::sleep(wait);
+        }
+        router.feed(frame);
+    }
 }
 
 /// The typed commands of the app, in registration order: one list for the app and the bindings
@@ -747,6 +786,9 @@ macro_rules! handy_commands {
             commands::vocabulary::add_vocabulary_term,
             commands::vocabulary::remove_vocabulary_occurrence,
             commands::vocabulary::get_vocabulary_status,
+            commands::quick_add::quick_add_replacement,
+            commands::quick_add::quick_add_vocabulary_term,
+            commands::quick_add::open_settings_list,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
@@ -1021,6 +1063,7 @@ pub fn run(cli_args: CliArgs) {
         .manage(cli_args.clone())
         .manage(word_replacements::published::PublishedReplacements::default())
         .setup(move |app| {
+            panic_log::install();
             #[cfg(target_os = "windows")]
             log::info!(
                 "Vulkan layer policy: VK_LOADER_LAYERS_DISABLE={:?}, HANDY_KEEP_VULKAN_IMPLICIT_LAYERS={}",
@@ -1192,6 +1235,10 @@ pub fn run(cli_args: CliArgs) {
             Ok(())
         })
         .on_window_event(|window, event| match event {
+            // The Quick Add window (018) really closes: it keeps no state, and hiding it must not
+            // drop the dock icon while the settings window is open.
+            tauri::WindowEvent::CloseRequested { .. }
+                if window.label() == quick_add::QUICK_ADD_WINDOW => {}
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 api.prevent_close();
                 let _res = window.hide();

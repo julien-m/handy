@@ -3,11 +3,15 @@
     "settings": "Pengaturan...",
     "checkUpdates": "Periksa Pembaruan...",
     "copyLastTranscript": "Salin Transkripsi Terakhir",
+    "recentTranscripts": "Transkripsi Terbaru",
+    "noRecentTranscripts": "Belum ada transkripsi",
     "unloadModel": "Keluarkan Model dari Memori",
     "model": "Model",
     "quit": "Keluar",
     "cancel": "Batal",
-    "secureInputWarning": "⚠ Pintasan diblokir oleh Secure Input"
+    "secureInputWarning": "⚠ Pintasan diblokir oleh Secure Input",
+    "addReplacement": "Tambah penggantian…",
+    "addVocabulary": "Tambah ke kosakata…"
   },
   "sidebar": {
     "general": "Umum",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Kirim ke aplikasi di depan",
-            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan. Tekan lagi untuk membatalkan. Sematan tetap."
+            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan atau aplikasi tempat dikte dimulai. Tekan lagi untuk membatalkan. Sematan tetap."
           },
           "skip_automatic_enter": {
             "name": "Sisipkan tanpa Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Sembunyikan detail",
       "close": "Tutup"
     }
+  },
+  "quickAdd": {
+    "title": "Tambah cepat",
+    "tabs": {
+      "replacement": "Penggantian",
+      "vocabulary": "Kosakata"
+    },
+    "replacement": {
+      "heard": "Teks yang didengar",
+      "written": "Tulis sebagai gantinya",
+      "hint": "Saat Handy mendengar teks pertama, ia menulis teks kedua.",
+      "added": "Ditambahkan: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Istilah",
+      "hint": "Membantu Handy mengenali nama dan kata yang jarang.",
+      "added": "Ditambahkan ke kosakata: “{{term}}”"
+    },
+    "openList": "Tampilkan daftar",
+    "add": "Tambah",
+    "close": "Tutup"
   }
 }

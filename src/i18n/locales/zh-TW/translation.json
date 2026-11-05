@@ -3,11 +3,15 @@
     "settings": "設定...",
     "checkUpdates": "檢查更新...",
     "copyLastTranscript": "複製最新轉錄",
+    "recentTranscripts": "最近的轉錄",
+    "noRecentTranscripts": "尚無轉錄",
     "unloadModel": "卸載模型",
     "model": "模型",
     "quit": "結束",
     "cancel": "取消",
-    "secureInputWarning": "⚠ 快捷鍵被 Secure Input 阻擋"
+    "secureInputWarning": "⚠ 快捷鍵被 Secure Input 阻擋",
+    "addReplacement": "新增替換…",
+    "addVocabulary": "新增至詞彙表…"
   },
   "sidebar": {
     "general": "一般",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "傳送到前景應用程式",
-            "description": "聽寫時單獨按下此鍵，結束時將文字傳送到前景應用程式，而不是已釘選的應用程式。再按一次復原。釘選保持不變。"
+            "description": "聽寫時單獨按下此鍵，結束時將文字傳送到前景應用程式，而不是已釘選的應用程式或開始聽寫時的應用程式。再按一次復原。釘選保持不變。"
           },
           "skip_automatic_enter": {
             "name": "插入但不按 Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "隱藏詳細資訊",
       "close": "關閉"
     }
+  },
+  "quickAdd": {
+    "title": "快速新增",
+    "tabs": {
+      "replacement": "替換",
+      "vocabulary": "詞彙表"
+    },
+    "replacement": {
+      "heard": "聽到的文字",
+      "written": "改寫為",
+      "hint": "當 Handy 聽到第一段文字時，會寫出第二段。",
+      "added": "已新增：「{{heard}}」→「{{written}}」"
+    },
+    "vocabulary": {
+      "term": "詞語",
+      "hint": "協助 Handy 辨識名稱與罕見字詞。",
+      "added": "已新增至詞彙表：「{{term}}」"
+    },
+    "openList": "查看清單",
+    "add": "新增",
+    "close": "關閉"
   }
 }

@@ -159,6 +159,14 @@ describe("focus after a removal", () => {
     assert.equal(removalFocusPosition(after, { ...target, index: 2 }), null);
   });
 
+  test("in the sorted list, focus goes to the chip now at the removed position", () => {
+    // Saved index 3, shown second (alphabetical_display): the next chip shown takes its place.
+    const after = terms("Claude Code", "Penflow");
+    const target = { index: 3, term: "OpenClaw", removed: true, position: 1 };
+    assert.equal(removalFocusPosition(after, target), 1);
+    assert.equal(removalFocusPosition(after, { ...target, position: 2 }), null);
+  });
+
   test("a failed removal keeps focus on the same term after the reread", () => {
     // The reread list gained a term in front: the term moved to position 1.
     const after = terms("Penflow", "OpenClaw", "Claude Code");

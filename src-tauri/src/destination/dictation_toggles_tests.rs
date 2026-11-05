@@ -1,5 +1,5 @@
 //! The two in-dictation keys over the real manager with a fake workspace and clock (014 AC-001
-//! to AC-004, SC-001): re-routing, second press, no pin, after the insertion freeze, the pin left
+//! to AC-004, AC-007, SC-001): re-routing with or without a pin, second press, after the insertion freeze, the pin left
 //! intact for the next dictation, and the Enter claim refused only for a skipped dictation.
 use super::*;
 use crate::destination::context::{DestinationSource, RecoveryDisposition};
@@ -35,6 +35,12 @@ fn pinned_dictation(
     assert_eq!(started.source, DestinationSource::Pinned);
     Ok((manager, started))
 }
+/// The snapshot of a press that changed the route.
+fn changed(
+    outcome: Option<DestinationSnapshot>,
+) -> Result<DestinationSnapshot, Box<dyn std::error::Error>> {
+    outcome.ok_or_else(|| "no change".into())
+}
 fn ids(snapshot: &DestinationSnapshot) -> (DictationId, u64) {
     (snapshot.dictation_id, snapshot.destination_generation)
 }
@@ -44,15 +50,11 @@ fn ids(snapshot: &DestinationSnapshot) -> (DictationId, u64) {
 fn a_press_reroutes_a_pinned_dictation_and_a_second_press_restores_the_pin() -> TestResult {
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     assert_eq!(rerouted.source, DestinationSource::FrontmostAtEnd);
     assert_eq!(rerouted.selection_version, started.selection_version + 1);
     assert_eq!(rerouted.pin, started.pin, "the badge still offers Unpin");
-    let restored = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let restored = changed(manager.toggle_active_app(id, generation)?)?;
     assert_eq!(restored.source, DestinationSource::Pinned);
     assert_eq!(restored.selection, started.selection);
     Ok(())
@@ -76,26 +78,41 @@ fn the_pin_is_intact_and_routes_the_next_dictation() -> TestResult {
     Ok(())
 }
 
+// @spec AC-007: Re-route without a pin — .specs/features/014-in-dictation-keys/spec.md#ac-007
 #[test]
-fn without_a_pin_or_on_a_frontmost_route_the_key_changes_nothing() -> TestResult {
+fn without_a_pin_a_press_reroutes_and_a_second_press_restores_the_app_of_the_start() -> TestResult {
+    let (_, manager) = setup();
+    let started = manager.commit_start(manager.capture(true));
+    assert_eq!(started.source, DestinationSource::Captured);
+    let (id, generation) = ids(&started);
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
+    assert_eq!(rerouted.source, DestinationSource::FrontmostAtEnd);
+    assert_eq!(rerouted.selection_version, started.selection_version + 1);
+    let restored = changed(manager.toggle_active_app(id, generation)?)?;
+    assert_eq!(restored.source, DestinationSource::Captured);
+    assert_eq!(restored.selection, started.selection);
+    assert!(manager.lock().pin.is_none(), "the key never pins");
+    Ok(())
+}
+
+#[test]
+fn on_a_frontmost_route_the_key_did_not_set_the_key_changes_nothing() -> TestResult {
     let (_, manager) = setup();
     let started = manager.commit_start(manager.capture(true));
     let (id, generation) = ids(&started);
-    assert_eq!(manager.toggle_active_app(id, generation)?, None);
-    assert_eq!(manager.snapshot(), Some(started));
+    let cross = crate::destination::snapshot::MenuChoice::FrontmostAtEnd;
+    let crossed = manager.choose(id, started.selection_version, cross)?;
+    assert_eq!(manager.toggle_active_app(id, generation)?, None, "no pin");
+    assert_eq!(manager.snapshot(), Some(crossed));
 
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
-    let version = started.selection_version;
-    manager.choose(
-        id,
-        version,
-        crate::destination::snapshot::MenuChoice::FrontmostAtEnd,
-    )?;
+    let cross = crate::destination::snapshot::MenuChoice::FrontmostAtEnd;
+    manager.choose(id, started.selection_version, cross)?;
     assert_eq!(
         manager.toggle_active_app(id, generation)?,
         None,
-        "the cross set it"
+        "the cross set it, with a pin"
     );
     Ok(())
 }
@@ -105,18 +122,18 @@ fn after_an_unpin_or_a_badge_choice_the_second_press_restores_nothing() -> TestR
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
     manager.toggle_active_app(id, generation)?;
-    manager.unpin();
+    let unpinned = manager.unpin().ok_or("no session")?;
+    assert_ne!(unpinned.source, DestinationSource::FrontmostAtEnd);
+    let again = changed(manager.toggle_active_app(id, generation)?)?;
     assert_eq!(
-        manager.toggle_active_app(id, generation)?,
-        None,
-        "nothing pinned"
+        again.source,
+        DestinationSource::FrontmostAtEnd,
+        "the unpin moved the route, so the press is a first press"
     );
 
     let (manager, started) = pinned_dictation()?;
     let (id, generation) = ids(&started);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     let menu = manager.menu(id, rerouted.selection_version)?;
     let token = menu
         .entries
@@ -130,7 +147,7 @@ fn after_an_unpin_or_a_badge_choice_the_second_press_restores_nothing() -> TestR
     assert_eq!(
         manager.toggle_active_app(id, generation)?,
         None,
-        "the cross set it"
+        "the cross set it, with a pin"
     );
     Ok(())
 }
@@ -188,9 +205,7 @@ fn the_skip_shows_in_the_snapshot_and_keeps_the_route_and_version() -> TestResul
     assert!(skipped.enter_skipped);
     assert_eq!(skipped.selection_version, started.selection_version);
     assert_eq!(skipped.source, started.source);
-    let rerouted = manager
-        .toggle_active_app(id, generation)?
-        .ok_or("no change")?;
+    let rerouted = changed(manager.toggle_active_app(id, generation)?)?;
     assert!(rerouted.enter_skipped, "both keys combine");
     let next = manager.commit_start(manager.capture(true));
     assert!(

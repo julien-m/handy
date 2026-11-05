@@ -8,6 +8,7 @@ use super::tap::{is_configured_key, KeyInput, ModifierState, Tap, TapDetector};
 use super::{parse_key, RETARGET_ACTION, SKIP_ENTER_ACTION};
 use crate::destination::context::DictationId;
 use crate::destination::manager::DestinationManager;
+use crate::destination::snapshot::DestinationSnapshot;
 use handy_keys::{KeyEvent, KeyboardListener, Modifiers};
 use log::{debug, warn};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -126,10 +127,7 @@ impl Observer {
         let (id, generation) = self.dictation;
         let is = |key: Option<Modifiers>| key.is_some_and(|key| is_configured_key(key, tapped));
         let snapshot = if is(self.keys.retarget) {
-            self.manager
-                .toggle_active_app(id, generation)
-                .ok()
-                .flatten()
+            self.retarget()
         } else if is(self.keys.skip_enter) {
             self.manager.toggle_skip_enter(id, generation).ok()
         } else {
@@ -142,6 +140,16 @@ impl Observer {
             );
             crate::destination::app::emit_changed(&self.app, &snapshot);
         }
+    }
+
+    /// « Send to the app in front »: the new route, if it changed. Every no-op stays silent
+    /// (`Stale`, `Frozen`, a frontmost route this key did not set).
+    fn retarget(&self) -> Option<DestinationSnapshot> {
+        let (id, generation) = self.dictation;
+        self.manager
+            .toggle_active_app(id, generation)
+            .ok()
+            .flatten()
     }
 }
 

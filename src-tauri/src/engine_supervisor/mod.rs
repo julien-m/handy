@@ -23,6 +23,7 @@
 //! - `supervisor`: the parent side ([`EngineSupervisor`]).
 //! - `worker`: the child process.
 
+mod batch;
 mod protocol;
 mod supervisor;
 mod worker;

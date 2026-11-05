@@ -287,6 +287,16 @@ export const HistorySettings: React.FC = () => {
   );
 };
 
+// @spec AC-001: A long transcript scrolls inside its entry — .specs/features/021-history-transcript-height/spec.md#ac-001
+/** Lines of a transcript shown at once in the history; longer text scrolls in its entry. */
+const TRANSCRIPT_MAX_LINES = 10;
+
+/** Height limit of a transcript: the visible lines plus the bottom padding (`pb-2`). */
+const TRANSCRIPT_BOX_STYLE: React.CSSProperties = {
+  maxHeight: `calc(${TRANSCRIPT_MAX_LINES}lh + 0.5rem)`,
+  overflowY: "auto",
+};
+
 interface HistoryEntryProps {
   entry: HistoryEntry;
   onToggleSaved: () => void;
@@ -421,14 +431,17 @@ const HistoryEntryComponent: React.FC<HistoryEntryProps> = ({
           retrying
             ? ""
             : hasTranscription
-              ? "text-text/90 select-text cursor-text whitespace-pre-wrap break-words"
+              ? "text-text/90 select-text cursor-text whitespace-pre-wrap break-words history-text-scroll"
               : "text-text/40"
         }`}
         style={
           retrying
             ? { animation: "transcribe-pulse 3s ease-in-out infinite" }
-            : undefined
+            : hasTranscription
+              ? TRANSCRIPT_BOX_STYLE
+              : undefined
         }
+        data-testid="history-transcript-text"
       >
         {retrying && (
           <style>{`

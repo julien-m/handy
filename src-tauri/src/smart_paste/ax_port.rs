@@ -54,6 +54,8 @@ pub struct Utf16Range {
 pub trait AxField: Send {
     /// Process identifier owning the element.
     fn pid(&mut self) -> Result<i32, AxError>;
+    /// The element role (`AXRole`), at most `max_units` UTF-16 units long.
+    fn role(&mut self, timeout: Duration, max_units: usize) -> Result<String, AxError>;
     /// Whether the element is a password field (role or subrole
     /// `AXSecureTextField`).
     fn is_secure(&mut self, timeout: Duration) -> Result<bool, AxError>;

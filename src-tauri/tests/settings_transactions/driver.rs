@@ -35,6 +35,9 @@ impl Driver {
         // lock and continues after RESUME.
         // A normal run must exit 0 (`finish`). `kill_at_barrier` kills the child at
         // CRASH_READY; on Unix the status must report SIGKILL, so no Rust unwind or Drop ran.
+        let forks = super::FORK_GUARD
+            .write()
+            .map_err(|_| "fork guard poisoned")?;
         let mut child = Command::new(std::env::current_exe()?)
             .args([
                 "--exact",
@@ -46,6 +49,7 @@ impl Driver {
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit())
             .spawn()?;
+        drop(forks);
         let input = child.stdin.take().ok_or("child stdin")?;
         let stdout = child.stdout.take().ok_or("child stdout")?;
         let (sender, lines) = mpsc::channel();

@@ -3,11 +3,15 @@
     "settings": "設定…",
     "checkUpdates": "アップデートを確認…",
     "copyLastTranscript": "最新の文字起こしをコピー",
+    "recentTranscripts": "最近の文字起こし",
+    "noRecentTranscripts": "文字起こしはまだありません",
     "unloadModel": "モデルをアンロード",
     "model": "モデル",
     "quit": "終了",
     "cancel": "キャンセル",
-    "secureInputWarning": "⚠ Secure Input でショートカットがブロック中"
+    "secureInputWarning": "⚠ Secure Input でショートカットがブロック中",
+    "addReplacement": "置換を追加…",
+    "addVocabulary": "語彙に追加…"
   },
   "sidebar": {
     "general": "一般",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "前面のアプリに送る",
-            "description": "音声入力中にこのキーだけを押すと、ピン留めしたアプリではなく最後に前面にあるアプリへ送ります。もう一度押すと元に戻ります。ピン留めは残ります。"
+            "description": "音声入力中にこのキーだけを押すと、ピン留めしたアプリや開始時のアプリではなく、最後に前面にあるアプリへ送ります。もう一度押すと元に戻ります。ピン留めは残ります。"
           },
           "skip_automatic_enter": {
             "name": "Enter なしで挿入",
@@ -1422,5 +1426,26 @@
       "hideDetails": "詳細を隠す",
       "close": "閉じる"
     }
+  },
+  "quickAdd": {
+    "title": "クイック追加",
+    "tabs": {
+      "replacement": "置換",
+      "vocabulary": "語彙"
+    },
+    "replacement": {
+      "heard": "認識されたテキスト",
+      "written": "代わりに書く",
+      "hint": "Handy が最初のテキストを聞き取ると、2 番目のテキストを書きます。",
+      "added": "追加しました:「{{heard}}」→「{{written}}」"
+    },
+    "vocabulary": {
+      "term": "用語",
+      "hint": "名前や珍しい単語を Handy が認識しやすくなります。",
+      "added": "語彙に追加しました:「{{term}}」"
+    },
+    "openList": "一覧を表示",
+    "add": "追加",
+    "close": "閉じる"
   }
 }

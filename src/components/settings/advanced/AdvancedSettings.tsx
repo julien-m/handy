@@ -31,6 +31,7 @@ import { FillerWordRemoval } from "../FillerWordRemoval";
 import { ChineseScriptSetting } from "../ChineseScript";
 import { VadBackendSelector } from "../VadBackendSelector";
 import { WordReplacements } from "../word-replacements/word-replacements";
+import { revealAnchor } from "../settings-reveal";
 import { TextFormattingSection } from "../text-formatting/text-formatting-section";
 import { useScreenScope } from "../page-screen";
 import {
@@ -107,9 +108,13 @@ export const AdvancedSettings: React.FC = () => {
           <AppendTrailingSpace descriptionMode="tooltip" grouped={true} />
         </SettingsGroup>
 
-        <CustomWords />
+        <div {...revealAnchor("vocabulary")} className="scroll-mt-4">
+          <CustomWords />
+        </div>
 
-        <WordReplacements />
+        <div {...revealAnchor("replacement")} className="scroll-mt-4">
+          <WordReplacements />
+        </div>
 
         <div data-testid={`${screen}-history`}>
           <SettingsGroup title={t("settings.advanced.groups.history")}>

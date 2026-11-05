@@ -1,5 +1,17 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-31 — alphabetical lists / Show the list
+
+- Decision `alphabetical_display` (Julien): the rule list is shown in alphabetical order of the recognized text; display only, saved and export order unchanged; the order holds still while a row is edited (AC-001).
+
+## 2026-10-30 — [Bugfix]: Bounded rule list and `<unk>` quotes restored (Julien)
+
+- **Type:** Bugfix (request of Julien, 2026-10-30, after importing 154 rules)
+- **Spec modified:** Yes (AC-001 bounded list, AC-007 unknown-token stage; decisions `bounded_lists` and `unknown_token_quotes`)
+- **Code modified:** src/components/ui/bounded-list.ts (new); src/components/settings/word-replacements/rule-list.tsx; src/components/settings/vocabulary/vocabulary-terms.tsx (003); src-tauri/src/unknown_token.rs (new, unit tests from real transcripts); src-tauri/src/managers/transcription.rs; src-tauri/src/lib.rs
+- **AC impacted:** AC-001 (presentation), AC-007 (new first stage)
+- **Author:** Claude Code (spec-fix)
+
 ## 2026-10-28 — [Bugfix]: Keyboard focus given back after Done, Save, Discard and dialogs (native session N5)
 
 - **Type:** Bugfix (finding N5 of the native proof session of 2026-10-28)

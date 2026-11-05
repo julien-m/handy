@@ -3,11 +3,15 @@
     "settings": "설정...",
     "checkUpdates": "업데이트 확인...",
     "copyLastTranscript": "마지막 녹음 내용 복사",
+    "recentTranscripts": "최근 녹음 내용",
+    "noRecentTranscripts": "아직 녹음 내용이 없습니다",
     "unloadModel": "모델 언로드",
     "model": "모델",
     "quit": "종료",
     "cancel": "취소",
-    "secureInputWarning": "⚠ Secure Input으로 단축키가 차단됨"
+    "secureInputWarning": "⚠ Secure Input으로 단축키가 차단됨",
+    "addReplacement": "치환 규칙 추가…",
+    "addVocabulary": "어휘에 추가…"
   },
   "sidebar": {
     "general": "일반",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "앞에 있는 앱으로 보내기",
-            "description": "받아쓰기 중에 이 키만 누르면 고정된 앱 대신 마지막에 앞에 있는 앱으로 보냅니다. 다시 누르면 취소됩니다. 고정은 유지됩니다."
+            "description": "받아쓰기 중에 이 키만 누르면 고정된 앱이나 받아쓰기를 시작한 앱 대신 마지막에 앞에 있는 앱으로 보냅니다. 다시 누르면 취소됩니다. 고정은 유지됩니다."
           },
           "skip_automatic_enter": {
             "name": "Enter 없이 삽입",
@@ -1422,5 +1426,26 @@
       "hideDetails": "세부 정보 숨기기",
       "close": "닫기"
     }
+  },
+  "quickAdd": {
+    "title": "빠른 추가",
+    "tabs": {
+      "replacement": "치환",
+      "vocabulary": "어휘"
+    },
+    "replacement": {
+      "heard": "들린 텍스트",
+      "written": "대신 쓸 텍스트",
+      "hint": "Handy가 첫 번째 텍스트를 들으면 두 번째 텍스트를 씁니다.",
+      "added": "추가됨: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "용어",
+      "hint": "Handy가 이름과 드문 단어를 인식하도록 돕습니다.",
+      "added": "어휘에 추가됨: “{{term}}”"
+    },
+    "openList": "목록 보기",
+    "add": "추가",
+    "close": "닫기"
   }
 }

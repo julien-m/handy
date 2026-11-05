@@ -27,6 +27,7 @@ import {
 } from "./components/settings";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useGuardedNavigation } from "./components/unsaved-changes-dialog";
+import { useSettingsReveal } from "./components/settings/settings-reveal";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
@@ -68,6 +69,7 @@ function App() {
     useState<SidebarSection>("general");
   // Leaving a section whose editor holds unsaved edits asks first (feature 002).
   const sectionNavigation = useGuardedNavigation(setCurrentSection);
+  useSettingsReveal(currentSection, sectionNavigation.request);
   const { settings, updateSetting } = useSettings();
   useOverlayNoneNotices(settings?.overlay_style);
   const direction = getLanguageDirection(i18n.language);

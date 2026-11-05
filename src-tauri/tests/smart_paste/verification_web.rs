@@ -17,6 +17,7 @@ use super::verification::{
 
 // @spec FR-012: Web text only, no late double paste — .specs/features/007-smart-paste/spec.md#fr-012
 // @spec AC-019: Terminal unreadable, late paste kept — .specs/features/007-smart-paste/spec.md#ac-019
+// @spec AC-019: Rich editor unreadable, pasted once — .specs/features/007-smart-paste/spec.md#ac-019
 
 /// A terminal-like element: readable, but its value never shows the paste.
 #[test]
@@ -104,4 +105,37 @@ fn a_paste_applied_after_the_window_is_verified_without_a_second_paste() {
     let logs = verify_logs(55);
     assert_eq!(logs.len(), 1, "{logs:?}");
     assert!(logs[0].contains(": Verified in "), "{logs:?}");
+}
+
+/// The Codex composer (N31): web text whose focused element is a rich
+/// editor's group, whose value never shows the paste.
+#[test]
+fn a_web_element_without_a_text_role_is_unreadable_and_never_retried() {
+    super::privacy::install_logger();
+    let mut rig = Rig::new();
+    let field = page_field(&mut rig);
+    field.state().role = Ok("AXGroup".to_owned());
+    page_inserts_on(&rig, &field, None);
+    let outcome = insert_dictation(&rig, 56, true, &[20]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::ReadObserved);
+    assert!(!outcome.kind.requires_recovery());
+    assert_eq!(chords(&rig), 1, "no second Cmd+V");
+    assert!(
+        field.state().ancestry_searches.is_empty(),
+        "role checked first"
+    );
+    let logs = verify_logs(56);
+    assert_eq!(logs.len(), 2, "{logs:?}");
+    assert!(logs[1].ends_with("unreadable: NotTextField"), "{logs:?}");
+}
+
+#[test]
+fn a_role_that_cannot_be_read_is_no_proof_of_a_text_field() {
+    let mut rig = Rig::new();
+    let field = page_field(&mut rig);
+    field.state().role = Err(AxError::Timeout);
+    page_inserts_on(&rig, &field, None);
+    let outcome = insert_dictation(&rig, 57, true, &[20]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::ReadObserved);
+    assert_eq!(chords(&rig), 1);
 }

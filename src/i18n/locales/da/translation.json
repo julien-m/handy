@@ -3,11 +3,15 @@
     "settings": "Indstillinger...",
     "checkUpdates": "Tjek for opdateringer...",
     "copyLastTranscript": "Kopiér seneste transskription",
+    "recentTranscripts": "Seneste transskriptioner",
+    "noRecentTranscripts": "Ingen transskriptioner endnu",
     "unloadModel": "Frigør model",
     "model": "Model",
     "quit": "Afslut",
     "cancel": "Annuller",
-    "secureInputWarning": "⚠ Genveje blokeret af Secure Input"
+    "secureInputWarning": "⚠ Genveje blokeret af Secure Input",
+    "addReplacement": "Tilføj en erstatning…",
+    "addVocabulary": "Føj til ordforråd…"
   },
   "sidebar": {
     "general": "Generelt",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Send til appen i forgrunden",
-            "description": "Tryk kun på denne tast under en diktering for at sende den til appen i forgrunden til sidst i stedet for den fastgjorte app. Tryk igen for at fortryde. Fastgørelsen bevares."
+            "description": "Tryk kun på denne tast under en diktering for at sende den til appen i forgrunden til sidst i stedet for den fastgjorte app eller appen, hvor den startede. Tryk igen for at fortryde. Fastgørelsen bevares."
           },
           "skip_automatic_enter": {
             "name": "Indsæt uden Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Skjul detaljer",
       "close": "Luk"
     }
+  },
+  "quickAdd": {
+    "title": "Hurtig tilføjelse",
+    "tabs": {
+      "replacement": "Erstatning",
+      "vocabulary": "Ordforråd"
+    },
+    "replacement": {
+      "heard": "Hørt tekst",
+      "written": "Skriv i stedet",
+      "hint": "Når Handy hører den første tekst, skriver den den anden.",
+      "added": "Tilføjet: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Udtryk",
+      "hint": "Hjælper Handy med at genkende navne og usædvanlige ord.",
+      "added": "Føjet til ordforrådet: “{{term}}”"
+    },
+    "openList": "Vis listen",
+    "add": "Tilføj",
+    "close": "Luk"
   }
 }

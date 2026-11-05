@@ -3,11 +3,15 @@
     "settings": "Inställningar...",
     "checkUpdates": "Sök efter uppdateringar...",
     "copyLastTranscript": "Kopiera senaste transkriptionen",
+    "recentTranscripts": "Senaste transkriptioner",
+    "noRecentTranscripts": "Inga transkriptioner än",
     "unloadModel": "Avlasta modell",
     "model": "Modell",
     "quit": "Avsluta",
     "cancel": "Avbryt",
-    "secureInputWarning": "⚠ Kortkommandon blockeras av Secure Input"
+    "secureInputWarning": "⚠ Kortkommandon blockeras av Secure Input",
+    "addReplacement": "Lägg till en ersättning…",
+    "addVocabulary": "Lägg till i ordförrådet…"
   },
   "sidebar": {
     "general": "Allmänt",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Skicka till appen i förgrunden",
-            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen. Tryck igen för att ångra. Fästet finns kvar."
+            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen eller appen där det började. Tryck igen för att ångra. Fästet finns kvar."
           },
           "skip_automatic_enter": {
             "name": "Infoga utan Retur",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Dölj detaljer",
       "close": "Stäng"
     }
+  },
+  "quickAdd": {
+    "title": "Snabbtillägg",
+    "tabs": {
+      "replacement": "Ersättning",
+      "vocabulary": "Ordförråd"
+    },
+    "replacement": {
+      "heard": "Hörd text",
+      "written": "Skriv i stället",
+      "hint": "När Handy hör den första texten skriver den den andra.",
+      "added": "Tillagt: ”{{heard}}” → ”{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Term",
+      "hint": "Hjälper Handy att känna igen namn och ovanliga ord.",
+      "added": "Tillagt i ordförrådet: ”{{term}}”"
+    },
+    "openList": "Visa listan",
+    "add": "Lägg till",
+    "close": "Stäng"
   }
 }

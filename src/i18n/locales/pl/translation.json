@@ -3,11 +3,15 @@
     "settings": "Ustawienia...",
     "checkUpdates": "Sprawdź aktualizacje...",
     "copyLastTranscript": "Kopiuj ostatnią transkrypcję",
+    "recentTranscripts": "Ostatnie transkrypcje",
+    "noRecentTranscripts": "Brak transkrypcji",
     "unloadModel": "Zwolnij model",
     "model": "Model",
     "quit": "Zamknij",
     "cancel": "Anuluj",
-    "secureInputWarning": "⚠ Skróty zablokowane przez Secure Input"
+    "secureInputWarning": "⚠ Skróty zablokowane przez Secure Input",
+    "addReplacement": "Dodaj zamianę…",
+    "addVocabulary": "Dodaj do słownika…"
   },
   "sidebar": {
     "general": "Ogólne",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "Wyślij do aplikacji na pierwszym planie",
-            "description": "Podczas dyktowania naciśnij sam ten klawisz, aby wysłać tekst do aplikacji na pierwszym planie na końcu zamiast do przypiętej. Naciśnij ponownie, aby cofnąć. Przypięcie zostaje."
+            "description": "Podczas dyktowania naciśnij sam ten klawisz, aby wysłać tekst do aplikacji na pierwszym planie na końcu zamiast do przypiętej lub tej, w której dyktowanie się zaczęło. Naciśnij ponownie, aby cofnąć. Przypięcie zostaje."
           },
           "skip_automatic_enter": {
             "name": "Wstaw bez Entera",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Ukryj szczegóły",
       "close": "Zamknij"
     }
+  },
+  "quickAdd": {
+    "title": "Szybkie dodawanie",
+    "tabs": {
+      "replacement": "Zamiana",
+      "vocabulary": "Słownik"
+    },
+    "replacement": {
+      "heard": "Usłyszany tekst",
+      "written": "Pisz zamiast tego",
+      "hint": "Gdy Handy usłyszy pierwszy tekst, wpisze drugi.",
+      "added": "Dodano: „{{heard}}” → „{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Termin",
+      "hint": "Pomaga Handy rozpoznawać nazwy i rzadkie słowa.",
+      "added": "Dodano do słownika: „{{term}}”"
+    },
+    "openList": "Pokaż listę",
+    "add": "Dodaj",
+    "close": "Zamknij"
   }
 }

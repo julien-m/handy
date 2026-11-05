@@ -190,6 +190,8 @@ export interface RemovalTarget {
   index: number;
   term: string;
   removed: boolean;
+  /** Position of the chip in the list shown (sorted); the saved index when absent. */
+  position?: number;
 }
 
 /**
@@ -211,5 +213,6 @@ export const removalFocusPosition = (
       same >= 0 ? same : terms.findIndex((term) => term.term === target.term);
     if (kept >= 0) return kept;
   }
-  return target.index < terms.length ? target.index : null;
+  const position = target.position ?? target.index;
+  return position < terms.length ? position : null;
 };

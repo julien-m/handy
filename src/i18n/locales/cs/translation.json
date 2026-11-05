@@ -3,11 +3,15 @@
     "settings": "Nastavení...",
     "checkUpdates": "Zkontrolovat aktualizace...",
     "copyLastTranscript": "Zkopírovat poslední přepis",
+    "recentTranscripts": "Nedávné přepisy",
+    "noRecentTranscripts": "Zatím žádné přepisy",
     "unloadModel": "Uvolnit model",
     "model": "Model",
     "quit": "Ukončit",
     "cancel": "Zrušit",
-    "secureInputWarning": "⚠ Zkratky blokuje Secure Input"
+    "secureInputWarning": "⚠ Zkratky blokuje Secure Input",
+    "addReplacement": "Přidat náhradu…",
+    "addVocabulary": "Přidat do slovníku…"
   },
   "sidebar": {
     "general": "Obecné",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "Odeslat do aplikace v popředí",
-            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté. Dalším stiskem to vrátíte. Připnutí zůstává."
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté nebo té, ve které diktování začalo. Dalším stiskem to vrátíte. Připnutí zůstává."
           },
           "skip_automatic_enter": {
             "name": "Vložit bez Enteru",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Skrýt podrobnosti",
       "close": "Zavřít"
     }
+  },
+  "quickAdd": {
+    "title": "Rychlé přidání",
+    "tabs": {
+      "replacement": "Náhrada",
+      "vocabulary": "Slovník"
+    },
+    "replacement": {
+      "heard": "Slyšený text",
+      "written": "Napsat místo toho",
+      "hint": "Když Handy uslyší první text, napíše druhý.",
+      "added": "Přidáno: „{{heard}}“ → „{{written}}“"
+    },
+    "vocabulary": {
+      "term": "Výraz",
+      "hint": "Pomáhá Handy rozpoznávat jména a neobvyklá slova.",
+      "added": "Přidáno do slovníku: „{{term}}“"
+    },
+    "openList": "Zobrazit seznam",
+    "add": "Přidat",
+    "close": "Zavřít"
   }
 }

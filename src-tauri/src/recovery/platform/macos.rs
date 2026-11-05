@@ -60,6 +60,11 @@ pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
         .ok_or_else(|| "recovery panel has no window".to_owned())
 }
 
+/// Unregister the panel from `tauri-nspanel` before its window is destroyed.
+pub(super) fn forget_panel(app: &AppHandle) {
+    let _ = app.remove_webview_panel(RECOVERY_WINDOW);
+}
+
 /// Order the panel front without activating Handy.
 pub(super) fn show(window: &WebviewWindow) -> Result<(), String> {
     let panel = window

@@ -369,7 +369,7 @@
   color: var(--color-warning);
 }
 
-/* ---- Notices (AI failure, hand-over, input lost) ---- */
+/* ---- Notices (AI failure, hand-over, input lost, failed insertion, no pin) ---- */
 .snotice {
   width: var(--ov-notice-w);
   box-sizing: border-box;

@@ -3,11 +3,15 @@
     "settings": "Configuració...",
     "checkUpdates": "Comprova si hi ha actualitzacions...",
     "copyLastTranscript": "Copia l'última transcripció",
+    "recentTranscripts": "Transcripcions recents",
+    "noRecentTranscripts": "Encara no hi ha transcripcions",
     "unloadModel": "Allibera el model de la memòria",
     "model": "Model",
     "quit": "Surt",
     "cancel": "Cancel·la",
-    "secureInputWarning": "⚠ Dreceres blocades per l'entrada segura"
+    "secureInputWarning": "⚠ Dreceres blocades per l'entrada segura",
+    "addReplacement": "Afegeix una substitució…",
+    "addVocabulary": "Afegeix al vocabulari…"
   },
   "sidebar": {
     "general": "General",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Envia a l'app en primer pla",
-            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada. Torneu-la a prémer per desfer. La fixació es manté."
+            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada o de l'app on ha començat. Torneu-la a prémer per desfer. La fixació es manté."
           },
           "skip_automatic_enter": {
             "name": "Insereix sense Retorn",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Amaga els detalls",
       "close": "Tanca"
     }
+  },
+  "quickAdd": {
+    "title": "Afegiment ràpid",
+    "tabs": {
+      "replacement": "Substitució",
+      "vocabulary": "Vocabulari"
+    },
+    "replacement": {
+      "heard": "Text sentit",
+      "written": "Escriu en el seu lloc",
+      "hint": "Quan Handy sent el primer text, escriu el segon.",
+      "added": "Afegit: «{{heard}}» → «{{written}}»"
+    },
+    "vocabulary": {
+      "term": "Terme",
+      "hint": "Ajuda Handy a reconèixer noms i paraules poc habituals.",
+      "added": "Afegit al vocabulari: «{{term}}»"
+    },
+    "openList": "Mostra la llista",
+    "add": "Afegeix",
+    "close": "Tanca"
   }
 }

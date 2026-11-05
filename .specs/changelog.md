@@ -5,6 +5,36 @@
 
 ---
 
+## 2026-11-05 — [Feature 022] Long dictations transcribed while recorded: full 30 s pieces are transcribed while the user speaks, the pieces still missing go to the model in one batch, and `NSAppSleepDisabled` stops App Nap from throttling the stop (98 s: 0.67 s wait instead of 2.1–2.8 s); `handy -f <wav> --live` measures it (automated and headless evidence; native check pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-11-03 — [Feature 021] History: a transcript shows at most 10 lines; longer text scrolls inside its entry with a narrow scrollbar (automated evidence; native check pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-11-03 — [Feature 020] Long dictations: recordings longer than 30 s are transcribed in pieces cut at quiet moments; a piece whose output loops is cut in two, or keeps the text before the loop when under 20 s. Fixes a 5 min 47 s dictation that failed on every retry (automated and headless evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-11-02 — [Feature 019] Recent transcripts in the tray: a « Recent Transcripts » submenu lists the 5 newest transcripts with their time; a click copies the full text (26 locales; automated evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Features 002, 003, 018] Rule and term lists shown in alphabetical order (display only, saved order unchanged; decision `alphabetical_display`); « Show the list » in the Quick Add window opens the settings on Advanced, scrolled to the matching list (AC-009); the Quick Add window really closes and its confirmation goes away after 4 s (AC-007; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Feature 018] Quick Add from the tray: « Add a Replacement… » and « Add to Vocabulary… » open a small Quick Add window that commits one rule or one term through the settings service with the 002/003 validation, without the settings window (26 locales; automated evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Feature 007] Fix: a field too busy to answer the read-back (Codex) gets one more 300 ms read, so an ignored direct write falls back to the clipboard paste instead of the recovery bubble (N33)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Features 007, 010] Fix: paste verification no longer pastes twice into the Codex composer (only text roles are verified, N31); a recovery window whose page died no longer crashes Handy, and panics are written to `handy.log` (N32)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-30 — [Features 014, 007] Fix: « Send to the App in Front » also re-routes a dictation without a pin (AC-007, decision `reroute_without_pin`, no-pin notice removed); paste verification waits up to 1 s so Google AI mode in Chrome no longer shows a false bubble (AC-019, decision `verify_window_1s`; native proofs pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-30 — [Features 002, 003] Fix: the rule and term lists keep about five rows and scroll inside (decision `bounded_lists`); Canary's `<unk>` written for « » is restored before the final-text stages (AC-007, decision `unknown_token_quotes`; native proof pending)
+
+## 2026-10-30 — [Feature 014] Fix: 1/1 gap closed: « Send to the App in Front » pressed with nothing pinned shows the transient notice « No pinned app » on the recording indicator (4 s, 26 locales) and logs it at debug level; a frontmost route the key did not set with a pin stays silent (AC-007, decision `no_pin_notice`; native proof pending)
 ## 2026-10-29 — [Feature 017] N30: with smart spacing on and the text after the selection read, a dictation's single final period (Canary) is dropped when the text after starts with `, . ; : ! ? ) ] }`, a closing quote or a lower-case letter; abbreviations, `…`, `?`, `!`, `。`, a capital, a line break, the field end, an unknown side, a non-text focus and 013's terminal keep it (AC-017, FR-006; native proof pending)
 ## 2026-10-29 — [Feature 017] Fix: a dictation typed by 013's addressing tool into a terminal (background cmux workspace included) gets no spacing adjustment, not even the fallback space; on Windows and Linux the option's description names the fallback final space (AC-015, AC-016)
 ## 2026-10-29 — [Feature 017] Smart spacing: an option (on for new installs, off on upgrade, `smart_spacing`, first row of "Text formatting", CLI with the same validation, 26 locales) fits only the spaces at the two edges of a dictation to the text before and after the replaced selection: one space between words, existing spaces and line breaks kept and never doubled, none before `, . ; : ! ? ) ]` nor after `( [` (no French space invented), none in CJK, Thai, Lao, Khmer, Myanmar or Tibetan; unavailable context: one final space only; really empty field: no leading space; a focus proven not to be a text field (terminal, password) unchanged; while on it decides the trailing space and turns the method's `append_trailing_space` off on every path (never two final spaces); runs after 015's capitalization in the same preparation step, 015's reader extended (field length and 16 units after the selection, same 50 ms budget) (AC-001 to AC-014, automated evidence; native proof pending)

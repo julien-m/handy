@@ -24,6 +24,7 @@ export default defineConfig(async () => ({
         main: resolve(__dirname, "index.html"),
         overlay: resolve(__dirname, "src/overlay/index.html"),
         recovery: resolve(__dirname, "src/overlay/recovery.html"),
+        quickAdd: resolve(__dirname, "src/overlay/quick-add.html"),
       },
     },
   },

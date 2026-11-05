@@ -3,11 +3,15 @@
     "settings": "Paramètres...",
     "checkUpdates": "Rechercher des mises à jour...",
     "copyLastTranscript": "Copier la dernière transcription",
+    "recentTranscripts": "Transcriptions récentes",
+    "noRecentTranscripts": "Aucune transcription pour l’instant",
     "unloadModel": "Décharger le modèle",
     "model": "Modèle",
     "quit": "Quitter",
     "cancel": "Annuler",
-    "secureInputWarning": "⚠ Raccourcis bloqués par Secure Input"
+    "secureInputWarning": "⚠ Raccourcis bloqués par Secure Input",
+    "addReplacement": "Ajouter un remplacement…",
+    "addVocabulary": "Ajouter au vocabulaire…"
   },
   "sidebar": {
     "general": "Général",
@@ -205,7 +209,7 @@
           },
           "retarget_to_active_app": {
             "name": "Envoyer à l'app au premier plan",
-            "description": "Pendant une dictée, appuyez sur cette touche seule pour l'envoyer à l'app au premier plan à la fin au lieu de l'app épinglée. Appuyez de nouveau pour annuler. L'épingle reste."
+            "description": "Pendant une dictée, appuyez sur cette touche seule pour l'envoyer à l'app au premier plan à la fin au lieu de l'app épinglée ou de l'app où elle a commencé. Appuyez de nouveau pour annuler. L'épingle reste."
           },
           "skip_automatic_enter": {
             "name": "Insérer sans Entrée",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Masquer les détails",
       "close": "Fermer"
     }
+  },
+  "quickAdd": {
+    "title": "Ajout rapide",
+    "tabs": {
+      "replacement": "Remplacement",
+      "vocabulary": "Vocabulaire"
+    },
+    "replacement": {
+      "heard": "Texte entendu",
+      "written": "Écrire à la place",
+      "hint": "Quand Handy entend le premier texte, il écrit le second.",
+      "added": "Ajouté : « {{heard}} » → « {{written}} »"
+    },
+    "vocabulary": {
+      "term": "Terme",
+      "hint": "Aide Handy à reconnaître les noms et les mots rares.",
+      "added": "Ajouté au vocabulaire : « {{term}} »"
+    },
+    "openList": "Voir la liste",
+    "add": "Ajouter",
+    "close": "Fermer"
   }
 }

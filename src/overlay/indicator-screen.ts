@@ -1,4 +1,4 @@
-// Contract screen shown by the recording indicator (features 001, 005, 006, 009, 010). Every test id of the
+// Contract screen shown by the recording indicator (features 001, 005, 006, 009, 010, 014). Every test id of the
 // stack carries the prefix of the screen actually shown (`recording-indicator`, `-prompt-menu`,
 // `-destination-menu`, `-pinned`, `-no-destination`, or the screen of a notice shown alone in
 // `penflow/flow-ui-contract/contract.json`), so each test id is unique in the tree.

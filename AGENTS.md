@@ -183,6 +183,7 @@ Handy supports command-line parameters on all platforms for integration with scr
 | `--start-hidden`         | Launch without showing the main window (tray icon visible)        |
 | `--no-tray`              | Launch without system tray (closing window quits the app)         |
 | `--debug`                | Enable debug mode with verbose (Trace) logging                    |
+| `-f <wav> --live`        | Replay a WAV at recording pace and time the wait after its end    |
 | `settings …`             | Read/change settings (`get`, `keys`, `set`, `output`); see README |
 
 **Key design decisions:**

@@ -252,3 +252,36 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** verification unit tests (web-text scope, retry gate, bounded ancestry walk), smart_paste integration tests `verification_web.rs` (not web text, failed search, limits, setting off, late paste)
 - **Remaining:** native proof in cmux, Claude Desktop and the Google page (`.specs/native-proofs-checklist.md`); native AppKit fields are no longer verified after Cmd+V (accepted, decision N28)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-30 — [Bugfix]: Paste verification waits up to 1 s (Google AI mode in Chrome)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-019 scenarios, flowchart and criterion, decision `verify_window_1s`, edge case)
+- **Code modified:** src-tauri/src/smart_paste/verification.rs (`VERIFY_WINDOW` 300 ms → 1 s), README.md
+- **AC impacted:** AC-019, FR-012
+- **Why:** in a Google AI mode conversation the follow-up field showed the paste 200 ms to 1 s after Cmd+V, so a 300 ms window gave a false « field unchanged », the recovery bubble, and sometimes a second paste. Polling still stops at the first change.
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1400 passed)
+- **Remaining:** native proof in a Google AI mode conversation
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Bugfix]: Paste verification skips web elements without a text role (N31)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-019 scenario, criterion and reasons, FR-012, key entity, decision N31, edge case, test strategy)
+- **Code modified:** src-tauri/src/smart_paste/{verification.rs,coordinator_verify.rs,ax_port.rs,macos_ax.rs}, src-tauri/src/recovery/classifier.rs (`TEXT_ROLES` shared), tests, README.md
+- **AC impacted:** AC-019, FR-012
+- **Why:** a dictation into the Codex composer (Electron) was pasted twice, then raised the recovery bubble: its focused element is a rich editor's group whose value does not follow the paste (`verify dictation 7: Failed in 2244ms`, `UnchangedAfterRetry`). Only an element with one of 010's text roles is verified now; any other is `Unreadable(NotTextField)`, one Cmd+V.
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test smart_paste` (130 passed)
+- **Remaining:** native proof in Codex and in a Google AI mode conversation
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-31 — [Bugfix]: A busy field gets one more read before the bubble (N33)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-017 and AC-018 criteria, decision N33)
+- **Code modified:** src-tauri/src/smart_paste/direct.rs, tests/smart_paste/{direct.rs,fakes.rs}
+- **AC impacted:** AC-017, AC-018, FR-011
+- **Why:** in Codex the direct write is ignored and, under memory pressure, no read of the 150 ms window was answered; the outcome was "uncertain" and the bubble opened instead of the clipboard paste. One more read with a 300 ms timeout now decides; only a field still unreadable is "uncertain".
+- **Tests:** `cargo test --features destination-return,smart-paste-dispatch --lib` (1401 passed), `--test smart_paste` (132 passed)
+- **Remaining:** native proof in Codex
+- **Author:** Claude Code (claude-opus-5-5)

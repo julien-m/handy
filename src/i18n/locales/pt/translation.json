@@ -3,11 +3,15 @@
     "settings": "Configurações...",
     "checkUpdates": "Verificar Atualizações...",
     "copyLastTranscript": "Copiar última transcrição",
+    "recentTranscripts": "Transcrições recentes",
+    "noRecentTranscripts": "Ainda não há transcrições",
     "unloadModel": "Descarregar modelo",
     "model": "Modelo",
     "quit": "Sair",
     "cancel": "Cancelar",
-    "secureInputWarning": "⚠ Atalhos bloqueados pelo Secure Input"
+    "secureInputWarning": "⚠ Atalhos bloqueados pelo Secure Input",
+    "addReplacement": "Adicionar uma substituição…",
+    "addVocabulary": "Adicionar ao vocabulário…"
   },
   "sidebar": {
     "general": "Geral",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Enviar para o app em primeiro plano",
-            "description": "Durante um ditado, pressione só esta tecla para enviá-lo ao app em primeiro plano no final em vez do app fixado. Pressione de novo para desfazer. O app fixado continua."
+            "description": "Durante um ditado, pressione só esta tecla para enviá-lo ao app em primeiro plano no final em vez do app fixado ou do app onde começou. Pressione de novo para desfazer. O app fixado continua."
           },
           "skip_automatic_enter": {
             "name": "Inserir sem Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Ocultar detalhes",
       "close": "Fechar"
     }
+  },
+  "quickAdd": {
+    "title": "Adição rápida",
+    "tabs": {
+      "replacement": "Substituição",
+      "vocabulary": "Vocabulário"
+    },
+    "replacement": {
+      "heard": "Texto ouvido",
+      "written": "Escrever em vez disso",
+      "hint": "Quando o Handy ouve o primeiro texto, escreve o segundo.",
+      "added": "Adicionado: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Termo",
+      "hint": "Ajuda o Handy a reconhecer nomes e palavras incomuns.",
+      "added": "Adicionado ao vocabulário: “{{term}}”"
+    },
+    "openList": "Ver a lista",
+    "add": "Adicionar",
+    "close": "Fechar"
   }
 }

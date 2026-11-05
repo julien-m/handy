@@ -84,6 +84,7 @@ fn only_a_failure_turns_read_observed_into_field_unchanged() {
         VerifyVerdict::RetriedVerified,
         VerifyVerdict::Unreadable(UnreadableReason::NoReadableField),
         VerifyVerdict::Unreadable(UnreadableReason::NotWebText),
+        VerifyVerdict::Unreadable(UnreadableReason::NotTextField),
         VerifyVerdict::Unreadable(UnreadableReason::ReadFailed),
     ] {
         assert_eq!(verdict.outcome_kind(), PasteOutcomeKind::ReadObserved);
@@ -148,6 +149,29 @@ fn only_an_element_proven_to_be_web_text_is_verified() {
     assert_eq!(web_text_scope::<AxError>(Ok(false)), not_web);
     assert_eq!(web_text_scope(Err(AxError::Timeout)), not_web);
     assert_eq!(web_text_scope(Err(AxError::NotTrusted)), not_web);
+}
+
+#[test]
+fn only_an_element_with_a_text_role_is_verified() {
+    for role in TEXT_ROLES {
+        assert_eq!(
+            text_field_scope::<AxError>(Ok(role.to_owned())),
+            Ok(()),
+            "{role}"
+        );
+    }
+    let not_field = Err(UnreadableReason::NotTextField);
+    for role in ["AXGroup", "AXWebArea", "AXTextAreaX", ""] {
+        assert_eq!(
+            text_field_scope::<AxError>(Ok(role.to_owned())),
+            not_field,
+            "{role}"
+        );
+    }
+    assert_eq!(
+        text_field_scope(Err::<String, _>(AxError::Timeout)),
+        not_field
+    );
 }
 
 #[test]

@@ -2,7 +2,7 @@
  * Saved vocabulary terms as removable chips (legacy and not-sent terms flagged), the empty state,
  * the Add row and the term count.
  */
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BookA, ClipboardPaste, Plus, TriangleAlert, X } from "lucide-react";
 import type { Occurrence, SettingsCommandError } from "@/bindings";
@@ -19,6 +19,11 @@ import {
   type RemovalTarget,
   type VocabularyScreen,
 } from "./vocabulary-model";
+import { BOUNDED_LIST_ROWS, useRevealAdded } from "../../ui/bounded-list";
+import { alphabetical } from "../../../lib/utils/alphabetical";
+
+/** Rows of chips (`py-1` text-sm with a border, `gap-2` between rows) plus the `p-1` that keeps focus rings visible. */
+const LIST_MAX_HEIGHT = `calc(${BOUNDED_LIST_ROWS} * (1.75rem + 2px) + ${BOUNDED_LIST_ROWS - 1} * 0.5rem + 0.5rem)`;
 
 interface TermChipProps {
   occurrence: Occurrence;
@@ -141,9 +146,18 @@ interface TermListBodyProps extends TermListProps {
 const TermList: React.FC<TermListBodyProps> = (props) => {
   const { terms, screen, overBudget, busy, removeButtons } = props;
   const { t } = useTranslation();
+  const list = useRef<HTMLUListElement>(null);
+  const joined = terms.map((term) => `${term.index}:${term.term}`).join("\n");
+  const keys = useMemo(
+    () => (joined === "" ? [] : joined.split("\n")),
+    [joined],
+  );
+  useRevealAdded(list, keys);
   return (
     <ul
-      className="flex flex-wrap gap-2"
+      ref={list}
+      className="flex flex-wrap gap-2 p-1 overflow-y-auto"
+      style={{ maxHeight: LIST_MAX_HEIGHT }}
       data-testid={`${screen}-list`}
       aria-label={t("settings.vocabulary.listLabel")}
     >
@@ -163,21 +177,38 @@ const TermList: React.FC<TermListBodyProps> = (props) => {
 };
 
 /**
- * Saved terms, or the empty state when there are none. Removal focus lives here so it survives
- * the switch to the empty state after the last term goes.
+ * Saved terms in alphabetical order (decision `alphabetical_display`: display only, the saved
+ * order that decides which terms fit the model budget is unchanged), or the empty state when
+ * there are none. Removal focus lives here so it survives the switch to the empty state after
+ * the last term goes.
  * @param props terms, screen prefix, over-budget positions, busy flag and callbacks
  */
 export const VocabularyTerms: React.FC<TermListProps> = (props) => {
-  const { terms, onRemove, focusInput } = props;
+  const { onRemove, focusInput } = props;
+  const { i18n } = useTranslation();
+  const terms = useMemo(
+    () =>
+      alphabetical(props.terms, (term) => term.term, i18n.language).map(
+        (placed) => placed.item,
+      ),
+    [props.terms, i18n.language],
+  );
   const { removeButtons, settle } = useRemovalFocus(terms, focusInput);
   const remove = async (occurrence: Occurrence) => {
+    const position = terms.indexOf(occurrence);
     const removed = await onRemove(occurrence);
-    settle({ index: occurrence.index, term: occurrence.term, removed });
+    settle({
+      index: occurrence.index,
+      term: occurrence.term,
+      removed,
+      position,
+    });
   };
   if (terms.length === 0) return <EmptyTerms screen={props.screen} />;
   return (
     <TermList
       {...props}
+      terms={terms}
       remove={(occurrence) => void remove(occurrence)}
       removeButtons={removeButtons}
     />

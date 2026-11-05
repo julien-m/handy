@@ -3,11 +3,15 @@
     "settings": "Settings...",
     "checkUpdates": "Check for Updates...",
     "copyLastTranscript": "Copy Last Transcript",
+    "recentTranscripts": "Recent Transcripts",
+    "noRecentTranscripts": "No transcripts yet",
     "unloadModel": "Unload Model",
     "model": "Model",
     "quit": "Quit",
     "cancel": "Cancel",
-    "secureInputWarning": "⚠ Shortcuts blocked by Secure Input"
+    "secureInputWarning": "⚠ Shortcuts blocked by Secure Input",
+    "addReplacement": "Add a Replacement…",
+    "addVocabulary": "Add to Vocabulary…"
   },
   "sidebar": {
     "general": "General",
@@ -185,7 +189,7 @@
           },
           "retarget_to_active_app": {
             "name": "Send to the App in Front",
-            "description": "During a dictation, press this key alone to send it to the app in front at the end instead of the pinned app. Press again to undo. The pin stays."
+            "description": "During a dictation, press this key alone to send it to the app in front at the end instead of the pinned app or the app where it started. Press again to undo. The pin stays."
           },
           "skip_automatic_enter": {
             "name": "Insert without Enter",
@@ -1422,5 +1426,26 @@
       "hideDetails": "Hide details",
       "close": "Close"
     }
+  },
+  "quickAdd": {
+    "title": "Quick Add",
+    "tabs": {
+      "replacement": "Replacement",
+      "vocabulary": "Vocabulary"
+    },
+    "replacement": {
+      "heard": "Heard text",
+      "written": "Write instead",
+      "hint": "When Handy hears the first text, it writes the second.",
+      "added": "Added: “{{heard}}” → “{{written}}”"
+    },
+    "vocabulary": {
+      "term": "Term",
+      "hint": "Helps Handy recognize names and uncommon words.",
+      "added": "Added to the vocabulary: “{{term}}”"
+    },
+    "openList": "Show the list",
+    "add": "Add",
+    "close": "Close"
   }
 }

@@ -1,7 +1,7 @@
 //! The two keys pressed during a dictation (014), applied to its destination session while it
 //! still accepts choices (recording, processing; never once insertion has begun). « Send to the
-//! app in front » re-routes a pinned dictation to the application in front at the end, the badge
-//! cross's route, and a second press undoes it; the session pin is never touched. « Insert
+//! app in front » re-routes the dictation, pinned or not, to the application in front at the end,
+//! the badge cross's route, and a second press undoes it; the session pin is never touched. « Insert
 //! without Enter » marks the dictation so 009's Enter claim refuses it (`UserSkipped`), and a
 //! second press clears the mark; the stored Automatic Enter policy is never touched.
 use super::context::DictationId;
@@ -28,11 +28,13 @@ pub struct KeyToggles {
 
 impl DestinationManager {
     // @spec FR-003: Re-route this dictation, pin intact — .specs/features/014-in-dictation-keys/spec.md#fr-003
-    /// « Send to the app in front » for the dictation `dictation_id`/`generation`. With a pin,
-    /// a route other than the frontmost app at the end becomes that route (new selection
-    /// version), remembering the previous one; a second press while it still applies (same
-    /// selection version, still pinned) restores the previous route. Without a pin, or on a
-    /// frontmost-at-the-end route this key did not set, nothing changes (`Ok(None)`).
+    // @spec AC-007: Re-route without a pin — .specs/features/014-in-dictation-keys/spec.md#ac-007
+    /// « Send to the app in front » for the dictation `dictation_id`/`generation`: the new
+    /// route, or `None` when it does not change. A route other than the frontmost app at the end
+    /// (the pinned app, the app in front at the start, a badge choice) becomes that route (new
+    /// selection version), remembering the previous one; a second press while it still applies
+    /// (same selection version) restores the previous route. On a frontmost-at-the-end route this
+    /// key did not set, nothing changes.
     ///
     /// # Errors
     /// `Stale` for another dictation, `Frozen` once insertion has begun.
@@ -42,10 +44,9 @@ impl DestinationManager {
         generation: u64,
     ) -> Result<Option<DestinationSnapshot>, SelectionRefusal> {
         let mut state = self.lock();
-        let pinned = state.pin.is_some();
         let session = open_session(&mut state, dictation_id, generation)?;
         let version = session.selection_version;
-        let Some(next) = next_route(session, pinned) else {
+        let Some(next) = next_route(session) else {
             return Ok(None);
         };
         session.choose(dictation_id, version, next)?;
@@ -99,27 +100,26 @@ fn open_session(
     Ok(session)
 }
 
-/// Business rule (014 AC-001): the route a press gives `session`, if it changes, remembering
-/// what a second press restores. The re-routing still applies while the selection version is
-/// the one it set and an app is pinned.
-fn next_route(session: &mut DestinationSession, pinned: bool) -> Option<Selection> {
+/// Business rule (014 AC-001, AC-007): the route a press gives `session`, if it changes,
+/// remembering what a second press restores. The re-routing still applies while the selection
+/// version is the one it set (decision `reroute_without_pin`: a pin is not required).
+fn next_route(session: &mut DestinationSession) -> Option<Selection> {
     let version = session.selection_version;
     let still_applies = session
         .keys
         .retarget
         .take()
-        .filter(|retarget| pinned && retarget.version == version);
+        .filter(|retarget| retarget.version == version);
     match (&session.selection, still_applies) {
         (Selection::FrontmostAtEnd, Some(retarget)) => Some(retarget.previous),
         (Selection::FrontmostAtEnd, None) => None,
-        (current, _) if pinned => {
+        (current, _) => {
             session.keys.retarget = Some(Retarget {
                 previous: current.clone(),
                 version: version + 1,
             });
             Some(Selection::FrontmostAtEnd)
         }
-        _ => None,
     }
 }
 
