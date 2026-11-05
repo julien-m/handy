@@ -39,6 +39,12 @@ pub enum Request {
     Run {
         options: RunOptions,
     },
+    /// Followed by the PCM of several pieces one after another, `lens[i]`
+    /// samples each; answered with [`Response::Batch`].
+    RunBatch {
+        options: RunOptions,
+        lens: Vec<usize>,
+    },
     StreamBegin {
         run: RunOptions,
         stream: StreamOptions,
@@ -92,6 +98,14 @@ pub enum Response {
     ContextPrepared(ContextPreparation),
     Ok,
     Error(String),
+    /// A run stopped early (the output began repeating itself, or hit the
+    /// output limit); `partial` is the text decoded before it stopped.
+    Incomplete {
+        message: String,
+        partial: Option<String>,
+    },
+    /// One result per piece of a [`Request::RunBatch`], in order.
+    Batch(Vec<super::batch::BatchItem>),
 }
 
 /// Serializable mirror of `transcribe_cpp::Device` (which holds a
@@ -107,6 +121,22 @@ pub struct DeviceInfo {
     pub index: Option<usize>,
     /// Stable identity for persisting a device choice; see [`device_key`].
     pub key: String,
+}
+
+impl Response {
+    // @spec FR-002: A stopped run keeps its text — .specs/features/020-long-dictation-chunks/spec.md#fr-002
+    /// The answer to a failed run: a run that stopped early keeps the text
+    /// decoded before it stopped; every other failure is a plain error.
+    pub fn from_run_error(error: transcribe_cpp::Error) -> Self {
+        match &error {
+            transcribe_cpp::Error::OutputRepetition { .. }
+            | transcribe_cpp::Error::OutputTruncated { .. } => Response::Incomplete {
+                message: error.to_string(),
+                partial: error.partial().map(|transcript| transcript.text.clone()),
+            },
+            _ => Response::Error(error.to_string()),
+        }
+    }
 }
 
 impl DeviceInfo {

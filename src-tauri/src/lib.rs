@@ -648,8 +648,18 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
                 return 1;
             }
         }
-        let t = Instant::now();
-        match tm.transcribe(samples.clone(), &replacements) {
+        // @spec SC-001: Wait after the end of a replayed dictation — .specs/features/022-transcribe-while-recording/spec.md#sc-001
+        let result = if args.live {
+            replay_at_recording_pace(&tm, &samples);
+            let t = Instant::now();
+            let result = tm.transcribe_dictation(samples.clone(), &replacements);
+            (t, result)
+        } else {
+            let t = Instant::now();
+            (t, tm.transcribe(samples.clone(), &replacements))
+        };
+        let (t, result) = result;
+        match result {
             Ok(out) => text = out,
             Err(e) => {
                 eprintln!("error: transcribe failed: {}", e);
@@ -677,6 +687,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
                 "transcribe_ms": times_ms,
                 "best_ms": best_ms,
                 "rtf": rtf,
+                "live": args.live,
                 "text": text,
             })
         );
@@ -694,6 +705,23 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
         println!("text: {}", text);
     }
     0
+}
+
+/// Feed `samples` to the dictation route in 20 ms frames at recording pace,
+/// as the recorder does during a dictation (`--live`).
+fn replay_at_recording_pace(tm: &TranscriptionManager, samples: &[f32]) {
+    use std::time::{Duration, Instant};
+    const FRAME: usize = 320;
+    tm.start_prefetch();
+    let router = tm.stream_router();
+    let started = Instant::now();
+    for (i, frame) in samples.chunks(FRAME).enumerate() {
+        let due = started + Duration::from_millis(i as u64 * 20);
+        if let Some(wait) = due.checked_duration_since(Instant::now()) {
+            std::thread::sleep(wait);
+        }
+        router.feed(frame);
+    }
 }
 
 /// The typed commands of the app, in registration order: one list for the app and the bindings

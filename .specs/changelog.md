@@ -5,6 +5,15 @@
 
 ---
 
+## 2026-11-05 — [Feature 022] Long dictations transcribed while recorded: full 30 s pieces are transcribed while the user speaks, the pieces still missing go to the model in one batch, and `NSAppSleepDisabled` stops App Nap from throttling the stop (98 s: 0.67 s wait instead of 2.1–2.8 s); `handy -f <wav> --live` measures it (automated and headless evidence; native check pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-11-03 — [Feature 021] History: a transcript shows at most 10 lines; longer text scrolls inside its entry with a narrow scrollbar (automated evidence; native check pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-11-03 — [Feature 020] Long dictations: recordings longer than 30 s are transcribed in pieces cut at quiet moments; a piece whose output loops is cut in two, or keeps the text before the loop when under 20 s. Fixes a 5 min 47 s dictation that failed on every retry (automated and headless evidence; native proof pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-11-02 — [Feature 019] Recent transcripts in the tray: a « Recent Transcripts » submenu lists the 5 newest transcripts with their time; a click copies the full text (26 locales; automated evidence; native proof pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

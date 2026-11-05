@@ -14,6 +14,7 @@
 //! [`Backend::Cpu`] (the user's choice, or a fallback after a GPU failure),
 //! or the host must not use the GPU at all.
 
+use super::batch::BatchItem;
 use super::protocol::{
     encode_message, read_message, DeviceInfo, DeviceSelector, LoadedInfo, Request, Response,
 };
@@ -145,6 +146,12 @@ pub enum EngineError {
     /// No model, a transcribe.cpp error, or a worker failure that could not
     /// be recovered.
     Failed(String),
+    /// The run stopped early (repeating output or output limit); `partial`
+    /// is the text decoded before it stopped.
+    Incomplete {
+        message: String,
+        partial: Option<String>,
+    },
 }
 
 impl fmt::Display for EngineError {
@@ -152,6 +159,7 @@ impl fmt::Display for EngineError {
         match self {
             EngineError::Cancelled => f.write_str("transcription was cancelled"),
             EngineError::Failed(message) => f.write_str(message),
+            EngineError::Incomplete { message, .. } => f.write_str(message),
         }
     }
 }
@@ -186,6 +194,14 @@ enum Command {
         run: RunOptions,
         epoch: u64,
         reply: Reply<Result<Transcript, EngineError>>,
+    },
+    /// `pcm` holds the pieces one after another, `lens[i]` samples each.
+    TranscribeBatch {
+        pcm: Vec<f32>,
+        lens: Vec<usize>,
+        run: RunOptions,
+        epoch: u64,
+        reply: Reply<Result<Vec<BatchItem>, EngineError>>,
     },
     StreamBegin {
         active: ActiveStream,
@@ -420,6 +436,28 @@ impl EngineSupervisor {
         .unwrap_or_else(|| Err(engine_stopped()))
     }
 
+    // @spec FR-005: Remaining pieces in one batch — .specs/features/022-transcribe-while-recording/spec.md#fr-005
+    /// Transcribe several pieces in one engine call; one result per piece, in
+    /// order. The call itself fails only when no piece could run.
+    pub fn transcribe_batch(
+        &self,
+        pieces: &[&[f32]],
+        run: RunOptions,
+    ) -> Result<Vec<Result<Transcript, EngineError>>, EngineError> {
+        let epoch = self.shared.epoch();
+        let lens = pieces.iter().map(|piece| piece.len()).collect();
+        let pcm = pieces.concat();
+        self.ask(|reply| Command::TranscribeBatch {
+            pcm,
+            lens,
+            run,
+            epoch,
+            reply,
+        })
+        .unwrap_or_else(|| Err(engine_stopped()))
+        .map(|items| items.into_iter().map(BatchItem::into_result).collect())
+    }
+
     /// Begin a live stream on the loaded model. `on_progress` runs on the
     /// owner thread after every feed, so it must not block or call back into
     /// the supervisor.
@@ -647,6 +685,15 @@ impl Owner {
                 } => {
                     let _ = reply.send(self.transcribe(&pcm, &run, epoch));
                 }
+                Command::TranscribeBatch {
+                    pcm,
+                    lens,
+                    run,
+                    epoch,
+                    reply,
+                } => {
+                    let _ = reply.send(self.transcribe_batch(&pcm, &lens, &run, epoch));
+                }
                 Command::StreamBegin {
                     active,
                     run,
@@ -671,15 +718,18 @@ impl Owner {
                 } => {
                     let _ = reply.send(self.prepare_context(terms, start_worker));
                 }
-                Command::StreamReset { id } => {
-                    if self.stream.as_ref().is_some_and(|s| s.id == id) {
-                        self.end_stream();
-                    }
-                }
+                Command::StreamReset { id } => self.stream_reset(id),
             }
         }
         // Every handle is gone.
         self.unload();
+    }
+
+    /// End the active stream if it is still the one the caller started.
+    fn stream_reset(&mut self, id: u64) {
+        if self.stream.as_ref().is_some_and(|s| s.id == id) {
+            self.end_stream();
+        }
     }
 
     fn load(&mut self, spec: LoadSpec) -> Result<LoadedInfo, EngineError> {
@@ -879,11 +929,49 @@ impl Owner {
         run: &RunOptions,
         epoch: u64,
     ) -> Result<Transcript, EngineError> {
-        // A stream left open would make the worker refuse the run.
-        self.end_stream();
         let request = Request::Run {
             options: run.clone(),
         };
+        match self.run_work(&request, pcm, epoch)? {
+            Response::Transcript(transcript) => Ok(transcript),
+            Response::Incomplete { message, partial } => {
+                Err(EngineError::Incomplete { message, partial })
+            }
+            other => Err(unexpected(&other).into()),
+        }
+    }
+
+    // @spec FR-005: Remaining pieces in one batch — .specs/features/022-transcribe-while-recording/spec.md#fr-005
+    fn transcribe_batch(
+        &mut self,
+        pcm: &[f32],
+        lens: &[usize],
+        run: &RunOptions,
+        epoch: u64,
+    ) -> Result<Vec<BatchItem>, EngineError> {
+        let request = Request::RunBatch {
+            options: run.clone(),
+            lens: lens.to_vec(),
+        };
+        match self.run_work(&request, pcm, epoch)? {
+            Response::Batch(items) if items.len() == lens.len() => Ok(items),
+            Response::Incomplete { message, partial } => {
+                Err(EngineError::Incomplete { message, partial })
+            }
+            other => Err(unexpected(&other).into()),
+        }
+    }
+
+    /// Send one run request with its audio, retrying once in a fresh worker
+    /// when the worker is lost.
+    fn run_work(
+        &mut self,
+        request: &Request,
+        pcm: &[f32],
+        epoch: u64,
+    ) -> Result<Response, EngineError> {
+        // A stream left open would make the worker refuse the run.
+        self.end_stream();
         let mut retried = false;
         loop {
             if self.shared.cancelled_since(epoch) {
@@ -893,9 +981,8 @@ impl Owner {
             // deadline starts only once the model is loaded.
             self.ensure_worker()?;
             let deadline = self.deadlines().run(pcm.len());
-            match self.call_work(&request, Some(pcm), deadline, epoch) {
-                Ok(Response::Transcript(transcript)) => return Ok(transcript),
-                Ok(other) => return Err(unexpected(&other).into()),
+            match self.call_work(request, Some(pcm), deadline, epoch) {
+                Ok(response) => return Ok(response),
                 Err(failure) if failure.worker_lost() => {
                     let on_gpu = self.worker_lost("transcription", &failure);
                     let pinned = self.spec.as_ref().is_some_and(LoadSpec::pinned);
@@ -1435,6 +1522,7 @@ fn request_name(request: &Request) -> &'static str {
         Request::Hello { .. } => "hello",
         Request::Load { .. } => "model load",
         Request::Run { .. } => "transcription",
+        Request::RunBatch { .. } => "batch transcription",
         Request::StreamBegin { .. } => "stream begin",
         Request::Feed => "stream feed",
         Request::Finalize { .. } => "stream finalize",

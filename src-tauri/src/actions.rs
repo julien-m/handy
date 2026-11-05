@@ -210,6 +210,9 @@ impl ShortcutAction for TranscribeAction {
         };
         if model_supports_streaming {
             tm.start_stream();
+        } else {
+            // @spec FR-001: Long dictations are transcribed while recorded — .specs/features/022-transcribe-while-recording/spec.md#fr-001
+            tm.start_prefetch();
         }
         let plan_elapsed = plan_started.elapsed();
 
@@ -444,7 +447,7 @@ impl ShortcutAction for TranscribeAction {
                     let transcription_result = finalize_or_transcribe(
                         &captured_rules,
                         |replacements| tm.finalize_stream(replacements),
-                        |replacements| tm.transcribe(samples, replacements),
+                        |replacements| tm.transcribe_dictation(samples, replacements),
                     );
 
                     // Await WAV save and verify

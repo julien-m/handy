@@ -243,6 +243,12 @@ The tray menu has **Add a Replacement…** and **Add to Vocabulary…**. Each op
 
 The tray menu has a **Recent Transcripts** submenu with the 5 newest transcripts (time and the start of the text). Click one to copy its full text (the post-processed text when there is one), then paste it wherever you need, for example when an automatic paste went to the wrong place.
 
+### Long dictations
+
+With a transcribe-cpp model, a recording longer than 30 seconds is transcribed in pieces cut at quiet moments, then the texts are joined. Long dictations no longer fail when the model starts repeating itself, and **Retry** in the history recovers a long recording that failed before. In the History tab, a long transcript shows 10 lines and scrolls inside its entry.
+
+While you keep speaking, each full 30-second piece is already transcribed, so only the last piece is left when you stop; pieces still missing are sent to the model in one batch. To measure it, `handy -f recording.wav --live` replays a 16 kHz WAV at recording pace and reports the wait after its end (`best=`).
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:
