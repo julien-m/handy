@@ -181,6 +181,11 @@ impl SettingsRepository {
         let path = self.prepare_parent()?;
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
+        if pending_restore(&locked)?.is_some() {
+            // A rewritten store that startup could not set aside: any write (an automatic repair
+            // as much as a user edit) would make it authoritative and end the recovery.
+            return Err(persistence_failed());
+        }
         let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
             return Ok(locked.document.read);
         };
@@ -299,18 +304,9 @@ enum Restore {
 fn restore_if_rewritten<P: OwnerProbe>(
     locked: &mut LockedDocument<'_, P>,
 ) -> Result<Restore, SettingsError> {
-    let Some((backup_revision, backup)) = super::backups::latest(&locked.path) else {
+    let Some((backup_revision, loaded)) = pending_restore(locked)? else {
         return Ok(Restore::NotNeeded);
     };
-    let Some(restored) =
-        super::backups::restoration(&locked.document.raw, backup_revision, &backup)
-    else {
-        return Ok(Restore::NotNeeded);
-    };
-    let loaded = super::store::document(restored)?;
-    if !loaded.writable {
-        return Ok(Restore::NotNeeded);
-    }
     if let Err(error) = super::backups::set_aside(&locked.path, &locked.document.raw) {
         log::warn!(
             "Settings were rewritten by another program since revision {backup_revision}, but the rewritten file could not be set aside ({error}); leaving it untouched"
@@ -328,6 +324,22 @@ fn restore_if_rewritten<P: OwnerProbe>(
         ..loaded
     };
     Ok(Restore::Restored)
+}
+/// The latest copy, as a writable document, when the store was rewritten by another program
+/// since this service last committed it; `None` when no restore applies.
+fn pending_restore<P: OwnerProbe>(
+    locked: &LockedDocument<'_, P>,
+) -> Result<Option<(u64, Document)>, SettingsError> {
+    let Some((backup_revision, backup)) = super::backups::latest(&locked.path) else {
+        return Ok(None);
+    };
+    let Some(restored) =
+        super::backups::restoration(&locked.document.raw, backup_revision, &backup)
+    else {
+        return Ok(None);
+    };
+    let loaded = super::store::document(restored)?;
+    Ok(loaded.writable.then_some((backup_revision, loaded)))
 }
 /// A store this service did not write since its last copy gets one at startup.
 fn keep_first_backup<P: OwnerProbe>(locked: &LockedDocument<'_, P>) {

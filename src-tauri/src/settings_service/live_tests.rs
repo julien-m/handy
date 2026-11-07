@@ -276,12 +276,27 @@ fn a_rewritten_store_that_cannot_be_set_aside_is_left_untouched() -> TestResult 
     let backups = directory.path().join("settings_backups");
     std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o500))?;
 
-    let started =
-        owned(&directory).map(|live| (live.snapshot().settings.custom_words, live.recovered()));
+    let started = owned(&directory).map(|live| {
+        // An automatic repair or a user edit during this session must not write either.
+        let refused = live
+            .commit_edit(
+                &|settings| {
+                    settings.custom_words = vec!["repair".into()];
+                    Ok(())
+                },
+                None,
+            )
+            .is_err();
+        (
+            live.snapshot().settings.custom_words,
+            live.recovered(),
+            refused,
+        )
+    });
     let on_disk = std::fs::read(store(&directory));
     std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o700))?;
 
-    assert_eq!(started?, (vec!["edited elsewhere".to_string()], true));
+    assert_eq!(started?, (vec!["edited elsewhere".to_string()], true, true));
     assert_eq!(on_disk?, rewritten);
     // Once the folder is writable again, the next start restores the copy.
     let restored = owned(&directory)?.snapshot().settings.custom_words;
