@@ -323,12 +323,15 @@ fn an_offline_edit_of_a_rewritten_store_survives_the_next_start() -> TestResult 
         SettingsRepository::new(store(&directory)),
         Box::new(absent(&directory)),
     )?;
+    // A no-op edit writes nothing and reports the revision the store holds.
+    let unchanged = offline.commit_edit(&|_| Ok(()), None)?;
+    assert_eq!(unchanged.revision.0, 0);
     offline.commit_edit(
         &|settings| {
             settings.custom_words = vec!["offline".into()];
             Ok(())
         },
-        None,
+        Some(unchanged.revision),
     )?;
     drop(offline);
     let words = owned(&directory)?.snapshot().settings.custom_words;

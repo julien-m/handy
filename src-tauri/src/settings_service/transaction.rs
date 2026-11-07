@@ -182,6 +182,7 @@ impl SettingsRepository {
         let owned = matches!(authority, Authority::Owner(_));
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
+        let stored = locked.document.read.snapshot.revision;
         if let Some((backup_revision, _)) = pending_restore(&locked)? {
             // The running instance started on a rewritten store it could not set aside: any write
             // (an automatic repair as much as a user edit) would make it authoritative and end the
@@ -195,6 +196,8 @@ impl SettingsRepository {
             *current = Revision(current.0.max(backup_revision));
         }
         let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
+            // Nothing is written: report the revision the store actually holds.
+            locked.document.read.snapshot.revision = stored;
             return Ok(locked.document.read);
         };
         self.persist_locked(&locked, observer)?;
