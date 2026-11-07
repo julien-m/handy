@@ -179,11 +179,14 @@ impl SettingsRepository {
             return Ok(read);
         }
         let path = self.prepare_parent()?;
+        let owned = matches!(authority, Authority::Owner(_));
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
-        if pending_restore(&locked)?.is_some() {
-            // A rewritten store that startup could not set aside: any write (an automatic repair
-            // as much as a user edit) would make it authoritative and end the recovery.
+        if owned && pending_restore(&locked)?.is_some() {
+            // The running instance started on a rewritten store it could not set aside: any write
+            // (an automatic repair as much as a user edit) would make it authoritative and end the
+            // recovery. An offline write while Handy is stopped (a deliberate hand or CLI edit)
+            // stays allowed and becomes the new generation.
             return Err(persistence_failed());
         }
         let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
