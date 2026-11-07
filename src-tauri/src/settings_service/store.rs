@@ -137,11 +137,22 @@ fn read_existing(mut file: std::fs::File) -> Result<Document, SettingsError> {
     };
     Ok(loaded)
 }
-fn document(raw: Value) -> Result<Document, SettingsError> {
+pub(super) fn document(raw: Value) -> Result<Document, SettingsError> {
     // A missing legacy revision starts at zero; an existing malformed counter can never authorize writes.
     let valid_revision = raw.get("settings_revision").map(Value::as_u64);
-    let writable =
-        !matches!(valid_revision, Some(None)) && raw.get("settings").is_none_or(Value::is_object);
+    // @spec FR-003: A newer store is never rewritten — .specs/features/023-settings-backups/spec.md#fr-003
+    // A store written by a newer Handy keeps settings this build does not know: read it, never
+    // rewrite it.
+    let newer_schema = raw
+        .get("settings")
+        .and_then(|settings| settings.get("settings_schema_version"))
+        .and_then(Value::as_u64)
+        .is_some_and(|version| {
+            version > u64::from(crate::settings::CURRENT_SETTINGS_SCHEMA_VERSION)
+        });
+    let writable = !matches!(valid_revision, Some(None))
+        && raw.get("settings").is_none_or(Value::is_object)
+        && !newer_schema;
     let revision = Revision(valid_revision.flatten().unwrap_or(0));
     // Business rule (same as the legacy `get_settings`): a store without a `settings` payload is
     // a fresh install and takes the defaults; only an existing payload is an upgrade to migrate.

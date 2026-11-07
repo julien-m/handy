@@ -206,3 +206,63 @@ fn instance_keeps_its_lease_until_it_is_dropped() -> TestResult {
     assert!(!instance_running(&store(&directory))?);
     Ok(())
 }
+
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[test]
+fn settings_dropped_by_an_older_build_are_restored_at_the_next_start() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let revision = {
+        let live = owned(&directory)?;
+        live.commit_edit(
+            &|settings| {
+                settings.custom_words = vec!["kept".into()];
+                settings.smart_spacing = true;
+                Ok(())
+            },
+            None,
+        )?;
+        live.snapshot().revision.0
+    };
+    // An older build rewrites the store without the settings it does not know.
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    if let Some(settings) = raw["settings"].as_object_mut() {
+        settings.remove("custom_words");
+        settings.remove("smart_spacing");
+    }
+    std::fs::write(store(&directory), serde_json::to_vec(&raw)?)?;
+
+    let live = owned(&directory)?;
+    let restored = live.snapshot();
+    assert_eq!(restored.settings.custom_words, vec!["kept".to_string()]);
+    assert!(restored.settings.smart_spacing);
+    assert!(restored.revision.0 > revision);
+    let set_aside = std::fs::read_dir(directory.path().join("settings_backups"))?
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_name().to_string_lossy().starts_with("overwritten-"))
+        .count();
+    assert_eq!(set_aside, 1);
+    Ok(())
+}
+
+// @spec FR-003: A newer store is never rewritten — .specs/features/023-settings-backups/spec.md#fr-003
+#[test]
+fn a_store_from_a_newer_build_is_read_but_never_rewritten() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let newer = serde_json::json!({
+        "settings_revision": 4,
+        "settings": { "settings_schema_version": 999, "custom_words": ["future"] }
+    });
+    let bytes = serde_json::to_vec(&newer)?;
+    std::fs::write(store(&directory), &bytes)?;
+    let live = owned(&directory)?;
+    let refused = live.commit_edit(
+        &|settings| {
+            settings.custom_words = vec![];
+            Ok(())
+        },
+        None,
+    );
+    assert!(refused.is_err());
+    assert_eq!(std::fs::read(store(&directory))?, bytes);
+    Ok(())
+}

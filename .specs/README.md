@@ -56,6 +56,7 @@
 | 020 | Long Dictations Transcribed in Pieces | In Progress | 2026-11-03 | 2026-11-03 | [spec](features/020-long-dictation-chunks/spec.md) |
 | 021 | Long Transcripts Scroll in the History | In Progress | 2026-11-03 | 2026-11-03 | [spec](features/021-history-transcript-height/spec.md) |
 | 022 | Long Dictations Transcribed While Recorded | In Progress | 2026-11-03 | 2026-11-05 | [spec](features/022-transcribe-while-recording/spec.md) |
+| 023 | Settings Survive Another Handy Version | In Progress | 2026-11-07 | 2026-11-07 | [spec](features/023-settings-backups/spec.md) |
 <!-- readme:features:end -->
 
 
