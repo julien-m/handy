@@ -146,15 +146,21 @@ impl SettingsRepository {
         let path = self.prepare_parent()?;
         let mut locked = self.lock_and_load(path, Authority::Offline(probe), &())?;
         if locked.document.writable {
-            let restored = restore_if_rewritten(&mut locked)?;
-            let normalized = normalize_document(&mut locked.document)?;
-            if restored || normalized.is_some() {
-                self.persist_locked(&locked, &())?;
+            let restore = restore_if_rewritten(&mut locked)?;
+            if restore == Restore::Unpreserved {
+                // Writing now would make the rewritten store authoritative and end any later
+                // recovery: start from it read as is, flagged as a recovery.
+                locked.document.read.warning = true;
             } else {
-                keep_first_backup(&locked);
-            }
-            if let Some(revision) = normalized {
-                locked.document.read.snapshot.revision = revision;
+                let normalized = normalize_document(&mut locked.document)?;
+                if restore == Restore::Restored || normalized.is_some() {
+                    self.persist_locked(&locked, &())?;
+                } else {
+                    keep_first_backup(&locked);
+                }
+                if let Some(revision) = normalized {
+                    locked.document.read.snapshot.revision = revision;
+                }
             }
         }
         let Fence::Offline { lease, .. } = locked.fence else {
@@ -278,28 +284,38 @@ impl SettingsRepository {
     }
 }
 // @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+/// Outcome of the startup comparison with the latest copy.
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum Restore {
+    /// The store is the last committed generation, or no usable copy exists.
+    NotNeeded,
+    /// The latest copy replaced a rewritten store, which was set aside.
+    Restored,
+    /// The store was rewritten but could not be set aside: nothing may be written at startup.
+    Unpreserved,
+}
 /// Put back the latest copy when another program rewrote the store since this service last
-/// committed it; the rewritten document is set aside. Returns whether the document was restored.
+/// committed it; the rewritten document is set aside first.
 fn restore_if_rewritten<P: OwnerProbe>(
     locked: &mut LockedDocument<'_, P>,
-) -> Result<bool, SettingsError> {
+) -> Result<Restore, SettingsError> {
     let Some((backup_revision, backup)) = super::backups::latest(&locked.path) else {
-        return Ok(false);
+        return Ok(Restore::NotNeeded);
     };
     let Some(restored) =
         super::backups::restoration(&locked.document.raw, backup_revision, &backup)
     else {
-        return Ok(false);
+        return Ok(Restore::NotNeeded);
     };
     let loaded = super::store::document(restored)?;
     if !loaded.writable {
-        return Ok(false);
+        return Ok(Restore::NotNeeded);
     }
     if let Err(error) = super::backups::set_aside(&locked.path, &locked.document.raw) {
         log::warn!(
-            "Settings were rewritten by another program since revision {backup_revision}, but the rewritten file could not be set aside ({error}); keeping it as is"
+            "Settings were rewritten by another program since revision {backup_revision}, but the rewritten file could not be set aside ({error}); leaving it untouched"
         );
-        return Ok(false);
+        return Ok(Restore::Unpreserved);
     }
     log::warn!(
         "Settings were rewritten by another program since revision {backup_revision}; the latest backup is restored and the rewritten file is set aside"
@@ -311,7 +327,7 @@ fn restore_if_rewritten<P: OwnerProbe>(
         source,
         ..loaded
     };
-    Ok(true)
+    Ok(Restore::Restored)
 }
 /// A store this service did not write since its last copy gets one at startup.
 fn keep_first_backup<P: OwnerProbe>(locked: &LockedDocument<'_, P>) {

@@ -63,7 +63,7 @@ A store whose `settings_schema_version` is newer than this build's is read but n
 `settings_service::backups::keep` copies every generation the service persists (startup normalization, live and offline commits) and prunes the oldest. Copies and their folder are private (0600/0700 on Unix) because the store can hold API keys. A failed copy is logged and never fails the commit.
 
 ### FR-002
-`SettingsRepository::initialize` compares the store with the latest copy before normalizing and restores the copy when the store was rewritten by another program (`backups::restoration`). A store edited by hand while Handy is stopped is treated the same way; the edited file stays in `settings_backups/`. The restore happens only once the rewritten file is set aside; when it cannot be, the store is left untouched.
+`SettingsRepository::initialize` compares the store with the latest copy before normalizing and restores the copy when the store was rewritten by another program (`backups::restoration`). A store edited by hand while Handy is stopped is treated the same way; the edited file stays in `settings_backups/`. The restore happens only once the rewritten file is set aside; when it cannot be, startup writes nothing (no restore, no normalization) and reports a recovery, so the next start can still restore once the folder is writable.
 
 ### FR-003
 `store::document` marks a store with a newer `settings_schema_version` as not writable, so every write is refused instead of dropping settings this build does not know.

@@ -267,17 +267,25 @@ fn a_rewritten_store_that_cannot_be_set_aside_is_left_untouched() -> TestResult 
     }
     let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
     raw["settings"]["custom_words"] = serde_json::json!(["edited elsewhere"]);
+    // An older build also drops a setting it does not know, which normalization would fill.
+    if let Some(settings) = raw["settings"].as_object_mut() {
+        settings.remove("smart_spacing");
+    }
     let rewritten = serde_json::to_vec(&raw)?;
     std::fs::write(store(&directory), &rewritten)?;
     let backups = directory.path().join("settings_backups");
     std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o500))?;
 
-    let started = owned(&directory).map(|live| live.snapshot().settings.custom_words);
+    let started =
+        owned(&directory).map(|live| (live.snapshot().settings.custom_words, live.recovered()));
     let on_disk = std::fs::read(store(&directory));
     std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o700))?;
 
-    assert_eq!(started?, vec!["edited elsewhere".to_string()]);
+    assert_eq!(started?, (vec!["edited elsewhere".to_string()], true));
     assert_eq!(on_disk?, rewritten);
+    // Once the folder is writable again, the next start restores the copy.
+    let restored = owned(&directory)?.snapshot().settings.custom_words;
+    assert_eq!(restored, vec!["kept".to_string()]);
     Ok(())
 }
 
