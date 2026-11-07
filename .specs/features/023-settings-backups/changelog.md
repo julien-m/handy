@@ -8,3 +8,4 @@
 - Fixed (review): each set-aside gets a new file that never replaces an earlier one, and the backup folder is synced after every copy and set-aside before a restore proceeds.
 - Fixed (review): while a rewritten store waits for a restore it could not set aside, every commit is refused, so an automatic repair at startup cannot make it authoritative.
 - Fixed (CI): the pending-restore refusal applies only to the running instance; an offline hand or CLI edit while Handy is stopped is written as before.
+- Fixed (review): an offline edit of a rewritten store is numbered above the latest copy, so the next start keeps it instead of restoring the copy.

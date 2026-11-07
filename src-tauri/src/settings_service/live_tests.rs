@@ -304,6 +304,38 @@ fn a_rewritten_store_that_cannot_be_set_aside_is_left_untouched() -> TestResult 
     Ok(())
 }
 
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[test]
+fn an_offline_edit_of_a_rewritten_store_survives_the_next_start() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    owned(&directory)?.commit_edit(
+        &|settings| {
+            settings.custom_words = vec!["kept".into()];
+            Ok(())
+        },
+        None,
+    )?;
+    // Another build resets the revision; then a deliberate offline edit while Handy is stopped.
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    raw["settings_revision"] = serde_json::json!(0);
+    std::fs::write(store(&directory), serde_json::to_vec(&raw)?)?;
+    let offline = LiveSettings::start_offline(
+        SettingsRepository::new(store(&directory)),
+        Box::new(absent(&directory)),
+    )?;
+    offline.commit_edit(
+        &|settings| {
+            settings.custom_words = vec!["offline".into()];
+            Ok(())
+        },
+        None,
+    )?;
+    drop(offline);
+    let words = owned(&directory)?.snapshot().settings.custom_words;
+    assert_eq!(words, vec!["offline".to_string()]);
+    Ok(())
+}
+
 // @spec FR-003: A newer store is never rewritten — .specs/features/023-settings-backups/spec.md#fr-003
 #[test]
 fn a_store_from_a_newer_build_is_read_but_never_rewritten() -> TestResult {

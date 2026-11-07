@@ -182,12 +182,17 @@ impl SettingsRepository {
         let owned = matches!(authority, Authority::Owner(_));
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
-        if owned && pending_restore(&locked)?.is_some() {
+        if let Some((backup_revision, _)) = pending_restore(&locked)? {
             // The running instance started on a rewritten store it could not set aside: any write
             // (an automatic repair as much as a user edit) would make it authoritative and end the
             // recovery. An offline write while Handy is stopped (a deliberate hand or CLI edit)
-            // stays allowed and becomes the new generation.
-            return Err(persistence_failed());
+            // stays allowed and becomes the new generation: it is numbered above the latest copy
+            // so the next start does not take it for another rewrite.
+            if owned {
+                return Err(persistence_failed());
+            }
+            let current = &mut locked.document.read.snapshot.revision;
+            *current = Revision(current.0.max(backup_revision));
         }
         let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
             return Ok(locked.document.read);
