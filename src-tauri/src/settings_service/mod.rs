@@ -2,6 +2,7 @@
 //! live service through which every writer of the running app commits, and the early CLI path.
 
 mod atomic;
+mod backups;
 pub mod cli;
 pub mod command_error;
 pub mod descriptor;

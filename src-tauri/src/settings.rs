@@ -681,7 +681,7 @@ fn default_model() -> String {
 }
 
 // Version 3 (005) records that the starter prompts were offered once.
-const CURRENT_SETTINGS_SCHEMA_VERSION: u32 = 3;
+pub(crate) const CURRENT_SETTINGS_SCHEMA_VERSION: u32 = 3;
 
 fn default_settings_schema_version() -> u32 {
     CURRENT_SETTINGS_SCHEMA_VERSION

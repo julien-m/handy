@@ -146,9 +146,21 @@ impl SettingsRepository {
         let path = self.prepare_parent()?;
         let mut locked = self.lock_and_load(path, Authority::Offline(probe), &())?;
         if locked.document.writable {
-            if let Some(revision) = normalize_document(&mut locked.document)? {
-                self.persist_locked(&locked, &())?;
-                locked.document.read.snapshot.revision = revision;
+            let restore = restore_if_rewritten(&mut locked)?;
+            if restore == Restore::Unpreserved {
+                // Writing now would make the rewritten store authoritative and end any later
+                // recovery: start from it read as is, flagged as a recovery.
+                locked.document.read.warning = true;
+            } else {
+                let normalized = normalize_document(&mut locked.document)?;
+                if restore == Restore::Restored || normalized.is_some() {
+                    self.persist_locked(&locked, &())?;
+                } else {
+                    keep_first_backup(&locked);
+                }
+                if let Some(revision) = normalized {
+                    locked.document.read.snapshot.revision = revision;
+                }
             }
         }
         let Fence::Offline { lease, .. } = locked.fence else {
@@ -167,9 +179,25 @@ impl SettingsRepository {
             return Ok(read);
         }
         let path = self.prepare_parent()?;
+        let owned = matches!(authority, Authority::Owner(_));
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
+        let stored = locked.document.read.snapshot.revision;
+        if let Some((backup_revision, _)) = pending_restore(&locked)? {
+            // The running instance started on a rewritten store it could not set aside: any write
+            // (an automatic repair as much as a user edit) would make it authoritative and end the
+            // recovery. An offline write while Handy is stopped (a deliberate hand or CLI edit)
+            // stays allowed and becomes the new generation: it is numbered above the latest copy
+            // so the next start does not take it for another rewrite.
+            if owned {
+                return Err(persistence_failed());
+            }
+            let current = &mut locked.document.read.snapshot.revision;
+            *current = Revision(current.0.max(backup_revision));
+        }
         let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
+            // Nothing is written: report the revision the store actually holds.
+            locked.document.read.snapshot.revision = stored;
             return Ok(locked.document.read);
         };
         self.persist_locked(&locked, observer)?;
@@ -232,7 +260,9 @@ impl SettingsRepository {
     ) -> Result<(), SettingsError> {
         super::atomic::persist(&locked.path, &locked.document.raw, observer, || {
             self.authorize_replace(locked)
-        })
+        })?;
+        super::backups::keep(&locked.path, &locked.document.raw);
+        Ok(())
     }
     /// Runs before the temp exists and again after its fsync, immediately before replacement.
     fn authorize_replace<P: OwnerProbe>(
@@ -267,6 +297,68 @@ impl SettingsRepository {
                 .map_err(|_| persistence_failed())?;
         }
         super::locator::canonical_path(&path)
+    }
+}
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+/// Outcome of the startup comparison with the latest copy.
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum Restore {
+    /// The store is the last committed generation, or no usable copy exists.
+    NotNeeded,
+    /// The latest copy replaced a rewritten store, which was set aside.
+    Restored,
+    /// The store was rewritten but could not be set aside: nothing may be written at startup.
+    Unpreserved,
+}
+/// Put back the latest copy when another program rewrote the store since this service last
+/// committed it; the rewritten document is set aside first.
+fn restore_if_rewritten<P: OwnerProbe>(
+    locked: &mut LockedDocument<'_, P>,
+) -> Result<Restore, SettingsError> {
+    let Some((backup_revision, loaded)) = pending_restore(locked)? else {
+        return Ok(Restore::NotNeeded);
+    };
+    if let Err(error) = super::backups::set_aside(&locked.path, &locked.document.raw) {
+        log::warn!(
+            "Settings were rewritten by another program since revision {backup_revision}, but the rewritten file could not be set aside ({error}); leaving it untouched"
+        );
+        return Ok(Restore::Unpreserved);
+    }
+    log::warn!(
+        "Settings were rewritten by another program since revision {backup_revision}; the latest backup is restored and the rewritten file is set aside"
+    );
+    #[cfg(unix)]
+    let source = locked.document.source;
+    locked.document = Document {
+        #[cfg(unix)]
+        source,
+        ..loaded
+    };
+    Ok(Restore::Restored)
+}
+/// The latest copy, as a writable document, when the store was rewritten by another program
+/// since this service last committed it; `None` when no restore applies.
+fn pending_restore<P: OwnerProbe>(
+    locked: &LockedDocument<'_, P>,
+) -> Result<Option<(u64, Document)>, SettingsError> {
+    let Some((backup_revision, backup)) = super::backups::latest(&locked.path) else {
+        return Ok(None);
+    };
+    let Some(restored) =
+        super::backups::restoration(&locked.document.raw, backup_revision, &backup)
+    else {
+        return Ok(None);
+    };
+    let loaded = super::store::document(restored)?;
+    Ok(loaded.writable.then_some((backup_revision, loaded)))
+}
+/// A store this service did not write since its last copy gets one at startup.
+fn keep_first_backup<P: OwnerProbe>(locked: &LockedDocument<'_, P>) {
+    let revision = super::backups::revision_of(&locked.document.raw);
+    if locked.path.exists()
+        && super::backups::latest(&locked.path).map(|(latest, _)| latest) != Some(revision)
+    {
+        super::backups::keep(&locked.path, &locked.document.raw);
     }
 }
 /// Same authority as a locked commit, without creating anything: the owner's lease must be this

@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-11-07 — [Feature 023] Settings survive another Handy version: every committed generation is copied privately to `settings_backups/` (20 kept), a store rewritten by another program (such as an older build) is restored from the latest copy at the next start with the rewritten file kept aside, and a store from a newer schema is never rewritten (automated evidence; native check pending)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-11-05 — [Feature 022] Long dictations transcribed while recorded: full 30 s pieces are transcribed while the user speaks, the pieces still missing go to the model in one batch, and `NSAppSleepDisabled` stops App Nap from throttling the stop (98 s: 0.67 s wait instead of 2.1–2.8 s); `handy -f <wav> --live` measures it (automated and headless evidence; native check pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

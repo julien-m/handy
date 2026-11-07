@@ -206,3 +206,158 @@ fn instance_keeps_its_lease_until_it_is_dropped() -> TestResult {
     assert!(!instance_running(&store(&directory))?);
     Ok(())
 }
+
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[test]
+fn settings_dropped_by_an_older_build_are_restored_at_the_next_start() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let revision = {
+        let live = owned(&directory)?;
+        live.commit_edit(
+            &|settings| {
+                settings.custom_words = vec!["kept".into()];
+                settings.smart_spacing = true;
+                Ok(())
+            },
+            None,
+        )?;
+        live.snapshot().revision.0
+    };
+    // An older build rewrites the store without the settings it does not know.
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    if let Some(settings) = raw["settings"].as_object_mut() {
+        settings.remove("custom_words");
+        settings.remove("smart_spacing");
+    }
+    std::fs::write(store(&directory), serde_json::to_vec(&raw)?)?;
+
+    let live = owned(&directory)?;
+    let restored = live.snapshot();
+    assert_eq!(restored.settings.custom_words, vec!["kept".to_string()]);
+    assert!(restored.settings.smart_spacing);
+    assert!(restored.revision.0 > revision);
+    let set_aside = std::fs::read_dir(directory.path().join("settings_backups"))?
+        .filter_map(Result::ok)
+        .filter(|entry| {
+            entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with("overwritten-")
+        })
+        .count();
+    assert_eq!(set_aside, 1);
+    Ok(())
+}
+
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[cfg(unix)]
+#[test]
+fn a_rewritten_store_that_cannot_be_set_aside_is_left_untouched() -> TestResult {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = tempfile::tempdir()?;
+    {
+        let live = owned(&directory)?;
+        live.commit_edit(
+            &|settings| {
+                settings.custom_words = vec!["kept".into()];
+                Ok(())
+            },
+            None,
+        )?;
+    }
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    raw["settings"]["custom_words"] = serde_json::json!(["edited elsewhere"]);
+    // An older build also drops a setting it does not know, which normalization would fill.
+    if let Some(settings) = raw["settings"].as_object_mut() {
+        settings.remove("smart_spacing");
+    }
+    let rewritten = serde_json::to_vec(&raw)?;
+    std::fs::write(store(&directory), &rewritten)?;
+    let backups = directory.path().join("settings_backups");
+    std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o500))?;
+
+    let started = owned(&directory).map(|live| {
+        // An automatic repair or a user edit during this session must not write either.
+        let refused = live
+            .commit_edit(
+                &|settings| {
+                    settings.custom_words = vec!["repair".into()];
+                    Ok(())
+                },
+                None,
+            )
+            .is_err();
+        (
+            live.snapshot().settings.custom_words,
+            live.recovered(),
+            refused,
+        )
+    });
+    let on_disk = std::fs::read(store(&directory));
+    std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o700))?;
+
+    assert_eq!(started?, (vec!["edited elsewhere".to_string()], true, true));
+    assert_eq!(on_disk?, rewritten);
+    // Once the folder is writable again, the next start restores the copy.
+    let restored = owned(&directory)?.snapshot().settings.custom_words;
+    assert_eq!(restored, vec!["kept".to_string()]);
+    Ok(())
+}
+
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[test]
+fn an_offline_edit_of_a_rewritten_store_survives_the_next_start() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    owned(&directory)?.commit_edit(
+        &|settings| {
+            settings.custom_words = vec!["kept".into()];
+            Ok(())
+        },
+        None,
+    )?;
+    // Another build resets the revision; then a deliberate offline edit while Handy is stopped.
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    raw["settings_revision"] = serde_json::json!(0);
+    std::fs::write(store(&directory), serde_json::to_vec(&raw)?)?;
+    let offline = LiveSettings::start_offline(
+        SettingsRepository::new(store(&directory)),
+        Box::new(absent(&directory)),
+    )?;
+    // A no-op edit writes nothing and reports the revision the store holds.
+    let unchanged = offline.commit_edit(&|_| Ok(()), None)?;
+    assert_eq!(unchanged.revision.0, 0);
+    offline.commit_edit(
+        &|settings| {
+            settings.custom_words = vec!["offline".into()];
+            Ok(())
+        },
+        Some(unchanged.revision),
+    )?;
+    drop(offline);
+    let words = owned(&directory)?.snapshot().settings.custom_words;
+    assert_eq!(words, vec!["offline".to_string()]);
+    Ok(())
+}
+
+// @spec FR-003: A newer store is never rewritten — .specs/features/023-settings-backups/spec.md#fr-003
+#[test]
+fn a_store_from_a_newer_build_is_read_but_never_rewritten() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let newer = serde_json::json!({
+        "settings_revision": 4,
+        "settings": { "settings_schema_version": 999, "custom_words": ["future"] }
+    });
+    let bytes = serde_json::to_vec(&newer)?;
+    std::fs::write(store(&directory), &bytes)?;
+    let live = owned(&directory)?;
+    let refused = live.commit_edit(
+        &|settings| {
+            settings.custom_words = vec![];
+            Ok(())
+        },
+        None,
+    );
+    assert!(refused.is_err());
+    assert_eq!(std::fs::read(store(&directory))?, bytes);
+    Ok(())
+}

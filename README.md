@@ -249,6 +249,10 @@ With a transcribe-cpp model, a recording longer than 30 seconds is transcribed i
 
 While you keep speaking, each full 30-second piece is already transcribed, so only the last piece is left when you stop; pieces still missing are sent to the model in one batch. To measure it, `handy -f recording.wav --live` replays a 16 kHz WAV at recording pace and reports the wait after its end (`best=`).
 
+### Settings backups
+
+Each time Handy saves your settings, it keeps a private copy in `settings_backups/`, next to `settings_store.json` (the 20 newest are kept). If another program rewrites the settings file, such as an older Handy that drops the settings it does not know, Handy restores the latest copy at its next start and keeps the rewritten file there as `overwritten-<seconds>.json`. A settings file written by a newer Handy is read but never rewritten.
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:
