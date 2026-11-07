@@ -295,10 +295,15 @@ fn restore_if_rewritten<P: OwnerProbe>(
     if !loaded.writable {
         return Ok(false);
     }
+    if let Err(error) = super::backups::set_aside(&locked.path, &locked.document.raw) {
+        log::warn!(
+            "Settings were rewritten by another program since revision {backup_revision}, but the rewritten file could not be set aside ({error}); keeping it as is"
+        );
+        return Ok(false);
+    }
     log::warn!(
-        "Settings were rewritten by another program since revision {backup_revision}; restoring the latest backup and setting the rewritten file aside"
+        "Settings were rewritten by another program since revision {backup_revision}; the latest backup is restored and the rewritten file is set aside"
     );
-    super::backups::set_aside(&locked.path, &locked.document.raw);
     #[cfg(unix)]
     let source = locked.document.source;
     locked.document = Document {

@@ -60,15 +60,14 @@ pub(super) fn restoration(current: &Value, backup_revision: u64, backup: &Value)
     Some(restored)
 }
 
-/// Keep the document a restore replaces, so nothing is ever lost.
-pub(super) fn set_aside(store: &Path, raw: &Value) {
+/// Keep the document a restore replaces, so nothing is ever lost. A restore must not proceed
+/// when this fails: the replaced document would otherwise be lost.
+pub(super) fn set_aside(store: &Path, raw: &Value) -> std::io::Result<()> {
     let seconds = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_or(0, |elapsed| elapsed.as_secs());
     let name = format!("{SET_ASIDE}{seconds}.json");
-    if let Err(error) = write_private(store, &name, raw) {
-        log::warn!("Could not set aside the rewritten settings: {error}");
-    }
+    write_private(store, &name, raw).map(|_| ())
 }
 
 fn backup_dir(store: &Path) -> Option<PathBuf> {
@@ -190,6 +189,21 @@ mod tests {
             0o700
         );
         assert_eq!(std::fs::metadata(copy)?.permissions().mode() & 0o777, 0o600);
+        Ok(())
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn a_set_aside_into_a_read_only_folder_fails() -> std::io::Result<()> {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = tempfile::tempdir()?;
+        let store = store_in(&dir);
+        keep(&store, &doc(1, &[]));
+        let folder = dir.path().join(DIR);
+        std::fs::set_permissions(&folder, std::fs::Permissions::from_mode(0o500))?;
+        let result = set_aside(&store, &doc(1, &["changed"]));
+        std::fs::set_permissions(&folder, std::fs::Permissions::from_mode(0o700))?;
+        assert!(result.is_err());
         Ok(())
     }
 

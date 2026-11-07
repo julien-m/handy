@@ -238,9 +238,46 @@ fn settings_dropped_by_an_older_build_are_restored_at_the_next_start() -> TestRe
     assert!(restored.revision.0 > revision);
     let set_aside = std::fs::read_dir(directory.path().join("settings_backups"))?
         .filter_map(Result::ok)
-        .filter(|entry| entry.file_name().to_string_lossy().starts_with("overwritten-"))
+        .filter(|entry| {
+            entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with("overwritten-")
+        })
         .count();
     assert_eq!(set_aside, 1);
+    Ok(())
+}
+
+// @spec FR-002: A foreign rewrite is detected at startup — .specs/features/023-settings-backups/spec.md#fr-002
+#[cfg(unix)]
+#[test]
+fn a_rewritten_store_that_cannot_be_set_aside_is_left_untouched() -> TestResult {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = tempfile::tempdir()?;
+    {
+        let live = owned(&directory)?;
+        live.commit_edit(
+            &|settings| {
+                settings.custom_words = vec!["kept".into()];
+                Ok(())
+            },
+            None,
+        )?;
+    }
+    let mut raw: serde_json::Value = serde_json::from_slice(&std::fs::read(store(&directory))?)?;
+    raw["settings"]["custom_words"] = serde_json::json!(["edited elsewhere"]);
+    let rewritten = serde_json::to_vec(&raw)?;
+    std::fs::write(store(&directory), &rewritten)?;
+    let backups = directory.path().join("settings_backups");
+    std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o500))?;
+
+    let started = owned(&directory).map(|live| live.snapshot().settings.custom_words);
+    let on_disk = std::fs::read(store(&directory));
+    std::fs::set_permissions(&backups, std::fs::Permissions::from_mode(0o700))?;
+
+    assert_eq!(started?, vec!["edited elsewhere".to_string()]);
+    assert_eq!(on_disk?, rewritten);
     Ok(())
 }
 
