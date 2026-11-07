@@ -60,14 +60,28 @@ pub(super) fn restoration(current: &Value, backup_revision: u64, backup: &Value)
     Some(restored)
 }
 
-/// Keep the document a restore replaces, so nothing is ever lost. A restore must not proceed
-/// when this fails: the replaced document would otherwise be lost.
+/// Keep the document a restore replaces, so nothing is ever lost. Each set-aside gets a new file
+/// (never one that exists) and is durable, folder entry included, before this returns: a restore
+/// must not proceed when this fails, or the replaced document would be lost.
 pub(super) fn set_aside(store: &Path, raw: &Value) -> std::io::Result<()> {
+    use std::io::Write;
+    let dir = backup_dir(store).ok_or(std::io::ErrorKind::NotFound)?;
+    create_private_dir(&dir)?;
+    let bytes = serde_json::to_vec_pretty(raw).map_err(std::io::Error::other)?;
     let seconds = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_or(0, |elapsed| elapsed.as_secs());
-    let name = format!("{SET_ASIDE}{seconds}.json");
-    write_private(store, &name, raw).map(|_| ())
+    let mut attempt = 0u32;
+    let mut file = loop {
+        let name = format!("{SET_ASIDE}{seconds}-{attempt}.json");
+        match create_private_file(&dir.join(name), true) {
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => attempt += 1,
+            other => break other?,
+        }
+    };
+    file.write_all(&bytes)?;
+    file.sync_all()?;
+    sync_dir(&dir)
 }
 
 fn backup_dir(store: &Path) -> Option<PathBuf> {
@@ -101,11 +115,27 @@ fn write_private(store: &Path, name: &str, raw: &Value) -> std::io::Result<PathB
     create_private_dir(&dir)?;
     let temporary = dir.join(format!(".{name}.tmp"));
     let bytes = serde_json::to_vec_pretty(raw).map_err(std::io::Error::other)?;
-    let mut file = create_private_file(&temporary)?;
+    let mut file = create_private_file(&temporary, false)?;
     file.write_all(&bytes)?;
     file.sync_all()?;
     std::fs::rename(&temporary, dir.join(name))?;
+    sync_dir(&dir)?;
     Ok(dir)
+}
+
+/// Make the folder's entries (a rename, a new file) durable.
+fn sync_dir(dir: &Path) -> std::io::Result<()> {
+    #[cfg(unix)]
+    {
+        std::fs::File::open(dir)?.sync_all()
+    }
+    #[cfg(windows)]
+    {
+        // Windows commits a directory entry with the file it names; there is no folder handle to
+        // flush without backup privileges.
+        let _ = dir;
+        Ok(())
+    }
 }
 
 fn create_private_dir(dir: &Path) -> std::io::Result<()> {
@@ -124,9 +154,15 @@ fn create_private_dir(dir: &Path) -> std::io::Result<()> {
     }
 }
 
-fn create_private_file(path: &Path) -> std::io::Result<std::fs::File> {
+/// Open a private file for writing; `new` refuses an existing file instead of truncating it.
+fn create_private_file(path: &Path, new: bool) -> std::io::Result<std::fs::File> {
     let mut options = std::fs::OpenOptions::new();
-    options.write(true).create(true).truncate(true);
+    options.write(true);
+    if new {
+        options.create_new(true);
+    } else {
+        options.create(true).truncate(true);
+    }
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
@@ -204,6 +240,26 @@ mod tests {
         let result = set_aside(&store, &doc(1, &["changed"]));
         std::fs::set_permissions(&folder, std::fs::Permissions::from_mode(0o700))?;
         assert!(result.is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn set_asides_in_the_same_second_never_replace_each_other() -> std::io::Result<()> {
+        let dir = tempfile::tempdir()?;
+        let store = store_in(&dir);
+        set_aside(&store, &doc(1, &["first"]))?;
+        set_aside(&store, &doc(1, &["second"]))?;
+        let mut kept: Vec<Value> = std::fs::read_dir(dir.path().join(DIR))?
+            .filter_map(Result::ok)
+            .filter(|entry| entry.file_name().to_string_lossy().starts_with(SET_ASIDE))
+            .map(|entry| std::fs::read(entry.path()))
+            .collect::<std::io::Result<Vec<_>>>()?
+            .iter()
+            .filter_map(|bytes| serde_json::from_slice(bytes).ok())
+            .map(|raw: Value| raw["settings"]["custom_words"].clone())
+            .collect();
+        kept.sort_by_key(Value::to_string);
+        assert_eq!(kept, vec![json!(["first"]), json!(["second"])]);
         Ok(())
     }
 
