@@ -20,7 +20,7 @@ import {
 } from "./recovery-preview";
 import "./recovery-bubble.css";
 
-/** A pointer event on the bubble, reduced to what the drag gesture needs. */
+/** A mouse gesture sample, reduced to what the native drag needs. */
 export interface DragPointer {
   kind: "down" | "move" | "up";
   point: Point;
@@ -60,18 +60,20 @@ const originOf = (target: EventTarget): DragOrigin => {
   return dragOrigin(marked?.getAttribute(DRAG_ROLE_ATTRIBUTE) ?? null);
 };
 
-const pointer =
-  (kind: DragPointer["kind"], send: (pointer: DragPointer) => void) =>
-  (event: React.PointerEvent) =>
+const press =
+  (send: (pointer: DragPointer) => void) => (event: React.MouseEvent) => {
+    const origin = originOf(event.target);
+    if (event.button !== 0) return;
     send({
-      kind,
+      kind: "down",
       point: { x: event.clientX, y: event.clientY },
       buttons: event.buttons,
-      origin: originOf(event.target),
+      origin,
     });
+  };
 
 // @spec FR-003: Whole bubble is the drag source — .specs/features/010-recovery-bubble/spec.md#fr-003
-/** Pointer handlers making the whole bubble the drag source (macOS); none without drag. */
+/** Arm the mouse gesture; the hook tracks movement even outside the bubble. */
 const dragSurface = (
   canDrag: boolean,
   onDragPointer: (pointer: DragPointer) => void,
@@ -79,9 +81,9 @@ const dragSurface = (
   canDrag
     ? {
         "data-drag-surface": "true",
-        onPointerDown: pointer("down", onDragPointer),
-        onPointerMove: pointer("move", onDragPointer),
-        onPointerUp: pointer("up", onDragPointer),
+        // AppKit can consume mouseup during a native drag. WebKit then omits the
+        // next pointerdown, while mousedown still arrives for that first press.
+        onMouseDown: press(onDragPointer),
       }
     : {};
 

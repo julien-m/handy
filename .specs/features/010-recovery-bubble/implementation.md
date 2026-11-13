@@ -130,3 +130,55 @@ Julien's report N26: after Escape the drag image slid back to the bubble, then t
 - **Flash:** `RecoveryService::drag_ended` decides before any panel change (`DragEnd::Dismissed` → `surface.hide`), but `platform::hide` called `macos::set_dragging(window, false)` (alpha 1, mouse events back) before `window.hide()`, so the dismissed panel became opaque on screen for a moment. [panel_steps](../../../src-tauri/src/recovery/platform/panel_steps.rs) now orders the changes: `HIDE_STEPS` = order out, then reveal for the next bubble; `RESTORE_STEPS` = reveal only (release without Escape). `platform::hide` and `platform::restore_after_drag` run them.
 - **Tests:** `manager_tests.rs` (`the_drag_image_slides_back_only_when_the_bubble_comes_back`), `platform/panel_steps_tests.rs` (an independent panel model: a bubble retired during its drag is never visible again and a release shows it; order out before reveal; a bubble hidden without drag ends off screen and ready).
 - **Native proof pending:** checklist item "Échap sans retour animé ni flash de la bulle (N26)".
+
+
+## First gesture after native drag (2026-11-13)
+
+FR-003 / AC-004 keep their existing definitions. Read the gesture adapter in
+[recovery-bubble.tsx](../../../src/overlay/recovery-bubble.tsx) and the window-wide
+mouse tracking in [use-recovery-bubble.ts](../../../src/overlay/use-recovery-bubble.ts).
+
+- **Cause:** AppKit takes the native session's mouse release. In a nonactivating
+  WKWebView, the next physical press can emit `mousedown` and `mousemove` without
+  a new `pointerdown`. The old gesture never armed until a sacrificial press and
+  release reset WebKit's pointer state. Element-only movement also lost a fast
+  first move crossing the bubble's edge.
+- **Correction:** arm on primary `mousedown`, track `mousemove`/`mouseup` on the
+  window, clear on blur, identity changes and unmount, and hand off once past the
+  existing threshold. Copy, Why and Close never arm a drag. No pointer capture
+  survives into the native session. No native drag payload or clipboard change.
+- **Regression evidence:** the three new scenarios in
+  [recovery-bubble.spec.ts](../../../tests/recovery-bubble.spec.ts) fail against
+  the original sources and pass after the correction. The full 16-scenario suite
+  passes using system Chrome (the bundled Playwright browser was unavailable).
+- **Native observation:** a temporary Swift probe loaded the real React harness
+  into a nonactivating WKWebView and handed drags to AppKit with a plain-text
+  NSPasteboardItem. Before: one native session across two gestures, with no
+  `pointerdown` on the second press. After: two native sessions across two
+  gestures, including movement outside the bubble, with Handy's probe inactive
+  and its panel never key. This proves the gesture/native handoff, not a rebuilt
+  Handy installation or a drop into the external application matrix.
+- **Other checks:** TypeScript, targeted ESLint and formatting pass; 25 recovery
+  unit/render checks pass. Existing broader native matrix evidence stays pending.
+- **Independent final review:** accepted without material findings. The reviewer
+  inspected source, the original assertion failures and both native traces;
+  the installed-build and external-target limits above remain explicit.
+- **Frontend build:** `bun run build` passed; Vite retained its existing large-chunk
+  warning. No release app was rebuilt or installed.
+
+
+## Local release delivery (2026-11-13)
+
+- Built the release app with `destination-return,smart-paste-dispatch` and signed
+  it with the configured stable Apple Development identity; `codesign --verify
+  --deep --strict` passes and the designated requirement matches the previous app.
+- Installed the verified bundle at `/Applications/Handy.app`, after a private
+  settings backup; the previous app was moved to Trash. The installed binary's
+  SHA-256 matches the built bundle. Launch and a live CLI settings read succeed;
+  the persisted settings remain byte-equivalent as JSON at revision 105.
+- Release build, full frontend lint, targeted formatting, Rust formatting and
+  release Clippy pass. Build/Clippy retain two existing Rust warnings. The global
+  formatting check flags only the generated AGENTS document; it was not edited
+  manually. Local development signing skips notarization.
+- The user can now exercise the recovery gesture in the installed app. No claim
+  is made here about an observed external-target drop from that installed app.

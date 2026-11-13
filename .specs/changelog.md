@@ -5,6 +5,12 @@
 
 ---
 
+## 2026-11-13 — [Delivery 010] Signed release installed at `/Applications/Handy.app`, launched and answered a live CLI settings read; settings preserved at revision 105. Release build, lint, Rust formatting and Clippy pass; global formatting flags generated AGENTS only. Read the [delivery evidence](features/010-recovery-bubble/implementation.md#local-release-delivery-2026-11-13).
+
+## 2026-11-13 — [Bugfix 010] Recovery dragging starts on the first press after native handoff; window-wide mouse tracking also retains fast movement outside the bubble. Three regressions and a native WKWebView/AppKit probe reproduce the fault and validate the correction. Read the [implementation evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13).
+
+## 2026-11-13 — [Maintenance] Migrated LiveSpec format 21 → 22 → 23 and pinned runtime `23-e10207e76533`. Runtime status is up to date without drift; recovery policy is amended; provider links were synced. Keep the migration's [restore point](.migration-restore/22/manifest.json) for explicit rollback. Auxiliary conventions compilation timed out; the migration's advisory verification reported PASS with 605 existing violations. No unrelated browser test scaffolds were generated: existing project suites remain authoritative under review led delivery.
+
 ## 2026-11-07 — [Feature 023] Settings survive another Handy version: every committed generation is copied privately to `settings_backups/` (20 kept), a store rewritten by another program (such as an older build) is restored from the latest copy at the next start with the rewritten file kept aside, and a store from a newer schema is never rewritten (automated evidence; native check pending)
 - **Author:** Claude Code (claude-opus-5-5)
 

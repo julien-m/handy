@@ -230,6 +230,33 @@ test("the drag starts past the threshold with the button held, never on a click"
   });
 });
 
+// @spec AC-004: First gesture remains tracked outside the bubble — .specs/features/010-recovery-bubble/spec.md#ac-004
+for (const source of ["preview", "drag-handle"]) {
+  test(`the first drag from ${source} starts even when the next move leaves the bubble`, async ({
+    page,
+  }) => {
+    await open(page);
+    const sourceBox = await page.getByTestId(anyScreen(source)).boundingBox();
+    const bubbleBox = await page.getByTestId(anyScreen("bubble")).boundingBox();
+    if (sourceBox === null || bubbleBox === null)
+      throw new Error("no drag surface");
+    await page.mouse.move(
+      sourceBox.x + sourceBox.width / 2,
+      sourceBox.y + sourceBox.height / 2,
+    );
+    await page.mouse.down();
+    // One fast move crosses the bubble's edge before another move lands on it.
+    await page.mouse.move(
+      bubbleBox.x + bubbleBox.width + sourceBox.width,
+      sourceBox.y,
+    );
+    await expect
+      .poll(() => calls(page, "recovery_bubble_begin_drag"))
+      .toHaveLength(1);
+    await page.mouse.up();
+  });
+}
+
 /** Press inside `testId` at its centre, move by a quarter of its width, then release. */
 const pressAndMove = async (page: Page, testId: string) => {
   const box = await page.getByTestId(testId).boundingBox();
@@ -240,6 +267,33 @@ const pressAndMove = async (page: Page, testId: string) => {
   await page.mouse.move(centre.x + box.width / 4, centre.y);
   await page.mouse.up();
 };
+
+// @spec AC-004: Recover from WebKit's missing pointerdown after native handoff — .specs/features/010-recovery-bubble/spec.md#ac-004
+test("the next press drags even when the previous native session left pointerdown missing", async ({
+  page,
+}) => {
+  await open(page);
+  await pressAndMove(page, "recovery-bubble-preview");
+  await expect
+    .poll(() => calls(page, "recovery_bubble_begin_drag"))
+    .toHaveLength(1);
+  // AppKit consumes mouseup, leaving WebKit's pointer state pressed. On the
+  // following gesture WebKit emits mousedown/mousemove but no pointerdown.
+  await page.evaluate(() => {
+    document.addEventListener(
+      "pointerdown",
+      (event) => event.stopImmediatePropagation(),
+      {
+        capture: true,
+        once: true,
+      },
+    );
+  });
+  await pressAndMove(page, "recovery-bubble-preview");
+  await expect
+    .poll(() => calls(page, "recovery_bubble_begin_drag"))
+    .toHaveLength(2);
+});
 
 // @spec AC-004: The whole bubble is the drag source — .specs/features/010-recovery-bubble/spec.md#ac-004
 test("the whole bubble drags: the preview starts the drag, a click on it does not (N24)", async ({

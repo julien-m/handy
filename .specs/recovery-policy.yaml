@@ -1,0 +1,6 @@
+# LiveSpec recovery policy, written by migration 23 and removed by its inverse.
+# While this file holds `stop_rules: amended`, the stop rules of
+# system/technical-recovery.md apply to this project; without it the original
+# stops apply. Read with `livespec recovery policy`.
+schema: 1
+stop_rules: amended

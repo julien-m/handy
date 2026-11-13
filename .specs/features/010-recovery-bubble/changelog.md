@@ -1,5 +1,26 @@
 # Changelog - 010-recovery-bubble
 
+## 2026-11-13 — [Bugfix]: Deliver the corrected local app
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** None beyond the reviewed first-drag correction below.
+- **AC impacted:** AC-004
+- **Delivery:** Signed release installed in `/Applications/Handy.app`; launch and live CLI read verified, settings unchanged. Release build, lint, Rust fmt and Clippy pass; global formatting flags the generated AGENTS document only. Installed external-target drag remains for the user's test.
+- **Author:** Codex
+
+
+## 2026-11-13 — [Bugfix]: Start recovery dragging on the first press
+
+- **Type:** Bugfix
+- **Spec modified:** No; FR-003 / AC-004 already require the drag gesture.
+- **Code modified:** [recovery-bubble.tsx](../../../src/overlay/recovery-bubble.tsx), [use-recovery-bubble.ts](../../../src/overlay/use-recovery-bubble.ts), [recovery-bubble.spec.ts](../../../tests/recovery-bubble.spec.ts).
+- **AC impacted:** AC-004; primary mousedown survives WebKit's missing pointerdown after AppKit handoff, window-wide tracking retains fast movements outside the bubble, controls keep their click behavior.
+- **Evidence:** Three regressions fail before/pass after; 16 browser checks, 25 unit/render checks, TypeScript, targeted ESLint and formatting pass; native WKWebView/AppKit probe starts two consecutive sessions without a sacrificial click. Installed Handy has not been rebuilt.
+- **Review:** Independent final review accepted; no material findings.
+- **Author:** Codex
+
+
 ## 2026-10-12 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update
