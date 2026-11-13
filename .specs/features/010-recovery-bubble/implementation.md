@@ -178,7 +178,8 @@ mouse tracking in [use-recovery-bubble.ts](../../../src/overlay/use-recovery-bub
   the persisted settings remain byte-equivalent as JSON at revision 105.
 - Release build, full frontend lint, targeted formatting, Rust formatting and
   release Clippy pass. Build/Clippy retain two existing Rust warnings. The global
-  formatting check flags only the generated AGENTS document; it was not edited
-  manually. Local development signing skips notarization.
+  formatting check initially flagged the generated AGENTS document; automatic
+  Prettier formatting resolves it and the final global check passes. No rule
+  content was changed manually. Local development signing skips notarization.
 - The user can now exercise the recovery gesture in the installed app. No claim
   is made here about an observed external-target drop from that installed app.

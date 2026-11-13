@@ -6,7 +6,7 @@
 - **Spec modified:** No
 - **Code modified:** None beyond the reviewed first-drag correction below.
 - **AC impacted:** AC-004
-- **Delivery:** Signed release installed in `/Applications/Handy.app`; launch and live CLI read verified, settings unchanged. Release build, lint, Rust fmt and Clippy pass; global formatting flags the generated AGENTS document only. Installed external-target drag remains for the user's test.
+- **Delivery:** Signed release installed in `/Applications/Handy.app`; launch and live CLI read verified, settings unchanged. Release build, lint, Rust fmt and Clippy pass; global formatting now passes after automatic Prettier formatting of the generated AGENTS document. Installed external-target drag remains for the user's test.
 - **Author:** Codex
 
 
