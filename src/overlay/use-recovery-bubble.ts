@@ -80,7 +80,9 @@ const useWindowSize = () => {
  * asks the native side to drag; a press on Copy, Why? or Close never does. */
 const useDragGesture = (view: RecoveryBubbleView | null) => {
   const start = useRef<Point | null>(null);
-  return useCallback(
+  const bubbleId = view?.bubble_id;
+  const canDrag = view?.can_drag ?? false;
+  const onDragPointer = useCallback(
     (pointer: DragPointer) => {
       if (pointer.kind !== "move") {
         const mayDrag = pointer.kind === "down" && pressMayDrag(pointer.origin);
@@ -88,18 +90,44 @@ const useDragGesture = (view: RecoveryBubbleView | null) => {
         return;
       }
       if (
-        view === null ||
+        bubbleId === undefined ||
         !dragStarts(start.current, pointer.point, pointer.buttons)
       ) {
         return;
       }
       start.current = null;
       commands
-        .recoveryBubbleBeginDrag(view.bubble_id)
+        .recoveryBubbleBeginDrag(bubbleId)
         .catch(warn("starting the drag"));
     },
-    [view],
+    [bubbleId],
   );
+  useEffect(() => {
+    start.current = null;
+    if (!canDrag) return;
+    // WebKit still delivers mouse movement outside the source element/window.
+    // Keep it until native handoff; no pointer capture survives into AppKit.
+    const move = (event: MouseEvent) =>
+      onDragPointer({
+        kind: "move",
+        point: { x: event.clientX, y: event.clientY },
+        buttons: event.buttons,
+        origin: "surface",
+      });
+    const clear = () => {
+      start.current = null;
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", clear);
+    window.addEventListener("blur", clear);
+    return () => {
+      clear();
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", clear);
+      window.removeEventListener("blur", clear);
+    };
+  }, [canDrag, onDragPointer]);
+  return onDragPointer;
 };
 
 /** Copy and Close of the current bubble, sent with its exact identity. */

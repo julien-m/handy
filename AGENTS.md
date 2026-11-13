@@ -505,40 +505,16 @@ Source: `routing.md`
 
 # LiveSpec Routing
 
-**S'applique quand `.specs/` existe à la racine du cwd.**
+When the project has `.specs/`, route feature work to the corresponding `spec-*` skill. Use the default review-led delivery workflow for direct, nested, autonomous and resumed work.
 
-Si présent : ce projet utilise [LiveSpec](https://github.com/julien-m/livespec). Toute demande d'action sur le projet (ajout, correction, test, exploration, spec, plan, vérification) doit être **routée vers la commande `/spec-*` correspondante** plutôt qu'exécutée directement.
-
-## Procédure
-
-1. Détecter `.specs/` dans le cwd
-2. Identifier l'intention utilisateur (ajouter / corriger / tester / spécifier / planifier / vérifier / expliquer / autre)
-3. **Read** `livespec-commands.md` pour mapper intention → commande + paramètres usuels
-4. **Proposer** la commande `/spec-*` avec les paramètres pertinents avant d'agir
-5. Sur confirmation utilisateur → invoquer la commande via le Skill tool
-6. Aucune commande ne couvre l'intention → exécuter normalement, signaler explicitement l'absence de routage
-
-## Lecture préalable
-
-Avant toute commande `spec-*`, **Read** `.specs/spec-system.md` (rappel CLAUDE.md projet).
-
-## Chargement
-
-- `livespec-routing.md` : chargé dès que `.specs/` est détecté.
-- `livespec-commands.md` : **chargé à la demande uniquement**, à l'étape 3 ci-dessus.
-
-## Exceptions
-
-- Question / lecture / debug rapide → pas de routage forcé
-- Mode Ask actif → proposition seule, jamais d'exécution
-- Commande `/spec-*` déjà demandée explicitement par l'utilisateur → pas de re-proposition
-
-## Synchronisation
-
-Le check `.checks/livespec-routing-sync.md` (bloquant via la revue native independante en effort `high`) garantit la bijection entre `.agent-sync/skills/spec-*` et les entrées de `livespec-commands.md`. Toute désync bloque le commit.
-
-<!-- cc-hub:project-rules:end -->
-<!-- livespec:start -->
+- Read the selected skill and [the command reference](commands.md) when needed. Resolve the skill's real directory to read its shared delivery policy.
+- Map add/implement to `spec-feature`, correct to `spec-fix`, test to `spec-test`, inspect to `spec-check`, plan to `spec-plan`, and batch delivery to `spec-ship`.
+- Continue within the user's existing authorization without asking for the same permission again. Honor read-only requests and functional decisions that need the user.
+- Product checks report their actual outcomes to one independent final review. Missing certificates, warnings and failed administrative scripts do not stop the feature automatically.
+- Do not launch nested goals, proof ingestion, repair classification or LiveSpec/Penflow certification from routing or inherited hooks. Historical CLI diagnostics remain explicitly invocable with their real verdicts.
+- Preserve existing records and active mission state. The new skill policy does not fabricate a historical PASS or silently migrate a running mission.
+  <!-- cc-hub:project-rules:end -->
+  <!-- livespec:start -->
 
 ## LiveSpec
 

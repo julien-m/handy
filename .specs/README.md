@@ -2,7 +2,7 @@
 
 > Specification registry for Handy. All artifacts produced by LiveSpec are indexed here.
 >
-> Last updated: 2026-10-29
+> Last updated: 2026-11-13
 
 ---
 
@@ -79,8 +79,11 @@
 > Latest entries from [changelog.md](changelog.md).
 
 <!-- readme:activity:start -->
+
 | Date | Type | Description |
 |---|---|---|
+| 2026-11-13 | Bugfix | First recovery drag after native handoff corrected; read the [010 evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13). |
+| 2026-11-13 | Maintenance | Migrated to LiveSpec 23 and pinned the current qualified runtime; read the [migration entry](changelog.md). |
 | 2026-10-29 | Feature | [Feature 017] Smart spacing: spaces at the two edges of a dictation fitted to the text before and after the selection (bounded read extended from 015), punctuation and unspaced scripts respected, one final space without context, subsumes the trailing space option; on for new installs, off on upgrade (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 013] Default input per app: remember a field (accessibility fingerprint) or a cmux terminal from the badge menu; when the destination's active element is not a text field, Handy focuses the unique matching field or types through `cmux send`, else the recovery bubble (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 014] Keys during a dictation: Option left pressed alone sends the dictation in progress to the app in front at the end without unpinning (press again to undo), Control left pressed alone inserts it without the automatic Enter (`Suppressed(UserSkipped)`, indicator mark); one modifier key each, configurable in the shortcut settings and the CLI, observed only during a dictation (automated evidence; native proof pending) |
@@ -89,13 +92,6 @@
 | 2026-10-29 | Feature | [Feature 012] Destination favorites: a star on every app of the badge menu (settings service, at most 10, bottom-up nearest the badge, not-open favorites never launched) and 009's Pin/Unpin moved to a fixed footer (automated evidence; native proof pending) |
 | 2026-10-15 | Feature | [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
 | 2026-10-15 | Feature | [Feature 010] Implementation in progress: recovery bubble, bounded field classification, deliberate Copy and the no-text-field setting behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
-| 2026-10-15 | Feature | [Feature 009] Implementation in progress: session pin, single Automatic Enter authority and destination CLI behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
-| 2026-10-15 | Plan | [Feature 011] Plan created: Dictation Field Return — 6 implementation steps, 4 diagrams (input read after 006's session commit, focus restored after activation, verified in 006's guard before 010's verdict) |
-| 2026-10-15 | Spec | [Feature 011] Spec created: Dictation Field Return — 4 stories, 8 AC, 5 FR (the dictation's input remembered at start, focused, raised and verified before the paste, fallback to 006/010) |
-| 2026-10-14 | Feature | [Features 004, 005, 006, 007, 008] UI hardening: shortcut draft exit and one-shot record requests (004), return-to-app row hidden while its gate is closed (006), Reload failure kept in the conflict alert and history limit saves tested (008), indicator window bounded by its monitor, menu timers cleaned, closed-gate test compared with dev (005/006/007) |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: permission_missing aligned on the spec (no keystroke sent, so no possible-partial-insertion detail) |
-| 2026-10-14 | Feature | [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s |
-| 2026-10-14 | Feature | [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter |
 <!-- readme:activity:end -->
 
 ---
