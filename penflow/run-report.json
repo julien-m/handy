@@ -1,0 +1,635 @@
+{
+  "build": null,
+  "evidence": [],
+  "gates": [
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "project-scope",
+      "issues": [],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "PASS"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "upstream-requirements",
+      "issues": [
+        {
+          "code": "verification.source.invalid",
+          "gate_id": "upstream-requirements",
+          "message": "verification.source.ambiguous_or_missing_authority",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "validate-flow-contract",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "validate-flow-contract",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "generated-flow-docs",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "generated-flow-docs",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "export-semantic-tree",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "export-semantic-tree",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "validate-semantic-tree",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "validate-semantic-tree",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "map-pencil-context",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "map-pencil-context",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "semantic-context-coverage",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "semantic-context-coverage",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "validate-pen",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "validate-pen",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "export-expected",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "export-expected",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "lint-tokens",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "lint-tokens",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "check-consistency",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "check-consistency",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "audit-visual",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "audit-visual",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "detect-drift",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "detect-drift",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "validate-visual-evidence",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "validate-visual-evidence",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "validate-reference-fidelity",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "validate-reference-fidelity",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "verify-pencil-persistence",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "verify-pencil-persistence",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "verify-export-operation",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "verify-export-operation",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "code-ir",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "code-ir",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "validate-actual",
+      "issues": [],
+      "reason": "design profile does not certify application execution",
+      "required": false,
+      "source_pointer": "/profile",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "compare-tree",
+      "issues": [],
+      "reason": "design profile does not certify application execution",
+      "required": false,
+      "source_pointer": "/profile",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "validate-actual-provenance",
+      "issues": [],
+      "reason": "design profile does not certify application execution",
+      "required": false,
+      "source_pointer": "/profile",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "validate-causal-evidence",
+      "issues": [],
+      "reason": "design profile does not certify application execution",
+      "required": false,
+      "source_pointer": "/profile",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "typed-outcome-obligations",
+      "issues": [],
+      "reason": "design profile does not certify application execution",
+      "required": false,
+      "source_pointer": "/profile",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "applicable": true,
+      "evidence": [],
+      "id": "source-final-recheck",
+      "issues": [
+        {
+          "code": "verification.gate.unavailable",
+          "gate_id": "source-final-recheck",
+          "message": "required source or evidence unavailable",
+          "obligation_id": null,
+          "path": "/",
+          "severity": "error"
+        }
+      ],
+      "reason": "required by cumulative policy v1",
+      "required": true,
+      "source_pointer": "/",
+      "status": "BLOCKED"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "pencil-sync",
+      "issues": [],
+      "reason": "noncertifying operator or historical control",
+      "required": false,
+      "source_pointer": "/",
+      "status": "ADVISORY"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "historical-strict-closure",
+      "issues": [],
+      "reason": "noncertifying operator or historical control",
+      "required": false,
+      "source_pointer": "/",
+      "status": "HISTORICAL"
+    },
+    {
+      "applicable": false,
+      "evidence": [],
+      "id": "design-taste",
+      "issues": [],
+      "reason": "noncertifying operator or historical control",
+      "required": false,
+      "source_pointer": "/",
+      "status": "ADVISORY"
+    }
+  ],
+  "issues": [
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "validate-flow-contract",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "generated-flow-docs",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "export-semantic-tree",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "validate-semantic-tree",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "map-pencil-context",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "semantic-context-coverage",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "validate-pen",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "export-expected",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "lint-tokens",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "check-consistency",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "audit-visual",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "detect-drift",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "validate-visual-evidence",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "validate-reference-fidelity",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "verify-pencil-persistence",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "verify-export-operation",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "code-ir",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.gate.unavailable",
+      "gate_id": "source-final-recheck",
+      "message": "required source or evidence unavailable",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    },
+    {
+      "code": "verification.obligation.empty",
+      "gate_id": null,
+      "message": "a known nonempty source denominator is required",
+      "obligation_id": null,
+      "path": "/obligations",
+      "severity": "error"
+    },
+    {
+      "code": "verification.source.invalid",
+      "gate_id": "upstream-requirements",
+      "message": "verification.source.ambiguous_or_missing_authority",
+      "obligation_id": null,
+      "path": "/",
+      "severity": "error"
+    }
+  ],
+  "kind": "penflow-verification-report",
+  "obligations": {
+    "items": [],
+    "missing": null,
+    "required": null,
+    "verified": null
+  },
+  "policy_version": 1,
+  "profile": "design",
+  "scope": {
+    "project_root": "/Users/julienm/projects/handy",
+    "workspace": "/Users/julienm/projects/handy/penflow"
+  },
+  "sources": [],
+  "status": "FAIL",
+  "version": 1
+}
