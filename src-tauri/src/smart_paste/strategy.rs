@@ -8,6 +8,8 @@ use super::timing::ClipboardTimings;
 pub const IPHONE_MIRRORING_BUNDLE_ID: &str = "com.apple.ScreenContinuity";
 /// Windows App (Microsoft Remote Desktop): receives Unicode key events.
 pub const WINDOWS_APP_BUNDLE_ID: &str = "com.microsoft.rdc.macos";
+/// Cmux terminal values do not reliably reflect edits; use paste receipts instead.
+pub const CMUX_BUNDLE_ID: &str = "com.cmuxterm.app";
 /// Screen Sharing: receives the transcript on the clipboard, no keystroke.
 pub const SCREEN_SHARING_BUNDLE_ID: &str = "com.apple.ScreenSharing";
 
@@ -18,6 +20,8 @@ pub enum InsertionStrategy {
     UnicodeTyping,
     /// Eager clipboard write for the remote side, without a keystroke.
     ClipboardHandOver,
+    /// Clipboard paste without an accessibility write or its read-back guard.
+    ClipboardOnly(ClipboardTimings),
     /// Verified accessibility insertion, then the clipboard paste with the
     /// destination's timings.
     DirectThenClipboard(ClipboardTimings),
@@ -30,6 +34,7 @@ impl InsertionStrategy {
         match bundle_id {
             Some(IPHONE_MIRRORING_BUNDLE_ID | WINDOWS_APP_BUNDLE_ID) => Self::UnicodeTyping,
             Some(SCREEN_SHARING_BUNDLE_ID) => Self::ClipboardHandOver,
+            Some(CMUX_BUNDLE_ID) => Self::ClipboardOnly(ClipboardTimings::DEFAULT),
             other => Self::DirectThenClipboard(ClipboardTimings::for_bundle(other)),
         }
     }

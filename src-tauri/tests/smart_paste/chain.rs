@@ -301,3 +301,56 @@ fn no_named_target_skips_direct_insertion_and_pastes_from_the_clipboard() {
     assert_eq!(rig.ax.focus_request_count(), 0);
     assert_eq!(field.value_text(), "note: ");
 }
+
+#[test]
+fn cmux_pastes_once_without_writing_the_terminal_accessibility_value() {
+    for verifies_paste in [false, true] {
+        let mut rig = Rig::new();
+        let field = with_field(&mut rig, WriteBehavior::ApplyPartially);
+        field.state().web_area = Ok(false);
+        let mut request = request(
+            1,
+            "terminal dictation",
+            Some("com.cmuxterm.app"),
+            DontModify,
+        );
+        request.verifies_paste = verifies_paste;
+        let mut coordinator = rig.coordinator();
+        let mut reads = ScriptedReads::new(&rig, &[20]);
+        let outcome = coordinator.insert(&request, &mut reads);
+        assert_eq!(outcome.kind, PasteOutcomeKind::ReadObserved);
+        assert_eq!(outcome.path, InsertionPath::ClipboardPaste);
+        assert!(!outcome.kind.requires_recovery());
+        assert_eq!(field.state().writes, 0);
+        assert_eq!(rig.keys.state().chords.len(), 1);
+    }
+}
+
+#[test]
+fn cmux_retains_permission_and_missing_read_failures() {
+    let mut rig = Rig::new();
+    rig.ax.is_trusted = false;
+    let outcome = insert(&rig, Some("com.cmuxterm.app"), DontModify, &[]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::PermissionMissing);
+    assert_eq!(rig.pasteboard.state().captures, 0);
+    assert!(rig.keys.state().chords.is_empty());
+
+    let rig = Rig::new();
+    let outcome = insert(&rig, Some("com.cmuxterm.app"), DontModify, &[]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::NotRead);
+    assert!(outcome.kind.requires_recovery());
+    assert_eq!(rig.keys.state().chords.len(), 1);
+}
+
+#[test]
+fn cmux_does_not_paste_after_the_destination_is_lost() {
+    let rig = Rig::new();
+    rig.destination
+        .answers
+        .lock()
+        .unwrap()
+        .extend([true, false]);
+    let outcome = insert(&rig, Some("com.cmuxterm.app"), DontModify, &[]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::InsertionFailed);
+    assert!(rig.keys.state().chords.is_empty());
+}

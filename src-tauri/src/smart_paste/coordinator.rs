@@ -147,6 +147,10 @@ impl SmartPasteCoordinator {
         match strategy {
             InsertionStrategy::UnicodeTyping => self.type_unicode(request),
             InsertionStrategy::ClipboardHandOver => self.hand_over(request),
+            // @spec AC-017: Cmux paste without terminal AX writes — .specs/features/007-smart-paste/spec.md#ac-017
+            InsertionStrategy::ClipboardOnly(timings) => {
+                self.clipboard_paste(request, timings, None, events)
+            }
             InsertionStrategy::DirectThenClipboard(timings) => {
                 self.direct_then_clipboard(request, timings, events)
             }

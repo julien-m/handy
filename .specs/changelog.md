@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-14 — [Bugfix 007] Cmux bypasses accessibility text writes and uses the existing clipboard transaction, avoiding false uncertain-insertion recovery. All 135 smart-paste tests pass; native Cmux dictation remains unverified. Read the [implementation](features/007-smart-paste/implementation.md#cmux-false-insertion-failure--2026-11-14).
+
 ## 2026-11-13 — [Delivery 010] Signed release installed at `/Applications/Handy.app`, launched and answered a live CLI settings read; settings preserved at revision 105. Release build, lint, Rust formatting and Clippy pass; global formatting passes after automatic formatting of generated AGENTS. Read the [delivery evidence](features/010-recovery-bubble/implementation.md#local-release-delivery-2026-11-13).
 
 ## 2026-11-13 — [Bugfix 010] Recovery dragging starts on the first press after native handoff; window-wide mouse tracking also retains fast movement outside the bubble. Three regressions and a native WKWebView/AppKit probe reproduce the fault and validate the correction. Read the [implementation evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13).

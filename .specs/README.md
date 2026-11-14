@@ -2,7 +2,7 @@
 
 > Specification registry for Handy. All artifacts produced by LiveSpec are indexed here.
 >
-> Last updated: 2026-11-13
+> Last updated: 2026-11-14
 
 ---
 

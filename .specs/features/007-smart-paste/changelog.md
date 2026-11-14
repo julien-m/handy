@@ -1,5 +1,14 @@
 # Changelog - 007-clipboard-recovery-window
 
+## 2026-11-14 — [Bugfix]: Avoid false recovery after Cmux dictation
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-010 and AC-017: clipboard-only Cmux compatibility route)
+- **Code modified:** smart-paste strategy and coordinator; coordinator regression tests
+- **AC impacted:** AC-010, AC-017, AC-018, AC-019
+- **Evidence:** 135 smart-paste tests, Clippy and release build pass; independent review accepted; signed app installed and launched with settings preserved. Native Cmux dictation remains unverified.
+- **Author:** Codex
+
 ## 2026-10-12 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update
