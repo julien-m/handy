@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-17 — [Bugfix 003] Exact vocabulary occurrences are protected before approximate correction, preventing "CLI de Codex" from becoming "CLAUDE CODE" while keeping useful corrections elsewhere. Read the [implementation evidence](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17).
+
 ## 2026-11-14 — [Bugfix 007] Cmux bypasses accessibility text writes and uses the existing clipboard transaction, avoiding false uncertain-insertion recovery. All 135 smart-paste tests pass; native Cmux dictation remains unverified. Read the [implementation](features/007-smart-paste/implementation.md#cmux-false-insertion-failure--2026-11-14).
 
 ## 2026-11-13 — [Delivery 010] Signed release installed at `/Applications/Handy.app`, launched and answered a live CLI settings read; settings preserved at revision 105. Release build, lint, Rust formatting and Clippy pass; global formatting passes after automatic formatting of generated AGENTS. Read the [delivery evidence](features/010-recovery-bubble/implementation.md#local-release-delivery-2026-11-13).

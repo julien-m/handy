@@ -4,7 +4,7 @@ title: Recognition Vocabulary
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-29
+updated: 2026-11-17
 ---
 
 # Feature Spec: Recognition Vocabulary
@@ -137,13 +137,23 @@ Feature: Vocabulary as recognition context
     And the correction threshold is 0.18
     When the recognized text is "je ne le vois pas"
     Then the inserted text is "je ne le vois pas"
+  Scenario: An exact vocabulary term cannot be swallowed by a nearby correction
+    Given the vocabulary is "Claude Code", "Codex"
+    And the correction threshold is 0.18
+    When the recognized text is "C'est pas Claude Code que je demandais mais le CLI de Codex."
+    Then the inserted text is unchanged
+  Scenario: Useful corrections still apply beside an exact term
+    Given the vocabulary is "Claude Code", "Codex", "OpenClaw"
+    When the recognized text is "cloud code avec Codex et open claw"
+    Then the inserted text is "Claude Code avec Codex et OpenClaw"
 ```
 
 ```mermaid
 flowchart TD
   A[Dictation ready for recognition] --> B{Model supports context in this mode?}
   B -- No --> C[Recognize without context]
-  C --> D{Words spelled within the threshold, or sounding alike within twice the threshold?}
+  C --> P[Protect every exact vocabulary occurrence]
+  P --> D{Unprotected words within spelling or phonetic threshold?}
   D -- Yes --> D1[Replace them with the vocabulary term]
   D -- No --> D2[Keep the recognized words]
   B -- Yes --> E[Take terms in list order within budget]
@@ -219,6 +229,11 @@ flowchart TD
 ### AC-008
 
 **Criterion:** Approximate correction replaces one to three recognized words with a vocabulary term only when their letters (lowercase, without spaces or punctuation) are close to the term's: the edit distance divided by the longer length is under the correction threshold, or the words sound alike (same Soundex code) and that normalized distance is under twice the threshold, in which case it counts for 0.3 of its value. With the vocabulary "Claude Code", "OpenClaw", "LiveSpec", "Penflow" and the threshold 0.18, "je ne le vois pas" stays unchanged (raw distance 5/9 from "LiveSpec") while "cloud code" becomes "Claude Code" (2/10) and "Charge B" becomes "ChargeBee" (2/9).
+**Priority:** P1 | **Story:** Story 3
+
+### AC-009
+
+**Criterion:** Before approximate correction, protect every whole vocabulary occurrence already present in the recognized text, ignoring case and whitespace differences when matching. Keep its recognized spelling, case and punctuation; no approximate candidate may overlap it, including a candidate beginning before the occurrence. Apply this to every configured term, including overlapping terms, terms longer than three words, Unicode names and names containing symbols. Literal internal punctuation matters: "C++" is not "C#". Ordinary punctuation surrounding a term does not prevent protection. Useful corrections elsewhere retain AC-008's scoring; an exact occurrence takes priority even when that prevents a larger correction. Explicit replacement rules (002) keep their existing priority. Whitespace normalization elsewhere in the pipeline is unchanged.
 **Priority:** P1 | **Story:** Story 3
 
 ## Behavioral AC
@@ -337,6 +352,11 @@ Feature: Commit vocabulary
 
 **Requirement:** Bound the phonetic weighting of approximate correction: a sound-alike match counts for 0.3 of its normalized edit distance only while that distance stays under twice the correction threshold; beyond it, the plain normalized distance applies.
 **AC References:** AC-008
+
+### FR-007
+
+**Requirement:** Identify exact vocabulary occurrences before fuzzy matching and exclude every overlapping candidate, without a fixed product list or changes to the correction threshold.
+**AC References:** AC-009
 
 ## Key Entities
 

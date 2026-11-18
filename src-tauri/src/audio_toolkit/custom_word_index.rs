@@ -9,6 +9,7 @@
 //!   the threshold) is abandoned after a few cells instead of a full matrix.
 
 use super::build_match_key;
+use super::exact_vocabulary::ExactVocabulary;
 
 /// Phonetic matches weigh their normalized edit distance by this factor (original scoring).
 const PHONETIC_WEIGHT: f64 = 0.3;
@@ -167,6 +168,7 @@ struct Best {
 /// Keys of every custom word grouped by length, for `find_best`.
 pub(super) struct CustomWordIndex {
     by_length: Vec<Vec<IndexedKey>>,
+    exact: ExactVocabulary,
 }
 
 impl CustomWordIndex {
@@ -192,7 +194,20 @@ impl CustomWordIndex {
                 sound,
             });
         }
-        Self { by_length }
+        Self {
+            by_length,
+            exact: ExactVocabulary::new(custom_words),
+        }
+    }
+
+    /// Identify already recognized terms independently of the fuzzy threshold and ASCII guard.
+    pub(super) fn protected_words(&self, words: &[&str]) -> Vec<bool> {
+        self.exact.protected_words(words)
+    }
+
+    /// Exact occurrences in the joined text, before explicit replacement spans split it.
+    pub(super) fn protected_ranges(&self, text: &str) -> Vec<std::ops::Range<usize>> {
+        self.exact.protected_ranges(text)
     }
 
     /// Custom word closest to `candidate` (a match key) with a score under `threshold`, and the
