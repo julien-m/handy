@@ -71,7 +71,11 @@ fn bucket_keys(word: &str) -> impl Iterator<Item = &str> {
 }
 
 fn is_boundary(character: char) -> bool {
-    !character.is_alphanumeric() && character != '_'
+    // Marks and join controls can be part of the spelling rather than surrounding punctuation.
+    !character.is_alphanumeric()
+        && character != '_'
+        && !matches!(character, '\u{200c}' | '\u{200d}')
+        && !unicode_normalization::char::is_combining_mark(character)
 }
 
 fn matches_term(words: &[String], term: &[String]) -> bool {
@@ -135,6 +139,15 @@ mod tests {
     fn partial_words_and_different_internal_punctuation_are_not_exact_matches() {
         assert_eq!(protected(&["Codex"], "Codexes my_Codex Code-x"), [false; 3]);
         assert_eq!(protected(&["Claude Code"], "Claude, Code"), [false; 2]);
+    }
+
+    #[test]
+    fn combining_marks_and_joiners_do_not_end_a_word() {
+        assert_eq!(
+            protected(&["Cafe", "نام"], "Cafe\u{301} نام\u{200c}ها Cafe,"),
+            [false, false, true]
+        );
+        assert_eq!(protected(&["Cafe\u{301}"], "(Cafe\u{301})."), [true]);
     }
 
     #[test]

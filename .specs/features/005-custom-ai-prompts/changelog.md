@@ -1,5 +1,9 @@
 # Changelog - 005-custom-ai-prompts
 
+## 2026-11-18 — Keep provider error bodies out of dictation diagnostics
+
+Chat error diagnostics retain the HTTP status. Provider response bodies can echo private dictation content, so they are omitted from both the retry log and the returned chat error. Read the [HTTP client and regression tests](../../../src-tauri/src/llm_client.rs).
+
 ## 2026-10-12 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update

@@ -385,12 +385,10 @@ pub async fn send_chat_completion_with_schema(
         && matches!(status.as_u16(), 400 | 422)
         && !request_body.reasoning.is_empty()
     {
-        let error_text = response.text().await.unwrap_or_else(|e| {
-            report_reqwest_error("Failed to read reasoning rejection response", &e)
-        });
+        // A provider error body may echo the transcript or prompt.
+        // @spec FR-003: Diagnostics exclude dictated text — .specs/features/005-custom-ai-prompts/spec.md#fr-003
         info!(
-            "Endpoint rejected request with reasoning disabled (status {}): {}. Retrying without reasoning fields",
-            status, error_text
+            "Endpoint rejected request with reasoning disabled (status {status}). Retrying without reasoning fields"
         );
 
         request_body.reasoning = ReasoningParams::default();
@@ -418,14 +416,7 @@ pub async fn send_chat_completion_with_schema(
     }
 
     if !status.is_success() {
-        let error_text = response
-            .text()
-            .await
-            .unwrap_or_else(|e| report_reqwest_error("Failed to read API error response", &e));
-        return Err(format!(
-            "API request failed with status {}: {}",
-            status, error_text
-        ));
+        return Err(format!("API request failed with status {status}"));
     }
 
     let completion: ChatCompletionResponse = response
@@ -621,6 +612,25 @@ mod tests {
         let details = report_reqwest_error("Failed to parse API response", &error);
         assert!(details.contains("kind: decode"));
         assert!(!details.contains("PRIVATE TRANSCRIPTION CONTENT"));
+    }
+
+    #[tokio::test]
+    async fn unsuccessful_chat_returns_the_status_without_provider_response_values() {
+        let base_url =
+            serve_one_response("500 Internal Server Error", "PRIVATE TRANSCRIPTION CONTENT").await;
+        let error = send_chat_completion_with_schema(
+            &provider("custom", &base_url),
+            String::new(),
+            "test-model",
+            "synthetic transcript".into(),
+            None,
+            None,
+            false,
+        )
+        .await
+        .unwrap_err();
+        assert!(error.contains("500"));
+        assert!(!error.contains("PRIVATE TRANSCRIPTION CONTENT"));
     }
 
     #[tokio::test]

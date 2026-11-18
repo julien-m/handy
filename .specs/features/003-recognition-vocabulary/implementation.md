@@ -208,6 +208,8 @@ Finding N7 of Julien's native proof session of 2026-10-28: the 500-term limit wa
 
 ## Exact vocabulary protection — 2026-11-17
 
+On 2026-11-18, the [exact vocabulary matcher](../../../src-tauri/src/audio_toolkit/exact_vocabulary.rs) and its boundary regression keep combining marks and join controls inside words (AC-009). Matching remains case-folded and preserves the original spelling.
+
 | Requirement | Implementation / test | Status |
 |---|---|---|
 | [FR-007](spec.md#fr-007), [AC-009](spec.md#ac-009) | Read [exact occurrence matching](../../../src-tauri/src/audio_toolkit/exact_vocabulary.rs) and [correction integration and regression tests](../../../src-tauri/src/audio_toolkit/text.rs). | Source verified; installed-app check pending. |

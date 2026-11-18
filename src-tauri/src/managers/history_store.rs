@@ -204,6 +204,34 @@ impl HistoryStore {
         Ok(Connection::open(&self.db_path)?)
     }
 
+    /// Delete a retention candidate only if it is still unsaved.
+    ///
+    /// # Errors
+    /// The database could not execute the deletion.
+    pub(super) fn delete_unsaved_entry(conn: &Connection, id: i64) -> rusqlite::Result<bool> {
+        // The saved flag can change after the cleanup candidates were selected.
+        let deleted = conn.execute(
+            "DELETE FROM transcription_history WHERE id = ?1 AND saved = 0",
+            [id],
+        )?;
+        Ok(deleted != 0)
+    }
+
+    /// Toggle the current flag in one write. A missing row is reported to the caller.
+    ///
+    /// # Errors
+    /// The entry is missing or the database could not update it.
+    pub(super) fn toggle_saved(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+        let updated = conn.execute(
+            "UPDATE transcription_history SET saved = NOT saved WHERE id = ?1",
+            [id],
+        )?;
+        if updated == 0 {
+            return Err(rusqlite::Error::QueryReturnedNoRows);
+        }
+        Ok(())
+    }
+
     /// Directory of the WAV recordings.
     pub fn recordings_dir(&self) -> &Path {
         &self.recordings_dir

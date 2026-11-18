@@ -26,6 +26,8 @@ Status: **In Progress** — every non-UI step of the [plan](plan.md) is implemen
 
 ## Acceptance criteria
 
+The [HTTP retry path](../../../src-tauri/src/llm_client.rs) implements the diagnostic privacy rule in FR-003. It uses the status to decide when to retry and omits the provider's error body from logs and returned errors. The regression sends an error containing synthetic transcript text through the real client on loopback.
+
 | AC | Evidence today (automated) | Missing for acceptance |
 |---|---|---|
 | [AC-001](spec.md#ac-001) | `prompts/library_tests.rs`, `settings_service/domains/prompts_tests.rs`, `tests/prompt_cli.rs`; UI: `post-processing/prompt-settings-model.test.ts`, `prompt-commands.test.ts` (incl. `committed`/`unknown` outcomes), `prompt-editor-sync.test.ts` (own save vs a library one revision behind, failed reload, typing during a save, Cancel during a creation, invalid prompt opened) | Real-window evidence of the list, editor, confirmation and Behavioral AC states (browser-mock screenshots only) |

@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-18 — [Bugfix 003, 005, 019] Keep combining marks within vocabulary words, omit provider error bodies from dictation diagnostics, and preserve entries saved while history cleanup is running.
+
 ## 2026-11-17 — [Bugfix 003] Exact vocabulary occurrences are protected before approximate correction, preventing "CLI de Codex" from becoming "CLAUDE CODE" while keeping useful corrections elsewhere. Read the [implementation evidence](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17).
 
 ## 2026-11-14 — [Bugfix 007] Cmux bypasses accessibility text writes and uses the existing clipboard transaction, avoiding false uncertain-insertion recovery. All 135 smart-paste tests pass; native Cmux dictation remains unverified. Read the [implementation](features/007-smart-paste/implementation.md#cmux-false-insertion-failure--2026-11-14).

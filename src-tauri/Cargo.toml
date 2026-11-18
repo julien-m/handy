@@ -81,6 +81,8 @@ rustfft = "6.4.0"
 # Full default Unicode case folding (Unicode 16.0.0, MIT) for vocabulary term keys (feature 003):
 # "Straße" and "STRASSE" are one term. Pinned so the table version only changes on purpose.
 caseless = "=0.2.2"
+# Combining marks stay inside words when protecting exact vocabulary occurrences.
+unicode-normalization = "0.1"
 regex = "1"
 # UAX #29 sentence and word boundaries for smart paragraphs outside macOS (feature 016); the
 # version already resolved in Cargo.lock as a transitive dependency.
