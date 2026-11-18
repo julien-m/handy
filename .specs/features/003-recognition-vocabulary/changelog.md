@@ -1,5 +1,17 @@
 # Changelog - 003-recognition-vocabulary
 
+## 2026-11-18 — Preserve Unicode word boundaries
+
+- Combining marks and join controls stay inside a word when detecting exact occurrences for AC-009. Read the [matcher and regression tests](../../../src-tauri/src/audio_toolkit/exact_vocabulary.rs).
+
+## 2026-11-17 — [Bugfix]: Protect exact vocabulary occurrences
+
+- **Spec modified:** Yes — AC-009, FR-007 and Story 3; exact terms outrank overlapping approximate corrections.
+- **Code modified:** `audio_toolkit/{text,custom_word_index,exact_vocabulary}.rs`.
+- **Behavior:** Protect every configured term without product-specific rules, including mixed case, compound names, Unicode and symbols; keep useful corrections elsewhere and explicit replacement priority.
+- **Evidence:** Original phrase reproduced before the fix; production-module tests pass. Read the [implementation evidence](implementation.md#exact-vocabulary-protection--2026-11-17) for scope and remaining limits.
+- **Author:** Codex (`spec-fix`).
+
 ## 2026-10-31 — alphabetical lists / Show the list
 
 - Decision `alphabetical_display` (Julien): the term list is shown in alphabetical order; display only, the saved order that decides the terms sent within the model budget is unchanged (AC-001).

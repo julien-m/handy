@@ -27,3 +27,14 @@ This is a partial core-first run, authorized on 2026-10-13. Inspect [the plan](p
 - Integration run (Claude Opus 5.5, 2026-10-14): `dev` (008) merged; steps 0a and 8 implemented behind the rollout gate described in [the implementation map](implementation.md#rollout-gates). Step 7 stays waiting for 006 and must, in one change, wire the dispatch, enable `smart-paste-dispatch`, regenerate the 008 checked schema and `bindings.ts`, and rerun the gate-open suite.
 - Step 7 run (Claude Opus 5.5, 2026-10-14): `dev` merged as `e5c2b0f`, code `e7fa570` (004, 006: `DestinationContext`, `InsertionPort::dispatch(guard)`, `RecoveryDisposition`, `claim_enter`, text-only history, `destination-return` gate). Smart paste is wired into dictation through 006's contract and stays behind `smart-paste-dispatch`, closed by default: with it closed dictation is identical to `dev`. Opening it for release waits for the native AC-016 matrix with Julien ([procedure](implementation.md#native-acceptance-procedure-ac-016-with-julien)); the 008 checked schema and `bindings.ts` were regenerated after the merge.
 - UI hardening (Claude Opus 5.5, 2026-10-14, branch `fix/ui-hardening-b`): the indicator test with the `smart-paste-dispatch` and `destination-return` gates closed now compares the pill with the one of `dev` and guards that the pill alone fits the base window of each form; the hand-over notice and the indicator code are otherwise unchanged ([hardening proofs](proofs/claude-hardening/summary.txt), details in [006 progress](../006-destination-application/progress.md#indicator)).
+
+
+## Cmux correction — 2026-11-14
+
+| Step | Result | Evidence |
+| --- | --- | --- |
+| Diagnose | Done | Current Handy log: `Uncertain via DirectAccessibility`, including a cancelled fallback after an AX write; user screenshot shows text already inserted. |
+| Route Cmux to clipboard only | Done | Strategy and coordinator, AC-017 anchor; permission and destination guards retained. |
+| Regression checks | Done | All 135 smart-paste integration tests pass; Rust formatting and diff whitespace checks pass. |
+| Independent review | Accepted, no material findings | Strategy, clipboard lifecycle, verification and regression coverage inspected independently. |
+| Signed delivery | Done | Signed release installed and launched; live settings read succeeds; settings preserved. Native Cmux dictation remains unverified. |

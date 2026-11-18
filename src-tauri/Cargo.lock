@@ -2587,6 +2587,7 @@ dependencies = [
  "tokio",
  "transcribe-cpp",
  "transcribe-rs",
+ "unicode-normalization",
  "unicode-segmentation",
  "uuid",
  "vad-rs",

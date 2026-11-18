@@ -545,3 +545,12 @@ Native AppKit cache behavior, AX late writes, external copy guard/write races, g
 ## Next Action
 
 After current independent plan review and semantic progression implement READY, next action is `$spec-implement 007-smart-paste --model=gpt-6.1-sol`, following 008-first delivery and the native/design gates above. This command is not run here; no application source, commit or push is authorized by planning.
+
+
+## Cmux false recovery correction — 2026-11-14
+
+- Evidence: installed Cmux bundle identifier is `com.cmuxterm.app`; current logs show `Uncertain via DirectAccessibility` and `KeystrokeCancelled` while the transcript is visible in the terminal.
+- Strategy boundary: add a typed clipboard-only strategy selected by the exact bundle identifier in `smart_paste/strategy.rs`. The coordinator reuses `clipboard_paste` without an AX fallback guard because no AX write occurred. Other destinations retain their configured strategy.
+- Contracts and safety: retain permission, dynamic destination checks, clipboard ownership/restoration, bounded read receipts, layout cleanup and recovery for actual failures. No persistence, UI, new dependencies or settings changes.
+- Verification: coordinator regressions exercise verification on/off with a terminal whose AX write would change unexpectedly; assert no AX writes, one chord and a read outcome without recovery. Cover no-read and permission denial; retain the existing direct-insertion safety tests.
+- Conventions: strategy owns platform compatibility; coordinator owns orchestration; typed enum and exhaustive match preserve substitution; existing ports isolate native effects; no field content is logged. Native Cmux receipt behavior and installed-build behavior remain explicit observations to obtain, not inferred from fakes.

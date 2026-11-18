@@ -342,7 +342,7 @@ AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are
 
 ### AC-010
 
-**Criterion:** Strategy by destination bundle identifier: `com.apple.ScreenContinuity` (iPhone Mirroring) and `com.microsoft.rdc.macos` (Windows App) receive the transcript as Unicode key events without clipboard use; `com.apple.ScreenSharing` receives a clipboard write of the transcript without a paste keystroke and keeps it until the user copies something else; every other application uses direct insertion (AC-017) and then the clipboard paste of AC-008/AC-009. The accessibility permission check applies to the strategies that post key events (clipboard paste and Unicode typing). With clipboard handling "copy to clipboard", Unicode typing also leaves the transcript on the clipboard.
+**Criterion:** Strategy by destination bundle identifier: `com.apple.ScreenContinuity` (iPhone Mirroring) and `com.microsoft.rdc.macos` (Windows App) receive the transcript as Unicode key events without clipboard use; `com.apple.ScreenSharing` receives a clipboard write of the transcript without a paste keystroke and keeps it until the user copies something else; Cmux (`com.cmuxterm.app`) uses clipboard paste without an accessibility write; every other application uses direct insertion (AC-017) and then the clipboard paste of AC-008/AC-009. The accessibility permission check applies to the strategies that post key events (clipboard paste and Unicode typing). With clipboard handling "copy to clipboard", Unicode typing also leaves the transcript on the clipboard.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-011
@@ -371,6 +371,32 @@ AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are
 **Priority:** P2 | **Story:** Story 5
 
 ### AC-017
+
+Cmux (`com.cmuxterm.app`) bypasses direct insertion: terminal output can change independently of input and cannot verify `AXSelectedText`. Use the guarded clipboard transaction directly, retaining permission checks, read receipts, clipboard restoration and failure recovery. Paste verification still excludes non-web terminal fields (AC-019).
+
+```gherkin
+Feature: Cmux dictation without false insertion failure
+  Scenario: Terminal receives the paste
+    Given Cmux is the destination with a readable terminal accessibility value
+    When smart paste inserts a dictation
+    Then no accessibility text write is attempted
+    And one paste chord is sent
+    And a qualifying clipboard read avoids recovery
+
+  Scenario: Terminal does not read the paste
+    Given Cmux is the destination
+    When the paste chord is sent without a qualifying clipboard read
+    Then the existing not-read recovery remains available
+```
+
+```mermaid
+flowchart LR
+    A[Cmux destination] --> B[Permission and destination checks]
+    B --> C[Clipboard transaction without AX write]
+    C --> D{Read observed?}
+    D -->|Yes| E[Normal completion]
+    D -->|No| F[Existing recovery]
+```
 
 **Criterion:** On macOS, for applications not covered by AC-010, smart paste first tries direct insertion: with accessibility permission, and only when the focused element belongs to the destination application's process (006), it reads the focused element's text value and selected range, sets `AXSelectedText` to the transcript, then reads the value again, polling for up to 150 ms to let applications that update asynchronously apply the change. The attempt is verified when the new value equals the old value with the selected range replaced by the transcript; the outcome is then "inserted, verified" and the clipboard is never touched. If the element is a password field (role AXSecureTextField) or its value cannot be read, direct insertion is skipped; if the value is still unchanged at the end of the read-back window (whether setting reported success or failure), smart paste falls back to the clipboard paste (AC-008/AC-009). If the value changed but does not match the expected result, smart paste does not fall back, to avoid inserting the text twice, and the outcome is "uncertain". If every read of the window failed (a busy application), the value is read once more with a 300 ms timeout and decided the same way; only a value still unreadable then is "uncertain" (decision N33).
 **Priority:** P1 | **Story:** Story 6

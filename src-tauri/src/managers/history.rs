@@ -131,11 +131,9 @@ impl HistoryManager {
         let mut deleted_count = 0;
 
         for (id, file_name) in entries {
-            // Delete database entry
-            conn.execute(
-                "DELETE FROM transcription_history WHERE id = ?1",
-                params![id],
-            )?;
+            if !HistoryStore::delete_unsaved_entry(&conn, *id)? {
+                continue;
+            }
 
             // Delete the WAV file; a text-only row has none, and the recordings directory itself
             // is never removed.
@@ -345,22 +343,8 @@ impl HistoryManager {
 
     pub async fn toggle_saved_status(&self, id: i64) -> Result<()> {
         let conn = self.get_connection()?;
-
-        // Get current saved status
-        let current_saved: bool = conn.query_row(
-            "SELECT saved FROM transcription_history WHERE id = ?1",
-            params![id],
-            |row| row.get("saved"),
-        )?;
-
-        let new_saved = !current_saved;
-
-        conn.execute(
-            "UPDATE transcription_history SET saved = ?1 WHERE id = ?2",
-            params![new_saved, id],
-        )?;
-
-        debug!("Toggled saved status for entry {}: {}", id, new_saved);
+        HistoryStore::toggle_saved(&conn, id)?;
+        debug!("Toggled saved status for entry {id}");
 
         // Emit history updated event
         if let Err(e) = (HistoryUpdatePayload::Toggled { id }).emit(&self.app_handle) {
@@ -486,6 +470,35 @@ mod tests {
             ],
         )
         .expect("insert history entry");
+    }
+
+    #[test]
+    fn retention_skips_a_candidate_saved_after_selection() -> Result<()> {
+        let directory = tempfile::tempdir()?;
+        let store = HistoryStore::open(
+            directory.path().join("history.db"),
+            directory.path().join("recordings"),
+        )?;
+        let cleanup = store.connection()?;
+        let ui = store.connection()?;
+        let entry = store.insert(NewHistoryEntry {
+            transcription_text: "Keep this transcript".into(),
+            ..NewHistoryEntry::default()
+        })?;
+        assert!(!entry.saved);
+
+        HistoryStore::toggle_saved(&ui, entry.id)?;
+        assert!(!HistoryStore::delete_unsaved_entry(&cleanup, entry.id)?);
+        assert!(store.entry(entry.id)?.expect("saved entry remains").saved);
+
+        HistoryStore::toggle_saved(&ui, entry.id)?;
+        assert!(HistoryStore::delete_unsaved_entry(&cleanup, entry.id)?);
+        assert!(store.entry(entry.id)?.is_none());
+        assert!(matches!(
+            HistoryStore::toggle_saved(&ui, entry.id),
+            Err(rusqlite::Error::QueryReturnedNoRows)
+        ));
+        Ok(())
     }
 
     #[test]

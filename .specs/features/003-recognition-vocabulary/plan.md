@@ -441,3 +441,15 @@ Additional risks: transcribe-cpp may require exposing native fitting/tokenizer/b
 ## Next Action
 
 The next command after complete+ready independent plan review and READY progression is `/spec-implement 003-recognition-vocabulary` with `--review-max-chars 180000` and the model resolved at implementation time, after the shared pre-ship UI contract/design gate; Step 4 additionally waits for 006 step 0 (D2/D3). This plan does not execute it. Six implementation steps; two sequence diagrams and one state diagram; no ER/new SQL table, HTTP endpoint or OpenAPI file.
+
+
+## Scoped correction — 2026-11-17
+
+| Contract / convention | Decision / owning module | Verification |
+|---|---|---|
+| AC-009 / FR-007; explicit inputs and no product-specific business data | Literal occurrence matching in [exact vocabulary](../../../src-tauri/src/audio_toolkit/exact_vocabulary.rs); caller supplies terms; no settings or I/O in the matcher. | Original phrase plus other names, long/overlapping terms, symbols, Unicode and case variations. |
+| Prepared data reused; private ownership and proportional interfaces | [CustomWordIndex](../../../src-tauri/src/audio_toolkit/custom_word_index.rs) owns the exact index and reuses it across replacement gaps; local pure matching functions, no global cache or new provider abstraction. | Index reference-equivalence and existing 5,000-term timing tests. |
+| Boundary priority and no regression in useful corrections | [Text correction](../../../src-tauri/src/audio_toolkit/text.rs) excludes protected tokens before scoring; explicit replacement protection is unioned with exact occurrences in joined text. Existing fuzzy thresholds remain authoritative. | Useful sound-alikes, ordinary phrases, protected spans, exact terms crossing spans, punctuation and empty protection. |
+| Risk-based evidence and bounded work | Temporary isolated Cargo harness loads the actual production module and colocated tests, with dependencies pinned from the app lockfile. Command-only timeout below 300 s; no per-test timeout claim. | Functional, release timing, targeted Clippy and formatting; disclose full-app/native/install limits. |
+
+No database/schema, public API, UI, logging, async task or external service changes; those conventions have no changed surface here. Read the [implementation evidence](implementation.md#exact-vocabulary-protection--2026-11-17) for observed outcomes and review.
