@@ -1,9 +1,12 @@
+//! Vocabulary correction and language-aware cleanup of recognized transcription text.
 use custom_word_index::CustomWordIndex;
 use once_cell::sync::Lazy;
 use regex::Regex;
 
 #[path = "custom_word_index.rs"]
 mod custom_word_index;
+#[path = "exact_vocabulary.rs"]
+mod exact_vocabulary;
 
 /// Builds an n-gram string by cleaning and concatenating words
 ///
@@ -62,10 +65,14 @@ fn apply_custom_words_with(
         return text.to_string();
     }
     let words: Vec<&str> = text.split_whitespace().collect();
+    // Protect the entire input first: a fuzzy candidate can start before an exact term.
+    let protected = index.protected_words(&words);
     let mut result = Vec::new();
     let mut i = 0;
     while i < words.len() {
-        if let Some((n, replacement)) = best_ngram_at(&words, i, custom_words, index, threshold) {
+        if let Some((n, replacement)) =
+            best_ngram_at(&words, &protected, i, custom_words, index, threshold)
+        {
             let ngram_words = &words[i..i + n];
             // Extract punctuation from first and last words of the n-gram.
             let (prefix, _) = extract_punctuation(ngram_words[0]);
@@ -87,6 +94,7 @@ fn apply_custom_words_with(
 /// Length (1 to 3 words) and custom word of the closest n-gram starting at `words[start]`.
 fn best_ngram_at<'a>(
     words: &[&str],
+    protected: &[bool],
     start: usize,
     custom_words: &'a [String],
     index: &CustomWordIndex,
@@ -99,6 +107,10 @@ fn best_ngram_at<'a>(
     // "Charge B, che" matching "ChargeBee").
     for n in (1..=3).rev() {
         if start + n > words.len() {
+            continue;
+        }
+        // An exact term keeps its spelling even if an overlapping phrase sounds more familiar.
+        if protected[start..start + n].iter().any(|&word| word) {
             continue;
         }
         let ngram_words = &words[start..start + n];
@@ -133,8 +145,8 @@ pub struct TextSpan<'a> {
 /// Apply approximate custom-word correction only outside protected spans.
 ///
 /// Without protected spans this is exactly `apply_custom_words` on the joined
-/// text. Otherwise each unprotected span is corrected on its own, so no n-gram
-/// crosses a protected span, and the whitespace at each seam is kept verbatim.
+/// text. Otherwise corrections cannot cross a protected span or an exact vocabulary
+/// occurrence (even one straddling spans); whitespace at each seam is kept verbatim.
 pub fn apply_custom_words_outside_protected(
     spans: &[TextSpan<'_>],
     custom_words: &[String],
@@ -146,16 +158,43 @@ pub fn apply_custom_words_outside_protected(
     }
     // One index for every unprotected span (up to 5,000 terms, feature 003).
     let index = CustomWordIndex::new(custom_words);
-    spans
-        .iter()
-        .map(|span| {
-            if span.is_protected {
-                span.text.to_string()
-            } else {
-                correct_keeping_edge_whitespace(span.text, custom_words, &index, threshold)
-            }
-        })
-        .collect()
+    let text: String = spans.iter().map(|span| span.text).collect();
+    let mut protected = index.protected_ranges(&text);
+    let mut offset = 0;
+    for span in spans {
+        if span.is_protected {
+            protected.push(offset..offset + span.text.len());
+        }
+        offset += span.text.len();
+    }
+    correct_between_protected_ranges(&text, protected, custom_words, &index, threshold)
+}
+
+fn correct_between_protected_ranges(
+    text: &str,
+    mut protected: Vec<std::ops::Range<usize>>,
+    custom_words: &[String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> String {
+    // Merge protection while walking sorted ranges so overlapping terms are copied only once.
+    protected.sort_unstable_by_key(|range| range.start);
+    let mut result = String::with_capacity(text.len());
+    let mut offset = 0;
+    let correct =
+        |text: &str| correct_keeping_edge_whitespace(text, custom_words, index, threshold);
+    for range in protected {
+        if offset < range.start {
+            result.push_str(&correct(&text[offset..range.start]));
+            offset = range.start;
+        }
+        if offset < range.end {
+            result.push_str(&text[offset.max(range.start)..range.end]);
+            offset = range.end;
+        }
+    }
+    result.push_str(&correct(&text[offset..]));
+    result
 }
 
 fn correct_keeping_edge_whitespace(
@@ -458,7 +497,7 @@ mod tests {
         let text = "hello world";
         let custom_words = vec!["Hello".to_string(), "World".to_string()];
         let result = apply_custom_words(text, &custom_words, 0.5);
-        assert_eq!(result, "Hello World");
+        assert_eq!(result, text);
     }
 
     #[test]
@@ -942,6 +981,72 @@ mod tests {
         assert_eq!(
             apply_custom_words("pay with Charge B today", &charge_bee, 0.18),
             "pay with ChargeBee today"
+        );
+    }
+
+    // @spec AC-009: Exact terms outrank overlapping corrections — .specs/features/003-recognition-vocabulary/spec.md#ac-009
+    #[test]
+    fn exact_vocabulary_terms_cannot_be_swallowed_by_nearby_corrections() {
+        for (terms, text) in [
+            (
+                vec!["Claude Code", "Codex"],
+                "C'est pas Claude Code que je demandais mais le CLI de Codex.",
+            ),
+            (vec!["Claude Code", "Codex"], "CLI de codex"),
+            (vec!["Claude Code", "Codex"], "CLI de (CODEX)."),
+            (vec!["OpenClaw", "Claw"], "open Claw"),
+            (vec!["LiveSpec", "Spec"], "live spec"),
+            (vec!["ChargeBee", "Bee"], "charge Bee"),
+            (vec!["Xaaa", "a-a"], "xa-a-a"),
+            (vec!["Claude Code", "Codex Pro"], "CLI de Codex Pro"),
+            (
+                vec!["Claude Code", "Codex Pro Cloud Tools"],
+                "CLI de Codex Pro Cloud Tools",
+            ),
+            (
+                vec!["Claude Code", "Codex", "de Codex Pro"],
+                "CLI de Codex Pro",
+            ),
+        ] {
+            let vocabulary = terms.into_iter().map(String::from).collect::<Vec<_>>();
+            assert_eq!(apply_custom_words(text, &vocabulary, 0.18), text);
+        }
+    }
+
+    #[test]
+    fn useful_corrections_still_apply_on_both_sides_of_exact_terms() {
+        let vocabulary = ["Claude Code", "Codex", "OpenClaw"].map(String::from);
+        assert_eq!(
+            apply_custom_words("cloud code avec codex et open claw", &vocabulary, 0.18),
+            "Claude Code avec codex et OpenClaw"
+        );
+        let spans = [
+            span("cloud code avec codex ", false),
+            span("protected", true),
+            span(" et open claw", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &vocabulary, 0.18),
+            "Claude Code avec codex protected et OpenClaw"
+        );
+    }
+
+    #[test]
+    fn exact_terms_are_protected_even_when_they_cross_replacement_spans() {
+        let vocabulary = ["Claude Code", "Codex Pro"].map(String::from);
+        let spans = [span("CLI de Codex ", false), span("Pro", true)];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &vocabulary, 0.18),
+            "CLI de Codex Pro"
+        );
+        let spans = [
+            span("CLI de Codex ", false),
+            span("", true),
+            span("Pro", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &vocabulary, 0.18),
+            "CLI de Codex Pro"
         );
     }
 }

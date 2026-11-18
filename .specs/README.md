@@ -2,7 +2,7 @@
 
 > Specification registry for Handy. All artifacts produced by LiveSpec are indexed here.
 >
-> Last updated: 2026-11-13
+> Last updated: 2026-11-17
 
 ---
 
@@ -36,7 +36,7 @@
 |---|---|---|---|---|---|
 | 001 | Microphone Priority | Planned | 2026-10-09 | 2026-10-12 | [spec](features/001-microphone-priority/spec.md) |
 | 002 | Word Replacements | Planned | 2026-10-12 | 2026-10-12 | [spec](features/002-word-replacements/spec.md) |
-| 003 | Recognition Vocabulary | Planned | 2026-10-12 | 2026-10-12 | [spec](features/003-recognition-vocabulary/spec.md) |
+| 003 | Recognition Vocabulary | Planned | 2026-10-12 | 2026-11-17 | [spec](features/003-recognition-vocabulary/spec.md) |
 | 004 | Multiple Dictation Shortcuts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/004-multiple-dictation-shortcuts/spec.md) |
 | 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-14 | [spec](features/005-custom-ai-prompts/spec.md) |
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-14 | [spec](features/006-destination-application/spec.md) |
@@ -82,6 +82,7 @@
 
 | Date | Type | Description |
 |---|---|---|
+| 2026-11-17 | Bugfix | Exact vocabulary occurrences protected from overlapping fuzzy corrections; read the [003 correction](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17). |
 | 2026-11-13 | Bugfix | First recovery drag after native handoff corrected; read the [010 evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13). |
 | 2026-11-13 | Maintenance | Migrated to LiveSpec 23 and pinned the current qualified runtime; read the [migration entry](changelog.md). |
 | 2026-10-29 | Feature | [Feature 017] Smart spacing: spaces at the two edges of a dictation fitted to the text before and after the selection (bounded read extended from 015), punctuation and unspaced scripts respected, one final space without context, subsumes the trailing space option; on for new installs, off on upgrade (automated evidence; native proof pending) |

@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-17 — [Bugfix 003] Exact vocabulary occurrences are protected before approximate correction, preventing "CLI de Codex" from becoming "CLAUDE CODE" while keeping useful corrections elsewhere. Read the [implementation evidence](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17).
+
 ## 2026-11-13 — [Delivery 010] Signed release installed at `/Applications/Handy.app`, launched and answered a live CLI settings read; settings preserved at revision 105. Release build, lint, Rust formatting and Clippy pass; global formatting passes after automatic formatting of generated AGENTS. Read the [delivery evidence](features/010-recovery-bubble/implementation.md#local-release-delivery-2026-11-13).
 
 ## 2026-11-13 — [Bugfix 010] Recovery dragging starts on the first press after native handoff; window-wide mouse tracking also retains fast movement outside the bubble. Three regressions and a native WKWebView/AppKit probe reproduce the fault and validate the correction. Read the [implementation evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13).
