@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Volver a escanear",
         "tooltip": "Vuelve a escanear en busca de modelos añadidos a la carpeta de modelos o a la caché de Hugging Face fuera de Handy"
+      },
+      "engine": {
+        "title": "Motor de transcripción",
+        "description": "Elige dónde tu voz se convierte en texto: en este dispositivo o mediante una API en línea. El modelo local sirve de respaldo si una API falla.",
+        "chatgptNotice": "Tu audio se envía a OpenAI para transcribirlo, con el inicio de sesión de ChatGPT de Codex.",
+        "status": {
+          "signedIn": "Sesión de ChatGPT iniciada mediante Codex",
+          "signedOut": "Sin sesión: ejecuta «codex login» con tu cuenta de ChatGPT"
+        },
+        "tabs": {
+          "local": "Local",
+          "api": "API"
+        },
+        "active": "Activo",
+        "activate": "Activar",
+        "fallbackBadge": "Respaldo",
+        "fallbackNotice": "Un motor de API transcribe tus dictados. El modelo elegido abajo solo sirve de respaldo; activa el modelo local para cambiarlo.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dictado en directo con tu suscripción a ChatGPT."
+          },
+          "upcoming": {
+            "title": "Otras API (Soniox…)",
+            "description": "Próximamente."
+          }
+        }
       }
     },
     "general": {

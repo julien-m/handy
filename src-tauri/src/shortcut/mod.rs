@@ -697,6 +697,16 @@ pub async fn change_overlay_style_setting(
     live_settings::write(app, "overlay_style", style).await
 }
 
+// @spec FR-001: Engine choice setting — .specs/features/024-transcription-engine/spec.md#fr-001
+#[tauri::command]
+#[specta::specta]
+pub async fn change_transcription_engine_setting(
+    app: AppHandle,
+    engine: UiValue<String>,
+) -> SettingsResult {
+    live_settings::write(app, "transcription_engine", engine).await
+}
+
 #[tauri::command]
 #[specta::specta]
 pub async fn change_debug_mode_setting(app: AppHandle, enabled: UiValue<bool>) -> SettingsResult {

@@ -273,6 +273,33 @@
       "rescan": {
         "label": "Skanna om",
         "tooltip": "Skanna om efter modeller som lagts till i modellmappen eller Hugging Face-cachen utanför Handy"
+      },
+      "engine": {
+        "title": "Transkriberingsmotor",
+        "description": "Välj var din röst blir text: på den här enheten eller via ett online-API. Den lokala modellen är reserv om ett API misslyckas.",
+        "chatgptNotice": "Ditt ljud skickas till OpenAI för transkribering, med ChatGPT-inloggningen från Codex.",
+        "status": {
+          "signedIn": "Inloggad på ChatGPT via Codex",
+          "signedOut": "Inte inloggad: kör ”codex login” med ditt ChatGPT-konto"
+        },
+        "tabs": {
+          "local": "Lokal",
+          "api": "API"
+        },
+        "active": "Aktiv",
+        "activate": "Aktivera",
+        "fallbackBadge": "Reserv",
+        "fallbackNotice": "En API-motor transkriberar dina dikteringar. Modellen nedan används bara som reserv; aktivera den lokala modellen för att byta.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Livediktering med ditt ChatGPT-abonnemang."
+          },
+          "upcoming": {
+            "title": "Andra API:er (Soniox…)",
+            "description": "Kommer snart."
+          }
+        }
       }
     },
     "sound": {

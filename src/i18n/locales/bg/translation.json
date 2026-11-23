@@ -273,6 +273,33 @@
       "rescan": {
         "label": "Сканиране отново",
         "tooltip": "Сканиране отново за модели, добавени в папката с модели или кеша на Hugging Face извън Handy"
+      },
+      "engine": {
+        "title": "Двигател за транскрипция",
+        "description": "Изберете къде гласът ви става текст: на това устройство или чрез онлайн API. Локалният модел е резерва, ако API се провали.",
+        "chatgptNotice": "Аудиото ви се изпраща към OpenAI за транскрипция с входа в ChatGPT от Codex.",
+        "status": {
+          "signedIn": "Влезли сте в ChatGPT чрез Codex",
+          "signedOut": "Не сте влезли: изпълнете „codex login“ с акаунта си в ChatGPT"
+        },
+        "tabs": {
+          "local": "Локално",
+          "api": "API"
+        },
+        "active": "Активен",
+        "activate": "Активирай",
+        "fallbackBadge": "Резерва",
+        "fallbackNotice": "API двигател транскрибира диктовките ви. Избраният по-долу модел е само резерва; активирайте локалния модел, за да го смените.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Диктовка на живо с абонамента ви за ChatGPT."
+          },
+          "upcoming": {
+            "title": "Други API (Soniox…)",
+            "description": "Очаквайте скоро."
+          }
+        }
       }
     },
     "sound": {

@@ -157,6 +157,7 @@ struct PublicAdvanced {
     vad_enabled: bool,
     vad_backend: VadBackend,
     overlay_style: OverlayStyle,
+    transcription_engine: TranscriptionEngine,
 }
 impl PublicAdvanced {
     fn from_settings(settings: &AppSettings) -> Self {
@@ -194,6 +195,7 @@ impl PublicAdvanced {
             vad_enabled: settings.vad_enabled,
             vad_backend: settings.vad_backend,
             overlay_style: settings.overlay_style,
+            transcription_engine: settings.transcription_engine,
         }
     }
 }

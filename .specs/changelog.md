@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-23 — [Feature 024] Transcription engine setting: local model (default) or ChatGPT live dictation through the Codex ChatGPT sign-in, in its own `transcription_engine/chatgpt` module behind a neutral `LiveSession` contract, with local fallback on any failure. Rust, frontend and Playwright checks pass; Claude Design mockups (AC-008) blocked by unavailable automation tools. Read the [implementation](features/024-transcription-engine/implementation.md).
+
 ## 2026-11-18 — [Bugfix 003, 005, 019] Keep combining marks within vocabulary words, omit provider error bodies from dictation diagnostics, and preserve entries saved while history cleanup is running.
 
 ## 2026-11-17 — [Bugfix 003] Exact vocabulary occurrences are protected before approximate correction, preventing "CLI de Codex" from becoming "CLAUDE CODE" while keeping useful corrections elsewhere. Read the [implementation evidence](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17).

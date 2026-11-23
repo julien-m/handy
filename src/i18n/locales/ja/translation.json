@@ -183,6 +183,33 @@
       "rescan": {
         "label": "再スキャン",
         "tooltip": "Handy を使わずに models フォルダーまたは Hugging Face キャッシュに追加されたモデルを再スキャンします"
+      },
+      "engine": {
+        "title": "文字起こしエンジン",
+        "description": "音声をテキストにする場所を選びます:このデバイスか、オンライン API か。API が失敗した場合はローカルモデルが予備になります。",
+        "chatgptNotice": "音声は Codex の ChatGPT サインインを使って OpenAI に送信され、文字起こしされます。",
+        "status": {
+          "signedIn": "Codex 経由で ChatGPT にサインイン済み",
+          "signedOut": "未サインイン:ChatGPT アカウントで「codex login」を実行してください"
+        },
+        "tabs": {
+          "local": "ローカル",
+          "api": "API"
+        },
+        "active": "有効",
+        "activate": "有効にする",
+        "fallbackBadge": "予備",
+        "fallbackNotice": "API エンジンが音声を文字起こししています。下で選んだモデルは予備としてのみ使われます。変更するにはローカルモデルを有効にしてください。",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "ChatGPT サブスクリプションでのライブ音声入力。"
+          },
+          "upcoming": {
+            "title": "その他の API(Soniox…)",
+            "description": "近日公開。"
+          }
+        }
       }
     },
     "general": {

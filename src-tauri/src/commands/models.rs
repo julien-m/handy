@@ -117,6 +117,19 @@ fn persist_selection(
 /// unless the unload timeout is set to "Immediately" (in which case the model
 /// will be loaded on-demand during the next transcription).
 pub fn switch_active_model(app: &AppHandle, model_id: &str) -> Result<(), String> {
+    // @spec FR-008: Local model locked while an API engine is active — .specs/features/024-transcription-engine/spec.md#fr-008
+    // Covers every caller (settings list, footer selector, auto-select after a
+    // download, tray menu): the local model is the API engine's fallback.
+    // Onboarding is exempt: it completes by choosing the first local model.
+    let current = get_settings(app);
+    if current.onboarding_completed
+        && !crate::transcription_engine::can_switch_local_model(current.transcription_engine)
+    {
+        return Err(
+            "The local model is the fallback while an API engine is active; activate the local engine to change it"
+                .to_string(),
+        );
+    }
     let model_manager = app.state::<Arc<ModelManager>>();
     let transcription_manager = app.state::<Arc<TranscriptionManager>>();
 

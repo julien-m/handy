@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Skanuj ponownie",
         "tooltip": "Skanuj ponownie w poszukiwaniu modeli dodanych do folderu modeli lub pamięci podręcznej Hugging Face poza Handy"
+      },
+      "engine": {
+        "title": "Silnik transkrypcji",
+        "description": "Wybierz, gdzie głos zamienia się w tekst: na tym urządzeniu czy przez API online. Model lokalny jest zapasowy, gdy API zawiedzie.",
+        "chatgptNotice": "Twoje audio jest wysyłane do OpenAI do transkrypcji, z logowaniem ChatGPT z Codex.",
+        "status": {
+          "signedIn": "Zalogowano do ChatGPT przez Codex",
+          "signedOut": "Nie zalogowano: uruchom „codex login” na swoim koncie ChatGPT"
+        },
+        "tabs": {
+          "local": "Lokalnie",
+          "api": "API"
+        },
+        "active": "Aktywny",
+        "activate": "Aktywuj",
+        "fallbackBadge": "Zapas",
+        "fallbackNotice": "Silnik API transkrybuje Twoje dyktowanie. Model wybrany poniżej służy tylko jako zapas; aktywuj model lokalny, aby go zmienić.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dyktowanie na żywo z subskrypcją ChatGPT."
+          },
+          "upcoming": {
+            "title": "Inne API (Soniox…)",
+            "description": "Wkrótce."
+          }
+        }
       }
     },
     "general": {

@@ -10,6 +10,7 @@ pub mod recovery;
 pub mod replacements;
 pub mod replacements_files;
 pub mod transcription;
+pub mod transcription_engine;
 pub mod vocabulary;
 
 use crate::settings::{get_settings, update_checks_forced_disabled, AppSettings, LogLevel};

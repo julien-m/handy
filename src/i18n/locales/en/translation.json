@@ -273,7 +273,34 @@
         "label": "Rescan",
         "tooltip": "Rescan for models added to the models folder or Hugging Face cache outside Handy"
       },
-      "noModelsMatch": "No models match this filter."
+      "noModelsMatch": "No models match this filter.",
+      "engine": {
+        "title": "Transcription engine",
+        "description": "Pick where your voice is turned into text: on this device or through an online API. The local model is the fallback when an API fails.",
+        "chatgptNotice": "Your audio is sent to OpenAI for transcription, using the ChatGPT sign-in from Codex.",
+        "status": {
+          "signedIn": "Signed in to ChatGPT through Codex",
+          "signedOut": "Not signed in: run “codex login” with your ChatGPT account"
+        },
+        "tabs": {
+          "local": "Local",
+          "api": "API"
+        },
+        "active": "Active",
+        "activate": "Activate",
+        "fallbackBadge": "Fallback",
+        "fallbackNotice": "An API engine transcribes your dictations. The selected model below is only used as a fallback; activate the local model to change it.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Live dictation with your ChatGPT subscription."
+          },
+          "upcoming": {
+            "title": "Other APIs (Soniox…)",
+            "description": "Coming soon."
+          }
+        }
+      }
     },
     "sound": {
       "title": "Sound",

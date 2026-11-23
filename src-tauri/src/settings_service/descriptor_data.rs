@@ -107,4 +107,6 @@ inventory! {
  "vad_enabled" => (Boolean,false,None,&[],false,false,"general",None);
  "vad_backend" => (String,false,None,&["silero","earshot"],false,false,"general",Vad);
  "overlay_style" => (String,false,None,&["none","minimal","live"],false,false,"general",Overlay);
+ // 024: read at each dictation start, no live effect.
+ "transcription_engine" => (String,false,None,&["local","chatgpt"],false,false,"general",None);
 }

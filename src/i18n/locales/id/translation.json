@@ -273,7 +273,34 @@
         "label": "Pindai Ulang",
         "tooltip": "Pindai ulang model yang ditambahkan ke folder model atau cache Hugging Face dari luar Handy"
       },
-      "noModelsMatch": "Tidak ada model yang cocok dengan kriteria ini."
+      "noModelsMatch": "Tidak ada model yang cocok dengan kriteria ini.",
+      "engine": {
+        "title": "Mesin transkripsi",
+        "description": "Pilih di mana suara Anda menjadi teks: di perangkat ini atau melalui API online. Model lokal menjadi cadangan jika API gagal.",
+        "chatgptNotice": "Audio Anda dikirim ke OpenAI untuk ditranskripsi, dengan login ChatGPT dari Codex.",
+        "status": {
+          "signedIn": "Masuk ke ChatGPT melalui Codex",
+          "signedOut": "Belum masuk: jalankan “codex login” dengan akun ChatGPT Anda"
+        },
+        "tabs": {
+          "local": "Lokal",
+          "api": "API"
+        },
+        "active": "Aktif",
+        "activate": "Aktifkan",
+        "fallbackBadge": "Cadangan",
+        "fallbackNotice": "Mesin API mentranskripsi dikte Anda. Model yang dipilih di bawah hanya cadangan; aktifkan model lokal untuk menggantinya.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dikte langsung dengan langganan ChatGPT Anda."
+          },
+          "upcoming": {
+            "title": "API lain (Soniox…)",
+            "description": "Segera hadir."
+          }
+        }
+      }
     },
     "sound": {
       "title": "Suara",

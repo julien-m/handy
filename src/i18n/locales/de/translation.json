@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Neu scannen",
         "tooltip": "Erneut nach Modellen scannen, die außerhalb von Handy zum Modellordner oder Hugging-Face-Cache hinzugefügt wurden"
+      },
+      "engine": {
+        "title": "Transkriptions-Engine",
+        "description": "Wählen Sie, wo Ihre Stimme zu Text wird: auf diesem Gerät oder über eine Online-API. Das lokale Modell dient als Ersatz, wenn eine API ausfällt.",
+        "chatgptNotice": "Ihr Audio wird zur Transkription an OpenAI gesendet, mit der ChatGPT-Anmeldung aus Codex.",
+        "status": {
+          "signedIn": "Über Codex bei ChatGPT angemeldet",
+          "signedOut": "Nicht angemeldet: Führen Sie „codex login“ mit Ihrem ChatGPT-Konto aus"
+        },
+        "tabs": {
+          "local": "Lokal",
+          "api": "API"
+        },
+        "active": "Aktiv",
+        "activate": "Aktivieren",
+        "fallbackBadge": "Ersatz",
+        "fallbackNotice": "Eine API-Engine transkribiert Ihre Diktate. Das unten gewählte Modell dient nur als Ersatz; aktivieren Sie das lokale Modell, um es zu ändern.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Live-Diktat mit Ihrem ChatGPT-Abo."
+          },
+          "upcoming": {
+            "title": "Weitere APIs (Soniox…)",
+            "description": "Demnächst verfügbar."
+          }
+        }
       }
     },
     "general": {

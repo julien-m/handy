@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Znovu prohledat",
         "tooltip": "Znovu prohledat modely přidané do složky modelů nebo mezipaměti Hugging Face mimo Handy"
+      },
+      "engine": {
+        "title": "Přepisový engine",
+        "description": "Vyberte, kde se váš hlas mění v text: v tomto zařízení, nebo přes online API. Místní model je záloha, když API selže.",
+        "chatgptNotice": "Váš zvuk se odesílá do OpenAI k přepisu s přihlášením ChatGPT z Codexu.",
+        "status": {
+          "signedIn": "Přihlášeno do ChatGPT přes Codex",
+          "signedOut": "Nepřihlášeno: spusťte „codex login“ se svým účtem ChatGPT"
+        },
+        "tabs": {
+          "local": "Místní",
+          "api": "API"
+        },
+        "active": "Aktivní",
+        "activate": "Aktivovat",
+        "fallbackBadge": "Záloha",
+        "fallbackNotice": "Diktáty přepisuje engine API. Model vybraný níže slouží jen jako záloha; pro změnu aktivujte místní model.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Živé diktování s vaším předplatným ChatGPT."
+          },
+          "upcoming": {
+            "title": "Další API (Soniox…)",
+            "description": "Již brzy."
+          }
+        }
       }
     },
     "general": {

@@ -273,6 +273,33 @@
       "rescan": {
         "label": "重新掃描",
         "tooltip": "重新掃描在 Handy 之外新增到模型資料夾或 Hugging Face 快取中的模型"
+      },
+      "engine": {
+        "title": "轉錄引擎",
+        "description": "選擇語音在哪裡轉為文字:在此裝置上或透過線上 API。API 失敗時使用本機模型作為備用。",
+        "chatgptNotice": "你的音訊會使用 Codex 中的 ChatGPT 登入傳送至 OpenAI 進行轉錄。",
+        "status": {
+          "signedIn": "已透過 Codex 登入 ChatGPT",
+          "signedOut": "未登入:請以你的 ChatGPT 帳號執行「codex login」"
+        },
+        "tabs": {
+          "local": "本機",
+          "api": "API"
+        },
+        "active": "已啟用",
+        "activate": "啟用",
+        "fallbackBadge": "備用",
+        "fallbackNotice": "API 引擎正在轉錄你的聽寫。下方所選模型僅作備用;啟用本機模型後才能更換。",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "使用你的 ChatGPT 訂閱進行即時聽寫。"
+          },
+          "upcoming": {
+            "title": "其他 API(Soniox…)",
+            "description": "即將推出。"
+          }
+        }
       }
     },
     "sound": {

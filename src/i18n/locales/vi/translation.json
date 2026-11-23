@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Quét lại",
         "tooltip": "Quét lại các mô hình được thêm vào thư mục mô hình hoặc bộ nhớ đệm Hugging Face bên ngoài Handy"
+      },
+      "engine": {
+        "title": "Công cụ chép lời",
+        "description": "Chọn nơi giọng nói thành văn bản: trên thiết bị này hoặc qua API trực tuyến. Mô hình cục bộ là dự phòng khi API lỗi.",
+        "chatgptNotice": "Âm thanh của bạn được gửi tới OpenAI để chép lời, bằng thông tin đăng nhập ChatGPT từ Codex.",
+        "status": {
+          "signedIn": "Đã đăng nhập ChatGPT qua Codex",
+          "signedOut": "Chưa đăng nhập: chạy “codex login” với tài khoản ChatGPT của bạn"
+        },
+        "tabs": {
+          "local": "Cục bộ",
+          "api": "API"
+        },
+        "active": "Đang dùng",
+        "activate": "Kích hoạt",
+        "fallbackBadge": "Dự phòng",
+        "fallbackNotice": "Một công cụ API đang chép lời của bạn. Mô hình chọn bên dưới chỉ là dự phòng; kích hoạt mô hình cục bộ để đổi.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Đọc chính tả trực tiếp với gói ChatGPT của bạn."
+          },
+          "upcoming": {
+            "title": "API khác (Soniox…)",
+            "description": "Sắp có."
+          }
+        }
       }
     },
     "general": {

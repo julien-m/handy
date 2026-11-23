@@ -273,6 +273,33 @@
       "rescan": {
         "label": "Пересканувати",
         "tooltip": "Пересканувати моделі, додані до папки моделей або кешу Hugging Face поза межами Handy"
+      },
+      "engine": {
+        "title": "Рушій транскрипції",
+        "description": "Виберіть, де голос стає текстом: на цьому пристрої чи через онлайн-API. Локальна модель — запасна, якщо API не спрацює.",
+        "chatgptNotice": "Ваш звук надсилається в OpenAI для транскрипції з входом у ChatGPT із Codex.",
+        "status": {
+          "signedIn": "Вхід у ChatGPT виконано через Codex",
+          "signedOut": "Вхід не виконано: запустіть «codex login» зі своїм обліковим записом ChatGPT"
+        },
+        "tabs": {
+          "local": "Локально",
+          "api": "API"
+        },
+        "active": "Активний",
+        "activate": "Увімкнути",
+        "fallbackBadge": "Запасний",
+        "fallbackNotice": "Диктування розпізнає API-рушій. Вибрана нижче модель лише запасна; увімкніть локальну модель, щоб її змінити.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Диктування наживо з вашою підпискою ChatGPT."
+          },
+          "upcoming": {
+            "title": "Інші API (Soniox…)",
+            "description": "Незабаром."
+          }
+        }
       }
     },
     "sound": {

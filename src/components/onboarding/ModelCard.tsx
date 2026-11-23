@@ -75,6 +75,8 @@ interface ModelCardProps {
   downloadProgress?: number;
   downloadSpeed?: number; // MB/s
   showRecommended?: boolean;
+  /** Label of the badge on the active model (defaults to "Active"). */
+  activeLabel?: string;
 }
 
 const ModelCard: React.FC<ModelCardProps> = ({
@@ -90,6 +92,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
   downloadProgress,
   downloadSpeed,
   showRecommended = true,
+  activeLabel,
 }) => {
   const { t } = useTranslation();
   const debugMode = useSettingsStore(
@@ -152,6 +155,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
       }}
       role={isClickable ? "button" : undefined}
       tabIndex={isClickable ? 0 : undefined}
+      aria-disabled={isClickable && disabled ? true : undefined}
       className={[
         baseClasses,
         getVariantClasses(),
@@ -176,7 +180,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
             {status === "active" && (
               <Badge variant="primary">
                 <Check className="w-3 h-3 mr-1" />
-                {t("modelSelector.active")}
+                {activeLabel ?? t("modelSelector.active")}
               </Badge>
             )}
             {model.is_custom && (

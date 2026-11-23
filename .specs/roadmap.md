@@ -37,6 +37,7 @@
 - [ ] **Long transcripts scroll in the history** (021) — Julien's request of 2026-11-03: a history transcript shows at most 10 lines, then scrolls inside its entry with a narrow scrollbar. Native check pending. → [021-history-transcript-height](features/021-history-transcript-height/spec.md)
 - [ ] **Long dictations transcribed while recorded** (022) — Julien's requests of 2026-11-03/04: full 30 s pieces are transcribed while the user speaks, the remaining pieces go in one batch, and App Nap no longer throttles the stop (98 s dictation: 0.67 s wait instead of 2.1–2.8 s). Native check pending. → [022-transcribe-while-recording](features/022-transcribe-while-recording/spec.md)
 - [ ] **Settings survive another Handy version** (023) — Julien's request of 2026-11-07, after an older build erased his replacement rules: every committed settings generation is copied privately, a store rewritten by another program is restored at the next start, and a newer store is never rewritten. Native check pending. → [023-settings-backups](features/023-settings-backups/spec.md)
+- [ ] **Transcription engine selector** (024) — Julien's request of 2026-11-23: Local / API tabs in Settings › Models; ChatGPT live dictation through the Codex ChatGPT sign-in in its own module, local model as fallback and locked while an API engine is active; room for Soniox and other APIs. Claude Design mockups pending. → [024-transcription-engine](features/024-transcription-engine/spec.md)
 <!-- roadmap:postmvp:end -->
 
 ## Future
