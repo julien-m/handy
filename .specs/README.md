@@ -57,6 +57,7 @@
 | 021 | Long Transcripts Scroll in the History | In Progress | 2026-11-03 | 2026-11-03 | [spec](features/021-history-transcript-height/spec.md) |
 | 022 | Long Dictations Transcribed While Recorded | In Progress | 2026-11-03 | 2026-11-05 | [spec](features/022-transcribe-while-recording/spec.md) |
 | 023 | Settings Survive Another Handy Version | In Progress | 2026-11-07 | 2026-11-07 | [spec](features/023-settings-backups/spec.md) |
+| 024 | Transcription Engine Selector | In Progress | 2026-11-23 | 2026-11-23 | [spec](features/024-transcription-engine/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -82,6 +83,7 @@
 
 | Date | Type | Description |
 |---|---|---|
+| 2026-11-23 | Feature | Transcription engine setting (local / ChatGPT live with local fallback); read [024](features/024-transcription-engine/implementation.md). |
 | 2026-11-17 | Bugfix | Exact vocabulary occurrences protected from overlapping fuzzy corrections; read the [003 correction](features/003-recognition-vocabulary/implementation.md#exact-vocabulary-protection--2026-11-17). |
 | 2026-11-13 | Bugfix | First recovery drag after native handoff corrected; read the [010 evidence](features/010-recovery-bubble/implementation.md#first-gesture-after-native-drag-2026-11-13). |
 | 2026-11-13 | Maintenance | Migrated to LiveSpec 23 and pinned the current qualified runtime; read the [migration entry](changelog.md). |

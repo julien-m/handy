@@ -61,6 +61,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
   - `model.rs` - Model downloading and management
   - `transcription.rs` - Speech-to-text processing pipeline
   - `history.rs` - Transcription history storage
+- `transcription_engine/` - Engine selection (`transcription_engine` setting) and live remote engines behind the `LiveSession` contract; `chatgpt/` streams dictations to the ChatGPT dictation service with the Codex ChatGPT sign-in, falling back to the local model
 - `audio_toolkit/` - Low-level audio processing:
   - `audio/` - Device enumeration, recording, resampling
   - `vad/` - Voice Activity Detection (Silero VAD)
@@ -94,7 +95,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
 
 **Command-Event Architecture:** Frontend → Backend via Tauri commands; Backend → Frontend via events.
 
-**Pipeline Processing:** Audio → VAD → Whisper/Parakeet → Text output → Clipboard/Paste
+**Pipeline Processing:** Audio → VAD → Whisper/Parakeet (or a live remote engine such as ChatGPT, with local fallback) → Text output → Clipboard/Paste
 
 **State Flow:** Zustand → Tauri Command → settings service (shared validation, revisioned atomic commit under a cross-process lock) → `settings_store.json` → live effects → `settings-changed` event (revision + changed keys) → Zustand refresh
 

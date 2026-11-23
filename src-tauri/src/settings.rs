@@ -185,6 +185,19 @@ pub enum OverlayStyle {
     Live,
 }
 
+// @spec FR-001: Engine choice setting — .specs/features/024-transcription-engine/spec.md#fr-001
+/// Which engine transcribes dictations. `Local` runs the selected on-device
+/// model; `ChatGpt` streams the audio to the ChatGPT dictation service with the
+/// user's ChatGPT sign-in and falls back to the local model on any failure.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
+pub enum TranscriptionEngine {
+    #[default]
+    #[serde(rename = "local")]
+    Local,
+    #[serde(rename = "chatgpt")]
+    ChatGpt,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelUnloadTimeout {
@@ -674,6 +687,9 @@ pub struct AppSettings {
     /// `overlay_position` (position `none` → style `None`).
     #[serde(default = "default_overlay_style")]
     pub overlay_style: OverlayStyle,
+    /// Engine used for dictations (local model or ChatGPT live stream).
+    #[serde(default)]
+    pub transcription_engine: TranscriptionEngine,
 }
 
 fn default_model() -> String {
@@ -1234,6 +1250,7 @@ pub fn get_default_settings() -> AppSettings {
         vad_enabled: default_vad_enabled(),
         vad_backend: VadBackend::default(),
         overlay_style: default_overlay_style(),
+        transcription_engine: TranscriptionEngine::default(),
     }
 }
 
@@ -1720,6 +1737,17 @@ mod tests {
             settings.settings_schema_version,
             CURRENT_SETTINGS_SCHEMA_VERSION
         );
+    }
+
+    #[test]
+    fn transcription_engine_defaults_to_local_and_reads_chatgpt() {
+        assert_eq!(
+            AppSettings::default().transcription_engine,
+            TranscriptionEngine::Local
+        );
+        let engine: TranscriptionEngine = serde_json::from_str("\"chatgpt\"").unwrap();
+        assert_eq!(engine, TranscriptionEngine::ChatGpt);
+        assert!(serde_json::from_str::<TranscriptionEngine>("\"remote\"").is_err());
     }
 
     #[cfg(not(target_os = "linux"))]

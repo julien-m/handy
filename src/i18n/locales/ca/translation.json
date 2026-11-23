@@ -273,7 +273,34 @@
         "label": "Torna a cercar",
         "tooltip": "Torna a cercar models afegits a la carpeta de models o a la memòria cau de Hugging Face des de fora del Handy"
       },
-      "noModelsMatch": "Cap model no coincideix amb aquest filtre."
+      "noModelsMatch": "Cap model no coincideix amb aquest filtre.",
+      "engine": {
+        "title": "Motor de transcripció",
+        "description": "Tria on la teva veu es converteix en text: en aquest dispositiu o amb una API en línia. El model local fa de reserva si una API falla.",
+        "chatgptNotice": "El teu àudio s'envia a OpenAI per transcriure'l, amb l'inici de sessió de ChatGPT de Codex.",
+        "status": {
+          "signedIn": "Sessió de ChatGPT iniciada amb Codex",
+          "signedOut": "Sense sessió: executa «codex login» amb el teu compte de ChatGPT"
+        },
+        "tabs": {
+          "local": "Local",
+          "api": "API"
+        },
+        "active": "Actiu",
+        "activate": "Activa",
+        "fallbackBadge": "Reserva",
+        "fallbackNotice": "Un motor d'API transcriu els teus dictats. El model triat a sota només fa de reserva; activa el model local per canviar-lo.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dictat en directe amb la teva subscripció a ChatGPT."
+          },
+          "upcoming": {
+            "title": "Altres API (Soniox…)",
+            "description": "Aviat."
+          }
+        }
+      }
     },
     "sound": {
       "title": "So",
@@ -1276,6 +1303,7 @@
       "promptOverrideIncomplete": "Tria un proveïdor i un model, o fes servir el proveïdor predeterminat.",
       "promptUnknownProvider": "Aquest proveïdor no està disponible.",
       "promptNotUsable": "Aquest prompt no és vàlid. Edita'l abans de fer-lo servir.",
+      "engineSignInRequired": "Inicieu la sessió a ChatGPT amb «codex login» abans de seleccionar ChatGPT.",
       "limitExceeded": "S'ha arribat al nombre màxim.",
       "conflictTitle": "La configuració s'ha canviat en un altre lloc",
       "conflictBody": "La línia d'ordres o una altra finestra ha desat una versió més nova. Torneu a carregar per veure-la; la vostra modificació no desada es descarta.",

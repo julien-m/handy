@@ -183,6 +183,33 @@
       "rescan": {
         "label": "重新扫描",
         "tooltip": "重新扫描在 Handy 之外添加到模型文件夹或 Hugging Face 缓存中的模型"
+      },
+      "engine": {
+        "title": "转录引擎",
+        "description": "选择语音在哪里转为文字:在此设备上或通过在线 API。API 失败时使用本地模型作为备用。",
+        "chatgptNotice": "你的音频会使用 Codex 中的 ChatGPT 登录发送到 OpenAI 进行转录。",
+        "status": {
+          "signedIn": "已通过 Codex 登录 ChatGPT",
+          "signedOut": "未登录:请使用你的 ChatGPT 账户运行“codex login”"
+        },
+        "tabs": {
+          "local": "本地",
+          "api": "API"
+        },
+        "active": "已启用",
+        "activate": "启用",
+        "fallbackBadge": "备用",
+        "fallbackNotice": "API 引擎正在转录你的听写。下方所选模型仅作备用;启用本地模型后才能更换。",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "使用你的 ChatGPT 订阅进行实时听写。"
+          },
+          "upcoming": {
+            "title": "其他 API(Soniox…)",
+            "description": "即将推出。"
+          }
+        }
       }
     },
     "general": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "请同时选择服务提供商和模型，或使用默认服务提供商。",
       "promptUnknownProvider": "该服务提供商不可用。",
       "promptNotUsable": "该提示词无效。请先编辑后再使用。",
+      "engineSignInRequired": "选择 ChatGPT 前，请先使用“codex login”登录 ChatGPT。",
       "limitExceeded": "已达到最大数量。",
       "conflictTitle": "设置已在其他地方更改",
       "conflictBody": "命令行或其他窗口保存了更新的版本。重新加载即可查看；你未保存的修改将被丢弃。",

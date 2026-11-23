@@ -90,8 +90,8 @@ fn public_schema_requires_all_fields_and_preserves_legacy_numeric_reads(
     // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites` (every build).
     // 013 adds `destination_default_inputs` (every build).
     // 015 adds `smart_capitalization`, 016 `smart_paragraphs_enabled`, 017 `smart_spacing`
-    // (every build).
-    let keys = 74 + usize::from(cfg!(feature = "destination-return"));
+    // (every build). 024 adds `transcription_engine` (every build).
+    let keys = 75 + usize::from(cfg!(feature = "destination-return"));
     assert_eq!(public["required"].as_array().ok_or("required")?.len(), keys);
     let fields = &public["properties"];
     assert_eq!(

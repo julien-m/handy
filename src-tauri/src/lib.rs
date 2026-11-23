@@ -43,6 +43,7 @@ mod smart_paragraphs;
 pub mod smart_paste;
 pub mod smart_spacing;
 mod transcription_coordinator;
+mod transcription_engine;
 mod tray;
 mod tray_i18n;
 mod unknown_token;
@@ -650,9 +651,26 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
         }
         // @spec SC-001: Wait after the end of a replayed dictation — .specs/features/022-transcribe-while-recording/spec.md#sc-001
         let result = if args.live {
-            replay_at_recording_pace(&tm, &samples);
+            // @spec FR-003: CLI replay follows the selected engine — .specs/features/024-transcription-engine/spec.md#fr-003
+            // A live remote engine receives the replay as a dictation stream;
+            // without a final text the local model transcribes the samples.
+            let is_live_engine =
+                crate::transcription_engine::is_live(get_settings(app).transcription_engine);
+            if is_live_engine {
+                tm.start_stream();
+            }
+            replay_at_recording_pace(&tm, &samples, !is_live_engine);
             let t = Instant::now();
-            let result = tm.transcribe_dictation(samples.clone(), &replacements);
+            let streamed = if is_live_engine {
+                tm.finalize_stream(&replacements)
+            } else {
+                Ok(None)
+            };
+            let result = match streamed {
+                Ok(Some(text)) => Ok(text),
+                Ok(None) => tm.transcribe_dictation(samples.clone(), &replacements),
+                Err(e) => Err(e),
+            };
             (t, result)
         } else {
             let t = Instant::now();
@@ -709,10 +727,12 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
 
 /// Feed `samples` to the dictation route in 20 ms frames at recording pace,
 /// as the recorder does during a dictation (`--live`).
-fn replay_at_recording_pace(tm: &TranscriptionManager, samples: &[f32]) {
+fn replay_at_recording_pace(tm: &TranscriptionManager, samples: &[f32], prefetch: bool) {
     use std::time::{Duration, Instant};
     const FRAME: usize = 320;
-    tm.start_prefetch();
+    if prefetch {
+        tm.start_prefetch();
+    }
     let router = tm.stream_router();
     let started = Instant::now();
     for (i, frame) in samples.chunks(FRAME).enumerate() {
@@ -746,6 +766,7 @@ macro_rules! handy_commands {
             shortcut::change_selected_language_setting,
             shortcut::change_overlay_position_setting,
             shortcut::change_overlay_style_setting,
+            shortcut::change_transcription_engine_setting,
             shortcut::change_debug_mode_setting,
             shortcut::change_word_correction_threshold_setting,
             shortcut::change_extra_recording_buffer_setting,
@@ -885,6 +906,7 @@ macro_rules! handy_commands {
             commands::transcription::set_model_unload_timeout,
             commands::transcription::get_model_load_status,
             commands::transcription::unload_model_manually,
+            commands::transcription_engine::get_chatgpt_sign_in_status,
             commands::history::get_history_entries,
             commands::history::toggle_history_entry_saved,
             commands::history::get_audio_file_path,

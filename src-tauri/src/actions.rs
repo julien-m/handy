@@ -197,18 +197,22 @@ impl ShortcutAction for TranscribeAction {
         // Use the app-facing model capability as the single pre-recording source
         // for live streaming decisions. Unknown support is represented as false
         // until the model registry is updated by discovery or runtime load.
-        let model_supports_streaming = selected_model_info
-            .as_ref()
-            .map(|m| m.supports_streaming)
-            .unwrap_or(false);
+        // @spec FR-003: Live engines always stream — .specs/features/024-transcription-engine/spec.md#fr-003
+        // A live remote engine (ChatGPT) always takes the streaming path,
+        // whatever the local model can do.
+        let uses_stream_path = crate::transcription_engine::is_live(settings.transcription_engine)
+            || selected_model_info
+                .as_ref()
+                .map(|m| m.supports_streaming)
+                .unwrap_or(false);
         let vad_policy = if !settings.vad_enabled {
             VadPolicy::Disabled
-        } else if model_supports_streaming {
+        } else if uses_stream_path {
             VadPolicy::Streaming
         } else {
             VadPolicy::Offline
         };
-        if model_supports_streaming {
+        if uses_stream_path {
             tm.start_stream();
         } else {
             // @spec FR-001: Long dictations are transcribed while recorded — .specs/features/022-transcribe-while-recording/spec.md#fr-001
@@ -226,7 +230,7 @@ impl ShortcutAction for TranscribeAction {
         // 006 AC-009: this dictation's first placement follows the cursor again.
         crate::overlay::begin_dictation_placement();
         match settings.overlay_style {
-            OverlayStyle::Live if model_supports_streaming => utils::show_streaming_overlay(app),
+            OverlayStyle::Live if uses_stream_path => utils::show_streaming_overlay(app),
             OverlayStyle::Live | OverlayStyle::Minimal => show_recording_overlay(app),
             OverlayStyle::None => {} // show_overlay_state no-ops on None anyway
         }

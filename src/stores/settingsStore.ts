@@ -251,6 +251,8 @@ const settingUpdaters: {
   lazy_stream_close: (value) =>
     commands.changeLazyStreamCloseSetting(value as boolean),
   overlay_style: (value) => commands.changeOverlayStyleSetting(value as string),
+  transcription_engine: (value) =>
+    commands.changeTranscriptionEngineSetting(value as string),
   vad_enabled: (value) => commands.changeVadEnabledSetting(value as boolean),
   // Rejected switches (e.g. mid-recording) roll the dropdown back in updateSetting.
   vad_backend: (value) => commands.changeVadBackendSetting(value as VadBackend),

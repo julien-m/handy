@@ -273,6 +273,33 @@
       "rescan": {
         "label": "סריקה מחדש",
         "tooltip": "סריקה מחדש לאיתור מודלים שנוספו לתיקיית המודלים או למטמון של Hugging Face מחוץ ל-Handy"
+      },
+      "engine": {
+        "title": "מנוע תמלול",
+        "description": "בחרו היכן הקול הופך לטקסט: במכשיר זה או דרך API מקוון. המודל המקומי משמש גיבוי אם API נכשל.",
+        "chatgptNotice": "השמע שלכם נשלח ל-OpenAI לתמלול, עם ההתחברות ל-ChatGPT מ-Codex.",
+        "status": {
+          "signedIn": "מחובר ל-ChatGPT דרך Codex",
+          "signedOut": "לא מחובר: הריצו ‏“codex login” עם חשבון ChatGPT שלכם"
+        },
+        "tabs": {
+          "local": "מקומי",
+          "api": "API"
+        },
+        "active": "פעיל",
+        "activate": "הפעלה",
+        "fallbackBadge": "גיבוי",
+        "fallbackNotice": "מנוע API מתמלל את ההכתבות שלכם. המודל שנבחר למטה משמש רק כגיבוי; הפעילו את המודל המקומי כדי להחליף אותו.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "הכתבה בזמן אמת עם מנוי ChatGPT."
+          },
+          "upcoming": {
+            "title": "ממשקי API נוספים (Soniox…)",
+            "description": "בקרוב."
+          }
+        }
       }
     },
     "sound": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "בחרו ספק ומודל, או השתמשו בספק ברירת המחדל.",
       "promptUnknownProvider": "ספק זה אינו זמין.",
       "promptNotUsable": "ההנחיה אינה תקינה. ערכו אותה לפני השימוש.",
+      "engineSignInRequired": "התחברו ל-ChatGPT באמצעות \"codex login\" לפני בחירת ChatGPT.",
       "limitExceeded": "הגעתם למספר המרבי.",
       "conflictTitle": "ההגדרות שונו במקום אחר",
       "conflictBody": "שורת הפקודה או חלון אחר שמרו גרסה חדשה יותר. טענו מחדש כדי לראות אותה; העריכה שלא נשמרה תבוטל.",

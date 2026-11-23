@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Yeniden Tara",
         "tooltip": "Handy dışında modeller klasörüne veya Hugging Face önbelleğine eklenen modelleri yeniden tara"
+      },
+      "engine": {
+        "title": "Transkripsiyon motoru",
+        "description": "Sesinizin nerede metne dönüşeceğini seçin: bu cihazda veya çevrimiçi bir API ile. Bir API başarısız olursa yerel model yedektir.",
+        "chatgptNotice": "Sesiniz, Codex'teki ChatGPT oturumuyla transkripsiyon için OpenAI'ye gönderilir.",
+        "status": {
+          "signedIn": "Codex üzerinden ChatGPT'ye giriş yapıldı",
+          "signedOut": "Giriş yapılmadı: ChatGPT hesabınızla “codex login” çalıştırın"
+        },
+        "tabs": {
+          "local": "Yerel",
+          "api": "API"
+        },
+        "active": "Etkin",
+        "activate": "Etkinleştir",
+        "fallbackBadge": "Yedek",
+        "fallbackNotice": "Dikteleri bir API motoru yazıya döküyor. Aşağıda seçilen model yalnızca yedektir; değiştirmek için yerel modeli etkinleştirin.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "ChatGPT aboneliğinizle canlı dikte."
+          },
+          "upcoming": {
+            "title": "Diğer API'ler (Soniox…)",
+            "description": "Yakında."
+          }
+        }
       }
     },
     "general": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "Bir sağlayıcı ve bir model seçin ya da varsayılan sağlayıcıyı kullanın.",
       "promptUnknownProvider": "Bu sağlayıcı kullanılamıyor.",
       "promptNotUsable": "Bu istem geçersiz. Kullanmadan önce düzenleyin.",
+      "engineSignInRequired": "ChatGPT'yi seçmeden önce “codex login” ile ChatGPT'ye giriş yapın.",
       "limitExceeded": "Azami sayıya ulaşıldı.",
       "conflictTitle": "Ayarlar başka bir yerde değiştirildi",
       "conflictBody": "Komut satırı veya başka bir pencere daha yeni bir sürüm kaydetti. Görmek için yeniden yükleyin; kaydedilmemiş değişikliğiniz atılır.",

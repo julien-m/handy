@@ -11,8 +11,9 @@ use crate::managers::audio::AudioRecordingManager;
 use crate::managers::model::{EngineType, ModelManager};
 use crate::settings::{
     get_settings, AppSettings, ChineseScript, ModelUnloadTimeout, OrtAcceleratorSetting,
-    TranscribeAcceleratorSetting,
+    TranscribeAcceleratorSetting, TranscriptionEngine,
 };
+use crate::transcription_engine::{self, LiveSession};
 use crate::word_replacements::matcher::CompiledReplacements;
 use anyhow::Result;
 use log::{debug, error, info, warn};
@@ -47,6 +48,9 @@ mod prefetch;
 mod vocabulary;
 
 const STREAM_PERF_LOG_INTERVAL: Duration = Duration::from_secs(5);
+/// Longest wait for a frame before a live remote session is polled for text;
+/// matches the recorder's ~20 ms frame cadence so live text stays fresh.
+const LIVE_ENGINE_POLL_INTERVAL: Duration = Duration::from_millis(20);
 
 fn panic_payload_message(payload: &(dyn std::any::Any + Send)) -> String {
     if let Some(message) = payload.downcast_ref::<&str>() {
@@ -916,6 +920,12 @@ impl TranscriptionManager {
             stream_active: Arc::clone(&self.stream_active),
         };
 
+        let engine = get_settings(&self.app_handle).transcription_engine;
+        if transcription_engine::is_live(engine) {
+            self.run_live_engine_stream(rx, engine);
+            return;
+        }
+
         // Wait for any in-progress model load to finish (start_stream races the
         // background load kicked off when recording starts).
         {
@@ -1093,6 +1103,82 @@ impl TranscriptionManager {
         // The channel closed without finalize/cancel; dropping the stream
         // handle resets the worker's stream. `_worker` drops after, clearing
         // this worker's flags.
+    }
+
+    // @spec FR-003: Live remote engine stream, FR-005: Local fallback — .specs/features/024-transcription-engine/spec.md#fr-003
+    /// Stream one dictation to the live remote `engine`: frames go to the
+    /// session as they arrive and live text to the overlay in between. Any
+    /// failure drops the session, so finalize reports `None` and the caller
+    /// transcribes the same recording with the local model.
+    fn run_live_engine_stream(&self, rx: mpsc::Receiver<StreamCmd>, engine: TranscriptionEngine) {
+        let settings = get_settings(&self.app_handle);
+        let language = live_engine_language(&settings.selected_language);
+        let mut session = match transcription_engine::open_live_session(engine, language.as_deref())
+        {
+            Some(Ok(session)) => Some(session),
+            Some(Err(e)) => {
+                warn!(
+                    "Live engine {:?} unavailable, the local model will transcribe: {}",
+                    engine, e
+                );
+                None
+            }
+            None => None,
+        };
+        self.stream_active
+            .store(session.is_some(), Ordering::Release);
+
+        loop {
+            let first = match rx.recv_timeout(LIVE_ENGINE_POLL_INTERVAL) {
+                Ok(cmd) => Some(cmd),
+                Err(mpsc::RecvTimeoutError::Timeout) => None,
+                Err(mpsc::RecvTimeoutError::Disconnected) => return,
+            };
+            // Drain every queued command before reading the network, so audio
+            // never piles up behind event polling.
+            for cmd in first
+                .into_iter()
+                .chain(std::iter::from_fn(|| rx.try_recv().ok()))
+            {
+                match cmd {
+                    StreamCmd::Feed(pcm) => {
+                        self.touch_activity();
+                        if let Some(Err(e)) = session.as_mut().map(|s| s.send_audio(&pcm)) {
+                            self.drop_live_session(&mut session, &e);
+                        }
+                    }
+                    StreamCmd::Finalize(reply) => {
+                        let finalized =
+                            finish_live_session(session.take(), &settings, language.as_deref());
+                        let _ = reply.send(Ok(finalized));
+                        return;
+                    }
+                    StreamCmd::Cancel => return,
+                }
+            }
+            match session.as_mut().map(|s| s.poll()) {
+                Some(Ok(Some(live))) => {
+                    emit_stream_text(&self.app_handle, &live.committed, &live.tentative)
+                }
+                Some(Err(e)) => self.drop_live_session(&mut session, &e),
+                Some(Ok(None)) | None => {}
+            }
+        }
+    }
+
+    /// Abandon a failed live session: the overlay stops updating and the
+    /// finalize reports no stream result, so the local model takes over.
+    fn drop_live_session(
+        &self,
+        session: &mut Option<Box<dyn LiveSession>>,
+        error: &transcription_engine::LiveSessionError,
+    ) {
+        warn!(
+            "Live engine stopped, the local model will transcribe: {}",
+            error
+        );
+        *session = None;
+        self.stream_active.store(false, Ordering::Release);
     }
 
     /// Return the taken ONNX engine to the mutex, unless the model was switched
@@ -2188,6 +2274,41 @@ fn cpp_translation_task(
     }
 }
 
+/// Language hint for a live engine: `None` for "auto" (the engine detects
+/// it), otherwise the primary ISO 639-1 subtag (`zh-Hans` → `zh`). The
+/// script/region subtag is dropped because the dictation service takes plain
+/// language codes; Chinese script conversion still applies afterwards.
+fn live_engine_language(selected_language: &str) -> Option<String> {
+    let primary = selected_language
+        .split(['-', '_'])
+        .next()
+        .unwrap_or_default();
+    (selected_language != "auto" && !primary.is_empty()).then(|| primary.to_owned())
+}
+
+/// Wait for a live session's final text. `None` (no session, or a failure)
+/// makes the caller transcribe the recording with the local model.
+fn finish_live_session(
+    session: Option<Box<dyn LiveSession>>,
+    settings: &AppSettings,
+    language: Option<&str>,
+) -> Option<FinalizedStreamText> {
+    match session?.finish() {
+        Ok(text) => Some(FinalizedStreamText {
+            text,
+            output_language: resolve_output_language_evidence(settings, language, &[], false),
+            supported_languages: Vec::new(),
+        }),
+        Err(e) => {
+            warn!(
+                "Live engine finalize failed, the local model will transcribe: {}",
+                e
+            );
+            None
+        }
+    }
+}
+
 /// Drain a stream command channel, ignoring fed audio, until the caller
 /// finalizes or cancels. Used when streaming can't actually run (model not
 /// loaded / not streaming-capable) so the finalize handshake still completes
@@ -2442,6 +2563,14 @@ mod tests {
 
     fn languages(codes: &[&str]) -> Vec<String> {
         codes.iter().map(|code| (*code).to_string()).collect()
+    }
+
+    #[test]
+    fn live_engine_language_drops_auto_and_script_subtags() {
+        assert_eq!(live_engine_language("auto"), None);
+        assert_eq!(live_engine_language("fr"), Some("fr".to_owned()));
+        assert_eq!(live_engine_language("zh-Hans"), Some("zh".to_owned()));
+        assert_eq!(live_engine_language("pt_BR"), Some("pt".to_owned()));
     }
 
     #[test]

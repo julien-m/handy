@@ -31,6 +31,15 @@ assert.equal(
 );
 assert.equal(
   settingsErrorKey(
+    refusal({
+      field: "transcription_engine",
+      reason: "engine_sign_in_required",
+    }),
+  ),
+  SETTINGS_ERROR_KEYS.engineSignInRequired,
+);
+assert.equal(
+  settingsErrorKey(
     refusal({ field: "paste_delay_ms", reason: "out_of_range" }),
   ),
   SETTINGS_ERROR_KEYS.outOfRange,

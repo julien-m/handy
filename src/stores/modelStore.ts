@@ -4,6 +4,8 @@ import { produce } from "immer";
 import { listen } from "@tauri-apps/api/event";
 import { commands, type ModelInfo } from "@/bindings";
 import { toast } from "sonner";
+import { usesLocalModel } from "@/components/settings/transcription-engine/transcription-engine-options";
+import { useSettingsStore } from "./settingsStore";
 
 interface DownloadProgress {
   model_id: string;
@@ -143,6 +145,16 @@ export const useModelStore = create<ModelsStore>()(
     },
 
     selectModel: async (modelId: string) => {
+      // @spec FR-008: Local model locked while an API engine is active — .specs/features/024-transcription-engine/spec.md#fr-008
+      // The backend refuses the switch too; returning early keeps every caller
+      // (footer selector, auto-select after a download) silent and consistent.
+      // Onboarding is exempt: it completes by choosing the first local model.
+      const settings = useSettingsStore.getState().settings;
+      if (
+        settings?.onboarding_completed &&
+        !usesLocalModel(settings.transcription_engine)
+      )
+        return false;
       try {
         set({ error: null });
         const result = await commands.setActiveModel(modelId);

@@ -273,7 +273,34 @@
         "label": "Søg igen",
         "tooltip": "Søg igen efter modeller, der er tilføjet til modelmappen eller Hugging Face-cachen uden for Handy"
       },
-      "noModelsMatch": "Ingen modeller matcher dette filter."
+      "noModelsMatch": "Ingen modeller matcher dette filter.",
+      "engine": {
+        "title": "Transskriptionsmotor",
+        "description": "Vælg, hvor din stemme bliver til tekst: på denne enhed eller via et online-API. Den lokale model er reserve, hvis et API fejler.",
+        "chatgptNotice": "Din lyd sendes til OpenAI til transskription med ChatGPT-login fra Codex.",
+        "status": {
+          "signedIn": "Logget ind på ChatGPT via Codex",
+          "signedOut": "Ikke logget ind: kør “codex login” med din ChatGPT-konto"
+        },
+        "tabs": {
+          "local": "Lokal",
+          "api": "API"
+        },
+        "active": "Aktiv",
+        "activate": "Aktivér",
+        "fallbackBadge": "Reserve",
+        "fallbackNotice": "En API-motor transskriberer dine dikteringer. Modellen nedenfor bruges kun som reserve; aktivér den lokale model for at skifte.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Livediktering med dit ChatGPT-abonnement."
+          },
+          "upcoming": {
+            "title": "Andre API'er (Soniox…)",
+            "description": "Kommer snart."
+          }
+        }
+      }
     },
     "sound": {
       "title": "Lyd",
@@ -1276,6 +1303,7 @@
       "promptOverrideIncomplete": "Vælg både en udbyder og en model, eller brug standardudbyderen.",
       "promptUnknownProvider": "Denne udbyder er ikke tilgængelig.",
       "promptNotUsable": "Denne prompt er ugyldig. Rediger den, før du bruger den.",
+      "engineSignInRequired": "Log ind på ChatGPT med “codex login”, før du vælger ChatGPT.",
       "limitExceeded": "Det maksimale antal er nået.",
       "conflictTitle": "Indstillingerne blev ændret et andet sted",
       "conflictBody": "Kommandolinjen eller et andet vindue gemte en nyere version. Genindlæs for at se den; din ikke-gemte ændring kasseres.",

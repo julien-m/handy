@@ -4,6 +4,8 @@ import { listen } from "@tauri-apps/api/event";
 import { commands } from "@/bindings";
 import { getTranslatedModelName } from "../../lib/utils/modelTranslation";
 import { useModelStore } from "../../stores/modelStore";
+import { useSettings } from "../../hooks/useSettings";
+import { usesLocalModel } from "../settings/transcription-engine/transcription-engine-options";
 import ModelStatusButton from "./ModelStatusButton";
 import ModelDropdown from "./ModelDropdown";
 import DownloadProgressDisplay from "./DownloadProgressDisplay";
@@ -39,6 +41,9 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onError }) => {
   const [modelStatus, setModelStatus] = useState<ModelStatus>("unloaded");
   const [modelError, setModelError] = useState<string | null>(null);
   const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const { getSetting } = useSettings();
+  // With an API engine the local model is only the fallback (024 FR-008).
+  const isLocalEngine = usesLocalModel(getSetting("transcription_engine"));
   // Track pending model switch for optimistic display
   const [pendingModelId, setPendingModelId] = useState<string | null>(null);
 
@@ -259,6 +264,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onError }) => {
             models={models}
             currentModelId={displayModelId}
             onModelSelect={handleModelSelect}
+            isLocked={!isLocalEngine}
           />
         )}
       </div>

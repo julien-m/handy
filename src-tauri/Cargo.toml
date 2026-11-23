@@ -97,6 +97,9 @@ tar = "0.4.44"
 flate2 = "1.0"
 sha2 = "0.10"
 uuid = { version = "=1.21.0", features = ["v4"] }
+# ChatGPT live transcription engine (src/transcription_engine/chatgpt)
+tungstenite = { version = "0.26", features = ["native-tls"] }
+base64 = "0.22"
 libc = "0.2"
 # Whisper-family models run through transcribe-cpp (GGUF/ggml, native backends);
 # transcribe-rs is now ONNX-only (Parakeet, Moonshine, SenseVoice, GigaAM,

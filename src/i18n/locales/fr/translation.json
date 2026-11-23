@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Réanalyser",
         "tooltip": "Réanalyser pour détecter les modèles ajoutés au dossier des modèles ou au cache Hugging Face en dehors de Handy"
+      },
+      "engine": {
+        "title": "Moteur de transcription",
+        "description": "Choisissez où votre voix devient du texte : sur cet appareil ou via une API en ligne. Le modèle local sert de secours si une API échoue.",
+        "chatgptNotice": "Votre audio est envoyé à OpenAI pour la transcription, avec la connexion ChatGPT de Codex.",
+        "status": {
+          "signedIn": "Connecté à ChatGPT via Codex",
+          "signedOut": "Non connecté : lancez « codex login » avec votre compte ChatGPT"
+        },
+        "tabs": {
+          "local": "Local",
+          "api": "API"
+        },
+        "active": "Actif",
+        "activate": "Activer",
+        "fallbackBadge": "Secours",
+        "fallbackNotice": "Un moteur API transcrit vos dictées. Le modèle choisi ci-dessous ne sert que de secours ; activez le modèle local pour en changer.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dictée en direct avec votre abonnement ChatGPT."
+          },
+          "upcoming": {
+            "title": "Autres API (Soniox…)",
+            "description": "Bientôt disponible."
+          }
+        }
       }
     },
     "general": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "Choisissez un fournisseur et un modèle, ou utilisez le fournisseur par défaut.",
       "promptUnknownProvider": "Ce fournisseur n'est pas disponible.",
       "promptNotUsable": "Ce prompt est invalide. Modifiez-le avant de l'utiliser.",
+      "engineSignInRequired": "Connectez-vous à ChatGPT avec « codex login » avant de sélectionner ChatGPT.",
       "limitExceeded": "Le nombre maximum est atteint.",
       "conflictTitle": "Réglages modifiés ailleurs",
       "conflictBody": "La ligne de commande ou une autre fenêtre a enregistré une version plus récente. Rechargez pour la voir ; votre modification non enregistrée est abandonnée.",

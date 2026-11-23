@@ -183,6 +183,33 @@
       "rescan": {
         "label": "Riscansiona",
         "tooltip": "Riscansiona per trovare modelli aggiunti alla cartella dei modelli o alla cache di Hugging Face al di fuori di Handy"
+      },
+      "engine": {
+        "title": "Motore di trascrizione",
+        "description": "Scegli dove la tua voce diventa testo: su questo dispositivo o tramite un'API online. Il modello locale fa da riserva se un'API non funziona.",
+        "chatgptNotice": "Il tuo audio viene inviato a OpenAI per la trascrizione, con l'accesso ChatGPT di Codex.",
+        "status": {
+          "signedIn": "Accesso a ChatGPT eseguito tramite Codex",
+          "signedOut": "Accesso non eseguito: esegui “codex login” con il tuo account ChatGPT"
+        },
+        "tabs": {
+          "local": "Locale",
+          "api": "API"
+        },
+        "active": "Attivo",
+        "activate": "Attiva",
+        "fallbackBadge": "Riserva",
+        "fallbackNotice": "Un motore API trascrive le tue dettature. Il modello scelto qui sotto serve solo da riserva; attiva il modello locale per cambiarlo.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Dettatura in diretta con il tuo abbonamento ChatGPT."
+          },
+          "upcoming": {
+            "title": "Altre API (Soniox…)",
+            "description": "In arrivo."
+          }
+        }
       }
     },
     "general": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "Scegli un provider e un modello, oppure usa il provider predefinito.",
       "promptUnknownProvider": "Questo provider non è disponibile.",
       "promptNotUsable": "Questo prompt non è valido. Modificalo prima di usarlo.",
+      "engineSignInRequired": "Accedi a ChatGPT con «codex login» prima di selezionare ChatGPT.",
       "limitExceeded": "È stato raggiunto il numero massimo.",
       "conflictTitle": "Impostazioni modificate altrove",
       "conflictBody": "La riga di comando o un'altra finestra ha salvato una versione più recente. Ricarica per vederla; la modifica non salvata viene scartata.",

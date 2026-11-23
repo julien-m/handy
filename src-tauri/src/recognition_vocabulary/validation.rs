@@ -171,10 +171,16 @@ mod tests {
     #[test]
     fn unicode_tables_are_pinned_together() {
         // Case folding comes from `caseless` (Unicode 16.0.0), whitespace from the standard
-        // library (Unicode 17.0.0 with Rust 1.94): a toolchain or crate update must be reviewed
-        // here, since it can change which terms collide.
+        // library (Unicode 17.0.0 with Rust 1.94, 18.0.0 with later stable releases): a toolchain
+        // or crate update must be reviewed here, since it can change which terms collide.
+        // Reviewed: Unicode 18.0.0 leaves the White_Space property used by `char::is_whitespace`
+        // unchanged, so terms collide exactly as with 17.0.0.
         assert_eq!(caseless::UNICODE_VERSION, (16, 0, 0));
-        assert_eq!(char::UNICODE_VERSION, (17, 0, 0));
+        assert!(
+            matches!(char::UNICODE_VERSION, (17, 0, 0) | (18, 0, 0)),
+            "unreviewed std Unicode version {:?}",
+            char::UNICODE_VERSION
+        );
     }
 
     #[test]

@@ -133,6 +133,8 @@ fn enum_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         ("ort_accelerator", "directml"),
         ("vad_backend", "earshot"),
         ("overlay_style", "live"),
+        // 024: transcription engine choice (the sign-in rule is a commit-time dependency check).
+        ("transcription_engine", "chatgpt"),
     ]
     .into_iter()
     // 009: Automatic Enter replaces it with the `destination-return` gate open.
@@ -169,7 +171,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_56_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_57_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -182,7 +184,7 @@ fn all_56_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let cases = canonical_cases();
     assert_eq!(
         cases.len(),
-        56 + usize::from(cfg!(feature = "destination-return"))
+        57 + usize::from(cfg!(feature = "destination-return"))
     );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;

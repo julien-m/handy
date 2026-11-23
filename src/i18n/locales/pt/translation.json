@@ -273,6 +273,33 @@
       "rescan": {
         "label": "Reescanear",
         "tooltip": "Reescaneia em busca de modelos adicionados à pasta de modelos ou ao cache do Hugging Face fora do Handy"
+      },
+      "engine": {
+        "title": "Motor de transcrição",
+        "description": "Escolha onde sua voz vira texto: neste dispositivo ou por uma API on-line. O modelo local é a reserva se uma API falhar.",
+        "chatgptNotice": "Seu áudio é enviado à OpenAI para transcrição, usando o login do ChatGPT do Codex.",
+        "status": {
+          "signedIn": "Conectado ao ChatGPT pelo Codex",
+          "signedOut": "Não conectado: execute “codex login” com sua conta do ChatGPT"
+        },
+        "tabs": {
+          "local": "Local",
+          "api": "API"
+        },
+        "active": "Ativo",
+        "activate": "Ativar",
+        "fallbackBadge": "Reserva",
+        "fallbackNotice": "Um motor de API transcreve seus ditados. O modelo escolhido abaixo é apenas reserva; ative o modelo local para trocá-lo.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Ditado ao vivo com sua assinatura do ChatGPT."
+          },
+          "upcoming": {
+            "title": "Outras APIs (Soniox…)",
+            "description": "Em breve."
+          }
+        }
       }
     },
     "sound": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "Escolha um provedor e um modelo, ou use o provedor padrão.",
       "promptUnknownProvider": "Este provedor não está disponível.",
       "promptNotUsable": "Este prompt é inválido. Edite-o antes de usá-lo.",
+      "engineSignInRequired": "Inicie sessão no ChatGPT com “codex login” antes de selecionar o ChatGPT.",
       "limitExceeded": "O número máximo foi atingido.",
       "conflictTitle": "Configurações alteradas em outro lugar",
       "conflictBody": "A linha de comando ou outra janela salvou uma versão mais recente. Recarregue para vê-la; sua alteração não salva será descartada.",

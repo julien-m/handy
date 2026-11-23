@@ -1038,6 +1038,33 @@
       "rescan": {
         "label": "إعادة الفحص",
         "tooltip": "إعادة الفحص بحثًا عن النماذج المضافة إلى مجلد النماذج أو ذاكرة Hugging Face التخزينية المؤقتة خارج Handy"
+      },
+      "engine": {
+        "title": "محرك النسخ",
+        "description": "اختر أين يتحول صوتك إلى نص: على هذا الجهاز أو عبر واجهة API على الإنترنت. النموذج المحلي احتياطي إذا فشلت API.",
+        "chatgptNotice": "يُرسل صوتك إلى OpenAI للنسخ باستخدام تسجيل دخول ChatGPT من Codex.",
+        "status": {
+          "signedIn": "تم تسجيل الدخول إلى ChatGPT عبر Codex",
+          "signedOut": "لم يتم تسجيل الدخول: شغّل «codex login» بحساب ChatGPT"
+        },
+        "tabs": {
+          "local": "محلي",
+          "api": "API"
+        },
+        "active": "نشط",
+        "activate": "تفعيل",
+        "fallbackBadge": "احتياطي",
+        "fallbackNotice": "يقوم محرك API بنسخ إملاءاتك. النموذج المختار أدناه احتياطي فقط؛ فعّل النموذج المحلي لتغييره.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "إملاء مباشر باشتراك ChatGPT."
+          },
+          "upcoming": {
+            "title": "واجهات API أخرى (Soniox…)",
+            "description": "قريبًا."
+          }
+        }
       }
     },
     "replacements": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "اختر مزوّدًا ونموذجًا، أو استخدم المزوّد الافتراضي.",
       "promptUnknownProvider": "هذا المزوّد غير متاح.",
       "promptNotUsable": "هذا الموجّه غير صالح. عدّله قبل استخدامه.",
+      "engineSignInRequired": "سجّل الدخول إلى ChatGPT باستخدام \"codex login\" قبل اختيار ChatGPT.",
       "limitExceeded": "تم بلوغ الحد الأقصى للعدد.",
       "conflictTitle": "تم تغيير الإعدادات في مكان آخر",
       "conflictBody": "حفظ سطر الأوامر أو نافذة أخرى إصدارًا أحدث. أعد التحميل لرؤيته؛ سيتم تجاهل تعديلك غير المحفوظ.",

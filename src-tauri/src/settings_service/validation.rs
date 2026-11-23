@@ -279,5 +279,68 @@ pub(crate) fn validate_dependencies(
             ValidationReason::GpuDeviceRequired,
         ));
     }
+    validate_engine_change(before, after, crate::transcription_engine::is_selectable)
+}
+
+// @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
+/// Business rule: an API engine is selected only while its sign-in is available, so a signed-out
+/// user is never switched to an engine that would always fall back. Only a change of engine is
+/// checked: an engine already selected stays selected when its sign-in later expires (the
+/// dictation then falls back to the local model) and other writes are not blocked by it.
+fn validate_engine_change(
+    before: &crate::settings::AppSettings,
+    after: &crate::settings::AppSettings,
+    is_selectable: impl Fn(crate::settings::TranscriptionEngine) -> bool,
+) -> Result<(), SettingsError> {
+    if after.transcription_engine != before.transcription_engine
+        && !is_selectable(after.transcription_engine)
+    {
+        return Err(SettingsError::validation(
+            "transcription_engine",
+            ValidationReason::EngineSignInRequired,
+        ));
+    }
     Ok(())
+}
+
+#[cfg(test)]
+mod engine_change_tests {
+    use super::*;
+    use crate::settings::{AppSettings, TranscriptionEngine};
+
+    fn with_engine(engine: TranscriptionEngine) -> AppSettings {
+        let mut settings = crate::settings::get_default_settings();
+        settings.transcription_engine = engine;
+        settings
+    }
+
+    #[test]
+    fn switching_to_a_signed_out_engine_is_refused() {
+        let error = validate_engine_change(
+            &with_engine(TranscriptionEngine::Local),
+            &with_engine(TranscriptionEngine::ChatGpt),
+            |engine| engine == TranscriptionEngine::Local,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error.code(),
+            super::super::errors::SettingsErrorCode::ValidationFailed
+        );
+    }
+
+    #[test]
+    fn switching_to_a_signed_in_engine_or_back_to_local_is_allowed() {
+        let local = with_engine(TranscriptionEngine::Local);
+        let chatgpt = with_engine(TranscriptionEngine::ChatGpt);
+        assert!(validate_engine_change(&local, &chatgpt, |_| true).is_ok());
+        assert!(
+            validate_engine_change(&chatgpt, &local, |e| e == TranscriptionEngine::Local).is_ok()
+        );
+    }
+
+    #[test]
+    fn an_engine_already_selected_does_not_block_other_writes() {
+        let chatgpt = with_engine(TranscriptionEngine::ChatGpt);
+        assert!(validate_engine_change(&chatgpt, &chatgpt.clone(), |_| false).is_ok());
+    }
 }

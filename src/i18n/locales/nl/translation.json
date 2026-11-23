@@ -273,7 +273,34 @@
         "label": "Opnieuw scannen",
         "tooltip": "Scannen naar modellen die buiten Handy om zijn toegevoegd aan de modellenmap of Hugging Face-cache"
       },
-      "noModelsMatch": "Geen modellen voldoen aan dit filter."
+      "noModelsMatch": "Geen modellen voldoen aan dit filter.",
+      "engine": {
+        "title": "Transcriptie-engine",
+        "description": "Kies waar je stem tekst wordt: op dit apparaat of via een online API. Het lokale model is de terugval als een API faalt.",
+        "chatgptNotice": "Je audio wordt naar OpenAI gestuurd voor transcriptie, met de ChatGPT-aanmelding van Codex.",
+        "status": {
+          "signedIn": "Aangemeld bij ChatGPT via Codex",
+          "signedOut": "Niet aangemeld: voer “codex login” uit met je ChatGPT-account"
+        },
+        "tabs": {
+          "local": "Lokaal",
+          "api": "API"
+        },
+        "active": "Actief",
+        "activate": "Activeren",
+        "fallbackBadge": "Terugval",
+        "fallbackNotice": "Een API-engine transcribeert je dictaten. Het model hieronder dient alleen als terugval; activeer het lokale model om het te wijzigen.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "Live dicteren met je ChatGPT-abonnement."
+          },
+          "upcoming": {
+            "title": "Andere API's (Soniox…)",
+            "description": "Binnenkort beschikbaar."
+          }
+        }
+      }
     },
     "sound": {
       "title": "Geluid",
@@ -1276,6 +1303,7 @@
       "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
       "promptUnknownProvider": "Deze provider is niet beschikbaar.",
       "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
+      "engineSignInRequired": "Meld je aan bij ChatGPT met “codex login” voordat je ChatGPT selecteert.",
       "limitExceeded": "Het maximale aantal is bereikt.",
       "conflictTitle": "Instellingen elders gewijzigd",
       "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",

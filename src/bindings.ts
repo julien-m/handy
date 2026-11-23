@@ -157,6 +157,14 @@ async changeOverlayStyleSetting(style: string) : Promise<Result<null, SettingsCo
     else return { status: "error", error: e  as any };
 }
 },
+async changeTranscriptionEngineSetting(engine: string) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_transcription_engine_setting", { engine }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_debug_mode_setting", { enabled }) };
@@ -1403,6 +1411,13 @@ async unloadModelManually() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Whether a ChatGPT sign-in (from Codex) is available to the ChatGPT engine.
+ * Reads a local file only; never returns or logs the credentials.
+ */
+async getChatgptSignInStatus() : Promise<ChatGptSignInStatus> {
+    return await TAURI_INVOKE("get_chatgpt_sign_in_status");
+},
 async getHistoryEntries(cursor: number | null, limit: number | null) : Promise<Result<PaginatedHistory, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_history_entries", { cursor, limit }) };
@@ -1750,7 +1765,11 @@ vad_backend?: VadBackend;
  * not gated on this — that follows model capability. Migrated from the old
  * `overlay_position` (position `none` → style `None`).
  */
-overlay_style?: OverlayStyle }
+overlay_style?: OverlayStyle; 
+/**
+ * Engine used for dictations (local model or ChatGPT live stream).
+ */
+transcription_engine?: TranscriptionEngine }
 /**
  * Stable application identity: bundle identifier on macOS; application user model ID on
  * Windows when available, otherwise the canonical executable path.
@@ -1850,6 +1869,11 @@ export type BudgetUnit = "tokens"
  * Candidate rule; new rules receive a durable ID only when committed.
  */
 export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
+/**
+ * Whether a ChatGPT sign-in is available to the ChatGPT engine. A present
+ * sign-in may still be expired; the server then refuses the session.
+ */
+export type ChatGptSignInStatus = "signed_in" | "signed_out"
 /**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
@@ -3243,6 +3267,12 @@ export type TerminalTarget = { tool: AddressingTool; workspace_id: string; works
  */
 export type Theme = "system" | "light" | "dark"
 export type TranscribeAcceleratorSetting = "auto" | "cpu" | "gpu"
+/**
+ * Which engine transcribes dictations. `Local` runs the selected on-device
+ * model; `ChatGpt` streams the audio to the ChatGPT dictation service with the
+ * user's ChatGPT sign-in and falls back to the local model on any failure.
+ */
+export type TranscriptionEngine = "local" | "chatgpt"
 export type TypingTool = "auto" | "wtype" | "kwtype" | "dotool" | "ydotool" | "xdotool"
 export type VadBackend = "silero" | "earshot"
 /**
@@ -3339,7 +3369,11 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * A remembered input repeats an application or has an invalid name or target (013).
  */
-"default_input_invalid"
+"default_input_invalid" | 
+/**
+ * The selected transcription engine needs a sign-in that is not available (024).
+ */
+"engine_sign_in_required"
 /**
  * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
  * word replacements (002) export their own `ImportMode`.

@@ -358,6 +358,33 @@
       "rescan": {
         "label": "다시 스캔",
         "tooltip": "Handy 외부에서 모델 폴더 또는 Hugging Face 캐시에 추가된 모델을 다시 스캔합니다"
+      },
+      "engine": {
+        "title": "받아쓰기 엔진",
+        "description": "음성을 텍스트로 바꿀 곳을 선택하세요: 이 기기 또는 온라인 API. API가 실패하면 로컬 모델이 예비로 사용됩니다.",
+        "chatgptNotice": "오디오는 Codex의 ChatGPT 로그인으로 OpenAI에 전송되어 받아쓰기됩니다.",
+        "status": {
+          "signedIn": "Codex를 통해 ChatGPT에 로그인됨",
+          "signedOut": "로그인되지 않음: ChatGPT 계정으로 “codex login”을 실행하세요"
+        },
+        "tabs": {
+          "local": "로컬",
+          "api": "API"
+        },
+        "active": "활성",
+        "activate": "활성화",
+        "fallbackBadge": "예비",
+        "fallbackNotice": "API 엔진이 받아쓰기를 처리합니다. 아래에서 선택한 모델은 예비용입니다. 바꾸려면 로컬 모델을 활성화하세요.",
+        "providers": {
+          "chatgpt": {
+            "title": "ChatGPT",
+            "description": "ChatGPT 구독으로 실시간 받아쓰기."
+          },
+          "upcoming": {
+            "title": "기타 API(Soniox…)",
+            "description": "출시 예정."
+          }
+        }
       }
     },
     "advanced": {
@@ -1273,6 +1300,7 @@
       "promptOverrideIncomplete": "공급자와 모델을 모두 선택하거나 기본 공급자를 사용하세요.",
       "promptUnknownProvider": "이 공급자는 사용할 수 없습니다.",
       "promptNotUsable": "이 프롬프트는 유효하지 않습니다. 사용하기 전에 편집하세요.",
+      "engineSignInRequired": "ChatGPT를 선택하기 전에 “codex login”으로 ChatGPT에 로그인하세요.",
       "limitExceeded": "최대 개수에 도달했습니다.",
       "conflictTitle": "설정이 다른 곳에서 변경되었습니다",
       "conflictBody": "명령줄 또는 다른 창에서 더 새로운 버전을 저장했습니다. 새로 고쳐 확인하세요. 저장하지 않은 변경 내용은 삭제됩니다.",
