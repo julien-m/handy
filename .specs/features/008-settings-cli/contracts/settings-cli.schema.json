@@ -149,7 +149,8 @@
             "extra_recording_buffer_ms",
             "vad_enabled",
             "vad_backend",
-            "overlay_style"
+            "overlay_style",
+            "transcription_engine"
           ]
         },
         "issues": {
@@ -231,7 +232,8 @@
                   "extra_recording_buffer_ms",
                   "vad_enabled",
                   "vad_backend",
-                  "overlay_style"
+                  "overlay_style",
+                  "transcription_engine"
                 ]
               },
               "reason": {
@@ -1146,6 +1148,13 @@
             "null"
           ]
         },
+        "transcription_engine": {
+          "enum": [
+            "local",
+            "chatgpt"
+          ],
+          "type": "string"
+        },
         "translate_to_english": {
           "type": "boolean"
         },
@@ -1260,7 +1269,8 @@
         "extra_recording_buffer_ms",
         "vad_enabled",
         "vad_backend",
-        "overlay_style"
+        "overlay_style",
+        "transcription_engine"
       ],
       "type": "object"
     },
@@ -2243,6 +2253,20 @@
       "range": null,
       "read_only": false,
       "runtime_effect": "overlay",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "local",
+        "chatgpt"
+      ],
+      "key": "transcription_engine",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
       "secret": false,
       "value_type": "string"
     }
