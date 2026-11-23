@@ -30,6 +30,8 @@ pub struct Element {
     pub raise_works: bool,
     /// Where an applied focus write really lands (a background tab: another element).
     pub focus_lands_on: Option<u32>,
+    /// An applied focus write shows in reads only after this delay (Chromium, Electron).
+    pub focus_lag: Duration,
     /// An applied range write shows in reads only after this delay (Chromium applies it later).
     pub select_lag: Duration,
     /// The range an applied range write really sets (an application that normalizes it).
@@ -49,6 +51,7 @@ impl Element {
             select: Write::Apply,
             raise_works: true,
             focus_lands_on: None,
+            focus_lag: Duration::ZERO,
             select_lag: Duration::ZERO,
             select_lands_at: None,
         }

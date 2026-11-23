@@ -20,6 +20,10 @@ pub const FIELD_NOTE_BUDGET: Duration = Duration::from_millis(300);
 /// One deadline for the focus, window and range steps at insertion, started once the note has
 /// answered (spec AC-002 steps 2 to 4).
 pub const FIELD_RESTORE_BUDGET: Duration = Duration::from_millis(50);
+/// Deadline of the focus read-back after a focus write answered at once (spec AC-002): Chromium
+/// and Electron (Codex) answer the write and move the focus a moment later, so the attempt reads
+/// the application's focused element until it is the remembered input. Reads only.
+pub const FIELD_FOCUS_SETTLE_BUDGET: Duration = Duration::from_millis(200);
 /// One deadline for the verification inside the pre-dispatch guard (spec AC-002 step 5).
 pub const FIELD_VERIFY_BUDGET: Duration = Duration::from_millis(10);
 /// Smallest messaging timeout worth sending: below it the operation stops as spent. Same value

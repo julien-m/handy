@@ -1,5 +1,14 @@
 # Changelog - 011-dictation-field-return
 
+## 2026-11-23 — [Bugfix]: Wait for the focus to land in the remembered input
+
+- **Type:** Bugfix + Spec Update
+- **Spec modified:** Yes (AC-002, edge cases, decision `focus-read-back`)
+- **Code modified:** src-tauri/src/destination/{field.rs,field_attempt.rs,field_check.rs}; tests src-tauri/tests/destination_field_late.rs, src-tauri/tests/destination_field_return.rs, src-tauri/tests/destination_field/{fake.rs,element.rs}
+- **AC impacted:** AC-002 (focus read-back), AC-004 unchanged
+- **Author:** claude-code (claude-opus-5-5)
+- **Summary:** A dictation started in the Codex composer ended in the recovery bubble: Codex answered the focus write at once and moved the focus later, and the guard, 3 ms after the attempt, saw the previously focused element. The attempt now reads the focused element back every 5 ms for up to 200 ms until it is the remembered input, then reads the range back; the guard's rules are unchanged.
+
 ## 2026-10-15 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update

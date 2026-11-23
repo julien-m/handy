@@ -331,8 +331,9 @@ fn a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence() {
     let spy = PasteSpy::new(&field.world).during_delay(move || rig.bring(notes()));
     let report = dictate(&field, |_| {}, &spy);
     assert_eq!(report.reason, Some(DestinationFailure::ActivationFailed));
-    // The start read and the note only: the guard refused before any field verification.
-    assert_eq!(field.calls("focused_element"), 2);
+    // The start read, the note and the attempt's focus read-back (the input focused at once)
+    // only: the guard refused before any field verification.
+    assert_eq!(field.calls("focused_element"), 3);
     assert_eq!(field.world.alive(), 0);
 }
 /// A cancellation flag that turns on from the second read made with Comet in front: the

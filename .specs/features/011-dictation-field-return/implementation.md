@@ -126,6 +126,7 @@ Native finding N18 (macOS 26.5, Codex and a Google field in Chrome): `Diverted(A
 | Requirement | File(s) | @spec Anchor | Status |
 | --- | --- | --- | --- |
 | AC-002 note budget and read-back | `src-tauri/src/destination/{field.rs,field_attempt.rs,field_range.rs,insertion.rs}` | `@spec AC-002: Note in 300 ms, then writes in 50 ms, once` | ⚠️ Automated pass; native pending |
+| AC-002 focus read-back (2026-11-23, Codex) | `src-tauri/src/destination/{field.rs,field_attempt.rs,field_check.rs}` | `@spec AC-002: The focus is read back until it lands`; tests `src-tauri/tests/destination_field_late.rs::a_focus_moved_a_moment_after_its_write_still_receives_the_paste`, `::a_focus_that_never_lands_changes_nothing_and_its_wait_is_bounded` | ⚠️ Automated pass; native retest in Codex pending |
 | AC-004 / FR-004 verified at the guard, caret tolerance | `src-tauri/src/destination/{field_check.rs,field_range.rs}` | `@spec AC-004: A moved caret pastes, a selection never` | ⚠️ Automated pass; native pending |
 | AC-008 log fields | `src-tauri/src/destination/{field_check.rs,field_range.rs}` (`RangeSeen`, no position or length) | tests `src-tauri/src/destination/field_range.rs::tests::the_comparison_never_carries_a_position_or_a_length`, `src-tauri/tests/destination_field_privacy.rs` | ⚠️ Automated pass |
 
