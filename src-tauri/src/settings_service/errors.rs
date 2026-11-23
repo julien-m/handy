@@ -116,6 +116,9 @@ pub enum ValidationReason {
     DefaultInputsFull,
     /// A remembered input repeats an application or has an invalid name or target (013).
     DefaultInputInvalid,
+    /// The selected transcription engine needs a sign-in that is not available (024).
+    // @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
+    EngineSignInRequired,
 }
 /// Refusal text of a generic write of a microphone key (feature 001).
 const MICROPHONES_DOMAIN_MESSAGE: &str =
@@ -158,6 +161,9 @@ impl ValidationReason {
             Self::DefaultInputsFull => "You can remember up to 20 inputs.",
             Self::DefaultInputInvalid => {
                 "Each remembered input needs a unique application, a name and a valid target."
+            }
+            Self::EngineSignInRequired => {
+                "Sign in to this transcription engine before selecting it (codex login for ChatGPT)."
             }
             Self::FavoritesFull => "You can keep up to 10 favorite applications.",
             Self::FavoriteInvalid => {

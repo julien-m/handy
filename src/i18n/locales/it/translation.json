@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "Scegli un provider e un modello, oppure usa il provider predefinito.",
       "promptUnknownProvider": "Questo provider non è disponibile.",
       "promptNotUsable": "Questo prompt non è valido. Modificalo prima di usarlo.",
+      "engineSignInRequired": "Accedi a ChatGPT con «codex login» prima di selezionare ChatGPT.",
       "limitExceeded": "È stato raggiunto il numero massimo.",
       "conflictTitle": "Impostazioni modificate altrove",
       "conflictBody": "La riga di comando o un'altra finestra ha salvato una versione più recente. Ricarica per vederla; la modifica non salvata viene scartata.",

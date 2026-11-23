@@ -30,6 +30,17 @@ pub fn can_switch_local_model(engine: TranscriptionEngine) -> bool {
     !is_live(engine)
 }
 
+// @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
+/// Whether `engine` can be selected now: the local engine always, an API engine
+/// only with its sign-in available (the ChatGPT sign-in from Codex). Reads a
+/// local file; never exposes the credentials.
+pub fn is_selectable(engine: TranscriptionEngine) -> bool {
+    match engine {
+        TranscriptionEngine::Local => true,
+        TranscriptionEngine::ChatGpt => sign_in_status() == ChatGptSignInStatus::SignedIn,
+    }
+}
+
 /// Open the live session of a remote engine for one dictation.
 ///
 /// Returns `None` for the local engine. `language` is an ISO code, or `None`

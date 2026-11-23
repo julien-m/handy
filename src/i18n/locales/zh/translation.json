@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "请同时选择服务提供商和模型，或使用默认服务提供商。",
       "promptUnknownProvider": "该服务提供商不可用。",
       "promptNotUsable": "该提示词无效。请先编辑后再使用。",
+      "engineSignInRequired": "选择 ChatGPT 前，请先使用“codex login”登录 ChatGPT。",
       "limitExceeded": "已达到最大数量。",
       "conflictTitle": "设置已在其他地方更改",
       "conflictBody": "命令行或其他窗口保存了更新的版本。重新加载即可查看；你未保存的修改将被丢弃。",

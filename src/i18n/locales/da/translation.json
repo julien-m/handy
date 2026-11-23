@@ -1303,6 +1303,7 @@
       "promptOverrideIncomplete": "Vælg både en udbyder og en model, eller brug standardudbyderen.",
       "promptUnknownProvider": "Denne udbyder er ikke tilgængelig.",
       "promptNotUsable": "Denne prompt er ugyldig. Rediger den, før du bruger den.",
+      "engineSignInRequired": "Log ind på ChatGPT med “codex login”, før du vælger ChatGPT.",
       "limitExceeded": "Det maksimale antal er nået.",
       "conflictTitle": "Indstillingerne blev ændret et andet sted",
       "conflictBody": "Kommandolinjen eller et andet vindue gemte en nyere version. Genindlæs for at se den; din ikke-gemte ændring kasseres.",

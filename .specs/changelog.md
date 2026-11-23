@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-23 — [Bugfix 024] ChatGPT can be selected only while its ChatGPT sign-in is available: the Activate button is disabled when signed out and the settings service refuses the change on every surface (`engine_sign_in_required`).
+
 ## 2026-11-23 — [Feature 024] Transcription engine setting: local model (default) or ChatGPT live dictation through the Codex ChatGPT sign-in, in its own `transcription_engine/chatgpt` module behind a neutral `LiveSession` contract, with local fallback on any failure. Rust, frontend and Playwright checks pass; Claude Design mockups (AC-008) blocked by unavailable automation tools. Read the [implementation](features/024-transcription-engine/implementation.md).
 
 ## 2026-11-18 — [Bugfix 003, 005, 019] Keep combining marks within vocabulary words, omit provider error bodies from dictation diagnostics, and preserve entries saved while history cleanup is running.

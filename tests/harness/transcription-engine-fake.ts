@@ -47,6 +47,17 @@ const handlers: Record<string, Handler> = {
     const engine = String(
       (args.engine as { value?: unknown })?.value ?? args.engine,
     );
+    // Mirrors the settings service: ChatGPT is refused while signed out (024 FR-009).
+    if (engine === "chatgpt" && backend.signIn === "signed_out") {
+      return Promise.reject({
+        code: "validation_failed",
+        message: "Setting value failed validation.",
+        field: "transcription_engine",
+        reason: "engine_sign_in_required",
+        outcome: null,
+        current_revision: null,
+      });
+    }
     backend.changes.push(engine);
     backend.engine = engine;
     backend.revision += 1;

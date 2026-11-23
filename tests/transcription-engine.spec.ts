@@ -89,6 +89,19 @@ test("with ChatGPT active the local tab explains the fallback and switches back"
   expect(await changes(page)).toEqual(["local"]);
 });
 
+test("ChatGPT cannot be selected without a sign-in", async ({ page }) => {
+  await page.goto(`${HARNESS}?signIn=signed_out`);
+  await page.getByTestId("engine-tab-api").click();
+  await expect(
+    page.getByTestId("transcription-engine-signin-signed_out"),
+  ).toBeVisible();
+  await expect(page.getByTestId("engine-card-chatgpt-activate")).toBeDisabled();
+  await page.getByTestId("engine-card-chatgpt-activate").click({ force: true });
+  await expect(page.getByTestId("engine-card-chatgpt-active")).toHaveCount(0);
+  await expect(page.getByTestId("engine-tab-local-active-dot")).toBeVisible();
+  expect(await changes(page)).toEqual([]);
+});
+
 test("ChatGPT without a sign-in shows how to sign in", async ({ page }) => {
   await page.goto(`${HARNESS}?engine=chatgpt&signIn=signed_out`);
   await expect(

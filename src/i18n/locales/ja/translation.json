@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "プロバイダーとモデルの両方を選ぶか、既定のプロバイダーを使ってください。",
       "promptUnknownProvider": "このプロバイダーは利用できません。",
       "promptNotUsable": "このプロンプトは無効です。使用する前に編集してください。",
+      "engineSignInRequired": "ChatGPT を選択する前に「codex login」で ChatGPT にサインインしてください。",
       "limitExceeded": "上限数に達しました。",
       "conflictTitle": "設定が別の場所で変更されました",
       "conflictBody": "コマンドラインまたは別のウィンドウが新しいバージョンを保存しました。再読み込みして確認してください。保存していない変更は破棄されます。",

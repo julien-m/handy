@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "Wähle einen Anbieter und ein Modell oder verwende den Standardanbieter.",
       "promptUnknownProvider": "Dieser Anbieter ist nicht verfügbar.",
       "promptNotUsable": "Dieser Prompt ist ungültig. Bearbeite ihn, bevor du ihn verwendest.",
+      "engineSignInRequired": "Melden Sie sich mit „codex login“ bei ChatGPT an, bevor Sie ChatGPT auswählen.",
       "limitExceeded": "Die Höchstzahl ist erreicht.",
       "conflictTitle": "Einstellungen wurden an anderer Stelle geändert",
       "conflictBody": "Die Befehlszeile oder ein anderes Fenster hat eine neuere Version gespeichert. Laden Sie neu, um sie zu sehen; Ihre ungespeicherte Änderung wird verworfen.",

@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "Hãy chọn cả nhà cung cấp và mô hình, hoặc dùng nhà cung cấp mặc định.",
       "promptUnknownProvider": "Nhà cung cấp này không khả dụng.",
       "promptNotUsable": "Prompt này không hợp lệ. Hãy chỉnh sửa trước khi dùng.",
+      "engineSignInRequired": "Hãy đăng nhập ChatGPT bằng “codex login” trước khi chọn ChatGPT.",
       "limitExceeded": "Đã đạt số lượng tối đa.",
       "conflictTitle": "Cài đặt đã được thay đổi ở nơi khác",
       "conflictBody": "Dòng lệnh hoặc một cửa sổ khác đã lưu phiên bản mới hơn. Tải lại để xem; thay đổi chưa lưu của bạn sẽ bị bỏ.",

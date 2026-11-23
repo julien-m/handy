@@ -1,3 +1,4 @@
+// @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
 /** Activate button or "Active" badge shared by the engine panels. */
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,6 +9,10 @@ import { Button } from "../../ui/Button";
 interface EngineActivationProps {
   isActive: boolean;
   isBusy: boolean;
+  /** False while the engine cannot be selected (e.g. no sign-in); the button stays disabled. */
+  isSelectable?: boolean;
+  /** Id of the text explaining why the engine cannot be selected yet. */
+  describedBy?: string;
   onActivate: () => void;
   testId: string;
 }
@@ -15,6 +20,8 @@ interface EngineActivationProps {
 export const EngineActivation: React.FC<EngineActivationProps> = ({
   isActive,
   isBusy,
+  isSelectable = true,
+  describedBy,
   onActivate,
   testId,
 }) => {
@@ -32,7 +39,8 @@ export const EngineActivation: React.FC<EngineActivationProps> = ({
       variant="primary-soft"
       size="sm"
       onClick={onActivate}
-      disabled={isBusy}
+      disabled={isBusy || !isSelectable}
+      aria-describedby={isSelectable ? undefined : describedBy}
       data-testid={`${testId}-activate`}
     >
       {t("settings.models.engine.activate")}

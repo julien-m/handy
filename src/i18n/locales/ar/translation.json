@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "اختر مزوّدًا ونموذجًا، أو استخدم المزوّد الافتراضي.",
       "promptUnknownProvider": "هذا المزوّد غير متاح.",
       "promptNotUsable": "هذا الموجّه غير صالح. عدّله قبل استخدامه.",
+      "engineSignInRequired": "سجّل الدخول إلى ChatGPT باستخدام \"codex login\" قبل اختيار ChatGPT.",
       "limitExceeded": "تم بلوغ الحد الأقصى للعدد.",
       "conflictTitle": "تم تغيير الإعدادات في مكان آخر",
       "conflictBody": "حفظ سطر الأوامر أو نافذة أخرى إصدارًا أحدث. أعد التحميل لرؤيته؛ سيتم تجاهل تعديلك غير المحفوظ.",

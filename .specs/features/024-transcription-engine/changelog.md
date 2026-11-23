@@ -1,5 +1,13 @@
 # Changelog — 024 Transcription engine selector
 
+## 2026-11-23 — Bugfix: ChatGPT selectable only when signed in
+
+- **Type:** Bugfix + Spec Update (requested: selecting ChatGPT must first check the ChatGPT sign-in, otherwise the selection is not allowed)
+- **Spec modified:** Yes (AC-010, FR-009)
+- **Code modified:** src-tauri/src/transcription_engine/mod.rs (`is_selectable`), src-tauri/src/settings_service/{validation,errors}.rs (shared rule, `engine_sign_in_required`), src/stores/settings-errors.ts, src/bindings.ts, src/components/settings/transcription-engine/{api-engine-panel,engine-activation}.tsx, locales (`errors.settings.engineSignInRequired`), tests/transcription-engine.spec.ts, tests/harness/transcription-engine-fake.ts
+- **AC impacted:** AC-010 added and implemented
+- **Author:** claude-code (claude-opus-5-5)
+
 ## 2026-11-23 — Feature: Transcription engine setting with a ChatGPT live engine
 
 - **Type:** Feature

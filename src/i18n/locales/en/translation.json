@@ -1303,6 +1303,7 @@
       "promptOverrideIncomplete": "Choose both a provider and a model, or use the default provider.",
       "promptUnknownProvider": "This provider is not available.",
       "promptNotUsable": "This prompt is invalid. Edit it before using it.",
+      "engineSignInRequired": "Sign in to ChatGPT with “codex login” before selecting ChatGPT.",
       "limitExceeded": "The maximum number has been reached.",
       "conflictTitle": "Settings changed elsewhere",
       "conflictBody": "The command line or another window saved a newer version. Reload to see it; your unsaved edit is discarded.",

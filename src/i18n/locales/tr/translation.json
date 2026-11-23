@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "Bir sağlayıcı ve bir model seçin ya da varsayılan sağlayıcıyı kullanın.",
       "promptUnknownProvider": "Bu sağlayıcı kullanılamıyor.",
       "promptNotUsable": "Bu istem geçersiz. Kullanmadan önce düzenleyin.",
+      "engineSignInRequired": "ChatGPT'yi seçmeden önce “codex login” ile ChatGPT'ye giriş yapın.",
       "limitExceeded": "Azami sayıya ulaşıldı.",
       "conflictTitle": "Ayarlar başka bir yerde değiştirildi",
       "conflictBody": "Komut satırı veya başka bir pencere daha yeni bir sürüm kaydetti. Görmek için yeniden yükleyin; kaydedilmemiş değişikliğiniz atılır.",

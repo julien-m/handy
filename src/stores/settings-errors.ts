@@ -27,12 +27,13 @@ export const SETTINGS_ERROR_KEYS = {
   promptOverrideIncomplete: "errors.settings.promptOverrideIncomplete",
   promptUnknownProvider: "errors.settings.promptUnknownProvider",
   promptNotUsable: "errors.settings.promptNotUsable",
+  engineSignInRequired: "errors.settings.engineSignInRequired",
 } as const;
 
 export type SettingsErrorKey =
   (typeof SETTINGS_ERROR_KEYS)[keyof typeof SETTINGS_ERROR_KEYS];
 
-/** Typed validation reasons with their own translation (custom AI prompts, 005). */
+/** Typed validation reasons with their own translation (custom AI prompts 005, engine 024). */
 const REASON_KEYS: Partial<
   Record<NonNullable<SettingsCommandError["reason"]>, SettingsErrorKey>
 > = {
@@ -44,6 +45,8 @@ const REASON_KEYS: Partial<
   prompt_override_incomplete: SETTINGS_ERROR_KEYS.promptOverrideIncomplete,
   prompt_unknown_provider: SETTINGS_ERROR_KEYS.promptUnknownProvider,
   prompt_not_usable: SETTINGS_ERROR_KEYS.promptNotUsable,
+  // @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
+  engine_sign_in_required: SETTINGS_ERROR_KEYS.engineSignInRequired,
 };
 
 /**

@@ -1303,6 +1303,7 @@
       "promptOverrideIncomplete": "Pilih penyedia dan model, atau gunakan penyedia default.",
       "promptUnknownProvider": "Penyedia ini tidak tersedia.",
       "promptNotUsable": "Prompt ini tidak valid. Edit sebelum digunakan.",
+      "engineSignInRequired": "Masuk ke ChatGPT dengan “codex login” sebelum memilih ChatGPT.",
       "limitExceeded": "Jumlah maksimum telah tercapai.",
       "conflictTitle": "Pengaturan diubah di tempat lain",
       "conflictBody": "Baris perintah atau jendela lain menyimpan versi yang lebih baru. Muat ulang untuk melihatnya; perubahan Anda yang belum disimpan akan dibuang.",

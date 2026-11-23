@@ -1,6 +1,7 @@
 // @spec FR-002: API engines panel — .specs/features/024-transcription-engine/spec.md#fr-002
+// @spec FR-009: Sign-in required to select ChatGPT — .specs/features/024-transcription-engine/spec.md#fr-009
 /** "API" tab: one card per online transcription engine, plus upcoming providers. */
-import React from "react";
+import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 import type { TranscriptionEngine } from "@/bindings";
 import { EngineActivation } from "./engine-activation";
@@ -22,6 +23,9 @@ export const ApiEnginePanel: React.FC<ApiEnginePanelProps> = ({
   const { t } = useTranslation();
   const signIn = useChatGptSignIn();
   const isChatGptActive = engine === "chatgpt";
+  // ChatGPT is selectable only once its sign-in is confirmed; the backend refuses it otherwise.
+  const isChatGptSelectable = signIn === "signed_in";
+  const signInStatusId = useId();
 
   return (
     <div className="flex flex-col gap-3" data-testid="engine-panel-api">
@@ -41,6 +45,8 @@ export const ApiEnginePanel: React.FC<ApiEnginePanelProps> = ({
           <EngineActivation
             isActive={isChatGptActive}
             isBusy={isBusy}
+            isSelectable={isChatGptSelectable}
+            describedBy={signInStatusId}
             onActivate={() => onActivate("chatgpt")}
             testId="engine-card-chatgpt"
           />
@@ -56,6 +62,7 @@ export const ApiEnginePanel: React.FC<ApiEnginePanelProps> = ({
                   ? "text-text/60"
                   : "text-red-600 dark:text-red-400"
               }
+              id={signInStatusId}
               role="status"
               data-testid={`transcription-engine-signin-${signIn}`}
             >

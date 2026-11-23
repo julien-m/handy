@@ -3369,7 +3369,11 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * A remembered input repeats an application or has an invalid name or target (013).
  */
-"default_input_invalid"
+"default_input_invalid" | 
+/**
+ * The selected transcription engine needs a sign-in that is not available (024).
+ */
+"engine_sign_in_required"
 /**
  * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
  * word replacements (002) export their own `ImportMode`.

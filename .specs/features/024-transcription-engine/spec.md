@@ -186,6 +186,7 @@ flowchart LR
 - **AC-006:** ChatGPT protocol, authentication and transcript assembly live in their own module behind an engine-neutral live session contract; the transcription manager depends only on that contract; no environment variable selects the engine.
 - **AC-007:** `handy -f <wav> --live` follows the selected engine.
 - **AC-009:** With an API engine active, downloaded models cannot be selected (cards disabled and announced as such), the selected model is labeled "Fallback", and the Local tab offers to activate the local engine.
+- **AC-010:** ChatGPT can be selected only while its sign-in is available: signed out, the ChatGPT Activate button is disabled and the settings service refuses a change to `chatgpt` from every writer (settings UI command, running instance, CLI) with `engine_sign_in_required`; an engine already selected stays selected when its sign-in later expires (dictations fall back to the local model).
 - **AC-008:** Mockups of the live overlay states and the engine setting are exported from Claude Design and referenced in Screens.
 
 ## Functional Requirements
@@ -197,6 +198,7 @@ flowchart LR
 - <a id="fr-005"></a>**FR-005:** Fall back to the local model on any remote failure, with safe logs (AC-005).
 - <a id="fr-006"></a>**FR-006:** Isolate each engine behind a neutral live session contract (AC-006).
 - <a id="fr-008"></a>**FR-008:** Lock local model selection while an API engine is active and present the selected model as the fallback (AC-009).
+- <a id="fr-009"></a>**FR-009:** Allow selecting an API engine only while its sign-in is available (AC-010).
 - <a id="fr-007"></a>**FR-007:** Provide overlay and setting mockups for live remote engines (AC-008).
 
 ## Key Entities

@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "Zvolte poskytovatele i model, nebo použijte výchozího poskytovatele.",
       "promptUnknownProvider": "Tento poskytovatel není k dispozici.",
       "promptNotUsable": "Tento prompt je neplatný. Před použitím ho upravte.",
+      "engineSignInRequired": "Před výběrem ChatGPT se přihlaste pomocí „codex login“.",
       "limitExceeded": "Bylo dosaženo maximálního počtu.",
       "conflictTitle": "Nastavení bylo změněno jinde",
       "conflictBody": "Příkazový řádek nebo jiné okno uložilo novější verzi. Načtěte ji znovu; vaše neuložená úprava bude zahozena.",

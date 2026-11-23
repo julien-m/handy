@@ -13,6 +13,7 @@ Last verified: 2026-11-23 (branch `experiment/chatgpt-dictation`).
 | FR-005 | `src-tauri/src/managers/transcription.rs`, `src-tauri/src/transcription_engine/chatgpt/session.rs` | `@spec FR-003` (FR-005 in the same anchor) | ✅ Implemented | 2026-11-23 |
 | FR-006 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/transcription_engine/live.rs`, `src-tauri/src/transcription_engine/chatgpt/mod.rs` | `@spec FR-006` | ✅ Implemented | 2026-11-23 |
 | FR-008 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/commands/models.rs`, `src/stores/modelStore.ts`, `src/components/settings/models/ModelsSettings.tsx`, `src/components/onboarding/ModelCard.tsx`, `src/components/model-selector/ModelSelector.tsx`, `src/components/model-selector/ModelDropdown.tsx`, `src/components/settings/transcription-engine/local-engine-panel.tsx` | `@spec FR-008` | ✅ Implemented | 2026-11-23 |
+| FR-009 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/settings_service/validation.rs`, `src-tauri/src/settings_service/errors.rs`, `src/stores/settings-errors.ts`, `src/components/settings/transcription-engine/api-engine-panel.tsx`, `src/components/settings/transcription-engine/engine-activation.tsx` | `@spec FR-009` | ✅ Implemented | 2026-11-23 |
 | FR-007 | `.specs/design/screens/024-transcription-engine-selector/` | — | ❌ Missing (tooling blocked) | 2026-11-23 |
 
 ## Acceptance Criteria Mapping
@@ -27,6 +28,7 @@ Last verified: 2026-11-23 (branch `experiment/chatgpt-dictation`).
 | AC-006 | Module layout under `src-tauri/src/transcription_engine/` | ✅ |
 | AC-007 | CLI `--live` path in `src-tauri/src/lib.rs` | ✅ |
 | AC-009 | `src-tauri/src/transcription_engine/mod.rs` test `local_model_switch_is_refused_while_an_api_engine_is_active`; `src/components/onboarding/model-card-render.test.tsx`; `src/components/model-selector/model-dropdown-render.test.tsx`; Playwright fallback test. The `ModelsSettings` wiring has no dedicated render test; store and backend guards enforce the rule. | ✅ |
+| AC-010 | `src-tauri/src/settings_service/validation.rs` tests `engine_change_tests::*` (refused signed out, allowed signed in or back to local, existing selection not blocking); Playwright `ChatGPT cannot be selected without a sign-in` (button disabled, no change stored); `src/stores/settings-errors.test.ts` (refusal message). The wiring of `validate_dependencies` to the real sign-in file has no end-to-end test (it reads the user's Codex sign-in); an offline CLI reads `CODEX_HOME` from its own environment, so it may see a different sign-in than the app | ✅ |
 | AC-008 | Claude Design mockups | ❌ Blocked (automation tools unavailable) |
 
 ## Checks (2026-11-23)

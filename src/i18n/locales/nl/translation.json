@@ -1303,6 +1303,7 @@
       "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
       "promptUnknownProvider": "Deze provider is niet beschikbaar.",
       "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
+      "engineSignInRequired": "Meld je aan bij ChatGPT met “codex login” voordat je ChatGPT selecteert.",
       "limitExceeded": "Het maximale aantal is bereikt.",
       "conflictTitle": "Instellingen elders gewijzigd",
       "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",

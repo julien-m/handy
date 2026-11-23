@@ -1300,6 +1300,7 @@
       "promptOverrideIncomplete": "공급자와 모델을 모두 선택하거나 기본 공급자를 사용하세요.",
       "promptUnknownProvider": "이 공급자는 사용할 수 없습니다.",
       "promptNotUsable": "이 프롬프트는 유효하지 않습니다. 사용하기 전에 편집하세요.",
+      "engineSignInRequired": "ChatGPT를 선택하기 전에 “codex login”으로 ChatGPT에 로그인하세요.",
       "limitExceeded": "최대 개수에 도달했습니다.",
       "conflictTitle": "설정이 다른 곳에서 변경되었습니다",
       "conflictBody": "명령줄 또는 다른 창에서 더 새로운 버전을 저장했습니다. 새로 고쳐 확인하세요. 저장하지 않은 변경 내용은 삭제됩니다.",

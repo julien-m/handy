@@ -1303,6 +1303,7 @@
       "promptOverrideIncomplete": "Tria un proveïdor i un model, o fes servir el proveïdor predeterminat.",
       "promptUnknownProvider": "Aquest proveïdor no està disponible.",
       "promptNotUsable": "Aquest prompt no és vàlid. Edita'l abans de fer-lo servir.",
+      "engineSignInRequired": "Inicieu la sessió a ChatGPT amb «codex login» abans de seleccionar ChatGPT.",
       "limitExceeded": "S'ha arribat al nombre màxim.",
       "conflictTitle": "La configuració s'ha canviat en un altre lloc",
       "conflictBody": "La línia d'ordres o una altra finestra ha desat una versió més nova. Torneu a carregar per veure-la; la vostra modificació no desada es descarta.",
