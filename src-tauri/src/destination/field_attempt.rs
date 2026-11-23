@@ -3,17 +3,19 @@
 //! focus back to the remembered input, raise its window when it is not the focused one, then
 //! restore the remembered range. Once, without retry: the note under `FIELD_NOTE_BUDGET` (a read,
 //! so waiting for an application that answers late changes nothing), then the writes under one
-//! `FIELD_RESTORE_BUDGET` started when the note answered; a step that fails ends the attempt. A
-//! range write answered at once is read back within the same budget until it settles
+//! `FIELD_RESTORE_BUDGET` started when the note answered; a step that fails ends the attempt.
+//! Writes answered at once are then read back, reads only: the application's focused element
+//! under `FIELD_FOCUS_SETTLE_BUDGET` until it is the remembered input (Chromium and Electron move
+//! the focus a moment later), then the range under a new `FIELD_RESTORE_BUDGET` until it settles
 //! (`field_range::settle`: Chromium applies it a moment later). The
 //! facts the guard needs (noted element, window raised, a write left without an answer, the
 //! stage and accessibility error where it stopped) are kept for its decision and its log;
 //! nothing is read of the input's content.
 use super::field::{
-    FieldAccess, FieldNode, RememberedField, SelectionRange, FIELD_NOTE_BUDGET,
-    FIELD_RESTORE_BUDGET, MIN_AX_TIMEOUT,
+    FieldAccess, FieldNode, RememberedField, SelectionRange, FIELD_FOCUS_SETTLE_BUDGET,
+    FIELD_NOTE_BUDGET, FIELD_RESTORE_BUDGET, MIN_AX_TIMEOUT,
 };
-use super::field_range::{settle, RangeSeen};
+use super::field_range::{settle, RangeSeen, SETTLE_PERIOD};
 use super::workspace::{Clock, Pause, RunningApp};
 use crate::recovery::classifier::{AxQueryError, Deadline};
 use serde::Serialize;
@@ -62,6 +64,9 @@ pub struct FieldAttempt {
     pub noted_in: Duration,
     /// The range read back after its write, and how many reads it took (logged, no value).
     pub settled: (RangeSeen, u8),
+    /// Whether the remembered input was seen focused after the writes, and how many reads of
+    /// the focused element it took (logged).
+    pub focus_settled: (bool, u8),
     pub elapsed: Duration,
 }
 
@@ -91,6 +96,7 @@ pub fn attempt(
         error: None,
         noted_in: Duration::ZERO,
         settled: (RangeSeen::NotRead, 0),
+        focus_settled: (false, 0),
         elapsed: Duration::ZERO,
     };
     if let Some(range) = attempt.field.range.clone() {
@@ -104,7 +110,8 @@ pub fn attempt(
 }
 
 /// Step 1, then steps 2 to 4 under the writes' budget, which starts once the application has
-/// answered the note (N18), then the read-back of a range write answered at once.
+/// answered the note (N18), then the read-back of the focus under its own budget, then the
+/// read-back of a range write answered at once under a fresh writes' budget.
 fn run(
     access: &dyn FieldAccess,
     attempt: &mut FieldAttempt,
@@ -116,8 +123,46 @@ fn run(
     attempt.noted_in = clock.now().saturating_duration_since(started);
     let deadline = Deadline::new(clock, FIELD_RESTORE_BUDGET, MIN_AX_TIMEOUT);
     restore(access, attempt, range, &deadline)?;
-    attempt.settled = settle(attempt.field.element.as_mut(), range, &deadline, pause);
+    let focus_deadline = Deadline::new(clock, FIELD_FOCUS_SETTLE_BUDGET, MIN_AX_TIMEOUT);
+    attempt.focus_settled = settle_focus(access, attempt, &focus_deadline, pause);
+    let range_deadline = Deadline::new(clock, FIELD_RESTORE_BUDGET, MIN_AX_TIMEOUT);
+    attempt.settled = settle(
+        attempt.field.element.as_mut(),
+        range,
+        &range_deadline,
+        pause,
+    );
     Ok(())
+}
+
+// @spec AC-002: The focus is read back until it lands — .specs/features/011-dictation-field-return/spec.md#ac-002
+/// After focus and range writes answered at once: read the application's focused element every
+/// `SETTLE_PERIOD` until it is the remembered input or `deadline` leaves no room for another
+/// read (Chromium and Electron move the focus a moment after answering, native finding of
+/// 2026-11-23 in Codex). Reads only, so waiting changes nothing; the guard still decides on the
+/// state it reads. Returns whether the input was seen focused and the number of reads.
+fn settle_focus(
+    access: &dyn FieldAccess,
+    attempt: &FieldAttempt,
+    deadline: &Deadline<'_>,
+    pause: &dyn Pause,
+) -> (bool, u8) {
+    let mut reads = 0u8;
+    while let Ok(timeout) = deadline.remaining() {
+        reads = reads.saturating_add(1);
+        let landed = access
+            .focused_element(attempt.field.pid, timeout)
+            .is_ok_and(|focused| focused.same_as(attempt.field.element.as_ref()));
+        if landed {
+            return (true, reads);
+        }
+        let room = deadline.remaining().unwrap_or(Duration::ZERO);
+        if room < SETTLE_PERIOD + MIN_AX_TIMEOUT {
+            break;
+        }
+        pause.pause(SETTLE_PERIOD);
+    }
+    (false, reads)
 }
 
 /// Step 1 (spec AC-002): note the application's focused element, under `FIELD_NOTE_BUDGET`.

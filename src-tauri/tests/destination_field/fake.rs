@@ -50,6 +50,8 @@ struct State {
     late_for: Option<Duration>,
     /// Range writes applied but not yet visible: element, visible from, range.
     pending_ranges: Vec<(u32, Instant, (usize, usize))>,
+    /// Focus writes applied but not yet visible: application, visible from, element.
+    pending_focus: Vec<(u32, Instant, u32)>,
     /// Nothing answers before this instant.
     answers_from: Option<Instant>,
     blocker: Option<Receiver<()>>,
@@ -105,7 +107,21 @@ impl World {
     }
     /// The focused element of `pid` now.
     pub fn focused(&self, pid: u32) -> Option<u32> {
+        self.flush_focus();
         lock(&self.state).focused.get(&pid).and_then(|f| f.ok())
+    }
+    /// Focus writes whose lag has passed become visible.
+    fn flush_focus(&self) {
+        let now = self.clock.now();
+        let mut state = lock(&self.state);
+        let pending = std::mem::take(&mut state.pending_focus);
+        for (pid, from, id) in pending {
+            if from <= now {
+                state.focused.insert(pid, Ok(id));
+            } else {
+                state.pending_focus.push((pid, from, id));
+            }
+        }
     }
     /// The current range of element `id`.
     pub fn range(&self, id: u32) -> Option<(usize, usize)> {
@@ -260,6 +276,7 @@ impl FieldAccess for Access {
         if !self.0.call("focused_element", None, timeout) {
             return Err(AxQueryError::Timeout);
         }
+        self.0.flush_focus();
         let focused = lock(&self.0.state).focused.get(&pid).copied();
         let id = focused.unwrap_or(Err(AxQueryError::NoValue))?;
         Ok(self.0.node(id))
@@ -330,8 +347,14 @@ impl FieldNode for Node {
         let element = self.world.get(self.id)?;
         let (id, lands) = (self.id, element.focus_lands_on.unwrap_or(self.id));
         let answer = late(answered, element.focus);
+        let visible_from = self.world.clock.now() + element.focus_lag;
+        let lagging = !element.focus_lag.is_zero();
         self.world.write(id, answer, |state, pid| {
-            state.focused.insert(pid, Ok(lands));
+            if lagging {
+                state.pending_focus.push((pid, visible_from, lands));
+            } else {
+                state.focused.insert(pid, Ok(lands));
+            }
         })
     }
     fn select(&mut self, range: &SelectionRange, timeout: Duration) -> Result<(), AxQueryError> {

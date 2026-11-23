@@ -106,8 +106,9 @@ pub fn verify(field: FieldReturn) -> FieldCheck {
     let check = decide_field_check(attempt.stage, attempt.raised, attempt.unsettled, seen);
     let verified_in = clock.now().saturating_duration_since(started);
     let (settled, reads) = attempt.settled;
+    let (focus_landed, focus_reads) = attempt.focus_settled;
     log::debug!(
-        "field_return {check:?} (stage {:?}, ax_error {:?}, settled {settled:?} in {reads} reads, guard_range {range:?}, note {:?}, attempt {:?}, verify {verified_in:?})",
+        "field_return {check:?} (stage {:?}, ax_error {:?}, focus_landed {focus_landed} in {focus_reads} reads, settled {settled:?} in {reads} reads, guard_range {range:?}, note {:?}, attempt {:?}, verify {verified_in:?})",
         attempt.stage,
         attempt.error,
         attempt.noted_in,

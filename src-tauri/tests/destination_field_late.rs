@@ -193,6 +193,47 @@ fn a_range_write_applied_a_moment_later_is_read_back_until_it_settles() {
     assert!(reads >= 4, "{reads}");
 }
 
+// @spec AC-002: The focus is read back until it lands — .specs/features/011-dictation-field-return/spec.md#ac-002
+#[test]
+fn a_focus_moved_a_moment_after_its_write_still_receives_the_paste() {
+    // Codex (Electron), 2026-11-23: the focus write is answered at once and the focus moves to
+    // the input a moment later; without a read-back the guard saw the old element and the bubble
+    // appeared although the input was remembered.
+    for lag in [
+        Duration::from_millis(5),
+        Duration::from_millis(40),
+        Duration::from_millis(150),
+    ] {
+        let field = FieldRig::comet();
+        let (report, spy) = dictate_with_delay(&field, Duration::ZERO, |field| {
+            field.world.focus(PID, Ok(OTHER));
+            field.world.edit(INPUT, |input| input.focus_lag = lag);
+        });
+        assert_pasted_at_the_caret(&field, &report, &spy);
+    }
+}
+
+#[test]
+fn a_focus_that_never_lands_changes_nothing_and_its_wait_is_bounded() {
+    let field = FieldRig::comet();
+    let (report, spy) = dictate_with_delay(&field, Duration::ZERO, |field| {
+        field.world.focus(PID, Ok(OTHER));
+        field
+            .world
+            .edit(INPUT, |input| input.focus_lag = Duration::from_secs(5));
+    });
+    // The focus stayed on the noted element: the attempt changed nothing (branch a), so the text
+    // goes where 006 and 010 send it, never into the remembered input.
+    assert_ne!(spy.pasted(), vec![Some(INPUT)]);
+    assert!(matches!(check_of(&spy), Some(FieldCheck::Unchanged(_))));
+    // The start read, the note, the read-backs within their 200 ms budget (a 1 ms call every
+    // 5 ms: about 33), the guard. The floor proves the attempt really waited for the focus.
+    let reads = field.calls("focused_element");
+    assert!(reads >= 2 + 25 + 1, "the focus was waited for ({reads})");
+    assert!(reads <= 2 + 40 + 1, "read-backs bounded ({reads})");
+    let _ = report;
+}
+
 #[test]
 fn a_range_write_never_applied_in_time_never_pastes_over_the_selection() {
     let field = FieldRig::comet();
