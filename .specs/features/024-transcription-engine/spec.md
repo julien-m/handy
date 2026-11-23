@@ -226,6 +226,15 @@ flowchart LR
 - **SC-001:** Final text available ≤ 1.5 s after stop for a 5 s phrase on a normal connection (measured 0.75–0.85 s on 2026-11-23).
 - **SC-002:** 0 lost dictations across forced failures (no sign-in, offline).
 
+## Open Follow-ups
+
+Review findings deferred from PR #10 (2026-11-23):
+
+- **Start without a local model.** With ChatGPT active, a dictation does not start when the local fallback model is not installed (`src-tauri/src/actions.rs`, pre-recording model check). The check should apply to the local engine only, and a missing fallback should be reported only when the remote transcription fails.
+- **Language picker follows the fallback model.** With ChatGPT active, `ModelSettingsCard` shows or filters the language picker from the fallback model, but the selected language is sent to ChatGPT. Which languages ChatGPT offers is a product decision.
+- **"Translate to English" with ChatGPT.** The toggle stays visible, but the ChatGPT session returns source-language text, while the local fallback translates. The fix (implement translation, route to the local model, or hide the control) is a product decision.
+- **Refused tray model switch.** The tray menu gives no visible feedback when a model switch is refused while an API engine is active.
+
 ## Screens
 
 Implemented tabs (Playwright harness, real components): [engine-tab-local.png](baselines/engine-tab-local.png), [engine-tab-api.png](baselines/engine-tab-api.png), [engine-tab-local-fallback.png](baselines/engine-tab-local-fallback.png), [engine-signed-out.png](baselines/engine-signed-out.png).
