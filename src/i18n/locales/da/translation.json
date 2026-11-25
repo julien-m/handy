@@ -1283,6 +1283,7 @@
     "pasteFailed": "Teksten kunne ikke indsættes i det aktive program.",
     "pasteFailedNotSaved": "Teksten kunne hverken indsættes eller gemmes i historikken.",
     "transcriptionFailedTitle": "Transskription mislykkedes",
+    "localFallbackUnavailable": "ChatGPT kunne ikke transskribere, og den lokale reservemodel er ikke tilgængelig.",
     "settings": {
       "committedNotApplied": "Indstillingen blev gemt, men kunne ikke anvendes med det samme.",
       "gpuDeviceRequired": "Vælg en GPU-enhed, før du vælger GPU-acceleratoren.",

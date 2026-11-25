@@ -1280,6 +1280,7 @@
     "pasteFailed": "Le texte n'a pas pu être collé dans l'application active.",
     "pasteFailedNotSaved": "Le texte n'a pas pu être collé ni enregistré dans l'historique.",
     "transcriptionFailedTitle": "Échec de la transcription",
+    "localFallbackUnavailable": "La transcription ChatGPT a échoué et le modèle local de secours est indisponible.",
     "settings": {
       "committedNotApplied": "Le réglage est enregistré, mais n'a pas pu être appliqué immédiatement.",
       "gpuDeviceRequired": "Choisissez un appareil GPU avant de sélectionner l'accélérateur GPU.",

@@ -1283,6 +1283,7 @@
     "pasteFailed": "No s'ha pogut enganxar el text a l'aplicació activa.",
     "pasteFailedNotSaved": "No s'ha pogut enganxar el text ni desar-lo a l'historial.",
     "transcriptionFailedTitle": "La transcripció ha fallat",
+    "localFallbackUnavailable": "ChatGPT no ha pogut transcriure i el model local de reserva no està disponible.",
     "settings": {
       "committedNotApplied": "La configuració s'ha desat, però no s'ha pogut aplicar immediatament.",
       "gpuDeviceRequired": "Seleccioneu un dispositiu GPU abans de triar l'accelerador GPU.",

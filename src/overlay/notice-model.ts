@@ -14,6 +14,7 @@ export type NoticeKind =
   | "ai_failed"
   | "hand_over"
   | "input_lost"
+  | "local_fallback_unavailable"
   | "paste_failed";
 
 /** Recording error event of the backend (`managers::audio_priority`, `actions`). */
@@ -25,6 +26,8 @@ export type PasteErrorPayload = { history_saved: boolean } | null;
 
 /** `error_type` of the `recording-error` event of a recording cut short by a lost microphone. */
 export const INPUT_LOST_ERROR = "input_lost";
+export const LOCAL_FALLBACK_UNAVAILABLE = "local_fallback_unavailable";
+export const LOCAL_FALLBACK_MESSAGE = "errors.localFallbackUnavailable";
 
 /** One notice on the indicator. `appName` fills `{{app}}`; `null` names no application. */
 export interface OverlayNotice {
@@ -66,6 +69,15 @@ export const inputLostNotice = (now: number): OverlayNotice => ({
   appName: null,
   until: now + NOTICE_MIN_MS,
   testId: "recording-indicator-input-lost-notice",
+});
+
+// @spec FR-005: Show the missing fallback on the indicator — .specs/features/024-transcription-engine/spec.md#fr-005
+export const localFallbackNotice = (now: number): OverlayNotice => ({
+  kind: LOCAL_FALLBACK_UNAVAILABLE,
+  key: LOCAL_FALLBACK_MESSAGE,
+  appName: null,
+  until: now + NOTICE_MIN_MS,
+  testId: "recording-indicator-local-fallback-notice",
 });
 
 // @spec FR-002: The bubble replaces paste-error, never both — .specs/features/010-recovery-bubble/spec.md#fr-002

@@ -1283,6 +1283,7 @@
     "pasteFailed": "Teks tidak dapat ditempelkan ke aplikasi aktif.",
     "pasteFailedNotSaved": "Teks tidak dapat ditempel maupun disimpan ke riwayat.",
     "transcriptionFailedTitle": "Transkripsi Gagal",
+    "localFallbackUnavailable": "ChatGPT tidak dapat membuat transkripsi dan model cadangan lokal tidak tersedia.",
     "settings": {
       "committedNotApplied": "Pengaturan telah disimpan, tetapi tidak dapat langsung diterapkan.",
       "gpuDeviceRequired": "Pilih perangkat GPU sebelum memilih akselerator GPU.",

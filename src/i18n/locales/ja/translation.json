@@ -1280,6 +1280,7 @@
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
     "pasteFailedNotSaved": "テキストを貼り付けることも、履歴に保存することもできませんでした。",
     "transcriptionFailedTitle": "文字起こしに失敗しました",
+    "localFallbackUnavailable": "ChatGPT で文字起こしができず、代替のローカルモデルも利用できません。",
     "settings": {
       "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",
       "gpuDeviceRequired": "GPU アクセラレータを選択する前に GPU デバイスを選択してください。",

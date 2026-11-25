@@ -1283,6 +1283,7 @@
     "pasteFailed": "Text could not be pasted into the active application.",
     "pasteFailedNotSaved": "The text could not be pasted or saved to history.",
     "transcriptionFailedTitle": "Transcription Failed",
+    "localFallbackUnavailable": "ChatGPT couldn’t transcribe, and the local fallback model is unavailable.",
     "settings": {
       "committedNotApplied": "The setting was saved, but it could not be applied right away.",
       "gpuDeviceRequired": "Select a GPU device before choosing the GPU accelerator.",

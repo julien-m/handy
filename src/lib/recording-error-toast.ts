@@ -5,7 +5,11 @@
 import { platform } from "@tauri-apps/plugin-os";
 import type { TFunction } from "i18next";
 import { toast } from "sonner";
-import { INPUT_LOST_ERROR, NOTICE_MIN_MS } from "@/overlay/notice-model";
+import {
+  INPUT_LOST_ERROR,
+  LOCAL_FALLBACK_UNAVAILABLE,
+  NOTICE_MIN_MS,
+} from "@/overlay/notice-model";
 import type { RecordingErrorEvent } from "./types/events";
 
 /**
@@ -27,9 +31,11 @@ export const showRecordingErrorToast = (
     toast.error(t("errors.noInputDeviceTitle"), {
       description: t("errors.noInputDevice"),
     });
-  } else if (error_type === INPUT_LOST_ERROR) {
-    // Feature 001: the indicator (or `showInputLostToast` with the overlay style none) reports
-    // it, so the settings window never reports it a second time.
+  } else if (
+    error_type === INPUT_LOST_ERROR ||
+    error_type === LOCAL_FALLBACK_UNAVAILABLE
+  ) {
+    // The indicator or the overlay-disabled toast already handles these notices.
     return;
   } else {
     toast.error(

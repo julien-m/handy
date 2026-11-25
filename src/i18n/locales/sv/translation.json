@@ -1280,6 +1280,7 @@
     "pasteFailed": "Texten kunde inte klistras in i det aktiva programmet.",
     "pasteFailedNotSaved": "Texten kunde varken klistras in eller sparas i historiken.",
     "transcriptionFailedTitle": "Transkriptionen misslyckades",
+    "localFallbackUnavailable": "ChatGPT kunde inte transkribera och den lokala reservmodellen är inte tillgänglig.",
     "settings": {
       "committedNotApplied": "Inställningen sparades men kunde inte tillämpas direkt.",
       "gpuDeviceRequired": "Välj en GPU-enhet innan du väljer GPU-acceleratorn.",

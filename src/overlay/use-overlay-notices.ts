@@ -17,6 +17,8 @@ import {
   holdRemaining,
   INPUT_LOST_ERROR,
   inputLostNotice,
+  LOCAL_FALLBACK_UNAVAILABLE,
+  localFallbackNotice,
   PASTE_ERROR_EVENT,
   type PasteErrorPayload,
   pasteFailedNotice,
@@ -49,9 +51,11 @@ export const subscribeNoticeSources = (push: Push): Promise<() => void>[] => [
     push((now) => aiFailureNotice(event.payload, now)),
   ),
   listen(HAND_OVER_EVENT, () => push(handOverNotice)),
-  // Only the cut-short recording is an indicator notice; start errors stay toasts.
+  // Errors that happen after recording starts can use the indicator.
   listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
     if (event.payload.error_type === INPUT_LOST_ERROR) push(inputLostNotice);
+    if (event.payload.error_type === LOCAL_FALLBACK_UNAVAILABLE)
+      push(localFallbackNotice);
   }),
   // A failed insertion is never reserved to the settings window (N17).
   listen<PasteErrorPayload>(PASTE_ERROR_EVENT, (event) =>

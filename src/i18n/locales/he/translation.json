@@ -1280,6 +1280,7 @@
     "pasteFailed": "לא ניתן היה להדביק את הטקסט ביישום הפעיל.",
     "pasteFailedNotSaved": "לא ניתן היה להדביק את הטקסט או לשמור אותו בהיסטוריה.",
     "transcriptionFailedTitle": "התמלול נכשל",
+    "localFallbackUnavailable": "ChatGPT לא הצליח לתמלל, והמודל המקומי לגיבוי אינו זמין.",
     "settings": {
       "committedNotApplied": "ההגדרה נשמרה, אך לא ניתן היה להחיל אותה מיד.",
       "gpuDeviceRequired": "בחרו התקן GPU לפני בחירת מאיץ ה-GPU.",

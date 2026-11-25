@@ -18,7 +18,8 @@ export type IndicatorScreen =
   | "recording-indicator-ai-failed"
   | "recording-indicator-hand-over"
   | "recording-indicator-input-lost"
-  | "recording-indicator-paste-failed";
+  | "recording-indicator-paste-failed"
+  | "recording-indicator-local-fallback";
 
 /** Indicator facts that choose the screen. */
 export interface IndicatorScreenInput {
@@ -39,6 +40,7 @@ const NOTICE_SCREENS: Record<OverlayNotice["kind"], IndicatorScreen> = {
   ai_failed: "recording-indicator-ai-failed",
   hand_over: "recording-indicator-hand-over",
   input_lost: "recording-indicator-input-lost",
+  local_fallback_unavailable: "recording-indicator-local-fallback",
   paste_failed: "recording-indicator-paste-failed",
 };
 

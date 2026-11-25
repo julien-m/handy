@@ -50,16 +50,17 @@ impl DictationRuleCapture {
 
 /// Final text of one dictation, with one compiled matcher shared by both paths.
 ///
-/// `finalize` finalizes a live stream; usable (non-blank) text wins. An empty
-/// result (no stream, nothing produced, stream failure) falls back to `batch`
-/// over the same audio. A finalize error (such as a cancel) is returned as is,
-/// so a cancelled dictation never starts a batch run.
+/// Local streams fall back to `batch` when they produce blank text. A remote
+/// session can successfully finalize with silence, so `accept_empty_stream`
+/// treats that result as final. A missing result falls back over the same audio.
+/// A finalize error (such as cancellation) is returned without running `batch`.
 ///
 /// # Errors
 ///
 /// The error of `finalize`, or of `batch` when the fallback runs.
 pub fn finalize_or_transcribe<E, F, B>(
     replacements: &CompiledReplacements,
+    accept_empty_stream: bool,
     finalize: F,
     batch: B,
 ) -> Result<String, E>
@@ -68,7 +69,7 @@ where
     B: FnOnce(&CompiledReplacements) -> Result<String, E>,
 {
     match finalize(replacements) {
-        Ok(Some(text)) if !text.trim().is_empty() => Ok(text),
+        Ok(Some(text)) if accept_empty_stream || !text.trim().is_empty() => Ok(text),
         Ok(_) => batch(replacements),
         Err(error) => Err(error),
     }

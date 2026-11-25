@@ -1280,6 +1280,7 @@
     "pasteFailed": "Metin etkin uygulamaya yapıştırılamadı.",
     "pasteFailedNotSaved": "Metin yapıştırılamadı ve geçmişe kaydedilemedi.",
     "transcriptionFailedTitle": "Transkripsiyon başarısız oldu",
+    "localFallbackUnavailable": "ChatGPT konuşmayı yazıya dökemedi ve yedek yerel model kullanılamıyor.",
     "settings": {
       "committedNotApplied": "Ayar kaydedildi ancak hemen uygulanamadı.",
       "gpuDeviceRequired": "GPU hızlandırıcısını seçmeden önce bir GPU aygıtı seçin.",

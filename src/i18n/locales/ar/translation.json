@@ -1280,6 +1280,7 @@
     "pasteFailed": "تعذر لصق النص في التطبيق النشط.",
     "pasteFailedNotSaved": "تعذر لصق النص أو حفظه في السجل.",
     "transcriptionFailedTitle": "فشل التفريغ النصي",
+    "localFallbackUnavailable": "تعذّر على ChatGPT نسخ الكلام، ونموذج النسخ المحلي الاحتياطي غير متاح.",
     "settings": {
       "committedNotApplied": "تم حفظ الإعداد، لكن تعذّر تطبيقه على الفور.",
       "gpuDeviceRequired": "اختر جهاز GPU قبل اختيار مسرّع GPU.",

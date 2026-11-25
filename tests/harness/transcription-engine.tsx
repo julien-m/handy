@@ -6,11 +6,28 @@ import { createRoot } from "react-dom/client";
 import "@/i18n";
 import "@/App.css";
 import { TranscriptionEngineTabs } from "@/components/settings/transcription-engine";
+import { ModelSettingsCard } from "@/components/settings/general/ModelSettingsCard";
+import { useModelStore } from "@/stores/modelStore";
+import type { ModelInfo } from "@/bindings";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 const params = new URLSearchParams(window.location.search);
 backend.engine = params.get("engine") ?? backend.engine;
+backend.language = params.get("language") ?? "auto";
 if (params.get("signIn") === "signed_out") backend.signIn = "signed_out";
+
+if (params.get("model") === "whisper") {
+  const model = {
+    id: "whisper",
+    name: "Whisper",
+    supports_language_selection: true,
+    supports_language_detection: true,
+    supported_languages: ["en", "fr"],
+    supports_translation: true,
+  } satisfies Partial<ModelInfo>;
+  useModelStore.getState().setModels([model as ModelInfo]);
+  useModelStore.getState().setCurrentModel(model.id);
+}
 
 const Screen = () => (
   <div className="p-4 max-w-3xl" data-testid="transcription-engine-screen">
@@ -22,6 +39,7 @@ const Screen = () => (
         Local model list
       </div>
     </TranscriptionEngineTabs>
+    {params.has("recognition") && <ModelSettingsCard />}
   </div>
 );
 

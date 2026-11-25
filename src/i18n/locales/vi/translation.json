@@ -1280,6 +1280,7 @@
     "pasteFailed": "Không thể dán văn bản vào ứng dụng đang hoạt động.",
     "pasteFailedNotSaved": "Không thể dán văn bản hoặc lưu vào lịch sử.",
     "transcriptionFailedTitle": "Phiên âm thất bại",
+    "localFallbackUnavailable": "ChatGPT không thể chuyển lời nói thành văn bản và mô hình dự phòng cục bộ không khả dụng.",
     "settings": {
       "committedNotApplied": "Cài đặt đã được lưu nhưng không thể áp dụng ngay.",
       "gpuDeviceRequired": "Hãy chọn thiết bị GPU trước khi chọn bộ tăng tốc GPU.",

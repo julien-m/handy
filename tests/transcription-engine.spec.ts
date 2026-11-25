@@ -113,3 +113,46 @@ test("ChatGPT without a sign-in shows how to sign in", async ({ page }) => {
       path: `${SHOTS}/engine-signed-out.png`,
     });
 });
+
+test("ChatGPT exposes the saved language and Auto without a fallback model", async ({
+  page,
+}) => {
+  await page.goto(`${HARNESS}?recognition&engine=chatgpt&language=ja`);
+  await expect(page.getByText("ChatGPT Settings")).toBeVisible();
+  await expect(page.getByText("Translate to English")).toHaveCount(0);
+  await page.getByRole("button", { name: "Japanese", exact: true }).click();
+  await page.getByRole("button", { name: "Auto Detect", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Auto Detect", exact: true }),
+  ).toBeVisible();
+});
+
+test("ChatGPT ignores the fallback language filter and hides translation", async ({
+  page,
+}) => {
+  await page.goto(`${HARNESS}?recognition&model=whisper&language=fr`);
+  await expect(page.getByText("Whisper Settings")).toBeVisible();
+  await expect(page.getByText("Translate to English")).toBeVisible();
+  await page.getByRole("button", { name: "French", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Japanese", exact: true }),
+  ).toHaveCount(0);
+  await page.getByPlaceholder("Search languages...").press("Escape");
+
+  await page.getByTestId("engine-tab-api").click();
+  await page.getByTestId("engine-card-chatgpt-activate").click();
+  await expect(page.getByText("ChatGPT Settings")).toBeVisible();
+  await expect(page.getByText("Translate to English")).toHaveCount(0);
+  await page.getByRole("button", { name: "French", exact: true }).click();
+  await page.getByRole("button", { name: "Japanese", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Japanese", exact: true }),
+  ).toBeVisible();
+
+  await page.getByTestId("engine-tab-local").click();
+  await page.getByTestId("engine-local-activate").click();
+  await expect(page.getByText("Translate to English")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Auto Detect", exact: true }),
+  ).toBeVisible();
+});
