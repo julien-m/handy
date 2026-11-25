@@ -1280,6 +1280,7 @@
     "pasteFailed": "Nie można było wkleić tekstu do aktywnej aplikacji.",
     "pasteFailedNotSaved": "Nie udało się wkleić tekstu ani zapisać go w historii.",
     "transcriptionFailedTitle": "Transkrypcja nie powiodła się",
+    "localFallbackUnavailable": "ChatGPT nie zdołał przepisać nagrania, a lokalny model zapasowy jest niedostępny.",
     "settings": {
       "committedNotApplied": "Ustawienie zostało zapisane, ale nie można go było od razu zastosować.",
       "gpuDeviceRequired": "Wybierz urządzenie GPU, zanim wybierzesz akcelerator GPU.",

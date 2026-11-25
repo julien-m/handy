@@ -1280,6 +1280,7 @@
     "pasteFailed": "Text nebylo možné vložit do aktivní aplikace.",
     "pasteFailedNotSaved": "Text se nepodařilo vložit ani uložit do historie.",
     "transcriptionFailedTitle": "Přepis selhal",
+    "localFallbackUnavailable": "ChatGPT nedokázal přepsat řeč a místní záložní model není dostupný.",
     "settings": {
       "committedNotApplied": "Nastavení bylo uloženo, ale nepodařilo se ho okamžitě použít.",
       "gpuDeviceRequired": "Než zvolíte akcelerátor GPU, vyberte zařízení GPU.",

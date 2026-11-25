@@ -1,5 +1,13 @@
 # Changelog — 024 Transcription engine selector
 
+## 2026-11-25 — Bugfix: ChatGPT dictation and recognition settings
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (AC-005, AC-011, AC-012, FR-005, FR-010)
+- **Code modified:** Shortcut and live WAV replay routing, recognition settings card, indicator and toast notices
+- **AC impacted:** AC-005, AC-007, AC-011, AC-012
+- **Author:** Codex
+
 ## 2026-11-23 — Bugfix: ChatGPT selectable only when signed in
 
 - **Type:** Bugfix + Spec Update (requested: selecting ChatGPT must first check the ChatGPT sign-in, otherwise the selection is not allowed)

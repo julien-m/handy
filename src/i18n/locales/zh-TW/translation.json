@@ -1280,6 +1280,7 @@
     "pasteFailed": "無法將文字貼上至目前作用中的應用程式。",
     "pasteFailedNotSaved": "無法貼上文字，也無法將其儲存至歷史記錄。",
     "transcriptionFailedTitle": "轉錄失敗",
+    "localFallbackUnavailable": "ChatGPT 無法轉錄，而且本機備用模型無法使用。",
     "settings": {
       "committedNotApplied": "設定已儲存，但無法立即套用。",
       "gpuDeviceRequired": "請先選擇 GPU 裝置，再選擇 GPU 加速器。",

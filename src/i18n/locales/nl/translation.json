@@ -1283,6 +1283,7 @@
     "pasteFailed": "Tekst kon niet worden geplakt in de actieve applicatie.",
     "pasteFailedNotSaved": "De tekst kon niet worden geplakt of in de geschiedenis worden opgeslagen.",
     "transcriptionFailedTitle": "Transcriptie mislukt",
+    "localFallbackUnavailable": "ChatGPT kon de spraak niet transcriberen en het lokale reservemodel is niet beschikbaar.",
     "settings": {
       "committedNotApplied": "De instelling is opgeslagen, maar kon niet direct worden toegepast.",
       "gpuDeviceRequired": "Selecteer een GPU-apparaat voordat u de GPU-versneller kiest.",

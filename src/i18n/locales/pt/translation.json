@@ -1280,6 +1280,7 @@
     "pasteFailed": "Não foi possível colar o texto no aplicativo ativo.",
     "pasteFailedNotSaved": "Não foi possível colar o texto nem guardá-lo no histórico.",
     "transcriptionFailedTitle": "Falha na transcrição",
+    "localFallbackUnavailable": "O ChatGPT não conseguiu transcrever e o modelo local de reserva não está disponível.",
     "settings": {
       "committedNotApplied": "A configuração foi salva, mas não pôde ser aplicada imediatamente.",
       "gpuDeviceRequired": "Selecione um dispositivo de GPU antes de escolher o acelerador de GPU.",

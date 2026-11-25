@@ -2,7 +2,7 @@
  * Wiring of the cut-short recording report (001, native session N1): the `recording-error`
  * listeners of the indicator (`subscribeNoticeSources`) and of the overlay-none fallback
  * (`subscribeNoneNotices`), with the settings window's own `recording-error` toast. Only
- * `input_lost` raises the indicator notice or the fallback toast, and for every overlay style the
+ * supported events raise an indicator notice or a fallback toast, and for every overlay style the
  * user gets exactly one report. No DOM renderer is installed, so the effects' bodies are tested
  * directly. Run with `bun run test:indicator`.
  */
@@ -118,6 +118,23 @@ describe("recording-error listeners (001 FR-004, native session N1)", () => {
       ]);
     });
   }
+});
+
+describe("missing local fallback (024 FR-005)", () => {
+  for (const style of ["minimal", "live"] as const) {
+    test(`${style}: the missing fallback is reported on the indicator`, () => {
+      const notices = wire(style);
+      emit({ error_type: "local_fallback_unavailable" });
+      expect(notices).toEqual(["local_fallback_unavailable"]);
+      expect(toasts).toEqual([]);
+    });
+  }
+
+  test("none: the missing fallback is reported in one toast", () => {
+    wire("none");
+    emit({ error_type: "local_fallback_unavailable" });
+    expect(toasts).toEqual(["errors.localFallbackUnavailable"]);
+  });
 });
 
 /** Emit `paste-error` to every listener (the settings window has no listener of its own). */

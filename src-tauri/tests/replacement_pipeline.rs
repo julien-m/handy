@@ -42,6 +42,7 @@ fn stop_dictation(
     let replacements = capture.rules_for_stop(BINDING, || current);
     finalize_or_transcribe(
         &replacements,
+        false,
         |matcher| stream.map(|text| text.map(|text| matcher.apply(text).text())),
         |matcher| Ok(matcher.apply(RECOGNIZED).text()),
     )
@@ -98,6 +99,7 @@ fn stream_and_batch_fallback_share_one_compiled_matcher() -> TestResult {
     let finalize_seen = Cell::new(std::ptr::null::<CompiledReplacements>());
     let output = finalize_or_transcribe(
         &replacements,
+        false,
         |matcher| {
             finalize_seen.set(matcher);
             Ok::<_, String>(Some("  ".to_owned()))
@@ -122,6 +124,7 @@ fn usable_stream_text_skips_the_batch_run() -> TestResult {
     let replacements = CompiledReplacements::empty();
     let output = finalize_or_transcribe(
         &replacements,
+        false,
         |_| Ok::<_, String>(Some("kept".to_owned())),
         |_| {
             batch_runs.set(batch_runs.get() + 1);
@@ -138,4 +141,21 @@ fn cancelled_finalize_never_starts_a_batch_run() {
     capture.capture(BINDING, rules("Claude Code"));
     let result = stop_dictation(&capture, rules("unused"), Err("cancelled".to_owned()));
     assert_eq!(result, Err("cancelled".to_owned()));
+}
+
+#[test]
+fn completed_remote_silence_skips_batch_but_a_missing_result_falls_back() {
+    let replacements = CompiledReplacements::empty();
+    let batch_runs = Cell::new(0);
+    let batch = |_: &CompiledReplacements| {
+        batch_runs.set(batch_runs.get() + 1);
+        Err("local fallback unavailable")
+    };
+    let silence = finalize_or_transcribe(&replacements, true, |_| Ok(Some(String::new())), batch);
+    assert_eq!(silence.as_deref(), Ok(""));
+    assert_eq!(batch_runs.get(), 0);
+
+    let missing = finalize_or_transcribe(&replacements, true, |_| Ok(None), batch);
+    assert_eq!(missing, Err("local fallback unavailable"));
+    assert_eq!(batch_runs.get(), 1);
 }

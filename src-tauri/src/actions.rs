@@ -22,6 +22,7 @@ use crate::TranscriptionCoordinator;
 use log::{debug, error, warn};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tauri::Manager;
@@ -66,9 +67,11 @@ pub trait ShortcutAction: Send + Sync {
 
 // Transcribe Action. Whether its AI step runs, and with which prompt, is decided by the
 // dictation's prompt session (005), from the binding that started it.
+#[derive(Default)]
 struct TranscribeAction {
     /// Replacement rules in force when each binding's recording started.
     rules_at_start: DictationRuleCapture,
+    live_engine_at_start: AtomicBool,
 }
 
 fn should_use_streaming_overlay(style: OverlayStyle, is_streaming: bool) -> bool {
@@ -153,9 +156,13 @@ impl ShortcutAction for TranscribeAction {
         let tm = app.state::<Arc<TranscriptionManager>>();
         let rm = app.state::<Arc<AudioRecordingManager>>();
 
-        // Load ASR model and VAD model in parallel
+        let settings = get_settings(app);
+        let live_engine = crate::transcription_engine::is_live(settings.transcription_engine);
         let kickoff_started = Instant::now();
-        tm.initiate_model_load();
+        // @spec FR-005: Defer loading the fallback model — .specs/features/024-transcription-engine/spec.md#fr-005
+        if !live_engine {
+            tm.initiate_model_load();
+        }
         let rm_clone = Arc::clone(&rm);
         std::thread::spawn(move || {
             if let Err(e) = rm_clone.preload_vad() {
@@ -166,11 +173,10 @@ impl ShortcutAction for TranscribeAction {
 
         // Don't open the mic if nothing can transcribe the recording; the load
         // kicked off above fails and reports why.
-        if !tm.is_model_loaded() {
-            let selected_model = get_settings(app).selected_model;
+        if !live_engine && !tm.is_model_loaded() {
             if let Err(e) = app
                 .state::<Arc<ModelManager>>()
-                .get_model_path(&selected_model)
+                .get_model_path(&settings.selected_model)
             {
                 warn!("Not starting recording: no model can transcribe it ({})", e);
                 return;
@@ -184,7 +190,6 @@ impl ShortcutAction for TranscribeAction {
 
         // Get the microphone mode to determine audio feedback timing
         let plan_started = Instant::now();
-        let settings = get_settings(app);
         // Read the destination before any Handy surface is shown; committed only on success.
         let destination =
             crate::destination::app::capture_at_start(app, settings.return_to_dictation_app);
@@ -200,7 +205,7 @@ impl ShortcutAction for TranscribeAction {
         // @spec FR-003: Live engines always stream — .specs/features/024-transcription-engine/spec.md#fr-003
         // A live remote engine (ChatGPT) always takes the streaming path,
         // whatever the local model can do.
-        let uses_stream_path = crate::transcription_engine::is_live(settings.transcription_engine)
+        let uses_stream_path = live_engine
             || selected_model_info
                 .as_ref()
                 .map(|m| m.supports_streaming)
@@ -213,7 +218,7 @@ impl ShortcutAction for TranscribeAction {
             VadPolicy::Offline
         };
         if uses_stream_path {
-            tm.start_stream();
+            tm.start_stream(settings.transcription_engine);
         } else {
             // @spec FR-001: Long dictations are transcribed while recorded — .specs/features/022-transcribe-while-recording/spec.md#fr-001
             tm.start_prefetch();
@@ -253,6 +258,8 @@ impl ShortcutAction for TranscribeAction {
                     "Recording request accepted in {:?}; waiting for first microphone samples",
                     recording_start_time.elapsed()
                 );
+                self.live_engine_at_start
+                    .store(live_engine, Ordering::Release);
                 // AC-007: this dictation uses the rules committed before it started.
                 self.rules_at_start
                     .capture(&binding_id, current_matcher(app));
@@ -396,6 +403,7 @@ impl ShortcutAction for TranscribeAction {
         let captured_rules = self
             .rules_at_start
             .rules_for_stop(&binding_id, || current_matcher(app));
+        let live_engine = self.live_engine_at_start.load(Ordering::Acquire);
         let cancel_generation = rm.cancel_generation();
         let destination_ticket = crate::destination::delivery::ticket_at_stop(app);
 
@@ -448,10 +456,23 @@ impl ShortcutAction for TranscribeAction {
                     let transcription_time = Instant::now();
                     // One compiled matcher serves the stream finalize and its batch
                     // fallback (worker crash or empty stream) of the same audio.
+                    let mut missing_local_fallback = false;
                     let transcription_result = finalize_or_transcribe(
                         &captured_rules,
+                        live_engine,
                         |replacements| tm.finalize_stream(replacements),
-                        |replacements| tm.transcribe_dictation(samples, replacements),
+                        |replacements| {
+                            if live_engine {
+                                if !tm.is_model_loaded() {
+                                    let selected_model = get_settings(&ah).selected_model;
+                                    ah.state::<Arc<ModelManager>>()
+                                        .get_model_path(&selected_model)
+                                        .inspect_err(|_| missing_local_fallback = true)?;
+                                }
+                                tm.initiate_model_load();
+                            }
+                            tm.transcribe_dictation(samples, replacements)
+                        },
                     );
 
                     // Await WAV save and verify
@@ -527,9 +548,17 @@ impl ShortcutAction for TranscribeAction {
 
                             error!("Transcription failed: {}", err);
                             crate::destination::delivery::abandon(&ah);
-                            // Surface the failure to the UI (toast). The full
-                            // message is also in handy.log via the line above.
-                            let _ = ah.emit("transcription-error", err.to_string());
+                            if missing_local_fallback {
+                                let _ = ah.emit(
+                                    "recording-error",
+                                    RecordingErrorEvent {
+                                        error_type: "local_fallback_unavailable".to_string(),
+                                        detail: None,
+                                    },
+                                );
+                            } else {
+                                let _ = ah.emit("transcription-error", err.to_string());
+                            }
                             // Save entry with empty text so user can retry (needs the audio)
                             if wav_saved {
                                 let entry = NewHistoryEntry {
@@ -614,15 +643,11 @@ pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::ne
     let mut map = HashMap::new();
     map.insert(
         "transcribe".to_string(),
-        Arc::new(TranscribeAction {
-            rules_at_start: DictationRuleCapture::default(),
-        }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction::default()) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "transcribe_with_post_process".to_string(),
-        Arc::new(TranscribeAction {
-            rules_at_start: DictationRuleCapture::default(),
-        }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction::default()) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "cancel".to_string(),

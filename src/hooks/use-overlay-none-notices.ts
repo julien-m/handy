@@ -14,6 +14,8 @@ import { showInputLostToast } from "@/lib/recording-error-toast";
 import type { RecordingErrorEvent } from "@/lib/types/events";
 import {
   INPUT_LOST_ERROR,
+  LOCAL_FALLBACK_MESSAGE,
+  LOCAL_FALLBACK_UNAVAILABLE,
   noticeFallsBackToToast,
   PASTE_ERROR_EVENT,
   type PasteErrorPayload,
@@ -47,8 +49,11 @@ export const subscribeNoneNotices = (
     toast.info(t("smartPaste.handOver"), { duration: NOTICE_MIN_MS });
   }),
   listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
-    if (event.payload.error_type !== INPUT_LOST_ERROR) return;
-    if (indicatorHidden()) showInputLostToast(t);
+    if (!indicatorHidden()) return;
+    if (event.payload.error_type === INPUT_LOST_ERROR) showInputLostToast(t);
+    if (event.payload.error_type === LOCAL_FALLBACK_UNAVAILABLE) {
+      toast.error(t(LOCAL_FALLBACK_MESSAGE), { duration: NOTICE_MIN_MS });
+    }
   }),
   listen<PasteErrorPayload>(PASTE_ERROR_EVENT, (event) => {
     if (!indicatorHidden()) return;

@@ -14,7 +14,8 @@ Last verified: 2026-11-23 (branch `experiment/chatgpt-dictation`).
 | FR-006 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/transcription_engine/live.rs`, `src-tauri/src/transcription_engine/chatgpt/mod.rs` | `@spec FR-006` | ✅ Implemented | 2026-11-23 |
 | FR-008 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/commands/models.rs`, `src/stores/modelStore.ts`, `src/components/settings/models/ModelsSettings.tsx`, `src/components/onboarding/ModelCard.tsx`, `src/components/model-selector/ModelSelector.tsx`, `src/components/model-selector/ModelDropdown.tsx`, `src/components/settings/transcription-engine/local-engine-panel.tsx` | `@spec FR-008` | ✅ Implemented | 2026-11-23 |
 | FR-009 | `src-tauri/src/transcription_engine/mod.rs`, `src-tauri/src/settings_service/validation.rs`, `src-tauri/src/settings_service/errors.rs`, `src/stores/settings-errors.ts`, `src/components/settings/transcription-engine/api-engine-panel.tsx`, `src/components/settings/transcription-engine/engine-activation.tsx` | `@spec FR-009` | ✅ Implemented | 2026-11-23 |
-| FR-007 | `.specs/design/screens/024-transcription-engine-selector/` | — | ❌ Missing (tooling blocked) | 2026-11-23 |
+| FR-010 | `src/components/settings/general/ModelSettingsCard.tsx` | `@spec FR-010` | ✅ Implemented | 2026-11-25 |
+| FR-007 | — | — | ❌ Missing (tooling blocked) | 2026-11-23 |
 
 ## Acceptance Criteria Mapping
 
@@ -29,7 +30,16 @@ Last verified: 2026-11-23 (branch `experiment/chatgpt-dictation`).
 | AC-007 | CLI `--live` path in `src-tauri/src/lib.rs` | ✅ |
 | AC-009 | `src-tauri/src/transcription_engine/mod.rs` test `local_model_switch_is_refused_while_an_api_engine_is_active`; `src/components/onboarding/model-card-render.test.tsx`; `src/components/model-selector/model-dropdown-render.test.tsx`; Playwright fallback test. The `ModelsSettings` wiring has no dedicated render test; store and backend guards enforce the rule. | ✅ |
 | AC-010 | `src-tauri/src/settings_service/validation.rs` tests `engine_change_tests::*` (refused signed out, allowed signed in or back to local, existing selection not blocking); Playwright `ChatGPT cannot be selected without a sign-in` (button disabled, no change stored); `src/stores/settings-errors.test.ts` (refusal message). The wiring of `validate_dependencies` to the real sign-in file has no end-to-end test (it reads the user's Codex sign-in); an offline CLI reads `CODEX_HOME` from its own environment, so it may see a different sign-in than the app | ✅ |
+| AC-011 | `src-tauri/src/actions.rs` and `src-tauri/src/lib.rs` defer local model loading. `src/overlay/notice-listeners.test.ts` checks the localized notice route. | Notice wiring and finalization routing verified in isolation; native shortcut and CLI replay pending |
+| AC-012 | `tests/transcription-engine.spec.ts` (real recognition controls with fixture IPC) | ✅ |
 | AC-008 | Claude Design mockups | ❌ Blocked (automation tools unavailable) |
+
+## PR #10 follow-up (2026-11-25)
+
+- The shortcut records the engine at start and requests the local model only in its batch fallback. Live WAV replay defers the same requirement while preserving explicit model and device overrides.
+- `src/overlay/notice-model.ts` maps the missing fallback to the indicator. `src/hooks/use-overlay-none-notices.ts` uses the settings toast when the indicator is disabled.
+- Playwright with fixture IPC passed 7 scenarios. Bun passed the indicator and engine suites. The Rust finalization helper passed the new remote-silence and missing-result regression in isolation.
+- Native build and end-to-end runs are pending. The local Cargo build ran out of disk space.
 
 ## Checks (2026-11-23)
 

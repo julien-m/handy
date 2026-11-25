@@ -122,7 +122,7 @@ flowchart TD
 
 ### US-3 — Fall back to the local model (P1)
 
-If ChatGPT cannot transcribe (not signed in, network down, server error, timeout), the same recording is transcribed by the local model so no dictation is lost.
+ChatGPT can start a dictation without an installed local model. If ChatGPT cannot transcribe (not signed in, network down, server error, timeout), Handy tries to transcribe the same recording locally. A missing fallback is reported when that attempt is needed.
 
 **Priority reason:** a remote engine must never lose speech.
 **Independent test:** select ChatGPT with an unreadable sign-in file; dictate; the local model produces the text and the log explains the fallback without any token.
@@ -141,6 +141,12 @@ Feature: Fallback to the local model
     When  the stream returns an error before the end
     Then  the live preview stops updating
     And   the local model transcribes the full recording at the end
+
+  Scenario: No local model installed
+    Given transcription_engine is "chatgpt" and the local model is missing
+    When  the user starts a dictation
+    Then  recording starts without a local model warning
+    And   Handy reports the unavailable local model only if the recording needs the fallback
 ```
 
 ```mermaid
@@ -151,7 +157,35 @@ flowchart TD
     C -- Yes --> D[ChatGPT final text]
     C -- No --> F
     D --> E[Output pipeline]
-    F --> E
+    F --> G{Local model available?}
+    G -- Yes --> E
+    G -- No --> H[Report unavailable model]
+```
+
+### US-6 — Configure recognition for the active engine (P2)
+
+General settings shows ChatGPT’s optional language hint and Auto whenever ChatGPT is active, using Handy’s recognition language choices. The local model’s supported languages and translation capability govern the controls when the local engine is active.
+
+```gherkin
+Feature: Engine-specific recognition controls
+  Scenario: ChatGPT is active without a local model
+    Given ChatGPT is active and a recognition language was saved
+    When  the user opens General settings
+    Then  the saved language is shown and can be changed or reset to Auto
+    And   Translate to English is hidden
+
+  Scenario: Switch back to a local model that supports translation
+    Given the selected local model supports translation
+    When  the user activates the local engine
+    Then  Translate to English is visible
+    And   the model determines whether to show and filter the language picker
+```
+
+```mermaid
+flowchart TD
+    A[General settings] --> B{Active engine}
+    B -- ChatGPT --> C[Optional language hint and Auto]
+    B -- Local --> D[Controls supported by selected model]
 ```
 
 ### US-4 — Clean live overlay for remote engines (P3, design only)
@@ -182,7 +216,9 @@ flowchart LR
 - **AC-002:** Settings › Models shows Local and API tabs with icons; the API tab lists ChatGPT (activate button, OpenAI audio notice, sign-in status) and an "Other APIs (Soniox…)" coming-soon card; a dot marks the tab of the active engine; arrow keys move between tabs.
 - **AC-003:** With `chatgpt`, a dictation opens one ChatGPT session, emits live text to the overlay and delivers ChatGPT's final text through the existing output pipeline.
 - **AC-004:** With `local`, dictation behavior and network use are unchanged.
-- **AC-005:** Any ChatGPT failure (no sign-in, connection, server error, timeout) makes the local model transcribe the same recording; logs give the reason and never contain the token.
+- **AC-005:** On ChatGPT failure (no sign-in, connection, server error, timeout), an available local model transcribes the same recording; logs give the reason and never contain the token.
+- **AC-011:** With ChatGPT selected, dictation and live WAV replay can start without a local model. Handy reports the unavailable fallback only when local transcription is needed, on the recording indicator (or in a Settings toast if the indicator is disabled) or in the CLI.
+- **AC-012:** General settings shows ChatGPT’s language hint selector with Auto regardless of the local model, and hides Translate to English. With the local engine active, the selected model determines which controls are available.
 - **AC-006:** ChatGPT protocol, authentication and transcript assembly live in their own module behind an engine-neutral live session contract; the transcription manager depends only on that contract; no environment variable selects the engine.
 - **AC-007:** `handy -f <wav> --live` follows the selected engine.
 - **AC-009:** With an API engine active, downloaded models cannot be selected (cards disabled and announced as such), the selected model is labeled "Fallback", and the Local tab offers to activate the local engine.
@@ -195,10 +231,11 @@ flowchart LR
 - <a id="fr-002"></a>**FR-002:** Provide Local / API engine tabs with activation and the ChatGPT sign-in status in Settings › Models (AC-002).
 - <a id="fr-003"></a>**FR-003:** Stream dictation audio to ChatGPT and surface live and final text (AC-003, AC-007).
 - <a id="fr-004"></a>**FR-004:** Keep the local engine path unchanged when selected (AC-004).
-- <a id="fr-005"></a>**FR-005:** Fall back to the local model on any remote failure, with safe logs (AC-005).
+- <a id="fr-005"></a>**FR-005:** Fall back to the local model on any remote failure, with safe logs (AC-005, AC-011).
 - <a id="fr-006"></a>**FR-006:** Isolate each engine behind a neutral live session contract (AC-006).
 - <a id="fr-008"></a>**FR-008:** Lock local model selection while an API engine is active and present the selected model as the fallback (AC-009).
 - <a id="fr-009"></a>**FR-009:** Allow selecting an API engine only while its sign-in is available (AC-010).
+- <a id="fr-010"></a>**FR-010:** Show recognition controls for the active engine (AC-012).
 - <a id="fr-007"></a>**FR-007:** Provide overlay and setting mockups for live remote engines (AC-008).
 
 ## Key Entities
@@ -209,7 +246,7 @@ flowchart LR
 
 ## Edge Cases
 
-- No local model installed and ChatGPT fails: same behavior as today without a model (existing error path).
+- No local model installed and ChatGPT fails: show the unavailable fallback notice and keep the history retry path for a saved recording.
 - Sign-in expired: the server refuses the session → fallback; status shows the sign-in file, not token validity.
 - ChatGPT workspace accounts refused by the server → fallback.
 - Dictation longer than the server session limit (5 min) → server error → fallback for the whole recording.
@@ -228,11 +265,8 @@ flowchart LR
 
 ## Open Follow-ups
 
-Review findings deferred from PR #10 (2026-11-23):
+Tray feedback deferred from PR #10 (2026-11-23):
 
-- **Start without a local model.** With ChatGPT active, a dictation does not start when the local fallback model is not installed (`src-tauri/src/actions.rs`, pre-recording model check). The check should apply to the local engine only, and a missing fallback should be reported only when the remote transcription fails.
-- **Language picker follows the fallback model.** With ChatGPT active, `ModelSettingsCard` shows or filters the language picker from the fallback model, but the selected language is sent to ChatGPT. Which languages ChatGPT offers is a product decision.
-- **"Translate to English" with ChatGPT.** The toggle stays visible, but the ChatGPT session returns source-language text, while the local fallback translates. The fix (implement translation, route to the local model, or hide the control) is a product decision.
 - **Refused tray model switch.** The tray menu gives no visible feedback when a model switch is refused while an API engine is active.
 
 ## Screens

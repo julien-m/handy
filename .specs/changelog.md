@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-11-25 — [Bugfix 024] ChatGPT dictation can start without a local model. General settings show its language hint and hide local translation controls.
+
 ## 2026-11-23 — [Bugfix 011] The text returns to the input where the dictation started even when the destination (Codex, Chromium) moves the focus a moment after Handy gives it back: the focused element is read back for up to 200 ms before the guard decides.
 
 ## 2026-11-23 — [Bugfix 024] ChatGPT can be selected only while its ChatGPT sign-in is available: the Activate button is disabled when signed out and the settings service refuses the change on every surface (`engine_sign_in_required`).

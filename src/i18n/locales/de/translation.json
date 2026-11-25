@@ -1280,6 +1280,7 @@
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
     "pasteFailedNotSaved": "Der Text konnte weder eingefügt noch im Verlauf gespeichert werden.",
     "transcriptionFailedTitle": "Transkription fehlgeschlagen",
+    "localFallbackUnavailable": "ChatGPT konnte die Sprache nicht transkribieren, und das lokale Ersatzmodell ist nicht verfügbar.",
     "settings": {
       "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",
       "gpuDeviceRequired": "Wählen Sie ein GPU-Gerät aus, bevor Sie den GPU-Beschleuniger wählen.",

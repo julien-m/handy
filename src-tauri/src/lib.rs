@@ -608,11 +608,11 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
 
     let tm = app.state::<Arc<TranscriptionManager>>();
 
-    let model_id = args
-        .model
-        .clone()
-        .unwrap_or_else(|| get_settings(app).selected_model);
-    if model_id.is_empty() {
+    let settings = get_settings(app);
+    let engine = settings.transcription_engine;
+    let live_engine = args.live && crate::transcription_engine::is_live(engine);
+    let model_id = args.model.clone().unwrap_or(settings.selected_model);
+    if !live_engine && model_id.is_empty() {
         eprintln!("error: no model selected (pass --model or pick one in the app)");
         return 2;
     }
@@ -626,14 +626,26 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
         None => "settings".to_string(),
     };
 
-    // Cold load (timed).
-    let load_start = Instant::now();
-    if let Err(e) = tm.load_model_with_device(&model_id, device_index) {
-        eprintln!("error: load_model('{}') failed: {}", model_id, e);
-        return 1;
+    let mut load_ms = 0;
+    let mut bound_backend = None;
+    let mut load_local = |measure: bool| -> anyhow::Result<()> {
+        if model_id.is_empty() {
+            anyhow::bail!("no local fallback model selected (pass --model or pick one in the app)");
+        }
+        let start = Instant::now();
+        tm.load_model_with_device(&model_id, device_index)?;
+        if measure {
+            load_ms = start.elapsed().as_millis() as u64;
+            bound_backend = tm.current_backend();
+        }
+        Ok(())
+    };
+    if !live_engine {
+        if let Err(e) = load_local(true) {
+            eprintln!("error: load_model('{}') failed: {}", model_id, e);
+            return 1;
+        }
     }
-    let load_ms = load_start.elapsed().as_millis() as u64;
-    let bound_backend = tm.current_backend();
 
     let runs = args.repeat.unwrap_or(1).max(1);
     let replacements = crate::word_replacements::published::current_matcher(app);
@@ -643,8 +655,8 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
         // If the model's unload-timeout is "Immediately", transcribe() unloads
         // the engine after each run; reload (untimed) so repeats keep working
         // and the inference timing below stays clean.
-        if !tm.is_model_loaded() {
-            if let Err(e) = tm.load_model_with_device(&model_id, device_index) {
+        if !live_engine && !tm.is_model_loaded() {
+            if let Err(e) = load_local(false) {
                 eprintln!("error: reload before run {} failed: {}", i + 1, e);
                 return 1;
             }
@@ -654,21 +666,28 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
             // @spec FR-003: CLI replay follows the selected engine — .specs/features/024-transcription-engine/spec.md#fr-003
             // A live remote engine receives the replay as a dictation stream;
             // without a final text the local model transcribes the samples.
-            let is_live_engine =
-                crate::transcription_engine::is_live(get_settings(app).transcription_engine);
-            if is_live_engine {
-                tm.start_stream();
+            if live_engine {
+                tm.start_stream(engine);
             }
-            replay_at_recording_pace(&tm, &samples, !is_live_engine);
+            replay_at_recording_pace(&tm, &samples, !live_engine);
             let t = Instant::now();
-            let streamed = if is_live_engine {
+            let streamed = if live_engine {
                 tm.finalize_stream(&replacements)
             } else {
                 Ok(None)
             };
             let result = match streamed {
                 Ok(Some(text)) => Ok(text),
-                Ok(None) => tm.transcribe_dictation(samples.clone(), &replacements),
+                Ok(None) => {
+                    // --model and --device-index also apply to the deferred fallback.
+                    if live_engine && !tm.is_model_loaded() {
+                        if let Err(e) = load_local(true) {
+                            eprintln!("error: ChatGPT transcription needs a local fallback: {}", e);
+                            return 1;
+                        }
+                    }
+                    tm.transcribe_dictation(samples.clone(), &replacements)
+                }
                 Err(e) => Err(e),
             };
             (t, result)

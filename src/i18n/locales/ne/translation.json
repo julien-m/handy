@@ -1283,6 +1283,7 @@
     "pasteFailed": "सक्रिय एपमा टेक्स्ट पेस्ट गर्न सकिएन।",
     "pasteFailedNotSaved": "पाठ टाँस्न वा इतिहासमा सुरक्षित गर्न सकिएन।",
     "transcriptionFailedTitle": "ट्रान्सक्रिप्सन गर्न सकिएन",
+    "localFallbackUnavailable": "ChatGPT ले बोलीलाई पाठमा उतार्न सकेन र वैकल्पिक स्थानीय मोडेल उपलब्ध छैन।",
     "settings": {
       "committedNotApplied": "सेटिङ सुरक्षित गरियो, तर तुरुन्तै लागू गर्न सकिएन।",
       "gpuDeviceRequired": "GPU एक्सेलेरेटर छान्नुअघि GPU उपकरण छान्नुहोस्।",

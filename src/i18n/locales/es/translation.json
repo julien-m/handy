@@ -1280,6 +1280,7 @@
     "pasteFailed": "No se pudo pegar el texto en la aplicación activa.",
     "pasteFailedNotSaved": "No se pudo pegar el texto ni guardarlo en el historial.",
     "transcriptionFailedTitle": "Error de transcripción",
+    "localFallbackUnavailable": "ChatGPT no ha podido transcribir y el modelo local de respaldo no está disponible.",
     "settings": {
       "committedNotApplied": "La configuración se guardó, pero no se pudo aplicar de inmediato.",
       "gpuDeviceRequired": "Selecciona un dispositivo GPU antes de elegir el acelerador GPU.",

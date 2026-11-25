@@ -11,6 +11,7 @@ type Handler = (args: Record<string, unknown>) => unknown;
 export const backend = {
   revision: 7,
   engine: "local",
+  language: "auto",
   signIn: "signed_in" as "signed_in" | "signed_out",
   changes: [] as string[],
 };
@@ -30,6 +31,8 @@ const settings = () => ({
   bindings: {},
   microphone_priority: [],
   transcription_engine: backend.engine,
+  selected_language: backend.language,
+  translate_to_english: true,
 });
 
 const handlers: Record<string, Handler> = {
@@ -38,7 +41,7 @@ const handlers: Record<string, Handler> = {
     read_only: false,
     settings: settings(),
   }),
-  get_default_settings: () => settings(),
+  get_default_settings: () => ({ ...settings(), selected_language: "auto" }),
   get_app_settings: () => settings(),
   check_custom_sounds: () => ({ start: false, stop: false }),
   is_update_checks_locked: () => false,
@@ -64,6 +67,15 @@ const handlers: Record<string, Handler> = {
     emit("settings-changed", {
       revision: backend.revision,
       keys: ["transcription_engine"],
+    });
+    return null;
+  },
+  change_selected_language_setting: (args) => {
+    backend.language = String(args.language);
+    backend.revision += 1;
+    emit("settings-changed", {
+      revision: backend.revision,
+      keys: ["selected_language"],
     });
     return null;
   },

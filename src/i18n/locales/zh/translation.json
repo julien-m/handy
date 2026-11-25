@@ -1280,6 +1280,7 @@
     "pasteFailed": "无法将文本粘贴到当前活动的应用程序中。",
     "pasteFailedNotSaved": "无法粘贴文本，也无法将其保存到历史记录。",
     "transcriptionFailedTitle": "转录失败",
+    "localFallbackUnavailable": "ChatGPT 无法转录，且本地备用模型不可用。",
     "settings": {
       "committedNotApplied": "设置已保存，但无法立即应用。",
       "gpuDeviceRequired": "请先选择 GPU 设备，再选择 GPU 加速器。",
