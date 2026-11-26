@@ -116,28 +116,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn session_start_declares_rate_and_language() {
+    fn session_start_declares_rate_and_language() -> Result<(), serde_json::Error> {
         let message: serde_json::Value =
-            serde_json::from_str(&session_start("s", "a", Some("fr"))).unwrap();
+            serde_json::from_str(&session_start("s", "a", Some("fr")))?;
         assert_eq!(message["type"], "session.start");
         assert_eq!(message["config"]["sample_rate_hz"], 16_000);
         assert_eq!(message["config"]["language"], "fr");
-        let auto: serde_json::Value = serde_json::from_str(&session_start("s", "a", None)).unwrap();
+        let auto: serde_json::Value = serde_json::from_str(&session_start("s", "a", None))?;
         assert!(auto["config"]["language"].is_null());
+        Ok(())
     }
 
     #[test]
-    fn audio_append_encodes_clamped_pcm16() {
-        let message: serde_json::Value =
-            serde_json::from_str(&audio_append(&[0.0, 2.0, -2.0])).unwrap();
-        let bytes = base64::engine::general_purpose::STANDARD
-            .decode(message["audio"].as_str().unwrap())
-            .unwrap();
+    fn audio_append_encodes_clamped_pcm16() -> Result<(), Box<dyn std::error::Error>> {
+        let message: serde_json::Value = serde_json::from_str(&audio_append(&[0.0, 2.0, -2.0]))?;
+        let audio = message["audio"]
+            .as_str()
+            .ok_or("expected an audio string")?;
+        let bytes = base64::engine::general_purpose::STANDARD.decode(audio)?;
         let samples: Vec<i16> = bytes
             .chunks(2)
             .map(|pair| i16::from_le_bytes([pair[0], pair[1]]))
             .collect();
         assert_eq!(samples, vec![0, i16::MAX, -i16::MAX]);
+        Ok(())
     }
 
     #[test]

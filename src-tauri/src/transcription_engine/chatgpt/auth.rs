@@ -125,11 +125,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parse_sign_in_accepts_token_and_account() {
-        let sign_in =
-            parse_sign_in(r#"{"tokens":{"access_token":"tok","account_id":"acc"}}"#).unwrap();
+    fn parse_sign_in_accepts_token_and_account() -> Result<(), LiveSessionError> {
+        let sign_in = parse_sign_in(r#"{"tokens":{"access_token":"tok","account_id":"acc"}}"#)?;
         assert_eq!(sign_in.access_token(), "tok");
         assert_eq!(sign_in.account_id(), Some("acc"));
+        Ok(())
     }
 
     #[test]
@@ -140,11 +140,12 @@ mod tests {
     }
 
     #[test]
-    fn debug_output_redacts_the_token() {
-        let sign_in = parse_sign_in(r#"{"tokens":{"access_token":"secret-value"}}"#).unwrap();
+    fn debug_output_redacts_the_token() -> Result<(), LiveSessionError> {
+        let sign_in = parse_sign_in(r#"{"tokens":{"access_token":"secret-value"}}"#)?;
         let debug = format!("{sign_in:?}");
         assert!(!debug.contains("secret-value"));
         assert!(debug.contains("redacted"));
+        Ok(())
     }
 
     #[test]

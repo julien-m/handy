@@ -335,7 +335,7 @@ fn set_read_timeout(socket: &mut Socket, timeout: Duration) -> Result<(), LiveSe
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::net::TcpListener;
+    use std::{io, net::TcpListener};
 
     const SHORT_LIMITS: NetworkLimits = NetworkLimits {
         connect: Duration::from_millis(300),
@@ -346,13 +346,14 @@ mod tests {
     };
 
     #[test]
-    fn connect_to_silent_server_times_out_instead_of_hanging() {
-        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
-        let url = format!("ws://{}/", listener.local_addr().unwrap());
+    fn connect_to_silent_server_times_out_instead_of_hanging() -> io::Result<()> {
+        let listener = TcpListener::bind("127.0.0.1:0")?;
+        let url = format!("ws://{}/", listener.local_addr()?);
         // Accepts the connection and never answers the upgrade.
-        let server = std::thread::spawn(move || {
-            let (_stream, _) = listener.accept().unwrap();
+        let server = std::thread::spawn(move || -> io::Result<()> {
+            let (_stream, _) = listener.accept()?;
             std::thread::sleep(Duration::from_secs(2));
+            Ok(())
         });
         let started = Instant::now();
         let result = ChatGptSession::connect_to(
@@ -363,16 +364,14 @@ mod tests {
         );
         assert!(matches!(result, Err(LiveSessionError::Timeout(_))));
         assert!(started.elapsed() < Duration::from_secs(2));
-        server.join().unwrap();
+        server
+            .join()
+            .map_err(|_| io::Error::other("silent test server panicked"))?
     }
 
     #[test]
-    fn connect_to_closed_port_fails_fast() {
-        let port = TcpListener::bind("127.0.0.1:0")
-            .unwrap()
-            .local_addr()
-            .unwrap()
-            .port();
+    fn connect_to_closed_port_fails_fast() -> io::Result<()> {
+        let port = TcpListener::bind("127.0.0.1:0")?.local_addr()?.port();
         let url = format!("ws://127.0.0.1:{port}/");
         let result = ChatGptSession::connect_to(
             &url,
@@ -381,5 +380,6 @@ mod tests {
             SHORT_LIMITS,
         );
         assert!(result.is_err());
+        Ok(())
     }
 }

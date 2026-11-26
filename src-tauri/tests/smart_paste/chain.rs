@@ -343,14 +343,15 @@ fn cmux_retains_permission_and_missing_read_failures() {
 }
 
 #[test]
-fn cmux_does_not_paste_after_the_destination_is_lost() {
+fn cmux_does_not_paste_after_the_destination_is_lost() -> Result<(), &'static str> {
     let rig = Rig::new();
     rig.destination
         .answers
         .lock()
-        .unwrap()
+        .map_err(|_| "destination test answers lock poisoned")?
         .extend([true, false]);
     let outcome = insert(&rig, Some("com.cmuxterm.app"), DontModify, &[]);
     assert_eq!(outcome.kind, PasteOutcomeKind::InsertionFailed);
     assert!(rig.keys.state().chords.is_empty());
+    Ok(())
 }
